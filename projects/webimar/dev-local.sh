@@ -17,6 +17,13 @@ NC='\033[0m'
 # Proje dizini (Scriptin olduğu yer)
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Background mode detection
+BACKGROUND_MODE=false
+if [[ "$1" == "--background" || "$1" == "-bg" ]]; then
+    BACKGROUND_MODE=true
+    echo -e "${BLUE}🔄 Running in background mode...${NC}"
+fi
+
 echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║     Webimar Local Dev Environment      ║${NC}"
 echo -e "${BLUE}╚════════════════════════════════════════╝${NC}"

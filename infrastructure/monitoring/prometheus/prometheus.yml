@@ -1,0 +1,54 @@
+# ============================================================================
+# Prometheus Configuration - VPS Monitoring
+# Scrapes metrics from all services and exporters
+# ============================================================================
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'vps-monitor'
+    environment: 'production'
+
+# Rules for alerting
+rule_files:
+  - "rules/*.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+
+  # System metrics via Node Exporter
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+
+  # Container metrics via cAdvisor
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 30s
+
+  # Nginx metrics
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+    scrape_interval: 30s
+
+  # Django application metrics (if available)
+  - job_name: 'webimar-api'
+    static_configs:
+      - targets: ['vps_webimar_webimar-api:8001']
+    metrics_path: '/api/prometheus/'
+    scrape_interval: 60s
+    scrape_timeout: 10s
+
+  # PostgreSQL metrics (if exporter is available)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 60s

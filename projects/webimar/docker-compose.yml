@@ -14,7 +14,9 @@ services:
 
   # Backend API - Development
   webimar-api:
-    build: ./webimar-api
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
     ports:
       - "8001:8001"
     environment:
@@ -31,8 +33,9 @@ services:
 
   # Frontend - Development Mode
   webimar-react:
-    build: 
-      context: ./webimar-react
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.react
       target: development
     ports:
       - "3001:3001"
@@ -78,15 +81,17 @@ services:
       POSTGRES_PASSWORD: webimar123
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    # Port removed for security - only internal access
+    # ports:
+    #   - "5432:5432"  # ❌ REMOVED - exposes database publicly
     restart: unless-stopped
 
   # Redis - Production Cache
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    # Port removed for security - only internal access
+    # ports:
+    #   - "6379:6379"  # ❌ REMOVED - exposes cache publicly
     restart: unless-stopped
     command: redis-server --save 20 1 --loglevel warning
 

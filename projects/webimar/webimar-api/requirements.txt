@@ -31,3 +31,5 @@ google-api-python-client==2.147.0
 
 # Test dependencies (used by existing test modules)  
 pytest==8.3.4
+django-prometheus==2.4.1
+psutil==7.2.1
