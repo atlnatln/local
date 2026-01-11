@@ -43,11 +43,14 @@ services:
       - ./ssl:/output/ssl
     environment:
       - CERTBOT_EMAIL=${CERTBOT_EMAIL:-admin@ankadata.com.tr}
-    command: certonly --webroot --webroot-path=/var/www/certbot --email $${CERTBOT_EMAIL} --agree-tos --no-eff-email --expand -d ankadata.com.tr -d www.ankadata.com.tr
+    command: |
+      sh -c "while :; do 
+        certbot renew --webroot --webroot-path=/var/www/certbot --quiet; 
+        sleep 12h; 
+      done"
     networks:
       - vps_network
-    profiles:
-      - ssl-generation
+    restart: unless-stopped
 
   # =========================================================================
   # Monitoring - Prometheus (Optional)

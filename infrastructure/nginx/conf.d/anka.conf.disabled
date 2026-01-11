@@ -33,7 +33,8 @@ server {
 
 # Main HTTPS server for Anka
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
+    http2 on;
     server_name ankadata.com.tr www.ankadata.com.tr;
     
     # SSL Configuration
@@ -46,8 +47,7 @@ server {
     ssl_prefer_server_ciphers off;
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 10m;
-    ssl_stapling on;
-    ssl_stapling_verify on;
+    # ssl_stapling removed - causes warnings
     
     # Security Headers
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
@@ -101,7 +101,8 @@ server {
 
 # Redirect www to non-www (optional)
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
+    http2 on;
     server_name www.ankadata.com.tr;
     
     ssl_certificate /etc/nginx/ssl/ankadata.com.tr/fullchain.pem;

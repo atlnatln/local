@@ -15,10 +15,8 @@ services:
     container_name: webimar-nginx
     expose:
       - "80"
-      - "443"
     volumes:
-      # Only SSL certs are mounted, nginx.conf is baked into image
-      - ../../infrastructure/ssl:/etc/nginx/ssl:ro
+      # nginx.conf is baked into image; SSL termination is handled by infrastructure nginx
       - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - webimar-api
