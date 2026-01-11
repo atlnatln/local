@@ -253,7 +253,12 @@ if [ "$SKIP_VPS" = false ]; then
     # Update infrastructure nginx configuration
     echo -e "  → Updating infrastructure nginx configuration..."
     ssh "$VPS_HOST" "mkdir -p /home/akn/vps/infrastructure/nginx/conf.d"
-    scp "${PROJECT_DIR}/../../../infrastructure/nginx/conf.d/webimar.conf" "$VPS_HOST:/home/akn/vps/infrastructure/nginx/conf.d/webimar.conf"
+    INFRA_WEBIMAR_CONF_SRC="${REPO_ROOT}/infrastructure/nginx/conf.d/webimar.conf"
+    if [ -f "$INFRA_WEBIMAR_CONF_SRC" ]; then
+        scp "$INFRA_WEBIMAR_CONF_SRC" "$VPS_HOST:/home/akn/vps/infrastructure/nginx/conf.d/webimar.conf"
+    else
+        echo -e "  ${YELLOW}⚠️  Skipping infrastructure nginx conf upload (missing: ${INFRA_WEBIMAR_CONF_SRC})${NC}"
+    fi
     ssh "$VPS_HOST" "docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload" || echo "Infrastructure nginx reload failed (might not be running)"
     echo -e "  ${GREEN}✅ Infrastructure nginx updated${NC}"
 
