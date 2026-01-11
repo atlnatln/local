@@ -1,0 +1,321 @@
+{
+  "slug": "sut-sigirciligi",
+  "id": 17,
+  "name": "Süt Sığırcılığı",
+  "category": "Hayvancılık Tesisleri",
+  "seo": {
+    "title": "Süt Sığırcılığı Tesisi Nasıl Kurulur? Şartları ve Hesaplama | Tarım İmar",
+  "description": "Süt sığırcılığı tesisi kurulumu için gerekli şartlar, ahır alanı hesaplaması, bakıcı evi koşulları ve yasal gereksinimler. Arazinizde süt sığırcılığı tesisi kurabilir misiniz?",
+  "keywords": [
+      "süt sığırcılığı",
+      "süt sığırı ahırı",
+      "süt sığırı tesisi",
+      "ahır hesaplama",
+      "süt sığırı bakıcı evi",
+      "hayvancılık tesisi",
+  "ahır alanı",
+      "gezinti alanı",
+      "sağımhane",
+      "süt sığırcılığı mevzuat"
+    ],
+    "canonical": "/sut-sigirciligi",
+    "ogImage": "https://tarimimar.com.tr/og-image.svg"
+  },
+  "hero": {
+    "title": "Süt Sığırcılığı Tesisi Kurulumu ve Hesaplama",
+    "subtitle": "Süt sığırcılığı için ahır, sağımhane, yem deposu ve bakıcı evi hesaplaması. Kaç baş hayvan için ne kadar alan gerekir?",
+    "icon": "🐄"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Süt sığırcılığı tesisi</strong>, süt üretimi amacıyla Holstein, Simmental, Jersey gibi süt sığırlarının barındırıldığı, süt sağımının yapıldığı ve sütün depolandığı modern hayvancılık yapılarıdır.</p><p>Süt sığırcılığı tesisleri ahır, sağımhane, yem deposu, süt soğutma tankı, gezinti alanı ve müştemilatlardan oluşur.</p>",
+  "purpose": "<p>Süt sığırcılığı tesislerinin temel amaçları:</p><ul><li>Yüksek kaliteli süt üretimi sağlamak</li><li>Hayvan refahını ve sağlığını korumak</li><li>Süt verimini maksimize etmek</li><li>Hijyenik koşullarda süt sağımı yapmak</li><li>Süt kayıplarını önlemek ve kaliteyi korumak</li><li>Ekonomik ve sürdürülebilir hayvancılık yapmak</li></ul>",
+    "whoCanBuild": "<p>Süt sığırcılığı tesisi kurabilmek için:</p><ul><li>Minimum arazi büyüklüğüne sahip olmak (hayvan sayısına göre)</li><li>Hayvan başına 15 m² kapalı alan (ahır + yem deposu) sağlamak</li><li>Süt hayvanları için ahır dışında 7 m²/baş gezinti alanı planlamak</li><li>25 baş ve üzeri için bakıcı evi yapma hakkından yararlanmak</li><li>Sağımhane ve süt depolama ünitesi kurmak</li><li>İl Tarım ve Orman Müdürlüğü'nden izin almak</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Düzenli Gelir Kaynağı",
+      "description": "Günlük süt üretimi ile düzenli ve sürdürülebilir gelir elde etme",
+      "icon": "💰"
+    },
+    {
+      "title": "Hayvan Refahı Standartları",
+      "description": "15 m²/baş kapalı alan + 7 m²/baş gezinti alanı ile konforlu barınak",
+      "icon": "🏡"
+    },
+    {
+      "title": "Bakıcı Evi Hakkı",
+      "description": "25 baş ve üzeri süt sığırı için bakıcı evi (75-150 m²) yapma hakkı",
+      "icon": "🏠"
+    },
+    {
+      "title": "Modern Sağım Sistemi",
+      "description": "Sağımhane ve süt soğutma tankı ile hijyenik süt üretimi",
+      "icon": "🥛"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "maxBuildingArea": null,
+      "restrictions": [
+        "Ahır ve yem deposunun toplam alanı hayvan başına maksimum 15 metrekare",
+        "Süt hayvanları için ahır dışında açık gezinti alanı hayvan başına 7 metrekare (emsale dahil değil)",
+        "25 baş ve üzeri için bakıcı evi yapılabilir",
+        "Bakıcı evi (550-1500 m² tesis): Taban 75 m², toplam 150 m²",
+        "Bakıcı evi (1500 m²+ tesis): Taban 150 m², toplam 300 m²",
+        "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir.",
+        "Büyük Ova sınırlaması: Bazı Büyük Ova alanlarında mevzuat gereği yeni büyükbaş işletmeleri sınırlandırılmıştır; aile zati ihtiyaçları hariç yeni işletmeler en fazla 5 baş ile sınırlanabilir",
+        "Zeytinlik vasıflı arazilerde süt sığırcılığı tesisi yapılamaz"
+      ],
+      "genelge": [
+        "Büyükbaş hayvanlar için ahır ve yem deposunun toplam alanı hayvan başına 15 metrekare",
+        "Süt hayvanları için ahır dışında açık gezinti alanı hayvan başına 7 metrekare",
+        "Süt sığırcılığı için 25 baş ve üzeri bakıcı evi yapılabilir",
+        "Tesis alanı 550-1500 m² arasında ise: Taban alanı 75 m², toplam inşaat alanı 150 m²",
+        "Tesis alanı 1500 m²'den büyük ise: Taban alanı 150 m², toplam inşaat alanı 300 m²",
+        "Ahır, ağıl ve kümes binası ile yem deposu ve gübre çukuru bakıcı evinden önce yapılmalıdır"
+      ],
+      "specialConditions": [
+        "Minimum hayvan sayısı: 5 baş (küçük işletme)",
+        "Bakıcı evi için minimum: 25 baş süt sığırı",
+        "Gezinti alanı zorunludur (7 m²/baş, emsale dahil değil)"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "baş",
+        "perUnit": 15,
+        "minCapacity": 5
+      },
+      "specifications": [
+        "Ahır alanı: Hayvan başına 10-12 m² (barınak + durak)",
+        "Yem deposu: Hayvan başına 3-5 m²",
+        "Toplam kapalı alan: Maksimum 15 m²/baş",
+        "Gezinti alanı: Zorunlu 7 m²/baş (ahır dışında)",
+        "Sağımhane: 10 baş ve üzeri için, minimum 15 m²",
+        "Süt soğutma tankı: Günlük üretim kapasitesine göre",
+        "Tavan yüksekliği: Minimum 3-3,5 metre",
+        "Havalandırma: Doğal + mekanik sistem",
+        "Barınak tipi: Serbest duraklı veya bağlı sistem",
+        "Gübre toplama: Sıvat veya katı gübre sistemi"
+      ],
+      "materials": [
+        "Betonarme veya çelik konstrüksiyon",
+        "Beton döşeme (eğimli, drenajlı)",
+        "Galvaniz çelik duraklar",
+        "Yalıtımlı çatı (sandviç panel)",
+        "Yem yalakları (paslanmaz veya galvaniz)",
+        "Su içme sistemleri (otomatik)",
+        "Sıvat deposu veya gübre çukuru",
+        "Sağım ekipmanları (sağım makinesi, tank)"
+      ],
+      "infrastructure": [
+        "Bol su kaynağı (hayvan başına 80-100 L/gün)",
+        "Atık su arıtma sistemi",
+        "Gübre yönetim sistemi",
+        "Yol erişimi (yem ve süt nakliyesi için)",
+        "Veteriner hizmetlerine yakınlık",
+        "Süt toplama tankeri erişimi"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Süt Sığırcılığı Tesisi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Süt Sığırcılığı alanını hesaplayın",
+    "ctaText": "Ücretsiz Süt Sığırı Tesisi Hesapla",
+    "ctaLink": "/hesaplama/sut-sigirciligi"
+  },
+  "faq": [
+    {
+      "question": "Bir baş süt sığırı için kaç metrekare ahır gerekir?",
+      "answer": "Ahır ve yem deposunun toplam alanı hayvan başına maksimum 15 metrekaredir. Bunun yanında ahır dışında 7 metrekare açık gezinti alanı zorunludur."
+    },
+    {
+      "question": "Süt sığırcılığında bakıcı evi ne zaman yapılabilir?",
+      "answer": "25 baş ve üzeri süt sığırı kapasiteli tesisler için bakıcı evi yapılabilir. Tesis alanı 550-1500 m² ise 75 m² taban (150 m² toplam), 1500 m²+ ise 150 m² taban (300 m² toplam) yapılabilir."
+    },
+    {
+      "question": "Gezinti alanı zorunlu mudur?",
+      "answer": "Evet, süt hayvanları için ahır dışında hayvan başına 7 metrekare açık gezinti alanı zorunludur. Bu alan emsale dahil edilmez, ek olarak sağlanmalıdır."
+    },
+    {
+      "question": "Kaç baş süt sığırı için sağımhane gerekir?",
+      "answer": "10 baş ve üzeri süt sığırı için sağımhane zorunludur. Minimum 15 m² olmalı, hayvan sayısı arttıkça genişletilmelidir."
+    },
+    {
+      "question": "Süt sığırcılığı tesisi minimum kaç baş ile başlar?",
+      "answer": "Minimum 5 baş ile küçük ölçekli işletme başlatılabilir. Ancak ekonomik ölçek için 20-30 baş önerilir."
+    },
+    {
+      "question": "Süt sığırcılığı tesisi kurulum maliyeti ne kadardır?",
+      "answer": "Kurulum maliyeti; hayvan sayısı, ahır tipi, ekipman seçimi ve altyapı (su, elektrik, yol) gibi faktörlere göre değişir. Projeniz için yerel tedarikçilerden ve mühendislik firmalarından teklif almanızı öneririz."
+    },
+    {
+      "question": "Süt sığırı günde ne kadar süt verir?",
+      "answer": "Holstein ırkı günde 25-35 litre, Simmental 20-25 litre, yerli ırklar 10-15 litre süt verir. Verim bakım, besleme ve genetiğe bağlıdır."
+    },
+    {
+      "question": "Süt sığırcılığında hangi izinler gereklidir?",
+      "answer": "İl Tarım ve Orman Müdürlüğü'nden Tarım Amaçlı Kullanım İzni, yapı ruhsatı, hayvan bilgi sistemi (HBS) kaydı, gereklidir."
+    },
+    {
+      "question": "Zeytinlik arazide süt sığırcılığı tesisi yapılabilir mi?",
+      "answer": "Hayır, zeytinlik vasıflı arazilerde süt sığırcılığı tesisi yapılamaz. 3573 sayılı Zeytinciliğin Islahı Kanunu gereği zeytinlik alanlarda yapılaşma yasaktır."
+    },
+    {
+      "question": "Süt sığırcılığında günlük bakım maliyeti nedir?",
+      "answer": "Günlük bakım maliyeti yem, veterinerlik, enerji ve işçilik giderlerinden oluşur; bölge, yem fiyatları ve işletme ölçeğine göre değişiklik gösterir. Projenize özel işletme maliyeti hesabı için yerel tedarikçilerden ve danışmanlardan teklif alınız."
+    },
+    {
+      "question": "Su tahsis belgesi nedir ve gerekli midir?",
+      "answer": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzaları için gereklidir."
+    },
+    {
+      "question": "Büyük Ova'da kaç başa izin veriliyor?",
+      "answer": "Bazı Büyük Ova alanlarında yeni büyükbaş işletmeleri kurulmasına izin verilmemektedir; ailelerin zati ihtiyaçları kapsamında 5 başa kadar işletmeler istisna tutulmaktadır. Hesaplanan kapasite Büyük Ova alanlarında mevzuat gereği 5 baş ile sınırlandırılabilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Besi Sığırcılığı",
+      "url": "/besi-sigirciligi",
+      "icon": "🐃"
+    },
+    {
+      "title": "Ağıl (Küçükbaş)",
+      "url": "/agil-kucukbas",
+      "icon": "🐑"
+    },
+    {
+      "title": "Tarımsal Amaçlı Depo",
+      "url": "/tarimsal-depo",
+      "icon": "🏪"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Süt Sığırcılığı Tesisi Nasıl Kurulur? Şartları ve Hesaplama",
+    "description": "Süt sığırcılığı tesisi kurulumu için gerekli şartlar, ahır alanı hesaplaması, bakıcı evi koşulları.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Bir baş süt sığırı için kaç metrekare ahır gerekir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ahır ve yem deposunun toplam alanı hayvan başına maksimum 15 metrekaredir. Bunun yanında ahır dışında 7 metrekare açık gezinti alanı zorunludur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Süt sığırcılığında bakıcı evi ne zaman yapılabilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "25 baş ve üzeri süt sığırı kapasiteli tesisler için bakıcı evi yapılabilir. Tesis alanı 550-1500 m² ise 75 m² taban (150 m² toplam), 1500 m²+ ise 150 m² taban (300 m² toplam) yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Gezinti alanı zorunlu mudur?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, süt hayvanları için ahır dışında hayvan başına 7 metrekare açık gezinti alanı zorunludur. Bu alan emsale dahil edilmez, ek olarak sağlanmalıdır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kaç baş süt sığırı için sağımhane gerekir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "10 baş ve üzeri süt sığırı için sağımhane zorunludur. Minimum 15 m² olmalı, hayvan sayısı arttıkça genişletilmelidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Süt sığırcılığı tesisi minimum kaç baş ile başlar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Minimum 5 baş ile küçük ölçekli işletme başlatılabilir. Ancak ekonomik ölçek için 20-30 baş önerilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Süt sığırcılığı tesisi kurulum maliyeti ne kadardır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kurulum maliyeti; hayvan sayısı, ahır tipi, ekipman seçimi ve altyapı (su, elektrik, yol) gibi faktörlere göre değişir. Projeniz için yerel tedarikçilerden ve mühendislik firmalarından teklif almanızı öneririz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Süt sığırı günde ne kadar süt verir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Holstein ırkı günde 25-35 litre, Simmental 20-25 litre, yerli ırklar 10-15 litre süt verir. Verim bakım, besleme ve genetiğe bağlıdır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Süt sığırcılığında hangi izinler gereklidir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İl Tarım ve Orman Müdürlüğü'nden Tarım Amaçlı Kullanım İzni, yapı ruhsatı, hayvan bilgi sistemi (HBS) kaydı, gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Zeytinlik arazide süt sığırcılığı tesisi yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır, zeytinlik vasıflı arazilerde süt sığırcılığı tesisi yapılamaz. 3573 sayılı Zeytinciliğin Islahı Kanunu gereği zeytinlik alanlarda yapılaşma yasaktır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Süt sığırcılığında günlük bakım maliyeti nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Günlük bakım maliyeti yem, veterinerlik, enerji ve işçilik giderlerinden oluşur; bölge, yem fiyatları ve işletme ölçeğine göre değişiklik gösterir. Projenize özel işletme maliyeti hesabı için yerel tedarikçilerden ve danışmanlardan teklif alınız."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Su tahsis belgesi nedir ve gerekli midir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzaları için gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Büyük Ova'da kaç başa izin veriliyor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bazı Büyük Ova alanlarında yeni büyükbaş işletmeleri kurulmasına izin verilmemektedir; ailelerin zati ihtiyaçları kapsamında 5 başa kadar işletmeler istisna tutulmaktadır. Hesaplanan kapasite Büyük Ova alanlarında mevzuat gereği 5 baş ile sınırlandırılabilir."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": true,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T14:00:00.000Z",
+    "notes": "Genelge ve buyukbas.py Python modülünden derlendi. 15m²/baş kapalı alan, 7m²/baş gezinti alanı, 25 baş+ için bakıcı evi kuralları eklendi."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "Tarım İmar - Tarımsal Yapılaşma Hesaplama",
+  "short_name": "Tarım İmar",
+  "description": "Tarımsal arazilerde yapılaşma hesaplamaları",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#D2691E",
+  "theme_color": "#D2691E",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

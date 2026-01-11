@@ -1,0 +1,321 @@
+{
+  "title": "1/100.000 Ölçekli Çevre Düzeni Planlarında Tarımsal Hükümler",
+  "description": "Türkiye'nin çeşitli bölgelerindeki 1/100.000 ölçekli çevre düzeni planlarında yer alan tarımsal hükümler ve yapılaşma koşulları",
+  "planlar": [
+    {
+      "id": "adiyaman-sanliurfa-diyarbakir",
+      "dosya": "adıyaman-şanlıurfa-diyarbakır.txt",
+      "baslik": "Adıyaman-Şanlıurfa-Diyarbakır Planlama Bölgesi",
+      "iller": ["ADIYAMAN", "ŞANLIURFA", "DİYARBAKIR"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "amasya",
+      "dosya": "amasya.txt",
+      "baslik": "Amasya İli Çevre Düzeni Planı",
+      "iller": ["AMASYA"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "antalya-burdur-isparta",
+      "dosya": "antalya-burdur-ısparta.txt",
+      "baslik": "Antalya-Burdur-Isparta Planlama Bölgesi",
+      "iller": ["ANTALYA", "BURDUR", "ISPARTA"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" },
+        "ortuAltiTarim": { "emsal": "0.05", "barinmaYapisi": "75 m²" }
+      },
+      "ozelNotlar": ["Sera yapıları emsale dahil değildir", "Desteklenen projelerde emsal %50 artırılabilir"]
+    },
+    {
+      "id": "ardahan-kars-igdir-agri",
+      "dosya": "ardahan-kars-ığdır-ağrı.txt",
+      "baslik": "Ardahan-Kars-Iğdır-Ağrı Planlama Bölgesi",
+      "iller": ["ARDAHAN", "KARS", "IĞDIR", "AĞRI"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "aydin-mugla-denizli",
+      "dosya": "aydın-muğla-denizli.txt",
+      "baslik": "Aydın-Muğla-Denizli Planlama Bölgesi",
+      "iller": ["AYDIN", "MUĞLA", "DENİZLİ"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "100 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      },
+      "ozelNotlar": ["Zeytinlik alanlarda 3573 sayılı kanun geçerli", "Desteklenen projelerde emsal %50 artırılabilir"]
+    },
+    {
+      "id": "balikesir-canakkale",
+      "dosya": "balıkesir-çanakkale.txt",
+      "baslik": "Balıkesir-Çanakkale Planlama Bölgesi",
+      "iller": ["BALIKESİR", "ÇANAKKALE"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.05", "barinmaYapisi": "-", "maksInsaat": "2000 m²" },
+        "dikiliTarim": { "emsal": "0.05", "barinmaYapisi": "100 m²", "maksInsaat": "2000 m²" },
+        "ozelUrun": { "emsal": "0.05", "barinmaYapisi": "75 m²", "maksInsaat": "2000 m²" },
+        "marjinalTarim": { "emsal": "0.30/0.10", "barinmaYapisi": "150 m²", "maksInsaat": "5000 m²" }
+      },
+      "ozelNotlar": ["Bozcaada ve Gökçeada'da özel hükümler", "5000 m²'ye kadar E:0.30, sonrası E:0.10"]
+    },
+    {
+      "id": "cankiri-kastamonu-sinop",
+      "dosya": "çankırı-kastamonu-sinop.txt",
+      "baslik": "Çankırı-Kastamonu-Sinop Planlama Bölgesi",
+      "iller": ["ÇANKIRI", "KASTAMONU", "SİNOP"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "corum-samsun-tokat",
+      "dosya": "çorum-samsun-tokat.txt",
+      "baslik": "Çorum-Samsun-Tokat Planlama Bölgesi",
+      "iller": ["ÇORUM", "SAMSUN", "TOKAT"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "edirne-kirklareli-tekirdag",
+      "dosya": "edirne-kırklareli-tekirdağ.txt",
+      "baslik": "Trakya Alt Bölgesi - Ergene Havzası",
+      "iller": ["EDİRNE", "KIRKLARELİ", "TEKİRDAĞ"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" },
+        "ortuAltiTarim": { "emsal": "0.05", "barinmaYapisi": "75 m²" }
+      },
+      "ozelNotlar": ["Ergene Havzası içi: I. öncelikli İAKS:0.08, II. öncelikli İAKS:0.10", "TAB ve TOB alanlarında E:0.20-0.30"]
+    },
+    {
+      "id": "erzurum-erzincan-bayburt",
+      "dosya": "erzurum-erzincan-bayburt.txt",
+      "baslik": "Erzurum-Erzincan-Bayburt Planlama Bölgesi",
+      "iller": ["ERZURUM", "ERZİNCAN", "BAYBURT"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "izmir-manisa",
+      "dosya": "izmir-manisa.txt",
+      "baslik": "İzmir-Manisa Planlama Bölgesi",
+      "iller": ["İZMİR", "MANİSA"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.05", "barinmaYapisi": "75 m²", "maksInsaat": "2000 m²" },
+        "dikiliTarim": { "emsal": "0.05", "barinmaYapisi": "100 m²", "maksInsaat": "2000 m²" },
+        "ozelUrun": { "emsal": "0.05", "barinmaYapisi": "75 m²", "maksInsaat": "2000 m²" },
+        "marjinalTarim": { "emsal": "0.30/0.10", "barinmaYapisi": "150 m²", "maksInsaat": "10000 m²" }
+      },
+      "ozelNotlar": ["Zeytinlik alanlarda özel hükümler", "Teknolojik sera bölgelerinde E:0.05", "5000 m²'ye kadar E:0.30"]
+    },
+    {
+      "id": "kirsehir-nevsehir-aksaray-nigde",
+      "dosya": "kırşehir-nevşehir-aksayar-niğde.txt",
+      "baslik": "Kırşehir-Nevşehir-Aksaray-Niğde Planlama Bölgesi",
+      "iller": ["KIRŞEHİR", "NEVŞEHİR", "AKSARAY", "NİĞDE"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      },
+      "ozelNotlar": ["Yeraltı depolama alanları (volkanik arazi)"]
+    },
+    {
+      "id": "konya-karaman",
+      "dosya": "konya-karaman.txt",
+      "baslik": "Konya-Karaman Planlama Bölgesi",
+      "iller": ["KONYA", "KARAMAN"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.20", "barinmaYapisi": "100 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      },
+      "ozelNotlar": ["Ekolojik tarım teşvik ediliyor", "Desteklenen projelerde emsal %50 artırılabilir"]
+    },
+    {
+      "id": "malatya-elazig-tunceli-bingol",
+      "dosya": "malatya-elazığ-tunceli-bingöl.txt",
+      "baslik": "Malatya-Elazığ-Tunceli-Bingöl Planlama Bölgesi",
+      "iller": ["MALATYA", "ELAZIĞ", "TUNCELİ", "BİNGÖL"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "mardin-batman-sirnak-siirt-hakkari",
+      "dosya": "mardin-batman-şırnak-siirt-hakkari.txt",
+      "baslik": "Mardin-Batman-Şırnak-Siirt-Hakkari Planlama Bölgesi",
+      "iller": ["MARDİN", "BATMAN", "ŞIRNAK", "SİİRT", "HAKKARİ"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "mersin-adana",
+      "dosya": "mersin-adana.txt",
+      "baslik": "Mersin-Adana Planlama Bölgesi",
+      "iller": ["MERSİN", "ADANA"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      },
+      "ozelNotlar": ["Zeytinlik alanlarda 3573 sayılı kanun geçerli"]
+    },
+    {
+      "id": "mus-bitlis-van",
+      "dosya": "muş-bitlis-van.txt",
+      "baslik": "Muş-Bitlis-Van Planlama Bölgesi",
+      "iller": ["MUŞ", "BİTLİS", "VAN"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "ordu-giresun-gumushane-trabzon-rize-artvin",
+      "dosya": "ordu-giresun-gümüşhane-trabzon-rize-artvin.txt",
+      "baslik": "Doğu Karadeniz Planlama Bölgesi",
+      "iller": ["ORDU", "GİRESUN", "GÜMÜŞHANE", "TRABZON", "RİZE", "ARTVİN"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.05", "barinmaYapisi": "150 m²" },
+        "ozelUrun": { "emsal": "0.05", "barinmaYapisi": "150 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      },
+      "ozelNotlar": ["Çay ve fındık alanları 'Bölgeye Özel Ürün Alanı'", "Organize hayvancılık min. 5 ha"]
+    },
+    {
+      "id": "yozgat-sivas-kayseri",
+      "dosya": "yozgat-sivas-kayseri.txt",
+      "baslik": "Yozgat-Sivas-Kayseri Planlama Bölgesi",
+      "iller": ["YOZGAT", "SİVAS", "KAYSERİ"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    },
+    {
+      "id": "zonguldak-bartin-karabuk",
+      "dosya": "zonguldak-bartın-karabük.txt",
+      "baslik": "Zonguldak-Bartın-Karabük Planlama Bölgesi",
+      "iller": ["ZONGULDAK", "BARTIN", "KARABÜK"],
+      "renk": "#FF6B35",
+      "hukumler": {
+        "mutlakTarim": { "emsal": "0.20", "barinmaYapisi": "75 m²" },
+        "dikiliTarim": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "ozelUrun": { "emsal": "0.10", "barinmaYapisi": "75 m²" },
+        "marjinalTarim": { "emsal": "0.30", "barinmaYapisi": "150 m²" }
+      }
+    }
+  ],
+  "ortakHukumler": {
+    "tarimArazileriSiniflari": {
+      "mutlakTarim": {
+        "tanim": "Bitkisel üretimde; toprağın fiziksel, kimyasal ve biyolojik özelliklerinin kombinasyonu yöre ortalamasında ürün alınabilmesi için sınırlayıcı olmayan, topoğrafik sınırlamaları yok veya çok az olan araziler",
+        "genelEmsal": "0.05-0.20",
+        "genelBarinma": "75 m²",
+        "korumaDerecesi": "Çok Yüksek"
+      },
+      "ozelUrun": {
+        "tanim": "Mutlak tarım arazileri dışında kalan, toprak ve topografik sınırlamaları nedeniyle yöreye adapte olmuş özel bitkisel ürünlerin yetiştiriciliği ile su ürünleri yetiştiriciliğinin yapılabildiği araziler",
+        "genelEmsal": "0.05-0.20",
+        "genelBarinma": "75-100 m²",
+        "korumaDerecesi": "Yüksek"
+      },
+      "dikiliTarim": {
+        "tanim": "Mutlak ve özel ürün arazileri dışında kalan ve üzerinde yöre ekolojisine uygun çok yıllık ağaç, ağaççık ve çalı formundaki bitkilerin tarımı yapılan araziler",
+        "genelEmsal": "0.05-0.10",
+        "genelBarinma": "75-150 m²",
+        "korumaDerecesi": "Yüksek"
+      },
+      "marjinalTarim": {
+        "tanim": "Mutlak, özel ürün ve dikili tarım arazileri dışında kalan, toprak ve topografik sınırlamalar nedeniyle sadece geleneksel toprak işlemeli tarımın yapıldığı araziler",
+        "genelEmsal": "0.10-0.30",
+        "genelBarinma": "150 m²",
+        "korumaDerecesi": "Orta"
+      }
+    },
+    "ortakKurallar": [
+      "Tarımsal amaçlı yapılar amacı dışında kullanılamaz ve başka bir kullanıma dönüştürülemez",
+      "Örtü altı tarım yapılması durumunda seralar emsale dahil değildir",
+      "Silo, samanlık, yem deposu vb. yapıların yükseklikleri ihtiyaç doğrultusunda belirlenir",
+      "5403 sayılı Toprak Koruma ve Arazi Kullanımı Kanunu hükümleri geçerlidir",
+      "4342 sayılı Mera Kanunu'na tabi alanlarda mera hükümleri uygulanır",
+      "Organize tarım ve hayvancılık alanları için genellikle en az 20 ha alan gereklidir",
+      "Desteklenen projelerde (100+ büyükbaş, 200+ küçükbaş, 50.000+ kanatlı) emsal %50 artırılabilir",
+      "Zeytinlik alanlarda 3573 sayılı Zeytinciliğin Islahı Kanunu hükümleri geçerlidir"
+    ]
+  },
+  "istatistikler": {
+    "toplamPlanBolgesi": 20,
+    "toplamIl": 63,
+    "araziSinifi": 4,
+    "emsalAraligi": { "enDusuk": 0.05, "enYuksek": 0.30 }
+  }
+}

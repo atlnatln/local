@@ -1,0 +1,39 @@
+                                         AĞRI
+Merkez- İlçe                                    Çiçeklenme         Çiçeklenme
+             Majör(yaygın) Bitki Adı
+Adı                                             Başlangıç Tarihi   Bitiş Tarihi
+             Yabani üçgül, Katır Tırnağı,
+                                                1-10 Haziran       1-10 Temmuz
+             Mayıs çiçeği
+Merkez
+             Kenger -Geven                      20-30 Haziran      20-30 Temmuz
+             Fiğ-Korunga                        1 Haziran          15 Temmuz
+             Yabani üçgül, Katır Tırnağı,
+                                                15-Haziran         15 Temmuz
+Diyadin      Mayıs çiçeği, Fiğ-Korunga
+             Kenger -Geven                      30 Haziran         30 Temmuz
+             Yabani üçgül, Katır Tırnağı,
+                                                15-Haziran         15 Temmuz
+Doğubayazıt Mayıs çiçeği, Fiğ-Korunga
+             Kenger -Geven                      20 Haziran         20 Temmuz
+             Yabani üçgül, Katır Tırnağı,
+                                                15 Mayıs           30 Temmuz
+Eleşkirt     Mayıs çiçeği, Fiğ-Korunga
+             Kenger -Geven                      15 Haziran         15 Temmuz
+             Yabani üçgül, Katır Tırnağı,
+                                                15 Mayıs           30 Temmuz
+Taşlıçay     Mayıs çiçeği, Fiğ-Korunga
+             Kenger, Geven                      15 Haziran         15 Temmuz
+             Yabani üçgül, Katır Tırnağı,
+                                                15 Mayıs           30 Temmuz
+Tutak        Mayıs çiçeği, Fiğ-Korunga
+             Kenger, Geven                      15 Haziran         15 Temmuz
+             Yabani üçgül, Katır Tırnağı,
+                                                15 Mayıs           30 Temmuz
+Hamur        Mayıs çiçeği, Fiğ-Korunga
+             Kenger, Geven                      15 Haziran         15 Temmuz
+              Yabani üçgül, Katır Tırnağı,
+                                                15 Mayıs           30 Temmuz
+Patnos        Mayıs çiçeği, Fiğ-Korunga
+              Kenger, Geven                     15 Haziran         15 Temmuz
+

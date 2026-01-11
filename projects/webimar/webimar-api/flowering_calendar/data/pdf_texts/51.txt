@@ -1,0 +1,22 @@
+                                 NİĞDE
+Merkez- İlçe                             Çiçeklenme       Çiçeklenme
+             Majör(yaygın) Bitki Adı
+Adı                                      Başlangıç Tarihi Bitiş Tarihi
+             Elma                        20 Nisan         01 Mayıs
+Merkez
+             Geven-kekik-kır çiçekleri   01 Mayıs         20 Temmuz
+             Elma                        01 Nisan         15 Nisan
+Altunhisar
+             Geven-kekik-kır çiçekleri   20 Nisan         20 Temmuz
+             Elma                        01 Nisan         15 Nisan
+Bor
+             Geven-kekik-kır çiçekleri   20 Nisan         20 Temmuz
+             Elma                        25 Nisan         05 Mayıs
+Çamardı
+             Geven-kekik-kır çiçekleri   30 Nisan         30 Temmuz
+
+Çiftlik
+             Geven-kekik-kır çiçekleri   01 Mayıs         30 Temmuz
+             Elma- Kiraz                 25 Nisan         05 Mayıs
+Ulukışla     Geven-kekik-kır çiçekleri   20 Nisan         30 Temmuz
+

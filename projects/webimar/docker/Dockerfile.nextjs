@@ -1,0 +1,69 @@
+# ========================================
+# Webimar Next.js - Standalone Mode
+# Node.js server for proper React hydration
+# ========================================
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install dependencies for native modules
+RUN apk add --no-cache libc6-compat
+
+# Copy package files first for better caching
+COPY webimar-nextjs/package*.json ./
+
+# Install dependencies with legacy peer deps
+RUN npm ci --legacy-peer-deps
+
+# Copy source code
+COPY webimar-nextjs/ ./
+
+# Build arguments - Production defaults
+ARG NEXT_PUBLIC_API_BASE_URL=https://tarimimar.com.tr/api
+ARG NEXT_PUBLIC_REACT_SPA_URL=https://tarimimar.com.tr/hesaplama
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_REACT_SPA_URL=$NEXT_PUBLIC_REACT_SPA_URL
+ENV NODE_ENV=production
+
+# Build standalone output
+RUN npm run build
+
+# ========================================
+# Production Stage - Node.js Runtime
+# ========================================
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+# Set production environment
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy standalone build (includes node_modules)
+COPY --from=builder /app/.next/standalone ./
+
+# Copy static files (REQUIRED for standalone)
+COPY --from=builder /app/.next/static ./.next/static
+
+# Copy public folder
+COPY --from=builder /app/public ./public
+
+# Set ownership
+RUN chown -R nextjs:nodejs /app
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1
+
+CMD ["node", "server.js"]

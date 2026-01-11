@@ -1,0 +1,189 @@
+                                  ANTALYA
+Merkez- İlçe                                   Çiçeklenme         Çiçeklenme
+             Majör(yaygın) Bitki Adı
+Adı                                            Başlangıç Tarihi   Bitiş Tarihi
+             Taş Kekiği                        1 Haziran          15 Temmuz
+             Yer Kekiği                        1 Nisan            1 Haziran
+             Ada Çayı, Üçgül                   1 Haziran          30 Temmuz
+Akseki
+             Çalba, Sütleğen, Çahşır, Geven,   15 haziran         30 Temmuz
+             Kara Çaltı
+             Meşe , Ladin                      1 Temmuz           30 Temmuz
+             Yonca                             20 Haziran         10 Temmuz
+             Üçgül                             15 Ekim            10 Nisan
+             Narenciye                         1 Mart             25 Mart
+             Keçiboynuzu                       15 Ekim            15 Kasım
+Aksu         Püren                             1 Ekim             15 Kasım
+             Yonca                             1 Mart             1 Eylül
+             Mısır                             31 Ağustos         30 Eylül
+             Pamuk                             15 Mayıs           1 Temmuz
+             Armut, Ballıbaba                  1 Nisan            30 Nisan
+             Avakado                           15 Şubat           30 Nisan
+             Badem                             15 Ocak            15 Mart
+             Elma                              15 Mart            30 Nisan
+             Greyfurt , Mandalina , Limon,
+                                               20 Mart            20 Mayıs
+             Portakal
+             Keçiboynuzu                       15 Eylül           15 Ekim
+             Kiraz                             15 Nisan           20 Mayıs
+             Muz                               15 Ağustos         15 Ekim
+             Nar                               1 Nisan            20 Mayıs
+             Şeftali                           1 Nisan            15 Nisan
+             Yenidünya                         1 Aralık           31 Aralık
+Alanya
+             Fiğ                               20 Nisan           20 Mayıs
+             Mısır                             15 Haziran         15 temmuz
+             Susam, Adaçayı-2                  1 Temmuz           30 Temmuz
+             Bakla-1                           15 Mart            15 Nisan
+             Sütleğen                          15 Şubat           15 Mart
+             Adaçayı-1                         15 Nisan           10 Mayıs
+             Yabani sakız ağacı                15 Nisan           5 Mayıs
+             Yonca-1                           20 Nisan           10 Mayıs
+             Yonca-2                           10 Mayıs           15 Temmuz
+             Kekik-1                           1 Nisan            1 Haziran
+             Kekik-2, Geven                    1 Haziran          15 Temmuz
+             Devedikeni-1                      1 Haziran          20 Haziran
+             Devedikeni-2                 1 Temmuz     20 Temmuz
+             Püren                        20 Eylül     10 Kasım
+             Akasya                       25 Mart      15 Nisan
+             Sandal ağacı                 15 Şubat     10 Nisan
+             Pamucak, Sığır kuyruğu       15 Nisan     15 Mayıs
+             Şalba                        1 Haziran    1 Temmuz
+             Karamuk                      1 Mayıs      20 Mayıs
+             Zimbit Otu                   10 Eylül     30 Ekim
+             Menengiç , Bakla-2           15 Nisan     30 Mayıs
+             Karaçalı                     15 Nisan     15 Haziran
+             Keçiboynuzu                  15 Eylül     15 Kasım
+             Okaliptüs                    1 Nisan      15 Mayıs
+Demre        Portakal                     1 Mart       15 Nisan
+             Yeni Dünya (Muşmula)         1 Ekim       15 Ocak
+             Sandal Ağacı                 1 Mart       15 Mayıs
+             Kiriş                        1 Mart       1 Nisan
+             Karahan, Sandal              15 Mart      1 Nisan
+Döşemealtı   Narenciye, Sahil kekiği      1 Nisan      1 Mayıs
+             Güz Kirişi                   15 Eylül     15 Ekim
+             Püren                        15 Eylül     15 Kasım
+             Elma                         10 Nisan     5 Mayıs
+             Geven, Kekik                 25 Haziran   20 Temmuz
+Elmalı       Badem                        25 Mart      15 Nisan
+             Erik                         7 Nisan      4 Mayıs
+             Armut                        1 Nisan      20 Nisan
+             Narenciye                    25 Mart      25 Mayıs
+             Kekik, Adaçayı               1 Mayıs      1 Temmuz
+Finike       Geven                        15 Nisan     15 Mayıs
+             Çam Balı(Basıra-Marshelina
+             Hellenica)                   15 Ağustos   20 Kasım
+             Çilek                        1 Kasım      1 Mayıs
+             Avakoda, Yonca               1 Ocak       1 Mayıs
+             Badem                        15 Şubat     20 Mart
+             Sandal, Azgan                1 Şubat      1 Mayıs
+             Geven                        1 Haziran    1 Eylül
+             Püren                        1 Eylül      1 Aralık
+Gazipaşa     Kekik                        1 Temmuz     15 Ağustos
+             Keçi Boynuzu                 1 Eylül      20 Kasım
+             Adaçayı                      1 Temmuz     1 Eylül
+             Sedir                        1 Temmuz     20 Ağustos
+             Üçgül                        1 Mart       20 Nisan
+             Akasya Çeşitleri             15 Mart      20 Nisan
+             Hayıt                        15 Eylül     25 Ekim
+          Çaltı                               1 Nisan      15 Mayıs
+          Yaban Mersini                       1 Mayıs      30 Haziran
+          Sığır Kuyruğu, Deve Dikeni          1 Nisan      20 Temmuz
+          Ballı Baba                          1 Haziran    15 Ağustos
+          Pamucak                             1 Mart       10 Nisan
+          Katran                              25 Temmuz    20 Ağustos
+          Keçiboynuzu, Püren                  1 Ekim       30 Kasım
+          Kekik, Sütleğen                     1 Temmuz     20 Ağustos
+          Kiraz                               25 Mart      15 Mayıs
+          Korunga, Yonca                      15 Haziran   10 Temmuz
+          Mersin                              1 Haziran    20 Haziran
+          Meşe Palamudu                       5 Nisan      30 Nisan
+Gündoğmuş
+          Papatya                             1 Nisan      5 Mayıs
+          Sandal                              15 Şubat     30 Mart
+          Sarı Kantaron                       1 Mayıs      25 Haziran
+          Sığır Kuyruğu                       1 Haziran    10 Temmuz
+          Şeftali                             15 Şubat     15 Nisan
+          Tespih Çalısı                       20 Mart      20 Nisan
+          Üçgül                               25 Mart      25 Ağustos
+          Kekik Çeşitleri                     1 Temmuz     15 Ağustos
+          Kara çalı                           15 Mayıs     30 Mayıs
+İbradı    Adaçayı                             10 Temmuz    30 Temmuz
+          Geven                               5 Temmuz     20 Ağustos
+          Yabani Yonca                        1 Temmuz     10 Ağustos
+          Elma                                15 Mart      1 Mayıs
+          Çam                                 20 ağustos   15 Kasım
+          Sedir                               1 Temmuz     1 Kasım
+Kaş       Badem                               15 Mart      5 Nisan
+            Sandal                            15 Mart      15 Mayıs
+            Harnup                            1 Eylül      1 Kasım
+            Kekik-Adaçayı                     1 Mayıs      15 Ağustos
+            Portakal                          1 Nisan      25 Mayıs
+            püren                             20 Ekim      05 Ocak
+Kemer       Sandal otu (çilek)                01 Mart      20 Nisan
+            Keçi Boynuzu                      01 Eylül     20 Ekim
+            Kekik, Ada Çayı                   15 Temmuz    20 Ağustos
+            Yeni Dünya                        15 Ekim      15 Aralık
+            Badem, Limon, Portakal, Turunç,
+                                              1 Mart       30 Nisan
+            Greyfurt
+Kepez
+            Nar                               15 Mart      15 Mayıs
+            Çam                               1 Nisan      30 Haziran
+            Lavanta                           1 Mart       1 Haziran
+Konyaaltı   Narenciye                         1 Mart       30 Nisan
+            Hayıt                         1 Haziran    31 Ağustos
+            Defne                         1 Şubat      31 Mart
+            Okaliptus                     1 Şubat      31 Ağustos
+            Harnup                        1 Ekim       30 Kasım
+            Sandal, Hardal, Yabani Turp   1 Şubat      30 Nisan
+            Ardıç, Kekik, Geven, Yabani
+                                          1 Temmuz     31 Ağustos
+            yonca, Üçgül
+            Püren                         1 Ekim       31 Ocak
+            Çalba                         15 Haziran   31 Ağustos
+            Adaçayı                       1 Ağustos    30 Eylül
+            Sarmaşık                      1 Eylül      30 Kasım
+            Anason, Rezene                15 Haziran   20 Temmuz
+            Kekik                         1 Haziran    01 Agustos
+            Ayçiçeği                      15 Haziran   15 Agustos
+            Lavanta                       1 Haziran    20 Temmuz
+            Yonca                         15 Mayıs     1 Ekim
+Korkuteli
+            Kayısı, Kiraz                 20 Mart      1 Haziran
+            Armut, Elma                   1 Nisan      20 Mayıs
+            Şeftali                       1 Nisan      1 Haziran
+            Mısır                         15 Haziran   1 Eylül
+            Badem                         10 Mart      15 Nisan
+            Portakal                      10 Mart      15 Nisan
+            Nar                           1 Nisan      1 Haziran
+            Keçi Bornuzu                  1 Eylül      30 Ekim
+            Sandal                        10 Mart      30 Nisan
+Kumluca
+            Defne                         1 Nisan      30 Mayıs
+            Geven                         1 Mayıs      30 Temmuz
+            Kekik                         1 Nisan      30 Eylül
+            Ada Çayı                      1 Haziran    30 Ağustos
+            Sandal, Y.Turp                15 Şubat     15 Mart
+            Narenciye                     30 Mart      1 Haziran
+            Üçgül                         1 Nisan      20 Mayıs
+            Karaçalı                      1 Mayıs      30 Mayıs
+            Diken                         15 Mayıs     15 Ağustos
+            Mısır, Kekik                  15 Mayıs     20 Eylül
+            Hayıt                         15 Mayıs     30 Ağustos
+Manavgat
+            Ballıbaba                     10 Mayıs     30 Haziran
+            Susam                         1 Haziran    1 Ağustos
+            Pamuk                         1 Temmuz     1 Eylül
+            Geven                         1 Temmuz     30 Temmuz
+            Adaçayı                       10 Haziran   30 Haziran
+            Sünemit                       30 Eylül     30 Kasım
+            Püren, Keçi Buynuzu           15 Ekim      15 Kasım
+        Narenciye             1 Mart      15 Nisan
+        Harnup                1 Ekim      15 Kasım
+        Püren                 1 Kasım     15 Aralık
+Serik   Çam                   15 Temmuz   15 Eylül
+        Sandal                15 Şubat    15 Mart
+        Pamuk, Susam, Mısır   1 Temmuz    15 Ağustos
+        Hayıt                 1 Haziran   1 Temmuz
+

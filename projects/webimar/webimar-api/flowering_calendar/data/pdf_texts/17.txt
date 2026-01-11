@@ -1,0 +1,26 @@
+                                ÇANAKKALE
+Merkez- İlçe                             Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                      Başlangıç Tarihi   Bitiş Tarihi
+             Püren                       1 Ekim             15 Kasım
+             Ayçiçeği                    15 Haziran         15 Temmuz
+Merkez
+             Çam                         15 Ağustos         15 Ekim
+             Şeftali                     1 Nisan            20 Nisan
+             Kestane                     10 Haziran         25 Haziran
+             Elma                        10 Nisan           15 Mayıs
+Bayramiç,Çan
+             Davulga                     1 Ekim             01 Aralık
+Yenice
+             Püren                       1 Ekim             15 Kasım
+             Meşe                        01 Temmuz          01 Eylül
+             Ayçiçeği                    15 Haziran         15 Temmuz
+Gelibolu
+             Çam                         15 Ağustos         15 Ekim
+             Geven                       1 Haziran          01 Ağustos
+Gökçeada
+             Gökdiken                    1 Haziran          01 Eylül
+             Davulga                     1 Ekim             01 Aralık
+Biga         Püren                       1 Ekim             15 Kasım
+             Üçgül Çeşitleri             01 Mayıs           01 Eylül
+

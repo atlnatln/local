@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+
+# Next build output
+.next
+out
+
+# Logs
+*.log
+server.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env - allow .env.production for Docker build
+.env
+.env.development
+.env.development.local  
+.env.local
+
+# Cache
+.cache
+
+# Tests
+coverage
+test-results
+
+# VCS / IDE
+.git
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db

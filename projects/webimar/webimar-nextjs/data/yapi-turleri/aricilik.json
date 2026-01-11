@@ -1,0 +1,234 @@
+{
+  "slug": "aricilik",
+  "id": 4,
+  "name": "Arıcılık Tesisi",
+  "category": "Özel Üretim Tesisleri",
+  "seo": {
+    "title": "Arıcılık Tesisi Nasıl Kurulur? Kovan Sayısı ve Alan Hesabı | Tarım İmar",
+    "description": "Arıcılık tesisi için 50 kovan = 50 m² başlangıç alanı; her +50 kovan için +10 m² eklenir. İzinler ve kovan hesaplaması hakkında hızlı rehber.",
+    "keywords": [
+      "arıcılık tesisi",
+      "arıhane",
+      "50 kovan 50 m²",
+      "kovan hesaplama",
+      "bal sağım evi",
+      "kışlatma evi",
+      "arıcılık mevzuatı",
+      "arıcılık izni"
+    ],
+    "canonical": "https://tarimimar.com.tr/aricilik"
+  },
+  "hero": {
+    "title": "Arıcılık Tesisi (Arıhane) Kurulumu",
+    "subtitle": "Bal sağım, saklama ve arıcılık malzemesi deposu. 50 kovan için 50m², her +50 kovan için +10m²!",
+    "icon": "🐝"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Arıcılık tesisi (arıhane)</strong>, bal üretimi, arı yetiştiriciliği ve arıcılık malzemelerinin depolandığı tesislerdir. Arı kışlatma evi olarak da kullanılır.</p>",
+    "purpose": "<p>Arıhane amaçları:</p><ul><li>Bal sağımı ve işleme</li><li>Bal saklama ve paketleme</li><li>Arıcılık malzeme deposu</li><li>Kış aylarında kovan barındırma</li></ul>",
+    "whoCanBuild": "<p>Arıcılık tesisi yapabilmek için:</p><ul><li>Minimum 50 arılı kovan sahibi olmak</li><li>İlk 50 kovan için 50 m² alan hakkı</li><li>Her ilave 50 kovan için +10 m² ek alan</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Düşük Yatırım",
+      "description": "50 kovan için sadece 50 m² arıhane yeterli",
+      "icon": "💰"
+    },
+    {
+      "title": "Ölçeklenebilir",
+      "description": "Her 50 kovan için +10 m² ekleme yapılabilir",
+      "icon": "📈"
+    },
+    {
+      "title": "Çok Amaçlı",
+      "description": "Bal sağım, depolama, kışlatma evi olarak kullanım",
+      "icon": "🏭"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Minimum 50 arılı kovan şartı",
+        "İlk 50 kovan için 50 m² kapalı alan",
+        "Her ilave 50 kovan için +10 m² ek alan hakkı"
+      ],
+      "genelge": [
+        "50 arılı kovana sahip arıcılık yapılması şartıyla arıhane yapılabilir",
+        "İlk 50 kovan: 50 m² bal sağım/saklama ve malzeme deposu",
+        "Her ilave 50 kovan: +10 m² ek alan"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "kovan",
+        "baseCapacity": 50,
+        "baseArea": 50,
+        "additionalArea": 10
+      },
+      "specifications": [
+        "Bal sağım odası: Hijyen standartlarına uygun",
+        "Bal saklama alanı: Serin ve kuru ortam",
+        "Malzeme deposu: Kovan, petek, ekipman",
+        "Kışlatma alanı: Opsiyonel (kış ayları için)",
+        "Nem oranı: %50-60 ideal",
+        "Sıcaklık: 15-20°C arası"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Arıcılık Tesisi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Arıcılık alanını hesaplayın",
+    "ctaText": "Arıhane Hesapla",
+    "ctaLink": "/hesaplama/aricilik"
+  },
+  "faq": [
+    {
+      "question": "Arıcılık tesisi için minimum kaç kovan gerekir?",
+      "answer": "Arıhane yapabilmek için minimum 50 arılı kovan sahibi olmanız gerekmektedir. Bu yasal bir zorunluluktur."
+    },
+    {
+      "question": "50 kovan için kaç m² arıhane yapılabilir?",
+      "answer": "İlk 50 arılı kovan için 50 m² kapalı alanda arıhane veya arı kışlatma evi yapılabilir."
+    },
+    {
+      "question": "100 kovan için arıhane alanı ne kadar olur?",
+      "answer": "100 kovan için: 50 m² (ilk 50 kovan) + 10 m² (ikinci 50 kovan) = 60 m² arıhane yapılabilir."
+    },
+    {
+      "question": "Arıhane hangi amaçlarla kullanılır?",
+      "answer": "Arıhane; bal sağımı, bal saklama, arıcılık malzemelerinin depolanması ve kış aylarında kovan barındırma (kışlatma evi) için kullanılır."
+    },
+    {
+      "question": "Kovan başına alan hesabı nasıl yapılır?",
+      "answer": "İlk 50 kovan: 1 kovan = 1 m². Sonraki kovanlar: Her 50 kovan için 10 m² ek alan (0.2 m²/kovan ek)."
+    },
+    {
+      "question": "Arıhane maliyeti ne kadardır?",
+      "answer": "50 m² basit bir arıhane inşaatı 150.000-250.000 TL arasındadır. Malzeme kalitesine göre değişir."
+    },
+    {
+      "question": "Bal sağım odası zorunlu mu?",
+      "answer": "Evet, hijyenik bal üretimi için ayrı bir bal sağım ve işleme odası bulunmalıdır. Gıda Kodeksi'ne uygun olmalıdır."
+    },
+    {
+      "question": "Arıcılıkta emsal oranı ne kadar?",
+      "answer": "Arıcılık tesisleri için %20 marjinal emsal oranı uygulanır. Örnek: 1000 m² arazi için 200 m² yapılaşma hakkı."
+    },
+    {
+      "question": "Kışlatma evi ayrı mı yapılır?",
+      "answer": "Hayır, arıhane içinde kışlatma alanı ayrılabilir. Ayrı bir bina olarak değil, aynı yapı içinde farklı bölüm olarak planlanır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Çiçeklenme Takvimi",
+      "url": "/ciceklenme-takvimi",
+      "icon": "🌸"
+    },
+    {
+      "title": "Arıcılık Konaklama Planlama",
+      "url": "/aricilik-planlama",
+      "icon": "🗺️"
+    },
+    {
+      "title": "Mantar Üretim Tesisi",
+      "url": "/mantar-tesisi",
+      "icon": "🍄"
+    },
+    {
+      "title": "Sera",
+      "url": "/sera",
+      "icon": "🌿"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Arıcılık Tesisi (Arıhane) Kurulumu Rehberi",
+    "description": "Arıhane kurulumu için kovan sayısı, alan hesaplaması ve yasal şartlar hakkında detaylı bilgi.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Arıcılık tesisi için minimum kaç kovan gerekir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Arıhane yapabilmek için minimum 50 arılı kovan sahibi olmanız gerekmektedir. Bu yasal bir zorunluluktur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "50 kovan için kaç m² arıhane yapılabilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İlk 50 arılı kovan için 50 m² kapalı alanda arıhane veya arı kışlatma evi yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "100 kovan için arıhane alanı ne kadar olur?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "100 kovan için: 50 m² (ilk 50 kovan) + 10 m² (ikinci 50 kovan) = 60 m² arıhane yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Arıhane hangi amaçlarla kullanılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Arıhane; bal sağımı, bal saklama, arıcılık malzemelerinin depolanması ve kış aylarında kovan barındırma (kışlatma evi) için kullanılır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kovan başına alan hesabı nasıl yapılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İlk 50 kovan: 1 kovan = 1 m². Sonraki kovanlar: Her 50 kovan için 10 m² ek alan (0.2 m²/kovan ek)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Arıhane maliyeti ne kadardır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "50 m² basit bir arıhane inşaatı 150.000-250.000 TL arasındadır. Malzeme kalitesine göre değişir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bal sağım odası zorunlu mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, hijyenik bal üretimi için ayrı bir bal sağım ve işleme odası bulunmalıdır. Gıda Kodeksi'ne uygun olmalıdır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Arıcılıkta emsal oranı ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Arıcılık tesisleri için %20 marjinal emsal oranı uygulanır. Örnek: 1000 m² arazi için 200 m² yapılaşma hakkı."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kışlatma evi ayrı mı yapılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır, arıhane içinde kışlatma alanı ayrılabilir. Ayrı bir bina olarak değil, aynı yapı içinde farklı bölüm olarak planlanır."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": true,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T17:30:00.000Z"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Arıcılık Çiçeklenme Takvimi",
+  "description": "Türkiye genelinde bitki çiçeklenme dönemlerini takip edin ve kovan göç planlaması yapın. İl ve ilçe bazında detaylı çiçeklenme verileri.",
+  "url": "https://tarimimar.com.tr/aricilik-cicelenme-takvimi",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TRY"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "150"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Tarımİmar",
+    "url": "https://tarimimar.com.tr"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Tarımİmar",
+    "url": "https://tarimimar.com.tr"
+  },
+  "featureList": [
+    "İl ve ilçe bazında bitki çiçeklenme takvimi",
+    "İnteraktif harita üzerinde görselleştirme",
+    "Aylık çiçeklenme durumu takibi",
+    "300+ bitki türü verisi",
+    "Kovan göç planlaması",
+    "Mobil uyumlu arayüz"
+  ],
+  "keywords": "arıcılık, çiçeklenme takvimi, bal üretimi, kovan göçü, nektar takvimi, polen takvimi, arı, bal, türkiye",
+  "inLanguage": "tr-TR",
+  "isAccessibleForFree": true,
+  "hasPart": [
+    {
+      "@type": "WebPage",
+      "name": "Çiçeklenme Haritası",
+      "description": "Türkiye haritası üzerinde çiçeklenme bölgelerini görüntüleyin"
+    },
+    {
+      "@type": "WebPage",
+      "name": "Bitki Seçimi",
+      "description": "300+ bal bitkisi arasından seçim yapın"
+    },
+    {
+      "@type": "WebPage",
+      "name": "Aylık Takvim",
+      "description": "Ay bazında çiçeklenme dönemlerini takip edin"
+    }
+  ]
+}

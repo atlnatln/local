@@ -1,0 +1,109 @@
+                                         ERZURUM
+
+Merkez- İlçe                                Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                         Başlangıç Tarihi   Bitiş Tarihi
+               Keven, Ada Çayı              01 Mayıs           20 Ağustos
+               Kekik                        01 Mayıs           20 Eylül
+Aşkale
+               Yonca, Korunga, Ballı Baba   20 Haziran         20 Eylül
+               Engerek, Yakı Otu            20 Mayıs           30 Eylül
+               Keven, Ada Çayı              01 Mayıs           20 Ağustos
+               Kekik                        01 Mayıs           20 Eylül
+Aziziye
+               Korunga, Ballı Baba, Yonca   20 Haziran         20 Eylül
+               Engerek, Yakı Otu            20 Mayıs           30 Eylül
+               Keven, Ada Çayı              01 Mayıs           20 Ağustos
+               Kekik                        01 Mayıs           20 Eylül
+Çat            Yonca, Korunga, Ballı Baba   20 Haziran         20 Eylül
+               Engerek, Yakı Otu            20 Mayıs           30 Eylül
+               Diken                        20 Temmuz          1 Eylül
+               Keven, Ada Çayı              01 Mayıs           20 Ağustos
+               Kekik                        01 Mayıs           20 Eylül
+Hınıs          Yonca, Korunga, Ballı Baba   20 Haziran         20 Eylül
+               Engerek, Yakı Otu            20 Mayıs           30 Eylül
+               Diken                        20 Temmuz          1 Eylül
+               Keven, Ada Çayı              01 Mayıs           20 Ağustos
+               Kekik                        01 Mayıs           20 Eylül
+Horasan        Yonca, Korunga, Ballı Baba   20 Haziran         20 Eylül
+               Engerek, Yakı Otu            20 Mayıs           30 Eylül
+               Diken                        20 Temmuz          1 Eylül
+               Keven, Ada Çayı              01 Mayıs           20 Ağustos
+               Kekik                        01 Mayıs           20 Eylül
+               Yonca, Korunga, Ballı Baba   20 Haziran         20 Eylül
+İspir
+               Engerek, Yakı Otu            20 Mayıs           30 Eylül
+               Diken                        20 Temmuz          1 Eylül
+               Meyve Ağaçları               15 Mart            1 Temmuz
+               Keven, Ada Çayı              01 Mayıs           20 Ağustos
+               Kekik                        01 Mayıs           20 Eylül
+Karayazı       Yonca, Korunga, Ballı Baba   20 Haziran         20 Eylül
+               Engerek, Yakı Otu            20 Mayıs           30 Eylül
+               Diken                        25 Temmuz          1 Eylül
+               Keven, Ada Çayı              01 Mayıs           20 Ağustos
+               Kekik                        01 Mayıs           20 Eylül
+Karaçoban
+               Yonca, Korunga, Ballı Baba   20 Haziran         20 Eylül
+               Engerek, Yakı Otu            20 Mayıs           30 Eylül
+             Diken                        15 Temmuz    1 Eylül
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Köprüköy     Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+             Diken                        20 Temmuz    1 Eylül
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Narman       Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+             Diken                        20 Temmuz    1 Eylül
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Olur         Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+             Meyve Ağaçları               10 Mart      1 Temmuz
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Oltu         Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+             Meyve Ağaçları               20 Nisan     1 Temmuz
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Palandöken
+             Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Pasinler     Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+             Ayçiçeği                     1 Ağustos    1 Eylül
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Pazaryolu    Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+             Meyve Ağaçları               1 Mayıs      1 Temmuz
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Şenkaya
+             Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+             Keven, Ada Çayı              01 Mayıs     20 Ağustos
+             Kekik                        01 Mayıs     20 Eylül
+Tekman
+             Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+             Engerek, Yakı Otu            20 Mayıs     30 Eylül
+           Keven, Ada Çayı              01 Mayıs     20 Ağustos
+           Kekik                        01 Mayıs     20 Eylül
+Tortum     Yonca, Korunga, Ballı Baba   20 Haziran   20 Eylül
+           Engerek, Yakı Otu            20 Mayıs     30 Eylül
+           Meyve Ağaçları               20 Nisan     1 Temmuz
+           Keven, Ada Çayı              01 Mayıs     20 Ağustos
+           Kekik                        01 Mayıs     20 Eylül
+Uzundere   Yonca, Ballı Baba, Korunga   20 Haziran   20 Eylül
+           Engerek, Yakı Otu            20 Mayıs     30 Eylül
+           10 Nisan                     20 Nisan     1 Temmuz
+           Keven, Ada Çayı              01 Mayıs     20 Ağustos
+           Kekik                        01 Mayıs     20 Eylül
+Yakutiye
+           Yonca, Ballı Baba,Korunga    20 Haziran   20 Eylül
+           Engerek, Yakı Otu            20 Mayıs     30 Eylül
+

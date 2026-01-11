@@ -1,0 +1,261 @@
+{
+  "slug": "bag-evi",
+  "id": 14,
+  "name": "Bağ Evi",
+  "category": "Barınma",
+  "seo": {
+    "title": "Bağ Evi Nasıl Yapılır? Şartları ve Hesaplama | Tarım İmar",
+    "description": "Bağ evi yapımı için gerekli şartlar, minimum arazi büyüklüğü ve yasal gereksinimler. Arazinizde bağ evi yapabilir misiniz? Hemen hesaplayın! Detaylı rapor.",
+    "keywords": [
+      "bağ evi",
+      "bağ evi nasıl yapılır",
+      "bağ evi şartları",
+      "bağ evi hesaplama",
+      "bağ evi mevzuatı",
+      "dikili arazi bağ evi",
+      "0.5 hektar bağ evi",
+      "zeytinlik bağ evi"
+    ],
+    "canonical": "https://tarimimar.com.tr/bag-evi",
+    "ogImage": "https://tarimimar.com.tr/og-image.svg"
+  },
+  "hero": {
+    "title": "Bağ Evi Yapımı ve Hesaplama",
+    "subtitle": "Tarımsal arazinizde mevzuata uygun bağ evi yapabilir misiniz? Arazi büyüklüğü, vasıf ve koşulları kontrol edin!",
+    "icon": "🏡"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Bağ evi</strong>, tarımsal faaliyetin yapılması için ihtiyaç duyulan barınmayı sağlayan ve izin verilmesi halinde tarımsal üretimi artırıcı etkisi olan yapıdır.</p><p>Bağ evleri, çiftçilerin tarımsal arazilerinde geçici veya sürekli barınma ihtiyaçlarını karşılamak amacıyla yapılan, tarımsal üretimi kolaylaştıran ve destekleyen konut yapılarıdır.</p>",
+    "purpose": "<p>Bağ evlerinin temel amaçları:</p><ul><li>Tarımsal faaliyetler sırasında barınma ihtiyacını karşılamak</li><li>Tarımsal ürünlerin korunması ve bakımını kolaylaştırmak</li><li>Hasat dönemlerinde arazide kalabilme imkanı sağlamak</li><li>Tarımsal üretimin verimliliğini artırmak</li><li>Arazinin daha etkin kullanılmasını sağlamak</li></ul>",
+    "whoCanBuild": "<p>Bağ evi yapabilmek için:</p><ul><li>Arazi sahibi olmak (kiracılar bağ evi yapamaz)</li><li>Minimum arazi büyüklüğü şartlarını sağlamak</li><li>Uygun arazi vasıflarına sahip olmak (dikili, tarla, örtüaltı)</li><li>Aynı ilçede daha önce bağ evi izni almamış olmak (her aile için 1 adet)</li><li>Hisseli parsellerde diğer hissedarlardan muvafakat almış olmak</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Tarımsal Üretim Desteği",
+      "description": "Tarımsal faaliyetler sırasında arazide kalma imkanı sağlar, ürün bakımı ve hasadı kolaylaştırır",
+      "icon": "🌾"
+    },
+    {
+      "title": "Mevzuata Uygun",
+      "description": "5403 sayılı Toprak Koruma ve Arazi Kullanımı Kanunu'na ve Tarım Arazileri Kullanımı Genelgesi'ne uygun",
+      "icon": "⚖️"
+    },
+    {
+      "title": "Belirli Alan Sınırları",
+      "description": "Maksimum 75 m² taban alanı, 150 m² toplam inşaat alanı ile sınırlı, doğaya saygılı yapılaşma",
+      "icon": "📐"
+    },
+    {
+      "title": "Arazi Değerini Artırır",
+      "description": "Tarımsal arazinin işlevselliğini ve kullanım değerini artırır",
+      "icon": "📈"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "minArea": 5000,
+      "minAreaUnit": "m² (0,5 hektar - dikili alan)",
+      "maxFloorArea": 75,
+      "maxBuildingArea": 150,
+      "restrictions": [
+        "Kiralanan arazilere kiracılar tarafından bağ evi talebi yapılamaz",
+        "Her aile için aynı ilçe sınırları içerisinde sadece bir adet bağ evi izni verilebilir",
+        "Parselin hisseli olması durumunda diğer hissedarlardan muvafakatname alınması zorunludur",
+        "Parsel üzerinde bina tespit edilmesi durumunda izin verilmez",
+        "Zeytinlik vasıflı arazilerde bağ evi yapılamaz (Zeytinciliğin Islahı Kanunu)"
+      ],
+      "genelge": [
+        "Yüzölçümü 2 hektar (20.000 m²) ve üzeri olan mutlak, özel ürün ve marjinal tarım arazisi",
+        "Yüzölçümü 0,5 hektar (5.000 m²) ve üzeri olan dikili tarım arazisi",
+        "0,3 hektar (3.000 m²) ve üzeri örtüaltı tarım arazisi",
+        "Taban alanı: En fazla 75 metrekare",
+        "Toplam inşaat alanı: En fazla 150 metrekare",
+        "Alt katı tarımsal amaçlı depo üstü bağ evi taleplerinde, parsel büyüklüğünün asgari tarımsal arazi büyüklüğünde olması şartıyla, toplam arazi varlığının %1'i kadar tarımsal amaçlı depo üstü 75 metrekare bağ evi yapılabilir",
+        "Dikili veya örtü altı tarım arazisinin hâlihazır kullanımı tespit edilir"
+      ],
+      "specialConditions": [
+        "Mutlak tarım arazisi için minimum 2 hektar (20.000 m²)",
+        "Dikili tarım arazisi için minimum 0,5 hektar (5.000 m²)",
+        "Örtüaltı tarım arazisi için minimum 0,3 hektar (3.000 m²)",
+        "Özel ürün arazisi için minimum 2 hektar (20.000 m²)",
+        "Marjinal tarım arazisi için minimum 2 hektar (20.000 m²)"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Araziniz İçin Bağ Evi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Bağ Evi alanını hesaplayın",
+    "ctaText": "Ücretsiz Bağ Evi Hesapla",
+    "ctaLink": "/hesaplama/bag-evi"
+  },
+  "faq": [
+    {
+      "question": "En az kaç dekarda bağ evi yapılır?",
+      "answer": "Dikili tarım arazisi için minimum 5 dekar (0,5 hektar), mutlak tarım arazisi için minimum 20 dekar (2 hektar), örtüaltı tarım için minimum 3 dekar (0,3 hektar) gereklidir."
+    },
+    {
+      "question": "Kiralık araziye bağ evi yapılabilir mi?",
+      "answer": "Hayır, kiralanan arazilere kiracılar tarafından bağ evi talebi yapılamaz. Bağ evi sadece arazi sahibi tarafından yapılabilir."
+    },
+    {
+      "question": "Zeytinlik arazide bağ evi yapılabilir mi?",
+      "answer": "Hayır, zeytinlik vasıflı arazilerde bağ evi yapılamaz. 3573 sayılı Zeytinciliğin Islahı Kanunu gereği zeytinlik alanlarda yapılaşma yasaktır."
+    },
+    {
+      "question": "Bir kişi kaç adet bağ evi yapabilir?",
+      "answer": "Her aile için aynı ilçe sınırları içerisinde sadece bir adet bağ evi izni verilebilir."
+    },
+    {
+      "question": "Bağ evi kaç katlı olabilir?",
+      "answer": "Bağ evi maksimum 2 katlı olabilir (zemin + 1. kat). Toplam inşaat alanı 150 m²'yi, taban alanı 75 m²'yi geçemez."
+    },
+    {
+      "question": "Hisseli parselde bağ evi yapılabilir mi?",
+      "answer": "Evet, ancak parselin hisseli olması durumunda diğer hissedarlardan muvafakatname alınması zorunludur."
+    },
+    {
+      "question": "Tarla + dikili vasıflı arazide bağ evi için hangi alan dikkate alınır?",
+      "answer": "Bu durumda ya dikili alan minimum 5.000 m² olmalı ya da tarla alanı minimum 20.000 m² olmalıdır. İkisinden biri yeterlidir."
+    },
+    {
+      "question": "Bağ evi altında tarımsal depo yapılabilir mi?",
+      "answer": "Evet, parsel büyüklüğünün asgari tarımsal arazi büyüklüğünde olması şartıyla, toplam arazi varlığının %1'i kadar tarımsal amaçlı depo üstü 75 metrekare bağ evi yapılabilir."
+    },
+    {
+      "question": "Bağ evi için hangi belgeler gerekir?",
+      "answer": "Tapu senedi, İmar Durumu Belgesi, İl Tarım ve Orman Müdürlüğü'nden alınan Tarımsal Amaçlı Kullanım İzni, avan proje, zemin etüd raporu gereklidir."
+    },
+    {
+      "question": "Bağ evi yapımı için süreç ne kadardır?",
+      "answer": "İl Tarım Müdürlüğü'nden  izin alınması 2-3 ay, ruhsat işlemleri 1-2 ay, inşaat süreci 3-6 ay sürebilir. Toplam süreç yaklaşık 6-10 ay arası değişir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Sera Hesaplama",
+      "url": "/sera",
+      "icon": "🌱"
+    },
+    {
+      "title": "Tarımsal Amaçlı Depo",
+      "url": "/tarimsal-depo",
+      "icon": "🏪"
+    },
+    {
+      "title": "Soğuk Hava Deposu",
+      "url": "/soguk-hava-deposu",
+      "icon": "❄️"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Bağ Evi Nasıl Yapılır? Şartları ve Hesaplama",
+    "description": "Bağ evi yapımı için gerekli şartlar, minimum arazi büyüklüğü, yasal gereksinimler ve mevzuat bilgileri.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "En az kaç dekarda bağ evi yapılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Dikili tarım arazisi için minimum 5 dekar (0,5 hektar), mutlak tarım arazisi için minimum 20 dekar (2 hektar), örtüaltı tarım için minimum 3 dekar (0,3 hektar) gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kiralık araziye bağ evi yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır, kiralanan arazilere kiracılar tarafından bağ evi talebi yapılamaz. Bağ evi sadece arazi sahibi tarafından yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Zeytinlik arazide bağ evi yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır, zeytinlik vasıflı arazilerde bağ evi yapılamaz. 3573 sayılı Zeytinciliğin Islahı Kanunu gereği zeytinlik alanlarda yapılaşma yasaktır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bir kişi kaç adet bağ evi yapabilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Her aile için aynı ilçe sınırları içerisinde sadece bir adet bağ evi izni verilebilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bağ evi kaç katlı olabilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bağ evi maksimum 2 katlı olabilir (zemin + 1. kat). Toplam inşaat alanı 150 m²'yi, taban alanı 75 m²'yi geçemez."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hisseli parselde bağ evi yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, ancak parselin hisseli olması durumunda diğer hissedarlardan muvafakatname alınması zorunludur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Tarla + dikili vasıflı arazide bağ evi için hangi alan dikkate alınır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bu durumda ya dikili alan minimum 5.000 m² olmalı ya da tarla alanı minimum 20.000 m² olmalıdır. İkisinden biri yeterlidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bağ evi altında tarımsal depo yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, parsel büyüklüğünün asgari tarımsal arazi büyüklüğünde olması şartıyla, toplam arazi varlığının %1'i kadar tarımsal amaçlı depo üstü 75 metrekare bağ evi yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bağ evi için hangi belgeler gerekir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tapu senedi, İmar Durumu Belgesi, İl Tarım ve Orman Müdürlüğü'nden alınan Tarımsal Amaçlı Kullanım İzni, avan proje, zemin etüd raporu gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bağ evi yapımı için süreç ne kadardır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İl Tarım Müdürlüğü'nden  izin alınması 2-3 ay, ruhsat işlemleri 1-2 ay, inşaat süreci 3-6 ay sürebilir. Toplam süreç yaklaşık 6-10 ay arası değişir."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": true,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T00:00:00.000Z",
+    "notes": "Genelge (Tarım Arazileri Kullanımı Genelgesi) ve bag_evi.py Python modülünden derlendi. Tüm bilgiler güncel mevzuata uygun."
+  }
+}

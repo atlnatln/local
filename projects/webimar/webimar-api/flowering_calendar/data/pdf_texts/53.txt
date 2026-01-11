@@ -1,0 +1,75 @@
+                                    RİZE
+Merkez- İlçe                               Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                        Başlangıç Tarihi   Bitiş Tarihi
+            Kestane                        1 Mayıs            30 Haziran
+Ardeşen     Komar(Yaban Gülü)              15 Mayıs           30 Haziran
+            Ihlamur                        1 Haziran          1 Temmuz
+            Ihlamur, Kestane, Orman
+                                           1 Mayıs            30 Haziran
+            Gülü, Likapa
+Çamlıhemşin
+            Karayemiş                      1 Nisan            30 Mayıs
+            Yabani böğürtlen               1 Mayıs            30 Temmuz
+            Kestane                        1 Haziran          15 Temmuz
+Çayeli      Ihlamur                        15 Haziran         30 Temmuz
+            Orman Gülü (Komar)             1 Mayıs            15 Haziran
+            Ihlamur                        1 Temmuz           25 Ağustos
+Derepazarı  Kestane                        1 Mayıs            30 Haziran
+            Ormangülü                      15 Nisan           1 Temmuz
+            Ihlamur                        01 Temmuz          30 Temmuz
+            Kestane                        10 Haziran         10 Temmuz
+Fındıklı
+            Turunçgil                      01 Nisan           15 mayıs
+            Orman Gülü                     15 Nisan           15 mayıs
+            Çay                            15 Ağustos         30 Aralık
+            Karayemiş                      5 Nisan            20 Mayıs
+            Akasya                         20 Nisan           20 Haziran
+            Ihlamur                        15 Mayıs           25 Ağustos
+            Kestane                        10 Haziran         15 Temmuz
+            Narenciye                      15 Mart            15 Mayıs
+Güneysu
+            Orman Gülü                     10 Haziran         25 Ağustos
+            Yeni Dünya (Muş)               5 Ekim             5 Kasım
+            Elma                           15 Mayıs           5 Haziran
+            Armut                          10 Nisan           5 Mayıs
+            Erik                           15 Mart            5 Nisan
+            Trabzon Hurması                5 Temmuz           10 Ağustos
+            Ormangülü                      15 Nisan           15 Haziran
+            Kır Çiçeği                     1 Nisan            30 Eylül
+Hemşin      Karayemiş                      1 Mayıs            30 Mayıs
+            Kestane                        15 Haziran         15 Temmuz
+            Ihlamur                        1 Temmuz           30 Temmuz
+            Papatya                        10 Nisan           30 haziran
+            Likapa                         10 Nisan           20 Mayıs
+İkizdere
+            Kestane                        20 Mayıs           20 Hazitan
+            karahindibağ, Ayva             15 Nisan           15 Mayıs
+             Adaçayı                  15 Mayıs     15 Haziran
+             Ihlamur                  1 Haziran    1 Temmuz
+             Kiraz, Üzüm              15 Mart      15 Nisan
+             Ormangülü (Komar Çiçeği) 1 Mayıs      15 Haziran
+             Erik                     15 Mayıs     1 Haziran
+             ıhlamur                  1 Temmuz     25 Ağustos
+İyidere      kestane                  20 Mayıs     20 Haziran
+             ormangülü                15 Nisan     15 Temmuz
+             Çay                      20 Eylül     20 Aralık
+             Karayemiş                1 Mayıs      30 Haziran
+             Turunçgil                20 Mayıs     20 Temmuz
+Kalkandere   Ihlamur                  1 Temmuz     30 Temmuz
+             Ormangülü                15 Nisan     15 Haziran
+             Kestane                  15 Haziran   15 Temmuz
+             Yem Bitkileri            1 Nisan      30 Eylül
+             Karayemiş                01 Mayıs     30 Mayıs
+             Ihlamur                  01 Temmuz    30 Temmuz
+             Akasya                   10 Nisan     10 Mayıs
+Pazar
+             Kır Çiçeği               01 Nisan     30 Eylül
+             Orman Gülü               15 Nisan     15 Mayıs
+             Kestane                  10 Haziran   10 Temmuz
+             Karayemiş                5 Nisan      20 Mayıs
+             Ihlamur                  15 Mayıs     25 Ağustos
+Merkez       Çay                      15 Nisan     1 Temmuz
+             Orman Gülü               10 Haziran   25 Ağustos
+             Kestane                  10 Haziran   15 Temmuz
+

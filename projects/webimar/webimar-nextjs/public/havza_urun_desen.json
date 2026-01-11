@@ -1,0 +1,7692 @@
+{
+  "ADANA": {
+    "ALADAĞ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "CEYHAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ÇUKUROVA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "FEKE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İMAMOĞLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KARAİSALI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KARATAŞ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KOZAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "POZANTI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SAİMBEYLİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SARIÇAM": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "SEYHAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "TUFANBEYLİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "YUMURTALIK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "YÜREĞİR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ]
+  },
+  "ADIYAMAN": {
+    "BESNİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇELİKHAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GERGER": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÖLBAŞI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KÂHTA": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SAMSAT": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "SİNCİK": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TUT": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ]
+  },
+  "AFYONKARAHİSAR": {
+    "BAŞMAKÇI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "BAYAT": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BOLVADİN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇAY": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇOBANLAR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DAZKIRI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DİNAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "EMİRDAĞ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "EVCİLER": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "HOCALAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İHSANİYE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "İSCEHİSAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KIZILÖREN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SANDIKLI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "SİNANPAŞA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SULTANDAĞI": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ŞUHUT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "AĞRI": {
+    "DİYADİN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DOĞUBAYAZIT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ELEŞKİRT": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HAMUR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "PATNOS": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "TAŞLIÇAY": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TUTAK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "AKSARAY": {
+    "AĞAÇÖREN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ESKİL": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "GÜLAĞAÇ": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "GÜZELYURT": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ORTAKÖY": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SARIYAHŞİ": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SULTANHANI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ]
+  },
+  "AMASYA": {
+    "GÖYNÜCEK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "GÜMÜŞHACIKÖY": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "HAMAMÖZÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MERZİFON": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "SULUOVA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "TAŞOVA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ]
+  },
+  "ANKARA": {
+    "AKYURT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ALTINDAĞ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "AYAŞ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BALA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BEYPAZARI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ÇAMLIDERE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇANKAYA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇUBUK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ELMADAĞ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ETİMESGUT": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "EVREN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "GÖLBAŞI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "GÜDÜL": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HAYMANA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "KAHRAMANKAZAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KALECİK": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEÇİÖREN": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KIZILCAHAMAM": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MAMAK": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "NALLIHAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "POLATLI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "PURSAKLAR": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SİNCAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ŞEREFLİKOÇHİSAR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "YENİMAHALLE": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "ANTALYA": {
+    "AKSEKİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "AKSU": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "ALANYA": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DEMRE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "DÖŞEMEALTI": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ELMALI": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "FİNİKE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "GAZİPAŞA": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÜNDOĞMUŞ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İBRADI": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KAŞ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEMER": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KEPEZ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KONYAALTI": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KORKUTELİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KUMLUCA": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MANAVGAT": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "MURATPAŞA": [
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "SERİK": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ]
+  },
+  "ARDAHAN": {
+    "ÇILDIR": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "DAMAL": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "GÖLE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "HANAK": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "POSOF": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "ARTVİN": {
+    "ARDANUÇ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "ARHAVİ": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "BORÇKA": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "HOPA": [
+      "Yem Bitkileri"
+    ],
+    "KEMALPAŞA": [
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MURGUL": [
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ŞAVŞAT": [
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "YUSUFELİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "AYDIN": {
+    "BOZDOĞAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "BUHARKENT": [
+      "Arpa",
+      "Buğday",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "ÇİNE": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "DİDİM": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "EFELER": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "GERMENCİK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "İNCİRLİOVA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "KARACASU": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KARPUZLU": [
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "KOÇARLI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "KÖŞK": [
+      "Arpa",
+      "Buğday",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "KUŞADASI": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KUYUCAK": [
+      "Arpa",
+      "Buğday",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "NAZİLLİ": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "SÖKE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SULTANHİSAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "YENİPAZAR": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ]
+  },
+  "BALIKESİR": {
+    "ALTIEYLÜL": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "AYVALIK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "BALYA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BANDIRMA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BİGADİÇ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BURHANİYE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DURSUNBEY": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "EDREMİT": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ERDEK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "GÖMEÇ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "GÖNEN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "HAVRAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "İVRİNDİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KARESİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEPSUT": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MANYAS": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MARMARA": [
+      "Arpa",
+      "Yem Bitkileri"
+    ],
+    "SAVAŞTEPE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SINDIRGI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SUSURLUK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "BARTIN": {
+    "AMASRA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KURUCAŞİLE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ULUS": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ]
+  },
+  "BATMAN": {
+    "BEŞİRİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "GERCÜŞ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HASANKEYF": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KOZLUK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "SASON": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "BAYBURT": {
+    "AYDINTEPE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DEMİRÖZÜ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "BİLECİK": {
+    "BOZÜYÜK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÖLPAZARI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İNHİSAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "OSMANELİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "PAZARYERİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SÖĞÜT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YENİPAZAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "BİNGÖL": {
+    "ADAKLI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GENÇ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KARLIOVA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KİĞI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SOLHAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YAYLADERE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YEDİSU": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "BİTLİS": {
+    "ADİLCEVAZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "AHLAT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "GÜROYMAK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "HİZAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "MUTKİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "TATVAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "BOLU": {
+    "DÖRTDİVAN": [
+      "Arpa",
+      "Buğday",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "GEREDE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "GÖYNÜK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KIBRISCIK": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MENGEN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MUDURNU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SEBEN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "YENİÇAĞA": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "BURDUR": {
+    "AĞLASUN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ALTINYAYLA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BUCAK": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇAVDIR": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇELTİKÇİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÖLHİSAR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KARAMANLI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEMER": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "TEFENNİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YEŞİLOVA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "BURSA": {
+    "BÜYÜKORHAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GEMLİK": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "GÜRSU": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "HARMANCIK": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İNEGÖL": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "İZNİK": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KARACABEY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KELES": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KESTEL": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "MUDANYA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MUSTAFAKEMALPAŞA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "NİLÜFER": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ORHANELİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ORHANGAZİ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "OSMANGAZİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YENİŞEHİR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "YILDIRIM": [
+      "Yem Bitkileri"
+    ]
+  },
+  "ÇANAKKALE": {
+    "AYVACIK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BAYRAMİÇ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BİGA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BOZCAADA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "ÇAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ECEABAT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "EZİNE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GELİBOLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÖKÇEADA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "LÂPSEKİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YENİCE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "ÇANKIRI": {
+    "ATKARACALAR": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Yem Bitkileri"
+    ],
+    "BAYRAMÖREN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Yem Bitkileri"
+    ],
+    "ÇERKEŞ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ELDİVAN": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ILGAZ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KIZILIRMAK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KORGUN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KURŞUNLU": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ORTA": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ŞABANÖZÜ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YAPRAKLI": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "ÇORUM": {
+    "ALACA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BAYAT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BOĞAZKALE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DODURGA": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İSKİLİP": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KARGI": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "LÂÇİN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MECİTÖZÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "OĞUZLAR": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ORTAKÖY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "OSMANCIK": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SUNGURLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "UĞURLUDAĞ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "DENİZLİ": {
+    "ACIPAYAM": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BABADAĞ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "BAKLAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BEKİLLİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BEYAĞAÇ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "BOZKURT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BULDAN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "ÇAL": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇAMELİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇARDAK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇİVRİL": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÜNEY": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HONAZ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "KALE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZEFENDİ": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "PAMUKKALE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "SARAYKÖY": [
+      "Arpa",
+      "Buğday",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "SERİNHİSAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TAVAS": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "DİYARBAKIR": {
+    "BAĞLAR": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "BİSMİL": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ÇERMİK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "ÇINAR": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ÇÜNGÜŞ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DİCLE": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "EĞİL": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "ERGANİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "HANİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "HAZRO": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KAYAPINAR": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KOCAKÖY": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KULP": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "LİCE": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SİLVAN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "SUR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "YENİŞEHİR": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ]
+  },
+  "DÜZCE": {
+    "AKÇAKOCA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "CUMAYERİ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ÇİLİMLİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GÖLYAKA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GÜMÜŞOVA": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KAYNAŞLI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "YIĞILCA": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ]
+  },
+  "EDİRNE": {
+    "ENEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HAVSA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İPSALA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEŞAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "LALAPAŞA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Yem Bitkileri"
+    ],
+    "MERİÇ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SÜLOĞLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "UZUNKÖPRÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "ELAZIĞ": {
+    "AĞIN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ALACAKAYA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ARICAK": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BASKİL": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KARAKOÇAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEBAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KOVANCILAR": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MADEN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "PALU": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SİVRİCE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "ERZİNCAN": {
+    "ÇAYIRLI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "İLİÇ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEMAH": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEMALİYE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "OTLUKBELİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "REFAHİYE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TERCAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÜZÜMLÜ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "ERZURUM": {
+    "AŞKALE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "AZİZİYE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇAT": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HINIS": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HORASAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İSPİR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KARAÇOBAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KARAYAZI": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KÖPRÜKÖY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "NARMAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "OLTU": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "OLUR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "PALANDÖKEN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "PASİNLER": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "PAZARYOLU": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ŞENKAYA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "TEKMAN": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "TORTUM": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "UZUNDERE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "YAKUTİYE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "GAZİANTEP": {
+    "ARABAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "İSLAHİYE": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KARKAMIŞ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "NİZİP": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "NURDAĞI": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "OĞUZELİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ŞAHİNBEY": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ŞEHİTKAMİL": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "YAVUZELİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ]
+  },
+  "GİRESUN": {
+    "ALUCRA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "BULANCAK": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ÇAMOLUK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "ÇANAKÇI": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "DERELİ": [
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DOĞANKENT": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ESPİYE": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "EYNESİL": [
+      "Yem Bitkileri"
+    ],
+    "GÖRELE": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GÜCE": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KEŞAP": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "PİRAZİZ": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ŞEBİNKARAHİSAR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TİREBOLU": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "YAĞLIDERE": [
+      "Mısır",
+      "Yem Bitkileri"
+    ]
+  },
+  "GÜMÜŞHANE": {
+    "KELKİT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KÖSE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KÜRTÜN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ŞİRAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "TORUL": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "HAKKARİ": {
+    "ÇUKURCA": [
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "DERECİK": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ŞEMDİNLİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YÜKSEKOVA": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "HATAY": {
+    "ALTINÖZÜ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Pamuk",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ANTAKYA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ARSUZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "BELEN": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DEFNE": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DÖRTYOL": [
+      "Buğday",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ERZİN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HASSA": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "İSKENDERUN": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KIRIKHAN": [
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KUMLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "PAYAS": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "REYHANLI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "SAMANDAĞ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YAYLADAĞI": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "IĞDIR": {
+    "ARALIK": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KARAKOYUNLU": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "TUZLUCA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "ISPARTA": {
+    "AKSU": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ATABEY": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "EĞİRDİR": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GELENDOST": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÖNEN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KEÇİBORLU": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SENİRKENT": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SÜTÇÜLER": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ŞARKİKARAAĞAÇ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ULUBORLU": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "YALVAÇ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YENİŞARBADEMLİ": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ]
+  },
+  "İSTANBUL": {
+    "ARNAVUTKÖY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Yem Bitkileri"
+    ],
+    "AVCILAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Yem Bitkileri"
+    ],
+    "BAŞAKŞEHİR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "BEYKOZ": [
+      "Yem Bitkileri"
+    ],
+    "BEYLİKDÜZÜ": [
+      "Yem Bitkileri"
+    ],
+    "BÜYÜKÇEKMECE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Yem Bitkileri"
+    ],
+    "ÇATALCA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Yem Bitkileri"
+    ],
+    "ÇEKMEKÖY": [
+      "Yem Bitkileri"
+    ],
+    "PENDİK": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "SANCAKTEPE": [
+      "Yem Bitkileri"
+    ],
+    "SİLİVRİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ŞİLE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "TUZLA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "İZMİR": {
+    "ALİAĞA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "BALÇOVA": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "BAYINDIR": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "BAYRAKLI": [
+      "Yem Bitkileri"
+    ],
+    "BERGAMA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "BEYDAĞ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "BORNOVA": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "BUCA": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ÇEŞME": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ÇİĞLİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "DİKİLİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "FOÇA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "GAZİEMİR": [
+      "Arpa",
+      "Yem Bitkileri"
+    ],
+    "GÜZELBAHÇE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KARABAĞLAR": [
+      "Yem Bitkileri"
+    ],
+    "KARABURUN": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KARŞIYAKA": [
+      "Yem Bitkileri"
+    ],
+    "KEMALPAŞA": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "KINIK": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "KİRAZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MENDERES": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "MENEMEN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "NARLIDERE": [
+      "Yem Bitkileri"
+    ],
+    "ÖDEMİŞ": [
+      "Arpa",
+      "Buğday",
+      "Pamuk",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SEFERİHİSAR": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "SELÇUK": [
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "TİRE": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "TORBALI": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "URLA": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "KAHRAMANMARAŞ": {
+    "AFŞİN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ANDIRIN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ÇAĞLAYANCERİT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DULKADİROĞLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "EKİNÖZÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ELBİSTAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "GÖKSUN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "NURHAK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ONİKİ ŞUBAT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "PAZARCIK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "TÜRKOĞLU": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ]
+  },
+  "KARABÜK": {
+    "EFLANİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ESKİPAZAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "OVACIK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SAFRANBOLU": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YENİCE": [
+      "Yem Bitkileri"
+    ]
+  },
+  "KARAMAN": {
+    "AYRANCI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "BAŞYAYLA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ERMENEK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "KAZIMKARABEKİR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "SARIVELİLER": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "KARS": {
+    "AKYAKA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ARPAÇAY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DİGOR": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Yem Bitkileri"
+    ],
+    "KAĞIZMAN": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Yem Bitkileri"
+    ],
+    "SARIKAMIŞ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "SELİM": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SUSUZ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "KASTAMONU": {
+    "ABANA": [
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "AĞLI": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ARAÇ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "AZDAVAY": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "BOZKURT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "CİDE": [
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ÇATALZEYTİN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "DADAY": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DEVREKÂNİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DOĞANYURT": [
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "HANÖNÜ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "İHSANGAZİ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "İNEBOLU": [
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KÜRE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "PINARBAŞI": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "SEYDİLER": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ŞENPAZAR": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TAŞKÖPRÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "TOSYA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "KAYSERİ": {
+    "AKKIŞLA": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BÜNYAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DEVELİ": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "FELAHİYE": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HACILAR": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "İNCESU": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KOCASİNAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MELİKGAZİ": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÖZVATAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "PINARBAŞI": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SARIOĞLAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SARIZ": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "TALAS": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "TOMARZA": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "YAHYALI": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YEŞİLHİSAR": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "KIRIKKALE": {
+    "BAHŞİLİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "BALIŞEYH": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ÇELEBİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "DELİCE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KARAKEÇİLİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KESKİN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "SULAKYURT": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "YAHŞİHAN": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ]
+  },
+  "KIRKLARELİ": {
+    "BABAESKİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DEMİRKÖY": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "KOFÇAZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "LÜLEBURGAZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "PEHLİVANKÖY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Yem Bitkileri"
+    ],
+    "PINARHİSAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "RIZE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ]
+  },
+  "KIRŞEHİR": {
+    "AKÇAKENT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "AKPINAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BOZTEPE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇİÇEKDAĞI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KAMAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MUCUR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "KİLİS": {
+    "ELBEYLİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "MUSABEYLİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "POLATELİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "KOCAELİ": {
+    "BAŞİSKELE": [
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "DARICA": [
+      "Yem Bitkileri"
+    ],
+    "DERİNCE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "DİLOVASI": [
+      "Yem Bitkileri"
+    ],
+    "GEBZE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "GÖLCÜK": [
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "İZMİT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KANDIRA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KARAMÜRSEL": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "KARTEPE": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KÖRFEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ]
+  },
+  "KONYA": {
+    "AHIRLI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "AKÖREN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "AKŞEHİR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ALTINEKİN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BEYŞEHİR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BOZKIR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "CİHANBEYLİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇELTİK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ÇUMRA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "DERBENT": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "DEREBUCAK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DOĞANHİSAR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "EMİRGAZİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "EREĞLİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "GÜNEYSINIR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "HADİM": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HALKAPINAR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HÜYÜK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ILGIN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KADINHANI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KARAPINAR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KARATAY": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "KULU": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERAM": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "SARAYÖNÜ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SELÇUKLU": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SEYDİŞEHİR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "TAŞKENT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "TUZLUKÇU": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "YALIHÜYÜK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YUNAK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ]
+  },
+  "KÜTAHYA": {
+    "ALTINTAŞ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ASLANAPA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇAVDARHİSAR": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DOMANİÇ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DUMLUPINAR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "EMET": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "GEDİZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "HİSARCIK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "PAZARLAR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SİMAV": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ŞAPHANE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TAVŞANLI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "MALATYA": {
+    "AKÇADAĞ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ARAPGİR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ARGUVAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BATTALGAZİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DARENDE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DOĞANŞEHİR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DOĞANYOL": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HEKİMHAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KALE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KULUNCAK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "PÜTÜRGE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YAZIHAN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YEŞİLYURT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "MANİSA": {
+    "AHMETLİ": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "AKHİSAR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "ALAŞEHİR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DEMİRCİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "GÖLMARMARA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "GÖRDES": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KIRKAĞAÇ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "KÖPRÜBAŞI": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KULA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SALİHLİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "SARIGÖL": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Yem Bitkileri"
+    ],
+    "SARUHANLI": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "SELENDİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SOMA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "ŞEHZADELER": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "TURGUTLU": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "YUNUSEMRE": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ]
+  },
+  "MARDİN": {
+    "ARTUKLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "DARGEÇİT": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DERİK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KIZILTEPE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MAZIDAĞI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MİDYAT": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "NUSAYBİN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ÖMERLİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SAVUR": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "YEŞİLLİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "MERSİN": {
+    "AKDENİZ": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ANAMUR": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "AYDINCIK": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BOZYAZI": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇAMLIYAYLA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ERDEMLİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÜLNAR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MEZİTLİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MUT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SİLİFKE": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TARSUS": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "TOROSLAR": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YENİŞEHİR": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "MUĞLA": {
+    "BODRUM": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DALAMAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "DATÇA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "FETHİYE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KAVAKLIDERE": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KÖYCEĞİZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MARMARİS": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MENTEŞE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MİLAS": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ORTACA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "SEYDİKEMER": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ULA": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "YATAĞAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "MUŞ": {
+    "BULANIK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HASKÖY": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KORKUT": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MALAZGİRT": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "VARTO": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "NEVŞEHİR": {
+    "ACIGÖL": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "AVANOS": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DERİNKUYU": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "GÜLŞEHİR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "HACIBEKTAŞ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KOZAKLI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÜRGÜP": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "NİĞDE": {
+    "ALTUNHİSAR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "BOR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ÇAMARDI": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇİFTLİK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ULUKIŞLA": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "ORDU": {
+    "AKKUŞ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ALTINORDU": [
+      "Yem Bitkileri"
+    ],
+    "AYBASTI": [
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇAMAŞ": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ÇATALPINAR": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ÇAYBAŞI": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "FATSA": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GÖLKÖY": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GÜLYALI": [
+      "Yem Bitkileri"
+    ],
+    "GÜRGENTEPE": [
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "İKİZCE": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KABADÜZ": [
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KABATAŞ": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KORGAN": [
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KUMRU": [
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "MESUDİYE": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "PERŞEMBE": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ULUBEY": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ÜNYE": [
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "OSMANİYE": {
+    "BAHÇE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DÜZİÇİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "HASANBEYLİ": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KADİRLİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "SUMBAS": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "TOPRAKKALE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Pamuk",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ]
+  },
+  "RİZE": {
+    "ARDEŞEN": [
+      "Yem Bitkileri"
+    ],
+    "ÇAMLIHEMŞİN": [
+      "Yem Bitkileri"
+    ],
+    "ÇAYELİ": [
+      "Yem Bitkileri"
+    ],
+    "DEREPAZARI": [
+      "Yem Bitkileri"
+    ],
+    "FINDIKLI": [
+      "Yem Bitkileri"
+    ],
+    "GÜNEYSU": [
+      "Yem Bitkileri"
+    ],
+    "HEMŞİN": [
+      "Yem Bitkileri"
+    ],
+    "İKİZDERE": [
+      "Yem Bitkileri"
+    ],
+    "İYİDERE": [
+      "Yem Bitkileri"
+    ],
+    "KALKANDERE": [
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Yem Bitkileri"
+    ],
+    "PAZAR": [
+      "Yem Bitkileri"
+    ]
+  },
+  "SAKARYA": {
+    "ADAPAZARI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "AKYAZI": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ARİFİYE": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ERENLER": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "FERİZLİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GEYVE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "HENDEK": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KARAPÜRÇEK": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KARASU": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KAYNARCA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KOCAALİ": [
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "PAMUKOVA": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "SAPANCA": [
+      "Yem Bitkileri"
+    ],
+    "SERDİVAN": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "SÖĞÜTLÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "TARAKLI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "SAMSUN": {
+    "19 MAYIS": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ALAÇAM": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ASARCIK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "ATAKUM": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "AYVACIK": [
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "BAFRA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "CANİK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "ÇARŞAMBA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "HAVZA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "İLKADIM": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KAVAK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "LADİK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "SALIPAZARI": [
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "TEKKEKÖY": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "TERME": [
+      "Mısır",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "VEZİRKÖPRÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "YAKAKENT": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ]
+  },
+  "SİİRT": {
+    "BAYKAN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Yem Bitkileri"
+    ],
+    "ERUH": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Yem Bitkileri"
+    ],
+    "KURTALAN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "PERVARİ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ŞİRVAN": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "TİLLO": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "SİNOP": {
+    "AYANCIK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "BOYABAT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "DİKMEN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "DURAĞAN": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "ERFELEK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GERZE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "SARAYDÜZÜ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "TÜRKELİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ]
+  },
+  "SİVAS": {
+    "AKINCILAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ALTINYAYLA": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DİVRİĞİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "DOĞANŞAR": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "GEMEREK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "GÖLOVA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "GÜRÜN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HAFİK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "İMRANLI": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KANGAL": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "KOYULHİSAR": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SUŞEHRİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SARKIŞLA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ULAŞ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "YILDIZELİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ZARA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "ŞANLIURFA": {
+    "AKÇAKALE": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "BILECIK": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BOZOVA": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "CEYLANPINAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "EYYÜBİYE": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "HALFETİ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HALİLİYE": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "HARRAN": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "HİLVAN": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Patates",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "KARAKÖPRÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "SİVEREK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "SURUÇ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soya",
+      "Yem Bitkileri"
+    ],
+    "VİRANŞEHİR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Soğan",
+      "Soya",
+      "Yem Bitkileri"
+    ]
+  },
+  "ŞIRNAK": {
+    "BEYTÜŞŞEBAP": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "CİZRE": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "GÜÇLÜKONAK": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İDİL": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SINOP": [
+      "Arpa",
+      "Buğday",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "ULUDERE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "TEKİRDAĞ": {
+    "ÇERKEZKÖY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Yem Bitkileri"
+    ],
+    "ÇORLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ERGENE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HAYRABOLU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KAPAKLI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Yem Bitkileri"
+    ],
+    "MALKARA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "MARMARA EREĞLİSİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MURATLI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SARAY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SÜLEYMANPAŞA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ŞARKÖY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "TOKAT": {
+    "ALMUS": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ARTOVA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "BAŞÇİFTLİK": [
+      "Arpa",
+      "Buğday",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ERBAA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "NİKSAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "PAZAR": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "REŞADİYE": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SULUSARAY": [
+      "Arpa",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "TURHAL": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "YEŞİLYURT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ZİLE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ]
+  },
+  "TRABZON": {
+    "AKÇAABAT": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ARAKLI": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ARSİN": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "BEŞİKDÜZÜ": [
+      "Fasulye",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇARŞIBAŞI": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇAYKARA": [
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "DERNEKPAZARI": [
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "DÜZKÖY": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "HAYRAT": [
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "KÖPRÜBAŞI": [
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "MAÇKA": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "OF": [
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "ORTAHİSAR": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SÜRMENE": [
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "ŞALPAZARI": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "TONYA": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "VAKFIKEBİR": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "YOMRA": [
+      "Fasulye",
+      "Mısır",
+      "Patates",
+      "Yem Bitkileri"
+    ]
+  },
+  "TUNCELİ": {
+    "ÇEMİŞGEZEK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "HOZAT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MAZGİRT": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "NAZIMİYE": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "OVACIK": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "PERTEK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mercimek",
+      "Nohut",
+      "Pamuk",
+      "Yem Bitkileri"
+    ],
+    "PÜLÜMÜR": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "UŞAK": {
+    "BANAZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "EŞME": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KARAHALLI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SİVASLI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ULUBEY": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ]
+  },
+  "VAN": {
+    "BAHÇESARAY": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "BAŞKALE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ÇALDIRAN": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ÇATAK": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "EDREMİT": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "ERCİŞ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "GEVAŞ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "GÜRPINAR": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "İPEKYOLU": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MURADİYE": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ÖZALP": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "SARAY": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "TUŞBA": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ]
+  },
+  "YALOVA": {
+    "ALTINOVA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ARMUTLU": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ÇINARCIK": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "ÇİFTLİKKÖY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "TERMAL": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ]
+  },
+  "YOZGAT": {
+    "AKDAĞMADENİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "AYDINCIK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BOĞAZLIYAN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇANDIR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "ÇAYIRALAN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "ÇEKEREK": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "KADIŞEHRİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "SARAYKENT": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "SARIKAYA": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Patates",
+      "Yem Bitkileri"
+    ],
+    "SORGUN": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ŞEFAATLİ": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YENİFAKILI": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "YERKÖY": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mercimek",
+      "Nohut",
+      "Yem Bitkileri"
+    ]
+  },
+  "ZONGULDAK": {
+    "ALAPLI": [
+      "Buğday",
+      "Fasulye",
+      "Yem Bitkileri"
+    ],
+    "ÇAYCUMA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "DEVREK": [
+      "Arpa",
+      "Buğday",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "EREĞLİ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "GÖKÇEBEY": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "KİLİMLİ": [
+      "Yem Bitkileri"
+    ],
+    "KOZLU": [
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ],
+    "MERKEZ": [
+      "Arpa",
+      "Buğday",
+      "Fasulye",
+      "Mısır",
+      "Yem Bitkileri"
+    ]
+  },
+  "ESKİŞEHIR": {
+    "ALPU": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "BEYLİKOVA": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ÇİFTELER": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "GÜNYÜZÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Nohut",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "HAN": [
+      "Arpa",
+      "Aspir",
+      "Buğday",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "İNÖNÜ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mercimek",
+      "Mısır",
+      "Nohut",
+      "Yem Bitkileri"
+    ],
+    "MAHMUDİYE": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "MİHALGAZİ": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "MİHALIÇÇIK": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "ODUNPAZARI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "SARICAKAYA": [
+      "Arpa",
+      "Buğday",
+      "Yem Bitkileri"
+    ],
+    "SEYİTGAZİ": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "SİVRİHİSAR": [
+      "Arpa",
+      "Aspir",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ],
+    "TEPEBAŞI": [
+      "Arpa",
+      "Ayçiçeği",
+      "Buğday",
+      "Kolza",
+      "Mısır",
+      "Nohut",
+      "Patates",
+      "Soğan",
+      "Yem Bitkileri"
+    ]
+  }
+}

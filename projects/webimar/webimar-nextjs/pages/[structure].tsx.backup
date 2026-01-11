@@ -1,0 +1,162 @@
+import { GetStaticProps, GetStaticPaths } from 'next';
+import Head from 'next/head';
+import Seo from '../components/Seo';
+import { useRouter } from 'next/router';
+import Layout from '../components/Layout';
+
+interface StructurePageProps {
+  structureData: any;
+  error?: string;
+}
+
+export default function StructurePage({ structureData, error }: StructurePageProps) {
+  const router = useRouter();
+  const { structure } = router.query;
+
+  if (error) {
+    return (
+      <Layout>
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <h1>Sayfa Bulunamadı</h1>
+          <p>{error}</p>
+          <button 
+            onClick={() => router.push('/')}
+            style={{
+              padding: '1rem 2rem',
+              background: '#654321',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Ana Sayfaya Dön
+          </button>
+        </div>
+      </Layout>
+    );
+  }
+
+  return (
+    <>
+      <Seo
+        title={`${structureData?.name || structure} - Tarım İmar`}
+        description={`${structureData?.description || `${structureData?.name || structure} hesaplama sayfası`}`}
+        canonical={`https://tarimimar.com.tr/${structure}`}
+        url={`https://tarimimar.com.tr/${structure}`}
+        ogImage={`https://tarimimar.com.tr/og-image.svg`}
+        type="website"
+      />
+
+      <Layout>
+        <div style={{
+          background: '#654321',
+          color: 'white',
+          padding: '2rem',
+          borderRadius: '8px',
+          marginBottom: '2rem'
+        }}>
+          <h1 style={{ margin: '0 0 1rem 0' }}>
+            {structureData?.name || structure}
+          </h1>
+          <p style={{ margin: 0 }}>
+            Yapı hesaplama sayfası
+          </p>
+        </div>
+
+        <div style={{
+          background: '#f5f1ec',
+          padding: '2rem',
+          borderRadius: '8px',
+          textAlign: 'center'
+        }}>
+          <h2>🚧 Hesaplama Aracı</h2>
+          <p>Bu sayfa henüz geliştirilme aşamasındadır.</p>
+          <p>Yapı türü: <strong>{structure}</strong></p>
+          
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
+            <button 
+              onClick={() => router.push('/')}
+              style={{
+                padding: '1rem 2rem',
+                background: '#654321',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              🏠 Ana Sayfaya Dön
+            </button>
+            
+            <a
+              href={`/hesaplama/${structure}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: '1rem 2rem',
+                background: '#3b82f6',
+                color: 'white',
+                textDecoration: 'none',
+                borderRadius: '4px',
+                display: 'inline-block'
+              }}
+            >
+              📱 Tam Uygulama'da Aç
+            </a>
+          </div>
+        </div>
+      </Layout>
+    </>
+  );
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  // exportPathMap ile uyumlu yapı listesi
+  const structureTypes = [
+    'koyun-agili',
+    'tavuk-kumesi', 
+    'sera',
+    'bag-evi',
+    'aricilik',
+    'depo'
+  ];
+
+  const paths = structureTypes.map((structure) => ({
+    params: { structure }
+  }));
+
+  return {
+    paths,
+    fallback: false // Static export için false olmalı
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { structure } = params!;
+  
+  try {
+    // Static generation için basit yapı bilgisi
+    const structureData = {
+      name: String(structure).replace('-', ' ').toUpperCase(),
+      slug: structure,
+      description: `${structure} için hesaplama sayfası`,
+      type: 'static'
+    };
+    
+    return {
+      props: {
+        structureData
+      }
+    };
+  } catch (error) {
+    console.error('Structure page error:', error);
+    
+    return {
+      props: {
+        structureData: null,
+        error: 'Yapı bilgisi yüklenirken hata oluştu.'
+      }
+    };
+  }
+};

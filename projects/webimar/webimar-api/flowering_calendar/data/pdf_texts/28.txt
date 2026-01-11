@@ -1,0 +1,86 @@
+                                   GİRESUN
+Merkez- İlçe                             Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                      Başlangıç Tarihi   Bitiş Tarihi
+               Akasya                    20 Nisan           20 Mayıs
+               Yabani Kara Yemiş         1 Mayıs            1 Haziran
+Merkez         Orman Gülü                1 Mayıs            1 Temmuz
+               Ihlamur                   20 Haziran         20 Temmuz
+               Kestane                   10 Haziran         25 Temmuz
+               Akasya                    20 Nisan           20 Mayıs
+               Yabani Kara Yemiş         1 Mayıs            1 Haziran
+Piraziz        Orman Gülü                1 Mayıs            1 Temmuz
+               Ihlamur                   20 Haziran         20 Temmuz
+               Kestane                   10 Haziran         25 Temmuz
+               Akasya                    20 Nisan           20 Mayıs
+               Yabani Kara Yemiş         1 Mayıs            1 Haziran
+Bulancak       Orman Gülü                1 Mayıs            1 Temmuz
+               Ihlamur                   20 Haziran         20 Temmuz
+               Kestane                   10 Haziran         25 Temmuz
+               Akasya                    20 Nisan           20 Mayıs
+               Yabani Kara Yemiş         1 Mayıs            1 Haziran
+Keşap          Orman Gülü                1 Mayıs            1 Temmuz
+               Ihlamur                   20 Haziran         20 Temmuz
+               Kestane                   10 Haziran         25 Temmuz
+               Akasya                    20 Nisan           20 Mayıs
+               Yabani Kara Yemiş         1 Mayıs            1 Haziran
+Espiye         Orman Gülü                1 Mayıs            1 Temmuz
+               Ihlamur                   20 Haziran         20 Temmuz
+               Kestane                   10 Haziran         25 Temmuz
+               Akasya                    20 Nisan           20 Mayıs
+               Yabani Kara Yemiş         1 Mayıs            1 Haziran
+Tirebolu       Orman Gülü                1 Mayıs            1 Temmuz
+               Ihlamur                   20 Haziran         20 Temmuz
+               Kestane                   10 Haziran         25 Temmuz
+               Akasya                    20 Nisan           20 Mayıs
+               Yabani Kara Yemiş         1 Mayıs            1 Haziran
+Görele         Orman Gülü                1 Mayıs            1 Temmuz
+               Ihlamur                   20 Haziran         20 Temmuz
+               Kestane                   10 Haziran         25 Temmuz
+               Akasya                    20 Nisan           20 Mayıs
+               Yabani Kara Yemiş         1 Mayıs            1 Haziran
+Eynesil
+               Orman Gülü                1 Mayıs            1 Temmuz
+               Ihlamur                   20 Haziran         20 Temmuz
+               Kestane             10 Haziran   25 Temmuz
+               Akasya              20 Nisan     20 Mayıs
+               Yabani Kara Yemiş   1 Mayıs      1 Haziran
+Doğankent      Orman Gülü          1 Mayıs      1 Temmuz
+               Ihlamur             20 Haziran   20 Temmuz
+               Kestane             10 Haziran   25 Temmuz
+               Akasya              30 Nisan     30 Mayıs
+               Yabani Kara Yemiş   10 Mayıs     10 Haziran
+Çanakçı        Orman Gülü          10 Mayıs     10 Temmuz
+               Ihlamur             20 Haziran   20 Temmuz
+               Kestane             15 Haziran   25 Temmuz
+               Akasya              30 Nisan     30 Mayıs
+               Yabani Kara Yemiş   10 Mayıs     10 Haziran
+Güce           Orman Gülü          10 Mayıs     10 Temmuz
+               Ihlamur             20 Haziran   20 Temmuz
+               Kestane             15 Haziran   25 Temmuz
+               Akasya              30 Nisan     30 Mayıs
+               Yabani Kara Yemiş   10 Mayıs     10 Haziran
+Yağlıdere      Orman Gülü          10 Mayıs     10 Temmuz
+               Ihlamur             20 Haziran   20 Temmuz
+               Kestane             15 Haziran   25 Temmuz
+               Akasya              30 Nisan     30 Mayıs
+               Yabani Kara Yemiş   10 Mayıs     10 Haziran
+Dereli         Orman Gülü          10 Mayıs     10 Temmuz
+               Ihlamur             20 Haziran   25 Temmuz
+               Kestane             15 Haziran   20 Temmuz
+               Söğüt               20 Nisan     5 Mayııs
+               Alıç                1 Mayıs      1 Haziran
+Şebinkarahisar Üçgül               20 Mayıs     20 Haziran
+               Fiğ, Korunga        5 Mayıs      20 Mayıs
+               Geven, Kekik        1 Temmuz     30 Ağustos
+               Söğüt               30 Nisan     15 Mayııs
+               Alıç                10 Mayıs     10 Haziran
+Alucra         Üçgül               30 Mayıs     30 Haziran
+               Fiğ, Korunga        15 Mayıs     30 Mayıs
+               Geven, Kekik        10 Temmuz    30 Ağustos
+               Söğüt               15 Nisan     1 Mayııs
+               Alıç                25 Nisan     25 Mayıs
+Çamoluk        Üçgül               15 Mayıs     15 Haziran
+               Fiğ, Korunga        1 Mayıs      15 Mayıs
+               Geven, Kekik        20 Haziran   20 Temmuz
+

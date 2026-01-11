@@ -1,0 +1,152 @@
+{
+  "slug": "tarimsal-depo",
+  "id": 6,
+  "name": "Tarımsal Amaçlı Depo",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Tarımsal Depo Nasıl Yapılır? Alan Hesabı ve Şartlar | Tarım İmar",
+  "description": "Tarımsal amaçlı depo kurulumu. Minimum alan şartları arazi vasfına göre değişir.",
+    "keywords": [
+      "tarımsal depo",
+      "ürün deposu",
+      "tarım deposu",
+      "dikili arazi depo",
+      "Marjinal deposu"
+    ],
+    "canonical": "/tarimsal-depo"
+  },
+  "hero": {
+    "title": "Tarımsal Amaçlı Depo Kurulumu",
+  "subtitle": "Tarımsal ürün deposu. Minimum alan şartları arazi vasfına göre değişir.",
+    "icon": "🏭"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Tarımsal amaçlı depo</strong>, tarımsal ürünlerin depolandığı yapılardır.</p>",
+    "purpose": "<p>Depoların amaçları:</p><ul><li>Hasat ürünlerini saklama</li>",
+    "whoCanBuild": "<p>Tarımsal depo yapabilmek için:</p><ul><li>Dikili arazi: Min 5000 m²</li><li>Marjinal: Min 20000 m²</li><li>Sera/örtüaltı: Min 3000 m²</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Esnek Emsal",
+      "description": "Arazi tipine göre değişir",
+      "icon": "📊"
+    },
+    {
+      "title": "Düşük Eşik (Dikili)",
+      "description": "Örtüaltı arazide sadece 3000 m² yeterli",
+      "icon": "🌳"
+    },
+    {
+      "title": "Zeytinlik Uygun Değil",
+      "description": "Zeytin ağaçlı arazilerde yapı yapılması uygun değildir",
+      "icon": "🫒"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+          "Dikili, mutlak ve özel ürün arazisi: Min 5000 m²",
+          "Marjinal tarım arazisi: Min 20000 m²",
+        "Örtüaltı/sera arazisi: Min 3000 m²"
+      ],
+      "genelge": [
+        "Tarımsal depo minimum alan şartları arazi tipine göre değişir",
+        "Dikili arazide emsal uygulanır; Marjinal arazide emsal uygulanır"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "m²",
+        "minAreaDikili": 5000,
+        "minAreaTarla": 20000,
+        "minAreaSera": 3000
+      },
+      "specifications": [
+        "Depo: Ürün için",
+        "Havalandırma sistemi önerilir",
+        "Nem kontrolü (ürün depoları için)",
+        "Güvenlik ve yangın önlemleri",
+        "Yükleme rampaları"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Tarımsal Depo Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Tarımsal Amaçlı Depo alanını hesaplayın",
+    "ctaText": "Depo Hesapla",
+    "ctaLink": "/hesaplama/tarimsal-depo"
+  },
+  "faq": [
+    {
+      "question": "Dikili arazide kaç m² tarımsal depo?",
+      "answer": "Minimum 5000 m² dikili arazi gerekir. Emsal uygulaması arazi tipine göre belirlenir."
+    },
+    {
+      "question": "Marjinal arazide şartlar nedir?",
+      "answer": "Minimum 20000 m² Marjinal arazi gerekir. Emsal uygulaması arazi tipine göre belirlenir."
+    }
+
+  ],
+  "relatedPages": [
+    {
+      "title": "Hububat Silosu",
+      "url": "/hububat-silo",
+      "icon": "🌾"
+    },
+    {
+      "title": "Soğuk Hava Deposu",
+      "url": "/soguk-hava-deposu",
+      "icon": "❄️"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Tarımsal Depo Nasıl Yapılır? Alan Hesabı ve Şartlar | Tarım İmar",
+          "description": "Tarımsal amaçlı depo kurulumu. Minimum alan şartları arazi vasfına göre değişir.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Dikili arazide kaç m² tarımsal depo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Minimum 5000 m² dikili arazi gerekir. Emsal uygulaması arazi tipine göre belirlenir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Marjinal arazide şartlar nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Minimum 20000 m² Marjinal arazi gerekir. Emsal uygulaması arazi tipine göre belirlenir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Zeytinlikte depo yapılır mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Zeytinliklerde yapılaşma koşulları farklılık gösterir; detaylı değerlendirme gereklidir."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T19:30:00.000Z"
+  }
+}

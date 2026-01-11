@@ -1,0 +1,35 @@
+# --- Secrets / sensitive ---
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+
+# SSL certificates / private keys (DO NOT COMMIT)
+**/ssl/**
+**/*.pem
+**/*.key
+
+# Backups / deploy artifacts
+**/backups/**
+**/.deploy-tmp/**
+**/*deploy*.tar.gz
+**/deploy-*.log
+
+# Logs
+**/*.log
+
+# Node / Next / React build outputs
+**/node_modules/**
+**/.next/**
+**/out/**
+**/build/**
+**/dist/**
+
+# Python caches
+**/__pycache__/**
+**/*.pyc
+**/.pytest_cache/**
+
+# Test / tooling outputs
+**/test-results/**
+**/.playwright-mcp/**

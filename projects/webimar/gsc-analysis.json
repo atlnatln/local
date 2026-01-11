@@ -1,0 +1,374 @@
+{
+  "report_metadata": {
+    "domain": "tarimimar.com.tr",
+    "generated_date": "2026-01-04",
+    "last_updated": "2026-01-03",
+    "report_generated_by": "Playwright MCP - Google Search Console",
+    "locale": "tr_TR"
+  },
+  "executive_summary": {
+    "overall_health": "CRITICAL",
+    "score": "42/100",
+    "critical_issues": 5,
+    "warning_issues": 3,
+    "good_metrics": 3
+  },
+  "core_web_vitals": {
+    "mobile": {
+      "status": "FAILING",
+      "metrics": {
+        "poor_urls": 0,
+        "needs_improvement_urls": 50,
+        "good_urls": 0
+      },
+      "critical_issue": {
+        "name": "INP (Interaction to Next Paint)",
+        "threshold": "200ms",
+        "current_value": "203ms",
+        "severity": "CRITICAL",
+        "affected_urls": 50,
+        "first_detected": "2025-12-11",
+        "verification_status": "Not Started",
+        "affected_pages": [
+          {
+            "url": "https://tarimimar.com.tr/sigir-ahiri-kapasite-hesaplama/",
+            "affected_count": 45,
+            "inp_value": "203ms"
+          },
+          {
+            "url": "https://tarimimar.com.tr/documents/tarim-arazileri-kullanimi-genelgesi",
+            "affected_count": 5,
+            "inp_value": "201ms"
+          }
+        ]
+      }
+    },
+    "desktop": {
+      "status": "EXCELLENT",
+      "metrics": {
+        "poor_urls": 0,
+        "needs_improvement_urls": 0,
+        "good_urls": 50
+      }
+    }
+  },
+  "indexing": {
+    "indexed_pages": 201,
+    "not_indexed_pages": 125,
+    "indexing_rate": "61.6%",
+    "last_updated": "2025-12-23",
+    "report_status": "WARNING",
+    "status_note": "Internal issues prevented full update",
+    "index_coverage_issues": {
+      "redirected_pages": {
+        "count": 45,
+        "percentage": "36%",
+        "severity": "CRITICAL",
+        "source": "Website",
+        "explanation": "Pages redirecting to other URLs are not indexed",
+        "recommendation": "Remove dead redirects from sitemap, configure direct canonical redirects"
+      },
+      "duplicate_pages": {
+        "count": 33,
+        "percentage": "26%",
+        "severity": "CRITICAL",
+        "source": "Website",
+        "explanation": "Duplicate pages without canonical tag selection",
+        "recommendation": "Add canonical tags to all pages, implement parameter handling in robots.txt"
+      },
+      "404_errors": {
+        "count": 26,
+        "percentage": "21%",
+        "severity": "CRITICAL",
+        "source": "Website",
+        "explanation": "Pages returning 404 Not Found status",
+        "recommendation": "Either fix broken pages or implement 301 redirects, update sitemap.xml"
+      },
+      "alternative_pages_with_canonical": {
+        "count": 7,
+        "percentage": "5.6%",
+        "severity": "MEDIUM",
+        "source": "Website"
+      },
+      "server_errors": {
+        "count": 2,
+        "percentage": "1.6%",
+        "severity": "CRITICAL",
+        "source": "Website",
+        "recommendation": "Check API endpoint logs, verify database connectivity"
+      },
+      "crawled_not_indexed": {
+        "count": 9,
+        "percentage": "7.2%",
+        "severity": "MEDIUM",
+        "source": "Google"
+      },
+      "duplicate_google_selected": {
+        "count": 3,
+        "percentage": "2.4%",
+        "severity": "MEDIUM",
+        "source": "Google"
+      }
+    }
+  },
+  "crawl_stats": {
+    "last_updated": "2026-01-02",
+    "total_crawl_requests": 1785,
+    "total_download_size_bytes": 7217548,
+    "average_response_time_ms": 629,
+    "response_time_severity": "CRITICAL",
+    "response_time_recommendation": "Optimize database queries, implement Redis caching, reduce response time from 629ms to <200ms target",
+    "crawl_hosts": [
+      {
+        "host": "tarimimar.com.tr",
+        "crawl_requests": 1683,
+        "status": "Past Issues",
+        "status_description": "Issues resolved but credibility needs rebuild"
+      },
+      {
+        "host": "www.tarimimar.com.tr",
+        "crawl_requests": 102,
+        "status": "Past Issues"
+      }
+    ],
+    "response_breakdown": {
+      "200_ok": {
+        "percentage": 71,
+        "interpretation": "Good"
+      },
+      "301_moved": {
+        "percentage": 25,
+        "interpretation": "High - Too many redirects",
+        "recommendation": "Consolidate to direct canonical URLs"
+      },
+      "404_not_found": {
+        "percentage": 4,
+        "interpretation": "Problem"
+      },
+      "304_not_modified": {
+        "percentage": "< 1",
+        "interpretation": "Good"
+      },
+      "5xx_server_errors": {
+        "percentage": "< 1",
+        "interpretation": "Problem"
+      }
+    },
+    "crawl_purpose": {
+      "refresh": "72%",
+      "discovery": "28%",
+      "interpretation": "High refresh rate indicates Google regularly revisits site (positive)"
+    },
+    "file_type_breakdown": {
+      "html": "68%",
+      "other": "25%",
+      "images": "3%",
+      "unknown_failed": "4%"
+    },
+    "googlebot_types": {
+      "smartphone": "80%",
+      "other": "7%",
+      "image": "7%",
+      "desktop": "5%",
+      "adsbot": "2%",
+      "note": "Mobile-first indexing dominant (expected)"
+    }
+  },
+  "action_items": {
+    "critical": [
+      {
+        "id": 1,
+        "title": "Fix INP Performance Issue (50 mobile URLs)",
+        "priority": "CRITICAL",
+        "estimated_effort_days": 3,
+        "impact": "High - Directly affects search rankings",
+        "steps": [
+          "Profile React calculator component with Chrome DevTools",
+          "Implement Web Worker for heavy calculations",
+          "Add debouncing to form inputs (500ms)",
+          "Optimize component renders with useMemo/useCallback",
+          "Test with Lighthouse CI (target: INP < 200ms)"
+        ],
+        "responsible_component": "webimar-react/src/components/CalculationForm.tsx"
+      },
+      {
+        "id": 2,
+        "title": "Fix 45 Redirected Pages",
+        "priority": "CRITICAL",
+        "estimated_effort_days": 1.5,
+        "impact": "High - Wasting crawl budget",
+        "steps": [
+          "Export redirected pages from Search Console",
+          "Analyze redirect chains",
+          "Update nginx.conf with direct canonical URLs",
+          "Remove dead URLs from sitemap.xml",
+          "Verify with curl -I"
+        ],
+        "responsible_component": "docker/nginx/nginx.conf"
+      },
+      {
+        "id": 3,
+        "title": "Fix 26 × 404 Pages",
+        "priority": "CRITICAL",
+        "estimated_effort_days": 1,
+        "impact": "High - Crawl waste + negative UX",
+        "steps": [
+          "Identify 404 pages in Search Console",
+          "Implement 301 redirects to valid pages",
+          "Update sitemap.xml (remove dead URLs)",
+          "Monitor server logs for new 404s",
+          "Set up 404 monitoring alerts"
+        ],
+        "responsible_component": "webimar-api"
+      },
+      {
+        "id": 4,
+        "title": "Fix 2 × 5xx Server Errors",
+        "priority": "CRITICAL",
+        "estimated_effort_days": 0.5,
+        "impact": "Medium - Negative impact on indexing",
+        "steps": [
+          "Review Django logs: docker logs webimar-api | grep 500",
+          "Check database connectivity",
+          "Identify broken API endpoint",
+          "Deploy fix",
+          "Verify with curl"
+        ],
+        "responsible_component": "webimar-api"
+      },
+      {
+        "id": 5,
+        "title": "Optimize Response Time (629ms → <200ms)",
+        "priority": "CRITICAL",
+        "estimated_effort_days": 2,
+        "impact": "High - Crawl efficiency + UX",
+        "steps": [
+          "Enable Redis cache in production",
+          "Optimize database queries (prefetch_related, select_related)",
+          "Add slow query logging",
+          "Profile hot endpoints",
+          "Measure: avg response time < 200ms target"
+        ],
+        "responsible_component": "webimar-api/settings.py"
+      }
+    ],
+    "important": [
+      {
+        "id": 6,
+        "title": "Add Canonical Tags to 33 Duplicate Pages",
+        "priority": "IMPORTANT",
+        "estimated_effort_days": 1,
+        "steps": [
+          "Add <link rel='canonical'> to every page template",
+          "Ensure canonical URL matches page URL",
+          "Test with Google Search Console test tool"
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement Database Query Optimization",
+        "priority": "IMPORTANT",
+        "estimated_effort_days": 2,
+        "steps": [
+          "Replace N+1 queries with prefetch_related",
+          "Add database indexes on frequently filtered columns",
+          "Implement select_related for foreign keys",
+          "Monitor with Django logging"
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Automate Sitemap Generation",
+        "priority": "IMPORTANT",
+        "estimated_effort_days": 1,
+        "steps": [
+          "Create management command: generate_sitemap.py",
+          "Filter only 'live' pages (exclude deleted/draft)",
+          "Schedule daily generation with Celery",
+          "Notify Google when sitemap updates"
+        ]
+      }
+    ],
+    "medium": [
+      {
+        "id": 9,
+        "title": "Set up Lighthouse CI Pipeline",
+        "priority": "MEDIUM",
+        "estimated_effort_days": 1,
+        "steps": [
+          "Add GitHub Actions workflow",
+          "Run Lighthouse on every PR",
+          "Set Core Web Vitals thresholds",
+          "Block merge if metrics fail"
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Implement Google Search Console API Monitoring",
+        "priority": "MEDIUM",
+        "estimated_effort_days": 2,
+        "steps": [
+          "Set up service account authentication",
+          "Fetch daily Core Web Vitals metrics",
+          "Send alerts to Slack if issues detected",
+          "Track trends over time"
+        ]
+      }
+    ]
+  },
+  "positive_findings": {
+    "desktop_performance": {
+      "status": "EXCELLENT",
+      "all_50_urls_good": true,
+      "note": "Desktop users have optimal experience"
+    },
+    "crawl_frequency": {
+      "status": "GOOD",
+      "refresh_rate": "72%",
+      "note": "Google regularly refreshes site content (healthy signal)"
+    },
+    "mobile_first_indexing": {
+      "status": "ACTIVE",
+      "googlebot_smartphone": "80%",
+      "note": "Mobile version properly prioritized by Google"
+    }
+  },
+  "metrics_summary": {
+    "current": {
+      "mobile_cwv_health": "FAILING (50/50 need improvement)",
+      "indexing_health": "POOR (38% of pages not indexed)",
+      "response_time": "629ms (3x slower than ideal)",
+      "404_error_rate": "4% of crawls",
+      "redirect_efficiency": "25% of crawls are redirects (high)"
+    },
+    "targets": {
+      "mobile_cwv_health": "All 50 URLs GOOD (INP < 200ms)",
+      "indexing_health": "95%+ indexed (< 5% not indexed)",
+      "response_time": "< 200ms",
+      "404_error_rate": "< 1%",
+      "redirect_efficiency": "< 5%"
+    }
+  },
+  "implementation_timeline": {
+    "week_1": [
+      "INP profiling and Web Worker implementation",
+      "45 redirects analysis",
+      "26 × 404 URL fixes"
+    ],
+    "week_2": [
+      "Canonical tags (33 pages)",
+      "Redis cache deployment",
+      "Database query optimization"
+    ],
+    "week_3": [
+      "Lighthouse CI setup",
+      "Performance validation",
+      "INP < 200ms verification"
+    ],
+    "week_4": [
+      "Sitemap automation",
+      "Search Console API monitoring",
+      "Final metrics validation"
+    ]
+  }
+}

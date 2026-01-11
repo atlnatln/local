@@ -1,0 +1,174 @@
+{
+  "slug": "kurutma-tesisi",
+  "id": 8,
+  "name": "Hububat ve Ayçiçeği Kurutma Tesisi",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Kurutma Tesisi Nasıl Kurulur? Hububat ve Ayçiçeği | Tarım İmar",
+    "description": "İlçe sınırları içinde üretilen hububat ve ayçiçeği için kurutma tesisi kurulumu. Sadece kurutma alanı izni.",
+    "keywords": [
+      "kurutma tesisi",
+      "hububat kurutma",
+      "ayçiçeği kurutma",
+      "ilçe sınırları",
+      "ilçe sınırlarında üretilen hububat"
+    ],
+    "canonical": "/kurutma-tesisi"
+  },
+  "hero": {
+    "title": "Kurutma Tesisi Kurulumu",
+    "subtitle": "İlçe sınırlarında üretilen hububat ve ayçiçeği kurutma.",
+    "icon": "☀️"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Kurutma tesisi</strong>, tarımsal ürünlerin (hububat ve ayçiçeği) nem oranının düşürülerek uzun süreli saklanabilir hale getirildiği tesislerdir.</p>",
+    "purpose": "<p>Kurutma tesisinin amaçları:</p><ul><li>Ürün nem oranını düşürme</li><li>Bozulmayı önleme</li><li>Depolama ömrünü artırma</li><li>Katma değer yaratma</li></ul>",
+    "whoCanBuild": "<p>Kurutma tesisi yapabilmek için:</p><ul><li>Sadece kurutma alanı (ek müştemilat yok)</li><li>İlçe sınırlarında üretilen hububat ve ayçiçeği</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Basit Sistem",
+      "description": "Sadece kurutma alanı, ek bina yok",
+      "icon": "✅"
+    },
+    {
+      "title": "Güneş Enerjisi",
+      "description": "Doğal kurutma ile enerji tasarrufu",
+      "icon": "☀️"
+    },
+    {
+      "title": "Yerel Ürün",
+      "description": "İlçede üretilen ürünler kurutulabilir",
+      "icon": "🌾"
+    },
+    {
+      "title": "Katma Değer",
+      "description": "Kurutulmuş ürün fiyatı 3-5 kat artar",
+      "icon": "💰"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Sadece kurutma tesisi yapılabilir",
+        "İdari bina, depo, müştemilat yapılamaz",
+        "İlçe sınırları içinde üretilen hububat ve ayçiçeği kurutulabilir",
+        "Hububat: Buğday, arpa, çavdar, yulaf"
+      ],
+      "genelge": [
+        "İlçe sınırları içinde üretilen hububat ve ayçiçeği için kurutma tesisi yapılabilir"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "ton/gün",
+        "methods": [
+          "Güneş kurutma",
+          "Sıcak hava kurutma"
+        ]
+      },
+      "specifications": [
+        "Kurutma platformu: Beton veya asfalt zemin",
+        "Doğal kurutma: Güneş enerjisi ile",
+        "Sıcak hava: Fırınlı sistemler (opsiyonel)",
+        "Yağmur koruması: Hareketli tenteler",
+        "Havalandırma kanalları",
+        "Nem ölçüm cihazları"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Kurutma Tesisi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Kurutma Tesisi alanını hesaplayın",
+    "ctaText": "Kurutma Tesisi Hesapla",
+    "ctaLink": "/hesaplama/kurutma-tesisi"
+  },
+  "faq": [
+    {
+      "question": "Kurutma tesisinde ek bina yapılabilir mi?",
+      "answer": "Hayır, sadece kurutma alanı yapılabilir. İdari bina, depo veya müştemilat izni yoktur."
+    },
+    {
+      "question": "Hangi ürünler kurutulabilir?",
+      "answer": "İlçe sınırlarında üretilen hububat (buğday, arpa, çavdar, yulaf) ve ayçiçeği kurutulabilir."
+    },
+    {
+      "question": "Güneş enerjisi ile kurutma yapılabilir mi?",
+      "answer": "Evet, açıkta doğal kurutma (güneş enerjisi) en yaygın yöntemdir. Enerji maliyeti sıfırdır."
+    },
+    {
+      "question": "Kurutma süresi ne kadar?",
+      "answer": "Hububat 2-4 gün; ayçiçeği 2-5 gün sürer. Hava koşullarına bağlıdır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Yıkama Tesisi",
+      "url": "/yikama-tesisi",
+      "icon": "💦"
+    },
+    {
+      "title": "Hububat Silosu",
+      "url": "/hububat-silo",
+      "icon": "🌾"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Kurutma Tesisi Nasıl Kurulur? Hububat ve Ayçiçeği | Tarım İmar",
+    "description": "İlçe sınırları içinde üretilen hububat ve ayçiçeği için kurutma tesisi kurulumu. Sadece kurutma alanı izni.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Kurutma tesisinde ek bina yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır, sadece kurutma alanı yapılabilir. İdari bina, depo veya müştemilat izni yoktur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hangi ürünler kurutulabilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İlçe sınırlarında üretilen hububat (buğday, arpa, çavdar, yulaf) ve ayçiçeği kurutulabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Güneş enerjisi ile kurutma yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, açıkta doğal kurutma (güneş enerjisi) en yaygın yöntemdir. Enerji maliyeti sıfırdır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kurutma süresi ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hububat 2-4 gün; ayçiçeği 2-5 gün sürer. Hava koşullarına bağlıdır."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T20:30:00.000Z"
+  }
+}

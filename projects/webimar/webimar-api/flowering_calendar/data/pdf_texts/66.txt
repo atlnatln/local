@@ -1,0 +1,50 @@
+                                  YOZGAT
+Merkez- İlçe                                 Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                          Başlangıç Tarihi   Bitiş Tarihi
+               Keven, Kekik                  1 Haziran          30 Haziran
+               Yaban Korungası, Ballı baba   20 Haziran         5 Temmuz
+Merkez
+               Sığır Kuyruğu                 20 Haziran         2 Temmuz
+               Alıç                          10 Haziran         30 Haziran
+Akdağmadeni Kekik, Keven, Üçgül              20 Mayıs           30 Haziran
+
+               Dağ yoncası, Ballı baba       15 Nisan           15 Mayıs
+Aydıncık
+               Kuşburnu, Adaçayı             15 Mayıs           15 Haziran
+               Ayçiçeği                      20 Haziran         5 Temmuz
+Boğazlıyan
+               Ihlamur                       25 Mayıs           15 Haziran
+               Keven, Kekik                  5 Haziran          20 Haziran
+Çandır
+               Çakıldak otu                  10 Haziran         30 Haziran
+               Keven, Kekik                  5 Haziran          20 Haziran
+Çayıralan
+               Meşe                          10 Haziran         30 Haziran
+               Lavanta                       3 Haziran          20 Haziran
+Çekerek
+               Kekik, Keven                  10 Haziran         25 Haziran
+               Alıç, Kuşburnu                15 Mayıs           10 Haziran
+Kadışehri
+               Kekik, Keven                  25 Mayıs           15 Haziran
+               Ayçiçeği                      20 Haziran         30 Haziran
+Saraykent
+               Üçgül                         1 Haziran          20 Haziran
+               Ayçiçeği                      20 Haziran         5 Temmuz
+Sarıkaya       Keven                         10 Haziran         25 Haziran
+               Kekik                         5 Haziran          20 Haziran
+               Söğüt                         15 Nisan           10 Mayıs
+Sorgun         Keven                         10 Haziran         25 Haziran
+               Ayçiçeği                      20 Haziran         30 Haziran
+               Söğüt                         15 Nisan           10 Mayıs
+Şefaatli       Yaban bademi                  25 Nisan           10 Mayıs
+               Kekik                         25 Mayıs           15 Haziran
+               Kekik                         25 Mayıs           15 Haziran
+Yenifakılı
+               Ayçiçeği                      20 Haziran         30 Haziran
+               Söğüt                         15 Nisan           10 Mayıs
+               Yaban bademi                  25 Nisan           10 Mayıs
+Yerköy
+               Keven                         10 Haziran         25 Haziran
+               Üçgül                         1 Haziran          20 Haziran
+

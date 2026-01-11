@@ -1,0 +1,147 @@
+/* 5403 Sayılı Kanun Sayfası CSS Dosyası */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.main-title {
+    text-align: center;
+    color: #234F1E;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #234F1E;
+    margin-bottom: 30px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mind-map {
+    display: flex;
+    justify-content: center;
+}
+
+.center-node {
+    background-color: #234F1E;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 250px;
+    text-align: center;
+    margin: 20px;
+}
+
+.branches {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.branch {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 45%;
+    margin-bottom: 20px;
+}
+
+.branch-title {
+    background-color: #4C9A47;
+    color: white;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+}
+
+.branch-content {
+    padding: 15px;
+}
+
+.article {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.article:last-child {
+    border-bottom: none;
+}
+
+.article-title {
+    font-weight: bold;
+    color: #4C9A47;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.article-content {
+    display: none;
+    margin-top: 8px;
+    padding-left: 15px;
+    border-left: 3px solid #abd5ab;
+}
+
+.show {
+    display: block;
+}
+
+.collapse-icon {
+    font-size: 0.8em;
+}
+
+.sub-article {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.sub-article-title {
+    font-weight: 600;
+    color: #2E7D32;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sub-article-content {
+    display: none;
+    margin-top: 5px;
+    padding-left: 10px;
+    border-left: 2px solid #c8e6c9;
+}
+
+.kanun-bilgi {
+    background-color: #e8f5e9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid #a5d6a7;
+}
+
+.footnote {
+    font-size: 0.8em;
+    border-top: 1px solid #ddd;
+    margin-top: 30px;
+    padding-top: 15px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .branch {
+        width: 100%;
+    }
+    
+    .mind-map {
+        flex-direction: column;
+        align-items: center;
+    }
+}

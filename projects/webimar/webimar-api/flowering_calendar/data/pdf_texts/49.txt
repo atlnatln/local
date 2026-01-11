@@ -1,0 +1,23 @@
+                                   MUŞ
+Merkez- İlçe                             Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                      Başlangıç Tarihi   Bitiş Tarihi
+                Elma, Armut              20 Nisan           15 Mayıs
+                Erik, Kiraz              15 Nisan           10 Mayıs
+                Geven                    20 Haziran         15 Temmuz
+                Üçgül                    20 Mayıs           15 Haziran
+                Kekik                    10 Haziran         5 Temmuz
+                Kenger                   25 Temmuz          25 Ağustos
+   Merkez,      Korunga, Ayçiçeği,
+                                         15 Mayıs           15 Haziran
+   Hasköy,      Hindiba, Yonca, Meşe
+Korkut,Bulanık, Yabani Fiğ, Çakşır       15 Mayıs           30 Haziran
+  Malazgirt,    Sarı Diken               15 Haziran         30 Ağustos
+    Varto       Akasya                   10 Mayıs           10 Haziran
+                Topuz Diken              15 Haziran         15 Eylül
+                Süperge Otu              20 Temmuz          15 Ağustos
+                Meyan Otu                1 Haziran          25 Haziran
+                Söğüt                    20 Nisan           10 Mayıs
+                Ballıbaba                20 Mayıs           20 Haziran
+                Sığırkuyruğu             10 Haziran         25 Temmuz
+

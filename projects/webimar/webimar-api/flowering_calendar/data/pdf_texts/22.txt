@@ -1,0 +1,46 @@
+                                     EDİRNE
+Merkez- İlçe                                 Çiçeklenme         Çiçeklenme
+               Majör(Yaygın) Bitki Adı
+Adı                                          Başlangıç Tarihi   Bitiş Tarihi
+               Ayçiçeği                      15 Haziran         30 Ağustos
+Enez           Kanola                        15 Nisan           15 Mayıs
+               Karaçalı                      15 Mayıs           30 Mayıs
+               Kanola, Kır çiçekleri (otsu
+                                             1 Mart             1 Haziran
+Havsa          ve odunsu)
+               Ayçiçeği                      1 Haziran          1 Ağustos
+               Ayçiçeği                      1 Temmuz           25 Temmuz
+İpsala         Kanola                        5 Nisan            30 Nisan
+               Karaçalı, otsu bitkiler       20 Mayıs           10 Haziran
+               Kır Çiçekleri (Otsu ve
+                                             30 Mart            30 Haziran
+               Odunsu Bitkiler)
+               Karaçalı                      01 Haziran         30 Haziran
+Keşan
+               Ayçiçeği                      15 Haziran         30 Temmuz
+               Kanola                        01 Nisan           30 Nisan
+               Çam Ormanı                    15 Eylül           15 Kasım
+               Kanola                        30 Mart            25 Haziran
+               Ballı, Otsu ve odunsu
+Lalapaşa       bitkiler.Kır Yoncası,çakır    25 Mart            20 Haziran
+               otu, Karaçalı, Ayçiçeği
+               Akasya, yer kekiği            31 Nisan           15 Haziran
+               Ayçiçeği                      15 Temmuz          15 Ağustos
+Meriç          Kanola                        30 Mayıs           15 Haziran
+               Karaçalı, otsu bitkiler       1 Nisan            30 Mayıs
+               Ayçiçeği                      1-10 Temmuz        20-30 Temmuz
+Merkez         Kanola                        1-10 Mayıs         10-20 Mayıs
+               Karaçalı, otsu bitkiler       5-15 Mayıs         10-20 Haziran
+               Kanola                        5 Nisan            25 Nisan
+Süloğlu        Karaçalı                      5 Haziran          15 Haziran
+               Ayçiçeği                      1 Haziran          1 Ağustos
+               Ayçiçek                       10 Haziran         30 Temmuz
+               Kanola                        10 Nisan           15 Haziran
+               Karaçalı                      25 Mayıs           15 Haziran
+               Badem                         15 Mart            15 nisan
+Uzunköprü
+               Armut                         10 Nisan           10 Mayıs
+               Elma                          20 Mart            20 Nisan
+               Kiraz                         15 Nisan           20 Mayıs
+               Ihlamur                       30 mayıs           30 Haziran
+

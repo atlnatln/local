@@ -1,0 +1,21 @@
+Webimar'a Hoş Geldiniz!
+
+Merhaba {{ username }}!
+
+Webimar - Arazilerde Yapılaşma Mevzuatı ve Hesaplama Sistemi'ne hoş geldiniz!
+
+Artık sistemimizi kullanarak:
+- Tarımsal arazi hesaplamalarını yapabilirsiniz
+- Mevzuat kontrollerini gerçekleştirebilirsiniz  
+- Raporlarınızı oluşturabilirsiniz
+- Geçmiş hesaplamalarınızı takip edebilirsiniz
+
+Sisteme giriş yapmak için: {{ login_url }}
+
+Herhangi bir sorunuz olursa bizimle iletişime geçmekten çekinmeyin.
+
+İyi çalışmalar dileriz!
+
+---
+Bu email Webimar sistemi tarafından otomatik olarak gönderilmiştir.
+© 2025 Webimar - Tüm hakları saklıdır.

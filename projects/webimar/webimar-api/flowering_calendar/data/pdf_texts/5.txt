@@ -1,0 +1,80 @@
+                                    AMASYA
+
+Merkez- İlçe                                       Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                                Başlangıç Tarihi   Bitiş Tarihi
+               Badem,Kayısı                        15 Mart            30 Mart
+               Şeftali                             20 Mart            5 Nisan
+
+               Erik, Elma, Armut, Kiraz, Vişne     1 Nisan            15 Nisan
+
+               Ayva                                20 Nisan           5 Mayıs
+Merkez
+               Trabzon Hurması                     5 Mayıs            20 Mayıs
+               Hünnap                              15 Mayıs           30 Mayıs
+
+               Kekik, meyve ağaçları ,ada           1 Nisan           30 Haziran
+               çayı,akasya,baklagiller,geven,hardal
+               Badem, Kayısı                        12 Mart           27 Mart
+               Şeftali                              17 Mart           3 Nisan
+
+               Erik, Elma, Armut, Kiraz, Vişne     27 Mart            12 Nisan
+
+Taşova         Ayva                                17 Nisan           3 Mayıs
+               Trabzon Hurması                     3 Mayıs            12 Mayıs
+               Hünnap                              12 mayıs           27 Mayıs
+               Papatya,kusburnu,papatya,y.hardal
+                                                   20 Nisan           25 Haziran
+               ,geven
+               Badem, Kayısı                       17 Mart            2 Nisan
+               Şeftali                             22 Mart            7 Nisan
+
+               Erik, Elma, Armut, Kiraz, Vişne     3 Nisan            17 Nisan
+Suluova
+               Ayva                               22 Nisan            7 Mayıs
+               Hünnap                             17 Mayıs            30 Mayıs
+               Y.yonca,ucgul,y,korunga,kekık,nane
+                                                  1 Nisan             10 Temmuz
+               ,geven
+               Badem, Kayısı                      18 Mart             2 Nisan
+               Şeftali                            23 Mart             8 Nisan
+
+               Erik, Elma, Armut, Kiraz, Vişne     4 Nisan            18 Nisan
+Göynücek       Ayva                                23 Nisan           8 Mayıs
+               Hünnap                              18 Mayıs           2 Haziran
+
+               Ak üçgül,tekyıllık yonca,nohut
+                                                   1 Nisan            1 Temmuz
+               geven,kırkekiği,ayçiçek
+
+               Badem, Kayısı                       18 Mart            3 Nisan
+Hamamözü
+               Şeftali                             23 Mart            8 Nisan
+               Erik, Elma, Armut, Kiraz, Vişne     4 Nisan    18 Nisan
+
+               Ayva                                23 Nisan   8 Mayıs
+               Hünnap                              18 Mayıs   2 Haziran
+
+                                                   20 Mayıs   15 Temmuz
+               Papatya,ucgul,yabanı yonca, kekık
+               Badem, Kayısı                       20 Mart    5 Haziran
+               Şeftali                             25 Mart    10 Nisan
+
+               Erik, Elma, Armut, Kiraz, Vişne     5 Nisan    20 Nisan
+Merzifon
+               Ayva                                25 Nisan   10 Mayıs
+               Hünnap                              20 Mayıs   5 Mayıs
+               Y.yonca,k.yoncası,kekık,tarla
+                                                   10 Mayıs   1 Temmuz
+               ayrıgı,geven,k.yumagı
+               Badem, Kayısı                       25 Mart    10 Nisan
+               Şeftali                             1 Nisan    15 Nisan
+
+               Erik, Elma, Armut, Kiraz, Vişne     10 Nisan   25 Nisan
+Gümüşhacıköy
+               Ayva                                1 Mayıs    15 Mayıs
+               Hünnap                              25 Mayıs   10 Haziran
+               Hardal,yabanı korunga,ucgul,tarla
+                                                   1 Mayıs    15 Temmuz
+               ayrıgı
+

@@ -1,0 +1,301 @@
+/* 
+UX-Optimized Results Styles
+Issue #21 - Hesaplama Sonuçları UX İyileştirmeleri 
+*/
+
+.ux-optimized-results {
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 1. Ana Sonuç Kutusu (Issue #21 - 4. Hiyerarşi) */
+.main-result-box {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 2px solid;
+}
+
+.main-result-box.result-positive {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-color: #28a745;
+    color: #155724;
+}
+
+.main-result-box.result-negative {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.main-result-box.result-neutral {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border-color: #17a2b8;
+    color: #0c5460;
+}
+
+.result-icon {
+    font-size: 3rem;
+    margin-right: 20px;
+    opacity: 0.8;
+}
+
+.main-result-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.result-status {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 2. Gerekçeler ve Öneriler (Issue #21 - 1. Nedenler ve öneriler) */
+.explanation-section {
+    margin-bottom: 25px;
+}
+
+.reasons-box, .recommendations-box {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.reasons-box {
+    background-color: #fff3cd;
+    border-left-color: #ffc107;
+}
+
+.reasons-box h4 {
+    color: #856404;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.recommendations-box {
+    background-color: #d1ecf1;
+    border-left-color: #17a2b8;
+}
+
+.recommendations-box h4 {
+    color: #0c5460;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.reasons-list, .recommendations-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.reasons-list li, .recommendations-list li {
+    margin-bottom: 5px;
+    line-height: 1.5;
+}
+
+/* 3. Özet Bilgiler (Issue #21 - 2. Anlamlı bilgiler) */
+.summary-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.summary-section h4 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.summary-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.summary-value {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* 4. Harita Bağlantısı (Issue #21 - 6. Harita bağlantısı) */
+.map-link-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.show-on-map-btn {
+    padding: 10px 20px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.show-on-map-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* 5. Meta Bilgiler (Issue #21 - 7. Tarih bilgisi) */
+.meta-info {
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #e9ecef;
+    margin-bottom: 20px;
+}
+
+/* 6. Aksiyonlar (Issue #21 - 5. Tooltip'li butonlar) */
+.actions-section {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.actions-section .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.actions-section .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 7. Accordion Detaylar (Issue #21 - 1,2. Teknik detaylar gizli) */
+.technical-details-section, .advanced-details-section {
+    margin-top: 20px;
+}
+
+.accordion-button {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e9ecef;
+}
+
+.json-display {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 0.875rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* 8. Legacy Format Warning */
+.legacy-format-warning {
+    margin-bottom: 20px;
+}
+
+/* 9. Error Container */
+.error-container {
+    text-align: center;
+    padding: 20px;
+}
+
+/* 10. Responsive Design */
+@media (max-width: 768px) {
+    .main-result-box {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .result-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+        font-size: 2.5rem;
+    }
+    
+    .main-result-title {
+        font-size: 1.5rem;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .actions-section {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .actions-section .btn {
+        width: 200px;
+    }
+}
+
+/* 11. Animasyonlar */
+.ux-optimized-results {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.summary-item, .main-result-box {
+    transition: all 0.3s ease;
+}
+
+.summary-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 12. Print Styles */
+@media print {
+    .actions-section,
+    .accordion,
+    .show-on-map-btn {
+        display: none !important;
+    }
+    
+    .main-result-box {
+        border: 2px solid #000 !important;
+        background: white !important;
+        color: black !important;
+    }
+    
+    .ux-optimized-results {
+        box-shadow: none !important;
+    }
+}

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+
+# Build output
+build
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env
+.env
+.env.*
+
+# Cache
+.cache
+
+# Tests
+coverage
+
+# VCS / IDE
+.git
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db

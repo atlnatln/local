@@ -1,0 +1,145 @@
+                                       ÇORUM
+Merkez-İlçe                               Çiçeklenme         Çiçeklenme
+              Majör(yaygın) Bitki Adı
+Adı                                       Başlangıç Tarihi   Bitiş Tarihi
+              Ayçiçeği                    10 Haziran         15 Ağustos
+              Yonca                       5 Mayıs            30 Mayıs
+              Kekik                       20 Haziran         20 Temmuz
+              Geven                       15 Haziran         30 Temmuz
+              Yılgın                      1 Mayıs            1 Ağustos
+              Pıtrak                      10 Haziran         20 Eylül
+Merkez-İlçe   Meşe                        1 Mayıs            30 Temmuz
+              Kızılcık                    5 Nisan            10 Ağustos
+              Karaçalı                    5 Mart             15 Mayıs
+              Kuşburnu                    15 Haziran         20 Ağustos
+              Muhtelif Kır Çiçekleri      10 Nisan           30 Temmuz
+              Alıç                        10 Mayıs           1 Temmuz
+              Meyve Ağaçları              15 Nisan           25 Haziran
+              Ayçiçeği, Kuşburnu          15 Haziran         20 Ağustos
+              Geven                       15 Haziran         30 Temmuz
+              Kekik                       20 Haziran         20 Temmuz
+              Muhtelif Kır Çiçekleri      10 Nisan           30 Temmuz
+Alaca
+              Meyve Ağaçları              20 Nisan           30 Haziran
+              Çörek Otu                   20 Haziran         30 Temmuz
+              Yonca                       5 Mayıs            30 Mayıs
+              Karaçalı                    5 Mart             10 Mayıs
+              Ayçiçeği                    10 Haziran         15 Ağustos
+              Muhtelif Kır Çiçekleri      15 Nisan           30 Temmuz
+              Karaçalı                    10 Mart            15 Mayıs
+              Geven                       15 Haziran         30 Temmuz
+Bayat         Kuşburnu                    15 Haziran         20 Ağustos
+              Kekik                       20 Haziran         20 Temmuz
+              Meyve Ağaçları              20 Nisan           30 Haziran
+              Alıç                        10 Mayıs            1 Temmuz
+              Çiğdem                      10 Şubat           30 Mart
+              Ayçiçeği                    10 Haziran         15 Ağustos
+              Meyve Ağaçları              20 Nisan           30 Haziran
+              Muhtelif Kır Çiçekleri      15 Nisan           30 Temmuz
+              Geven                       15 Haziran         30 Temmuz
+Boğazlake
+              Kekik                       20 Haziran         20 Temmuz
+              Karaçalı                    10 Mart            15 Mayıs
+              Kuşburnu                    15 Haziran         20 Ağustos
+              Lavanta                     20 Mayıs           20 Temmuz
+           Ayçiçeği                 5 Haziran    10 Ağustos
+           Geven                    15 Haziran   30 Temmuz
+           Kekik                    20 Haziran   20 Temmuz
+Dodurga    Kuşburnu                 15 Haziran   20 Ağustos
+           Meyve Ağaçları           20 Nisan     30 Haziran
+           Muhtelif Kır Çiçekleri   15 Nisan     30 Temmuz
+           Alıç                     10 Mayıs      1 Temmuz
+           Ayçiçeği                 5 Haziran    10 Ağustos
+           Meyve Ağaçları           20 Nisan     30 Haziran
+           Muhtelif Kır Çiçekleri   15 Nisan     30 Temmuz
+           Geven                    15 Haziran   30 Temmuz
+İskilip
+           Kekik                    20 Haziran   20 Temmuz
+           Kuşburnu                 15 Haziran   20 Ağustos
+           Karaçalı                 5 Mart       15 Mayıs
+           Akasya                   5 Mayıs      20 Haziran
+           Geven                    10 Haziran   30 Temmuz
+           Kekik                    10 Haziran   20 Temmuz
+           Kuşburnu                 10 Haziran   15 Ağustos
+           Meyve Ağaçları           5 Nisan      30 Haziran
+Kargı      Muhtelif Kır Çiçekleri   5 Nisan      30 Temmuz
+           Kızılcık                 5 Nisan      10 Ağustos
+           Alıç                     10 Mayıs      1 Temmuz
+           Karaçalı                 5 Mart       15 Mayıs
+           Deve Dikeni              10 Nisan     10 Ağustos
+           Ayçiçeği                 5 Haziran    10 Ağustos
+           Geven                    10 Haziran   30 Temmuz
+           Kekik                    10 Haziran   20 Temmuz
+           Kuşburnu                 10 Haziran   15 Ağustos
+Laçin
+           Muhtelif Kır Çiçekleri   5 Nisan      30 Temmuz
+           Meyve Ağaçları           5 Nisan      30 Haziran
+           Karaçalı                 5 Mart       15 Mayıs
+           Alıç                     10 Mayıs      1 Temmuz
+           Ayçiçeği                 10 Haziran   15 Ağustos
+           Yonca                    5 Mayıs      30 Mayıs
+           Kekik                    20 Haziran   20 Temmuz
+           Geven                    15 Haziran   30 Temmuz
+Mecitözü   Karaçalı                 5 Mart       15 Mayıs
+           Meyve Ağaçları           15 Nisan     25 Haziran
+           Kuşburnu                 15 Haziran   20 Ağustos
+           Muhtelif Kır Çiçekleri   10 Nisan     30 Temmuz
+           Alıç                     10 Mayıs      1 Temmuz
+           Yonca                    5 Mayıs      30 Mayıs
+Oğuzlar
+           Muhtelif Kır Çiçekleri   5 Nisan      30 Temmuz
+            Geven                    15 Haziran   30 Temmuz
+            Kekik                    20 Haziran   20 Temmuz
+            Karaçalı, Karaçalı       5 Mart       15 Mayıs
+            Kuşburnu                 15 Haziran   20 Ağustos
+            Meyve Ağaçları           5 Nisan      25 Haziran
+            Alıç                     1 Mayıs       1 Temmuz
+            Muhtelif Kır Çiçekleri   10 Nisan     30 Temmuz
+            Alıç                     10 Mayıs      1 Temmuz
+            Ayçiçeği                 10 Haziran   15 Ağustos
+            Yonca                    5 Mayıs      30 Mayıs
+            Kekik                    20 Haziran   20 Temmuz
+Ortaköy
+            Geven                    15 Haziran   30 Temmuz
+            Karaçalı                 5 Mart       15 Mayıs
+            Meyve Ağaçları           15 Nisan     25 Haziran
+            Kuşburnu                 15 Haziran   20 Ağustos
+            Akasya                   5 Mayıs      20 Haziran
+            Kekik                    5 Haziran    20 Temmuz
+            Geven                    1 Haziran    30 Temmuz
+            Ayçiçeği                 28 Mayıs     5 Ağustos
+            Yonca                    1 Mayıs      30 Mayıs
+            Kuşburnu                 15 Haziran   20 Ağustos
+            Muhtelif Kır Çiçekleri   10 Nisan     30 Temmuz
+Osmancık    Akasya                   1 Mayıs      15 Haziran
+            Yılgın                   1 Mayıs      1 Ağustos
+            Pıtrak                   10 Haziran   20 Eylül
+            Alıç                     1 Mayıs      28 Haziran
+            İğde                     25 Nisan     1 Temmuz
+            Karaçalı                 1 Mart       15 Mayıs
+            Meşe                     1 Mayıs      30 Temmuz
+            Ayçiçeği                 10 Haziran   15 Ağustos
+            Yonca                    5 Mayıs      30 Mayıs
+            Karaçalı                 5 Mart       15 Mayıs
+            Kuşburnu                 15 Haziran   20 Ağustos
+            Kekik                    20 Haziran   20 Temmuz
+            Geven                    15 Haziran   30 Temmuz
+Sungurlu    Muhtelif Kır Çiçekleri   10 Nisan     30 Temmuz
+            Alıç                     10 Mayıs     1 Temmuz
+            Meyve Ağaçları           15 Nisan     25 Haziran
+            Yılgın                   10 Mayıs     5 Ağustos
+            Pıtrak                   20 Haziran   30 Eylül
+            Çörek Otu                20 Haziran   30 Temmuz
+            Akasya                   15 Mayıs     25 Haziran
+Uğurludağ   Kekik                    20 Haziran   20 Temmuz
+Geven                    15 Haziran   30 Temmuz
+Çörek Otu                20 Haziran   30 Temmuz
+Akasya                   15 Mayıs     25 Haziran
+Muhtelif Kır Çiçekleri   10 Nisan     30 Temmuz
+Meyve Ağaçları           15 Nisan     25 Haziran
+Karaçalı                 1 Mart       15 Mayıs
+Meşe                     1 Mayıs      30 Temmuz
+Yılgın                   10 Mayıs     5 Ağustos
+Pıtrak                   20 Haziran   30 Eylül
+Lavanta                  20 Mayıs     20 Temmuz
+

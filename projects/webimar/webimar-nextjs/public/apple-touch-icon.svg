@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <style>
+      .emoji {
+        font-size: 135.0px;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+  </defs>
+  <rect width="180" height="180" fill="#D2691E" rx="36.0"/>
+  <text x="90.0" y="90.0" class="emoji">🏗️</text>
+</svg>

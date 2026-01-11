@@ -1,0 +1,211 @@
+{
+  "slug": "mantar-tesisi",
+  "id": 2,
+  "name": "Mantar Üretim Tesisi",
+  "category": "Özel Üretim Tesisleri",
+  "seo": {
+    "title": "Mantar Üretim Tesisi Nasıl Kurulur? Kapasite Hesabı | Tarım İmar",
+    "description": "Mantar üretim tesisi (kültür mantarı) kurulumu. Kuluçka ve üretim odaları, kompost platformu, kapasite hesaplama. Minimum 800 m² arazi gereksinimi.",
+    "keywords": [
+      "mantar üretimi",
+      "kültür mantarı",
+      "mantar tesisi",
+      "mantar çiftliği",
+      "kompost hazırlama",
+      "kuluçka odası",
+      "mantar üretim odası"
+    ],
+    "canonical": "/mantar-tesisi"
+  },
+  "hero": {
+    "title": "Mantar Üretim Tesisi Kurulumu",
+    "subtitle": "Kültür mantarı üretimi tesisi. Kuluçka ve üretim odaları ile yüksek verimli üretim!",
+    "icon": "🍄"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Mantar üretim tesisi</strong>, kontrollü ortamda kültür mantarı (şampinyon, istiridye vb.) yetiştiriciliği yapılan özel üretim tesisleridir.</p>",
+    "purpose": "<p>Tesislerin amaçları:</p><ul><li>Kültür mantarı üretimi</li><li>Yüksek protein kaynağı</li><li>Yıl boyu üretim imkanı</li><li>Düşük su tüketimi</li></ul>",
+    "whoCanBuild": "<p>Mantar tesisi kurabilmek için:</p><ul><li>Minimum 800 m² arazi</li><li>Kuluçka odası (min 1 adet)</li><li>Üretim odası (min 2 adet)</li><li>Kompost hazırlama platformu</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Yıl Boyu Üretim",
+      "description": "Kontrollü ortamda 12 ay üretim yapılabilir",
+      "icon": "📅"
+    },
+    {
+      "title": "Kuluçka + Üretim",
+      "description": "Min 1 kuluçka + 2 üretim odası sistemi",
+      "icon": "🏭"
+    },
+    {
+      "title": "Yüksek Verim",
+      "description": "100 kg/gün üretim kapasitesi ile başlayın",
+      "icon": "📈"
+    },
+    {
+      "title": "Düşük Su İhtiyacı",
+      "description": "Diğer ürünlere göre çok az su tüketir",
+      "icon": "💧"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Minimum arazi büyüklüğü: Yaklaşık 800 m²",
+        "Minimum 1 kuluçka odası + 2 üretim odası zorunlu",
+        "Kompost hazırlama platformu gerekli",
+        "Pastörizasyon odası (50+ kg/gün için)",
+        "Soğuk hava deposu (büyük tesisler için)"
+      ],
+      "genelge": [
+        "Tarımsal üretim tesisleri kapsamında değerlendirilir"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "kg/gün",
+        "referenceCapacity": 100,
+        "minArea": 800
+      },
+      "specifications": [
+        "Kuluçka odası: 100 kg/gün için ~200 m²",
+        "Üretim odaları: 100 kg/gün için ~400 m² (toplam)",
+        "Kompost hazırlama platformu: Min 30 m²",
+        "Pastörizasyon odası: Min 25 m²",
+        "Temizleme ve paketleme: Min 15 m²",
+        "Soğuk hava deposu: Min 8 m²",
+        "WC ve duş: Min 10 m²",
+        "İdari büro: Min 5 m²",
+        "Sıcaklık kontrolü: 15-18°C (kuluçka), 12-16°C (üretim)",
+        "Nem kontrolü: %80-90"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Mantar Tesisi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Mantar Tesisi alanını hesaplayın",
+    "ctaText": "Mantar Tesisi Hesapla",
+    "ctaLink": "/hesaplama/mantar-tesisi"
+  },
+  "faq": [
+    {
+      "question": "Mantar tesisi için minimum arazi ne kadar?",
+      "answer": "Minimum 800 m² arazi gereklidir. Bu alanda mikro ölçekli (25-50 kg/gün) üretim yapılabilir."
+    },
+    {
+      "question": "Kuluçka ve üretim odası nedir?",
+      "answer": "Kuluçka odası: Misel ekim sonrası mantarın geliştiği alan. Üretim odası: Mantarların hasat edildiği alan. Min 1 kuluçka + 2 üretim odası zorunludur."
+    },
+    {
+      "question": "100 kg/gün kapasite için kaç m² tesis gerekir?",
+      "answer": "Yaklaşık 1500 m² toplam yapılaşma gerekir. Bu; 200 m² kuluçka + 400 m² üretim + 900 m² müştemilat alanlarını içerir."
+    },
+    {
+      "question": "Hangi mantar türleri üretilebilir?",
+      "answer": "Kültür mantarı (Agaricus bisporus), istiridye mantarı (Pleurotus), shiitake ve kayın mantarı üretilebilir. Kültür mantarı en yaygın türdür."
+    },
+    {
+      "question": "Kompost platformu neden gerekli?",
+      "answer": "Mantar kompostu (saman, tavuk gübresi karışımı) hazırlanması ve fermantasyonu için gereklidir. Kapasite arttıkça platform alanı da büyür."
+    },
+    {
+      "question": "Üretim süresi ne kadar?",
+      "answer": "Kompost hazırlama 2-3 hafta, misel ekimi 2 hafta, hasat dönemi 3-4 hafta sürer. Toplam döngü 7-9 haftadır."
+    },
+    {
+      "question": "Soğuk hava deposu şart mı?",
+      "answer": "Büyük tesislerde (200+ kg/gün) taze mantarın muhafazası için soğuk hava deposu zorunludur. Küçük tesislerde opsiyoneldir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Solucan Tesisi",
+      "url": "/solucan-tesisi",
+      "icon": "🪱"
+    },
+    {
+      "title": "Arıcılık Tesisi",
+      "url": "/aricilik",
+      "icon": "🐝"
+    },
+    {
+      "title": "Soğuk Hava Deposu",
+      "url": "/soguk-hava-deposu",
+      "icon": "❄️"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Mantar Üretim Tesisi Kurulum Rehberi",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Mantar tesisi için minimum arazi ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Minimum 800 m² arazi gereklidir. Bu alanda mikro ölçekli (25-50 kg/gün) üretim yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kuluçka ve üretim odası nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kuluçka odası: Misel ekim sonrası mantarın geliştiği alan. Üretim odası: Mantarların hasat edildiği alan. Min 1 kuluçka + 2 üretim odası zorunludur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "100 kg/gün kapasite için kaç m² tesis gerekir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yaklaşık 1500 m² toplam yapılaşma gerekir. Bu; 200 m² kuluçka + 400 m² üretim + 900 m² müştemilat alanlarını içerir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hangi mantar türleri üretilebilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kültür mantarı (Agaricus bisporus), istiridye mantarı (Pleurotus), shiitake ve kayın mantarı üretilebilir. Kültür mantarı en yaygın türdür."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kompost platformu neden gerekli?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mantar kompostu (saman, tavuk gübresi karışımı) hazırlanması ve fermantasyonu için gereklidir. Kapasite arttıkça platform alanı da büyür."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Üretim süresi ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kompost hazırlama 2-3 hafta, misel ekimi 2 hafta, hasat dönemi 3-4 hafta sürer. Toplam döngü 7-9 haftadır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Soğuk hava deposu şart mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Büyük tesislerde (200+ kg/gün) taze mantarın muhafazası için soğuk hava deposu zorunludur. Küçük tesislerde opsiyoneldir."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T18:30:00.000Z"
+  }
+}

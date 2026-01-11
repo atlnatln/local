@@ -1,0 +1,78 @@
+# Git
+.git
+.gitignore
+
+# API Optimization - Exclude logs and duplicates
+webimar-api/logging/
+webimar-api/**/*.log
+webimar-api/.venv/
+webimar-api/calculations/static_files/
+
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env*
+
+# Build artifacts
+build
+dist
+
+# Logs
+*.log
+
+# Test files
+**/__tests__
+**/__mocks__
+*.test.*
+*.spec.*
+jest.config.js
+
+# Development files
+README.old.md
+*.md
+!README.md
+
+# Cache
+.cache
+__pycache__
+*.pyc
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Development databases
+*.sqlite3
+
+# Python virtual environments
+venv/
+env/
+
+# Python virtual environment
+.venv
+webimar-api/.venv
+
+# Next.js build artifacts
+.next
+webimar-nextjs/.next
+out
+webimar-nextjs/out
+
+# React build artifacts
+build
+webimar-react/build
+
+# Deployment artifacts
+.deploy-tmp
+webimar-deploy.tar.gz
+archive/

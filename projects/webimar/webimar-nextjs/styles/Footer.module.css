@@ -1,0 +1,232 @@
+.footer {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f4c75 100%);
+  color: #ffffff;
+  padding: 48px 24px 24px;
+  margin-top: auto;
+}
+
+.footerContent {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footerTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #bbe1fa;
+}
+
+.footerDescription {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #bbe1fa;
+  border-bottom: 2px solid rgba(187, 225, 250, 0.3);
+  padding-bottom: 8px;
+}
+
+.footerNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footerNav a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease, padding-left 0.2s ease;
+}
+
+.footerNav a:hover {
+  color: #bbe1fa;
+  padding-left: 4px;
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contactInfo a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.contactInfo a:hover {
+  color: #bbe1fa;
+}
+
+.footerBottom {
+  max-width: 1200px;
+  margin: 32px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.footerBottom p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.legalNotice {
+  margin-top: 8px !important;
+  font-size: 0.8rem !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 768px) {
+  .footer {
+    padding: 32px 16px 20px;
+  }
+
+  .footerContent {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px;
+  }
+
+  .footerSection {
+    text-align: left;
+  }
+
+  .footerSection:first-child {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+
+  .footerTitle {
+    font-size: 1.3rem;
+  }
+
+  .sectionTitle {
+    font-size: 1rem;
+  }
+
+  .footerNav {
+    align-items: flex-start;
+  }
+
+  .footerNav a {
+    font-size: 0.85rem;
+    padding: 4px 0;
+  }
+
+  .footerBottom {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+  .footer {
+    padding: 28px 14px 16px;
+  }
+
+  .footerContent {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .footerSection {
+    text-align: center;
+  }
+
+  .footerTitle {
+    font-size: 1.2rem;
+  }
+
+  .footerDescription {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .sectionTitle {
+    font-size: 0.95rem;
+    padding-bottom: 6px;
+  }
+
+  .footerNav {
+    align-items: center;
+    gap: 6px;
+  }
+
+  .footerNav a {
+    font-size: 0.88rem;
+    padding: 6px 0;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+  }
+
+  .contactInfo a {
+    font-size: 0.88rem;
+    padding: 6px 0;
+  }
+
+  .footerBottom {
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  .footerBottom p {
+    font-size: 0.8rem;
+  }
+
+  .legalNotice {
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* Safe area for iOS */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .footer {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+
+  @media (max-width: 480px) {
+    .footer {
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .footerNav a,
+  .contactInfo a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .footerNav a:hover,
+  .contactInfo a:hover {
+    padding-left: 0;
+  }
+}

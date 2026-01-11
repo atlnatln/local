@@ -1,0 +1,91 @@
+                                   SİVAS
+Merkez- İlçe                               Ciçeklenme         Çiçeklenme
+             Majör(yaygın) Bitki Adı
+Adı                                        Başlangıç Tarihi   Bitiş Tarihi
+             Yabani yonca, Kırkekiği,
+             K.Yoncası, Çayır düğmesi,
+             Sarıçiçekli yonca,            1 Mayıs            1 Temmuz
+             Şerbetciotu, Yonca,
+             Gevençeşitleri
+Merkez
+             Yabani yonca, Kırkekiği,
+             K.Yoncası, Çayır düğmesi,
+             Sarıçiçekli yonca,            1 Mayıs            20 Temmuz
+             Şerbetciotu, Yonca,
+             Gevençeşitleri
+             kekik,geven,Kaba yonca,
+Zara                                       Mayıs              15 Temmuz
+             Sığır kuyruğu
+             kekik,geven,Kaba yonca,
+Gölova                                     30 Nisan           15 Ağustos
+             Sığır kuyruğu
+             Kekik, geven, sütleğen,
+Altınyayla   kangal, korunga, K.Yonca,     15 Mayıs           15 Ağustos
+             yavşan
+             Kekik,
+Şarkışla     geven,sütleğen,kangal,koru Mayıs                 30 Temmuz
+             nga,K.Yonca,yavşan
+             Kırkekiği, Koyunyumağı,
+             Tarlaayrığı, Kantron,
+                                           20 Mayıs           20 Ağustos
+             Hardal, Püren, Keven,
+Kangal
+             Y.korunga, Çakıldak
+             Kekik,Geven                   5 Mayıs            20 Ağustos
+             Kırkekiği, Koyunyumağı,
+             Tarlaayrığı, Kantron,Hardal,
+                                            Nisan             Ağustos
+             Püren,Keven, Y.korunga,
+             Çakıldak
+             Otlakayrığı,Kırayrığı,Çayırtil
+Yıldız
+             kikuy,Çayıryulafı,Kılçıksız,br
+             om,çay.yum.,adisalkımotu,
+                                            Nisan             Temmuz
+             Adigeven,gazelboy,Sarıtaşy
+             on.,adiyon.,Korunga,Çayırü
+             çgülü, kır kekiği,kır yavşanı
+             Otlakayrığı,Kırayrığı,Çayırtil
+             kikuy,Çayıryulafı,Kılçıksız,br
+             om,çay.yum.,adisalkımotu,
+Ulaş                                        Nisan       Tem
+             Adigeven,gazelboy.,Sarıtaş
+             yon.,adiyon.,Korunga,Çayır
+             üçgülü,kırkekiği,kıryavşanı
+             Akasya, kırmızıüçgül,
+             kıryoncası, ballıbaaba,
+İmranlı      sütleğen, devedikeni,          Nisan       Eylül
+             geven, Kekik, nane,
+             taşyoncası, çiğdem
+             Geven,Kekik,Nane,Y.Üçgül,
+Hafik        Reyhan,Yonca,Ilgın,Erguvan 15 Nisan        20 Ağustos
+             ,Korunga
+Koyulhisar   KırÇiçekleri                  20 Nisan     30 temmuz
+             Kekik,Yavşan,Çobanyastığı,
+             Geven,YalancıKorunga,
+Gürün                                      7 Nisan      15 Ağustos
+             Taşyoncası,Akasya,Meyve
+             Ağaçları
+             Kekik,Geven,kuşburnu,sığır
+Akıncılar    kuyruğu,böğürtlen,üçgül,      20 Mart      15 Temmuz
+             sütleğen, kırçiçeği
+             Kekik,Geven,kuşburnu,sığır
+Suşehri      kuyruğu,böğürtlen,üçgül,      1-15 Mayıs   1-15 Eylül
+             sütleğen
+             Kekik, Geven, Kuşburnu,
+             sığırkuyruğu, Böğürtlen,
+Gemerek      Üçgül, Sütleğen, ballıbaba,   20 Nisan     20 Ağustos
+             cablaotu, Çıtlık, Çayırotu,
+             Çiğdem, navruz, v.b.
+             Kekik, Keven, ballıbaba,
+             cablaotu, Çıtlık, Çayırotu,
+                                           10 Haziran   20 Temmuz
+             Çiğdem, navruz, Yabani
+             üçgül v.b.
+Divriği
+             Kekik, Hardal, Yabaninana,
+             sığırkuyruğu,Yabanifiğ,
+                                           15 Nisan     20 Temmuz
+             Kıryoncası, Ballıbaba,
+             Hindiba, Keven
+

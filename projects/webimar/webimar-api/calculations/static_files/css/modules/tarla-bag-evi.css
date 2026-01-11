@@ -1,0 +1,444 @@
+/**
+ * Tarla + Bağ Evi Panel Sistemi CSS
+ * Bu dosya tarla_dikili_bag_evi.js modülüne özgü stilleri içerir
+ */
+
+/* Map Entry Panel Styles */
+.map-entry-section {
+    padding: 20px 0;
+}
+
+.map-interface-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 20px;
+    margin: 20px 0;
+    min-height: 400px;
+}
+
+.map-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tool-group h4, .legend h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.tool-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tool-btn {
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    text-align: left;
+}
+
+.tool-btn:hover {
+    border-color: #3498db;
+    background-color: #f8f9fa;
+}
+
+.tool-btn.active {
+    border-color: #e67e22;
+    background-color: #e67e22;
+    color: white;
+}
+
+.legend {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.color-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+.tarla-color {
+    background-color: #f39c12;
+}
+
+.dikili-color {
+    background-color: #27ae60;
+}
+
+.map-placeholder {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.map-coming-soon {
+    text-align: center;
+    color: #6c757d;
+    max-width: 400px;
+}
+
+.map-coming-soon i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #bdc3c7;
+}
+
+.map-coming-soon h4 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.placeholder-features {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.placeholder-features h5 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.placeholder-features ul {
+    list-style: none;
+    padding: 0;
+}
+
+.placeholder-features li {
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+.placeholder-features li i {
+    color: #27ae60;
+    margin-right: 5px;
+}
+
+.map-summary {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.map-areas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.area-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+.total-item {
+    border-top: 2px solid #dee2e6;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.remaining-item {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.area-edit-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.area-edit-btn:hover {
+    color: #3498db;
+}
+
+.map-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.map-help {
+    background-color: #e8f4fd;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 0 5px 5px 0;
+}
+
+.map-help ul {
+    margin: 10px 0 0 20px;
+    padding: 0;
+}
+
+.map-help li {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+/* Area Input Panel Styles */
+.area-input-section {
+    padding: 20px 0;
+}
+
+.area-inputs-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.area-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.area-input-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.area-input {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.area-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+.area-input.error {
+    border-color: #e74c3c;
+    background-color: #fdf2f2;
+}
+
+.area-input.valid {
+    border-color: #27ae60;
+    background-color: #f8fff8;
+}
+
+.input-hint {
+    display: block;
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 3px;
+    font-style: italic;
+}
+
+.area-summary {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 5px 0;
+}
+
+.total-row {
+    border-top: 1px solid #dee2e6;
+    font-weight: bold;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.remaining-row {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.area-input-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.area-input-help {
+    background-color: #e8f4fd;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 0 5px 5px 0;
+}
+
+.area-input-help ul {
+    margin: 10px 0 0 20px;
+    padding: 0;
+}
+
+.area-input-help li {
+    margin-bottom: 5px;
+}
+
+/* Manual Entry Panel Styles */
+.manuel-entry-section {
+    padding: 20px 0;
+}
+
+.manuel-form-container {
+    margin: 20px 0;
+}
+
+.form-section {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-section h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 2px solid #e67e22;
+    padding-bottom: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.manuel-input, .manuel-select, .manuel-textarea {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.manuel-input:focus, .manuel-select:focus, .manuel-textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+.manuel-input.error, .manuel-select.error, .manuel-textarea.error {
+    border-color: #e74c3c;
+    background-color: #fdf2f2;
+}
+
+.manuel-input.valid, .manuel-select.valid, .manuel-textarea.valid {
+    border-color: #27ae60;
+    background-color: #f8fff8;
+}
+
+.manuel-summary {
+    background-color: #e8f4fd;
+    border: 1px solid #bee5eb;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+    font-weight: bold;
+}
+
+.manuel-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.manuel-help {
+    background-color: #e8f4fd;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 0 5px 5px 0;
+}
+
+.manuel-help ul {
+    margin: 10px 0 0 20px;
+    padding: 0;
+}
+
+.manuel-help li {
+    margin-bottom: 5px;
+}
+
+/* Responsive Design for Module */
+@media (max-width: 768px) {
+    .map-interface-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .area-inputs-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}

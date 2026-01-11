@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Development database
+*.sqlite3
+db.sqlite3
+
+# Logs
+*.log
+
+# Environment files
+.env*
+
+# Test files
+test_*.py
+*_test.py
+
+# Development files
+*.md
+!README.md
+
+# Cache
+.cache
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

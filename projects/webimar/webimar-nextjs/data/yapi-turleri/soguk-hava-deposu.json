@@ -1,0 +1,260 @@
+{
+  "slug": "soguk-hava-deposu",
+  "id": 16,
+  "name": "Soğuk Hava Deposu",
+  "category": "Depolama ve İşleme",
+  "seo": {
+    "title": "Soğuk Hava Deposu Nasıl Yapılır? Şartları ve Hesaplama | Tarım İmar",
+    "description": "Soğuk hava deposu yapımı için gerekli şartlar, emsal oranları (%5 veya %20), minimum arazi büyüklüğü ve yasal gereksinimler. Arazinizde soğuk hava deposu yapabilir misiniz?",
+    "keywords": [
+      "soğuk hava deposu",
+      "soğuk hava deposu şartları",
+      "soğuk hava deposu emsal",
+      "soğuk hava deposu minimum alan",
+      "soğuk hava deposu mevzuatı",
+      "tarımsal soğuk depo",
+      "meyve sebze soğuk depo",
+      "soğuk hava deposu hesaplama",
+      "emsal oranı %5",
+      "emsal oranı %20"
+    ],
+    "canonical": "/soguk-hava-deposu",
+    "ogImage": "https://tarimimar.com.tr/og-image.svg"
+  },
+  "hero": {
+    "title": "Soğuk Hava Deposu Kurulumu ve Hesaplama",
+    "subtitle": "Tarımsal ürünleriniz için soğuk hava deposu yapabilir misiniz? Emsal oranı, arazi büyüklüğü ve teknik şartları kontrol edin!",
+    "icon": "❄️"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Soğuk hava deposu</strong>, tarımsal ürünlerin (meyve, sebze, et, süt ürünleri) bozulmadan uzun süre saklanmasını sağlayan, kontrollü sıcaklık ve nem ortamına sahip depolama tesisleridir.</p><p>Soğuk hava depoları, ürünlerin hasat sonrası kayıplarını azaltır, raf ömrünü uzatır ve piyasa koşullarına göre satış zamanlaması yapılmasına olanak tanır.</p>",
+    "purpose": "<p>Soğuk hava depolarının temel amaçları:</p><ul><li>Tarımsal ürünlerin tazeliğini ve kalitesini korumak</li><li>Hasat sonrası kayıpları en aza indirmek</li><li>Ürünlerin raf ömrünü uzatmak</li><li>Sezonluk ürünlerin yıl boyu satılmasını sağlamak</li><li>Piyasa fiyatlarının uygun olduğu dönemde satış yapmak</li><li>İhracat için ürün stoklama imkanı sağlamak</li></ul>",
+    "whoCanBuild": "<p>Soğuk hava deposu yapabilmek için:</p><ul><li>Minimum arazi büyüklüğüne sahip olmak (emsal tipine göre değişir)</li><li>Elektrik altyapısına erişim sağlamak (3 faz, yüksek kapasite)</li><li>İl Tarım ve Orman Müdürlüğü'nden izin almak</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Ürün Kaybını Önler",
+      "description": "Kontrollü soğuk ortamda depolama ile hasat sonrası kayıplar %5'in altına düşer",
+      "icon": "📉"
+    },
+    {
+      "title": "Raf Ömrü Uzatır",
+      "description": "Meyve ve sebzelerin tazeliğini koruyarak raf ömrünü 3-10 kat uzatır",
+      "icon": "⏱️"
+    },
+    {
+      "title": "Esnek Emsal Seçeneği",
+      "description": "Marjinal arazi için %20, Mutlak/Dikili/Özel arazi için %5 emsal oranı",
+      "icon": "📐"
+    },
+    {
+      "title": "İhracat İmkanı",
+      "description": "Uzun süreli depolama ile ihracat piyasalarına erişim kolaylaşır",
+      "icon": "🌍"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "minArea": 500,
+      "minAreaUnit": "m² (Marjinal emsal için)",
+      "restrictions": [
+        "Emsal tipi seçimi zorunludur (Marjinal %20 veya Mutlak/Dikili/Özel %5)",
+        "Zeytinlik vasıflı arazilerde soğuk hava deposu yapılamaz",
+        "Marjinal emsal (%20) sadece arazi büyüklüğü kontrolü gerektirir",
+        "Mutlak/Dikili/Özel emsal (%5) detaylı arazi tipi kontrolü gerektirir"
+      ],
+      "genelge": [],
+      "specialConditions": []
+    },
+    "technical": {
+      "specifications": [
+        "Soğutma sistemi: -25°C ile +15°C arası ayarlanabilir",
+        "Yalıtım: Poliüretan panel (100-200mm)",
+        "Kapı tipi: Sürgülü soğuk hava kapısı",
+        "Nem kontrolü: %85-95 nem oranı",
+        "Zemin: Beton döşeme (izolasyonlu)",
+        "Tavan yüksekliği: Minimum 4 metre",
+        "Kompresör ünitesi: Dış mekan tipi",
+        "Acil durum jeneratörü (opsiyonel)",
+        "Otomatik sıcaklık ve nem izleme sistemi",
+        "Alarm sistemi (sıcaklık sapması için)"
+      ],
+      "capacity": {
+        "unit": "ton",
+        "minCapacity": 10,
+        "perUnit": 1
+      },
+      "materials": [
+        "Poliüretan yalıtım panelleri (duvar/tavan)",
+        "Sandviç panel sistem",
+        "Soğutma kompresörü ve evaporatör",
+        "Soğutucu gaz (R404A, R134a)",
+        "İzolasyonlu beton zemin",
+        "Sürgülü soğuk hava kapısı",
+        "Paslanmaz çelik aksesuarlar",
+        "Elektrik panosu ve otomasyon"
+      ],
+      "infrastructure": [
+        "3 faz elektrik (yüksek kapasite: 50-100 kW)",
+        "Jeneratör bağlantı noktası",
+        "Su kaynağı (kompresör soğutma için)",
+        "Drenaj sistemi",
+        "Yol erişimi (TIR girişi için minimum 6m)",
+        "İtfaiye erişim yolu",
+        "Atık su tahliye sistemi"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Araziniz İçin Soğuk Hava Deposu Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Soğuk Hava Deposu alanını hesaplayın",
+    "ctaText": "Ücretsiz Soğuk Hava Deposu Hesapla",
+    "ctaLink": "/hesaplama/soguk-hava-deposu"
+  },
+  "faq": [
+    {
+      "question": "Soğuk hava deposu için hangi emsal oranı geçerlidir?",
+      "answer": "Soğuk hava deposu için iki emsal seçeneği var: Marjinal tarım arazisi için %20, Mutlak/Dikili/Özel ürün arazisi için %5. Emsal tipi seçimi yapmanız zorunludur."
+    },
+    {
+      "question": "En az kaç metrekare arazide soğuk hava deposu yapılır?",
+      "answer": "Minimum arazi büyüklüğü emsal tipine göre değişir: Marjinal emsal (%20) için minimum 500 m², Dikili arazi için 5.000 m², Tarla için 20.000 m², Sera/örtüaltı için 3.000 m² gereklidir."
+    },
+    {
+      "question": "Marjinal ve Mutlak/Dikili emsal arasındaki fark nedir?",
+      "answer": "Marjinal emsal (%20): Sadece arazi büyüklüğü kontrol edilir, daha serbest hesaplama. Mutlak/Dikili/Özel emsal (%5): Arazi tipi kontrolü yapılır, daha detaylı şartlar gerekir ancak emsal daha düşüktür."
+    },
+    {
+      "question": "Soğuk hava deposunda hangi ürünler saklanabilir?",
+      "answer": "Meyve (elma, armut, üzüm), sebze (domates, biber, salatalık), patates, soğan, narenciye, et ve et ürünleri, süt ürünleri, yumurta, su ürünleri ve donmuş gıdalar saklanabilir."
+    },
+    {
+      "question": "Soğuk hava deposu kurulum maliyeti ne kadardır?",
+      "answer": "Maliyet, depo kapasitesi, yalıtım kalitesi, ekipman seçimi ve otomasyon dahil teknik gereksinimlere göre değişir. Projenize özel maliyet hesabı için yerel tedarikçilerden veya proje mühendislerinden teklif almanızı öneririz."
+    },
+    {
+      "question": "Soğuk hava deposu için hangi izinler gereklidir?",
+      "answer": "İl Tarım ve Orman Müdürlüğü'nden Tarım Dışı Kullanım İzni, yapı ruhsatı, Gıda İşletme Belgesi (gıda depolanacaksa), elektrik aboneliği, çevre izni ve yangın güvenliği onayı gereklidir."
+    },
+    {
+      "question": "Soğuk hava deposunda sıcaklık kaç derece olmalıdır?",
+      "answer": "Ürüne göre değişir: Patates/soğan +2°C/+4°C, meyve/sebze 0°C/+4°C, et -18°C/-25°C, donmuş gıda -25°C/-30°C, süt ürünleri +2°C/+6°C arasında ayarlanır."
+    },
+    {
+      "question": "Zeytinlik arazide soğuk hava deposu yapılabilir mi?",
+      "answer": "Hayır, zeytinlik vasıflı arazilerde soğuk hava deposu yapılamaz. 3573 sayılı Zeytinciliğin Islahı Kanunu gereği zeytinlik alanlarda yapılaşma yasaktır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Tarımsal Amaçlı Depo",
+      "url": "/tarimsal-depo",
+      "icon": "🏪"
+    },
+    {
+      "title": "Sera Hesaplama",
+      "url": "/sera",
+      "icon": "🌱"
+    },
+    {
+      "title": "Meyve/Sebze Kurutma",
+      "url": "/meyve-sebze-kurutma",
+      "icon": "🍑"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Soğuk Hava Deposu Nasıl Yapılır? Şartları ve Hesaplama",
+    "description": "Soğuk hava deposu yapımı için gerekli şartlar, emsal oranları, minimum arazi büyüklüğü ve teknik gereksinimler.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Soğuk hava deposu için hangi emsal oranı geçerlidir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Soğuk hava deposu için iki emsal seçeneği var: Marjinal tarım arazisi için %20, Mutlak/Dikili/Özel ürün arazisi için %5. Emsal tipi seçimi yapmanız zorunludur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "En az kaç metrekare arazide soğuk hava deposu yapılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Minimum arazi büyüklüğü emsal tipine göre değişir: Marjinal emsal (%20) için minimum 500 m², Dikili arazi için 5.000 m², Tarla için 20.000 m², Sera/örtüaltı için 3.000 m² gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Marjinal ve Mutlak/Dikili emsal arasındaki fark nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Marjinal emsal (%20): Sadece arazi büyüklüğü kontrol edilir, daha serbest hesaplama. Mutlak/Dikili/Özel emsal (%5): Arazi tipi kontrolü yapılır, daha detaylı şartlar gerekir ancak emsal daha düşüktür."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Soğuk hava deposunda hangi ürünler saklanabilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Meyve (elma, armut, üzüm), sebze (domates, biber, salatalık), patates, soğan, narenciye, et ve et ürünleri, süt ürünleri, yumurta, su ürünleri ve donmuş gıdalar saklanabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Soğuk hava deposu kurulum maliyeti ne kadardır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Maliyet, depo kapasitesi, yalıtım kalitesi, ekipman seçimi ve otomasyon dahil teknik gereksinimlere göre değişir. Projenize özel maliyet hesabı için yerel tedarikçilerden veya proje mühendislerinden teklif almanızı öneririz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Soğuk hava deposu için hangi izinler gereklidir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İl Tarım ve Orman Müdürlüğü'nden Tarım Dışı Kullanım İzni, yapı ruhsatı, Gıda İşletme Belgesi (gıda depolanacaksa), elektrik aboneliği, çevre izni ve yangın güvenliği onayı gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Soğuk hava deposunda sıcaklık kaç derece olmalıdır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ürüne göre değişir: Patates/soğan +2°C/+4°C, meyve/sebze 0°C/+4°C, et -18°C/-25°C, donmuş gıda -25°C/-30°C, süt ürünleri +2°C/+6°C arasında ayarlanır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Zeytinlik arazide soğuk hava deposu yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır, zeytinlik vasıflı arazilerde soğuk hava deposu yapılamaz. 3573 sayılı Zeytinciliğin Islahı Kanunu gereği zeytinlik alanlarda yapılaşma yasaktır."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T13:00:00.000Z",
+    "notes": "soguk_hava_deposu.py Python modülünden derlendi. Emsal tipi seçimi (Marjinal %20 vs Mutlak/Dikili %5) sistemine göre detaylandırıldı."
+  }
+}

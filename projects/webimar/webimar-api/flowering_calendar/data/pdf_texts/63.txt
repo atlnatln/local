@@ -1,0 +1,99 @@
+                                 ŞANLI URFA
+Merkez- İlçe                             Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                      Başlangıç Tarihi   Bitiş Tarihi
+Akçakale       Pamuk                     10 Temmuz          10 Eylül
+               Üçgül                     10 Mayıs           15 Haziran
+               Geven                     1 Temmuz           1 Ağustos
+               Sütleğen                  15 Haziran         30 Eylül
+Birecik        Devedikeni, Sarıdiken,
+                                         10 Haziran         30 Ağustos
+               Çakıldikeni
+               Badem Çiçeği              1 Mart             1 Nisan
+               Kekik                     1 Temmuz           30 Temmuz
+               Üçgül                     10 Mayıs           15 Haziran
+               Geven                     1 Temmuz           1 Ağustos
+               Sütleğen                  15 Haziran         30 Eylül
+               Devedikeni, Sarıdiken,
+Bozova                                   10 Haziran         30 Ağustos
+               Çakıldikeni
+               Badem Çiçeği              1 Mart             1 Nisan
+               Kekik                     1 Temmuz           30 Temmuz
+               Pamuk                     10 Temmuz          10 Eylül
+               Ayçiçeği                  1 Haziran          30 Ağustos
+Ceylanpınar    Yonca                     1 Haziran          30 Temmuz
+               Pamuk                     10 Temmuz          10 Eylül
+               Üçgül                     10 Mayıs           15 Haziran
+               Geven                     1 Temmuz           1 Ağustos
+               Sütleğen                  15 Haziran         30 Eylül
+               Devedikeni, Sarıdiken,
+Eyyübiye                                 10 Haziran         30 Ağustos
+               Çakıldikeni
+               Badem Çiçeği              1 Mart             1 Nisan
+               Kekik                     1 Temmuz           30 Temmuz
+               Pamuk                     10 Temmuz          10 Eylül
+               Üçgül                     10 Mayıs           15 Haziran
+               Geven                     1 Temmuz           1 Ağustos
+               Sütleğen                  15 Haziran         30 Eylül
+Halfeti        Devedikeni, Sarıdiken,
+                                         10 Haziran         30 Ağustos
+               Çakıldikeni
+               Badem Çiçeği              1 Mart             1 Nisan
+               Kekik                     1 Temmuz           30 Temmuz
+               Üçgül                     10 Mayıs           15 Haziran
+Haliliye       Geven                     1 Temmuz           1 Ağustos
+               Sütleğen                  15 Haziran         30 Eylül
+             Devedikeni, Sarıdiken,
+                                      10 Haziran   30 Ağustos
+             Çakıldikeni
+             Badem Çiçeği             1 Mart       1 Nisan
+             Kekik                    1 Temmuz     30 Temmuz
+             Pamuk                    10 Temmuz    10 Eylül
+                                      10 Temmuz    10 Eylül
+Harran       Pamuk
+             Üçgül                    10 Mayıs     15 Haziran
+             Geven                    1 Temmuz     1 Ağustos
+             Sütleğen                 15 Haziran   30 Eylül
+             Devedikeni, Sarıdiken,
+Hilvan                                10 Haziran   30 Ağustos
+             Çakıldikeni
+             Badem Çiçeği             1 Mart       1 Nisan
+             Kekik                    1 Temmuz     30 Temmuz
+             Pamuk                    10 Temmuz    10 Eylül
+             Üçgül                    10 Mayıs     15 Haziran
+             Geven                    1 Temmuz     1 Ağustos
+             Sütleğen                 15 Haziran   30 Eylül
+             Devedikeni, Sarıdiken,
+Karaköprü                             10 Haziran   30 Ağustos
+             Çakıldikeni
+             Badem Çiçeği             1 Mart       1 Nisan
+             Kekik                    1 Temmuz     30 Temmuz
+             Pamuk                    10 Temmuz    10 Eylül
+             Üçgül                    10 Mayıs     15 Haziran
+             Geven                    1 Temmuz     1 Ağustos
+             Sütleğen                 15 Haziran   30 Eylül
+             Devedikeni, Sarıdiken,
+Siverek                               10 Haziran   30 Ağustos
+             Çakıldikeni
+             Badem Çiçeği             1 Mart       1 Nisan
+             Kekik                    1 Temmuz     30 Temmuz
+             Pamuk                    10 Temmuz    10 Eylül
+             Üçgül                    10 Mayıs     15 Haziran
+             Geven                    1 Temmuz     1 Ağustos
+             Sütleğen                 15 Haziran   30 Eylül
+             Devedikeni, Sarıdiken,
+Suruç                                 10 Haziran   30 Ağustos
+             Çakıldikeni
+             Badem Çiçeği             1 Mart       1 Nisan
+             Kekik                    1 Temmuz     30 Temmuz
+             Pamuk                    10 Temmuz    10 Eylül
+             Üçgül                    10 Mayıs     15 Haziran
+Viranşehir   Geven                    1 Temmuz     1 Ağustos
+             Sütleğen                 15 Haziran   30 Eylül
+Devedikeni, Sarıdiken,
+                         10 Haziran   30 Ağustos
+Çakıldikeni
+Badem Çiçeği             1 Mart       1 Nisan
+Kekik                    1 Temmuz     30 Temmuz
+Pamuk                    10 Temmuz    10 Eylül
+

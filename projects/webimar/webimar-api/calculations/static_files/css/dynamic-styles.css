@@ -1,0 +1,326 @@
+/* Dinamik Stiller - index.html'den taşınan inline CSS'ler */
+
+/* Animasyonlar */
+@keyframes highlight {
+    0%   { background-color: #ffeeba; }
+    50%  { background-color: #fff3cd; }
+    100% { background-color: transparent; }
+}
+
+@keyframes slide-in {
+    0% { 
+        transform: translateY(-20px); 
+        opacity: 0; 
+    }
+    100% { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}
+
+/* Su Tahsis Belgesi Grup Stilleri */
+#su-tahsis-belgesi-group {
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+#su-tahsis-belgesi-group.highlight {
+    animation: highlight 2s;
+}
+
+/* Büyük Ova Stilleri */
+.buyuk-ova-link {
+    color: #28a745;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.buyuk-ova-detay {
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff3cd;
+    border-radius: 5px;
+    border-left: 5px solid #ffc107;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.buyuk-ova-detay h2 {
+    font-size: 1.5em;
+    color: #6c5014;
+    margin-top: 0;
+}
+
+/* Bağ Evi Uyarısı */
+#bag-evi-uyari {
+    animation: slide-in 0.3s ease-out;
+}
+
+#bag-evi-uyari .panel-content {
+    line-height: 1.5;
+}
+
+#bag-evi-uyari blockquote {
+    margin: 15px 0;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+/* Bilgi Paneli Stilleri - Ortak */
+.bilgi-paneli {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.bilgi-paneli h4 {
+    margin-top: 0;
+    font-size: 1.3em;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e2e2e2;
+    padding-bottom: 8px;
+}
+
+.bilgi-paneli p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* Sera Bilgileri */
+.sera-bilgileri {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    border-left: 4px solid #28a745;
+}
+
+.sera-bilgileri h4 {
+    color: #28a745;
+}
+
+/* Silo Bilgileri */
+.silo-bilgileri {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    border-left: 4px solid #0066cc;
+}
+
+.silo-bilgileri h4 {
+    color: #0066cc;
+}
+
+.silo-proje-bilgileri {
+    background-color: #f0f8ff;
+    padding: 10px;
+    border-left: 3px solid #0066cc;
+}
+
+.silo-detay-mesaj {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-left: 3px solid #6c757d;
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+/* Vurgu ve Bilgi Stilleri */
+.highlight-info {
+    font-size: 1.1em;
+    background-color: #e8f4f8;
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin: 10px 0 15px;
+    border-left: 3px solid #17a2b8;
+    color: #0c5460;
+    font-weight: 500;
+}
+
+.ges-bilgisi {
+    margin-top: 20px;
+    padding: 12px 15px;
+    background-color: #fafcf9;
+    border: 1px dashed #aaa;
+    border-radius: 4px;
+}
+
+.ges-bilgisi h5 {
+    margin-top: 0;
+    color: #495057;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.ges-bilgisi ul {
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.ges-bilgisi li {
+    margin-bottom: 5px;
+}
+
+/* Dikili Seçenekler */
+.dikili-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.option-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.option-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+}
+
+.option-card h4 {
+    margin-top: 0;
+    color: #3498db;
+}
+
+/* Modal Stilleri */
+.info-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.modal-content {
+    background: #fff;
+    max-width: 540px;
+    margin: 60px auto;
+    padding: 28px 24px 18px 24px;
+    border-radius: 10px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+    position: relative;
+}
+
+/* Soru İşareti İkonu */
+.info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    color: #007bff;
+    font-weight: bold;
+    cursor: pointer;
+    margin-right: 8px;
+    font-size: 15px;
+}
+
+/* Notification Stilleri */
+.notification {
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.notification.success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 5px solid #28a745;
+}
+
+.notification.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-left: 5px solid #17a2b8;
+}
+
+/* Form Kontrolleri */
+.agac-secici {
+    margin-bottom: 15px;
+}
+
+.agac-listesi {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Buton Grup Stilleri */
+.button-group {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.button-group.space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Alan Bilgisi */
+.alan-bilgisi {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* Sonuç Paneli */
+.sonuc-paneli {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.sonuc-paneli.success {
+    background-color: #d4edda;
+    border-left: 4px solid #28a745;
+}
+
+.sonuc-paneli.warning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+.sonuc-paneli.error {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+}
+
+/* Responsive iyileştirmeler */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 20px;
+        max-width: calc(100vw - 40px);
+    }
+    
+    .button-group.space-between {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .button-group.space-between .submit-button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,249 @@
+{
+  "slug": "zeytinyagi-fabrikasi",
+  "id": 9,
+  "name": "Zeytinyağı Fabrikası/Üretim Tesisi",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Zeytinyağı Fabrikası Nasıl Kurulur? İzinler ve Şartlar | Tarım İmar",
+  "description": "Zeytinyağı üretim tesisi kurulumu. Minimum arazi şartları, emsal oranları, prina ve karasu arıtma gereksinimleri.",
+      "keywords": [
+      "zeytinyağı fabrikası",
+      "zeytinyağı üretimi",
+      "zeytin işleme tesisi",
+      "prina",
+      "karasu arıtma",
+      "su tahsis belgesi",
+      "zeytinyağı izni"
+    ],
+    "canonical": "/zeytinyagi-fabrikasi"
+  },
+  "hero": {
+    "title": "Zeytinyağı Fabrikası Kurulumu",
+  "subtitle": "Sızma zeytinyağı ve prina üretimi. %10 emsal ile modern üretim tesisi!",
+    "icon": "🫒"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Zeytinyağı fabrikası</strong>, zeytin meyvesinden sızma zeytinyağı ve yan ürün (prina) elde edilen endüstriyel tesislerdir.</p>",
+    "purpose": "<p>Fabrika amaçları:</p><ul><li>Sızma zeytinyağı üretimi</li><li>Prina (yan ürün) değerlendirme</li><li>Kaliteli yağ elde etme</li><li>Bölgesel zeytin işleme</li></ul>",
+    "whoCanBuild": "<p>Zeytinyağı fabrikası kurabilmek için:</p><ul><li>%20 emsal oranı</li><li>Karasu arıtma sistemi zorunlu</li><li>Prina depolama alanı</li><li>Çevre izinleri</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Yüksek Emsal",
+      "description": "%10 emsal ile geniş üretim alanı",
+      "icon": "📊"
+    },
+    {
+      "title": "Modern Teknoloji",
+      "description": "2-3 fazlı sistemler",
+      "icon": "⚙️"
+    },
+    {
+      "title": "Yan Ürün",
+      "description": "Prina satışından ek gelir",
+      "icon": "♻️"
+    },
+    {
+      "title": "Mevsimlik",
+      "description": "Kasım-Şubat yoğun sezon",
+      "icon": "📅"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Emsal oranı: %10",
+        "Karasu (zeytin suyu) arıtma sistemi zorunlu",
+        "Prina depolama alanı gerekli",
+        "Çevre ve Şehircilik Bakanlığı izni",
+        "Tarım ve Orman Bakanlığı ruhsatı",
+        "Kapalı havza alanlarında ek kısıtlamalar"
+      ],
+      "genelge": [
+        "Zeytinyağı fabrikaları %10 emsal ile yapılaşabilir",
+        "Çevre koruma standartlarına uyum zorunlu"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "ton/gün",
+        "systems": [
+          "2 fazlı sistem",
+          "3 fazlı sistem"
+        ]
+      },
+      "specifications": [
+        "Zeytin kabul ve yıkama ünitesi",
+        "Kırma ve harmanlama sistemi",
+        "Santrifüj separatörleri",
+        "Yağ depolama tankları (paslanmaz çelik)",
+        "Prina depolama alanı",
+        "Karasu arıtma sistemi",
+        "Analiz laboratuvarı",
+        "Dolum ve paketleme hattı"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Zeytinyağı Fabrikası Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Zeytinyağı Fabrikası alanını hesaplayın",
+    "ctaText": "Fabrika Hesapla",
+    "ctaLink": "/hesaplama/zeytinyagi-fabrikasi"
+  },
+  "faq": [
+    {
+      "question": "Zeytinyağı fabrikası maliyeti ne kadar?",
+    "answer": "Kurulum maliyeti; kapasite, teknoloji seçimi, arıtma sistemi ve altyapı gereksinimlerine göre değişir. Net bir maliyet için yerel tedarikçilerden ve mühendislik firmalarından teklif almanızı öneririz."
+    },
+    {
+      "question": "Karasu arıtma zorunlu mu?",
+      "answer": "Evet, zeytinyağı üretiminde oluşan karasu (zeytin suyu) çevreye zararlıdır. Arıtma sistemi yasal zorunluluktur."
+    },
+    {
+      "question": "Prina ne işe yarar?",
+      "answer": "Prina, zeytin posasıdır. Prina yağı çıkarma tesislerine satılır veya yakacak olarak kullanılır."
+    },
+    {
+      "question": "2 fazlı ve 3 fazlı sistem farkı nedir?",
+      "answer": "2 fazlı sistemde az su kullanılır, daha çevre dostu. 3 fazlı sistemde su tüketimi fazla, karasu miktarı yüksek."
+    },
+    {
+      "question": "Zeytinyağı verimi ne kadar?",
+      "answer": "1 ton zeytinden ortalama 150-200 kg sızma zeytinyağı elde edilir (%15-20 verim)."
+    },
+    {
+      "question": "Hangi izinler gerekir?",
+      "answer": "Gıda İşletme Ruhsatı, Çevre İzni, İşletme Belgesi, Kapasite Raporu gerekir."
+    },
+    {
+      "question": "Kapalı havzada fabrika kurulabilir mi?",
+      "answer": "Kapalı havza alanlarında zeytinyağı fabrikası kurulumu yasaklanabilir veya ek kısıtlamalar getirilebilir."
+    },
+    {
+      "question": "Depolama tankı ne kadar olmalı?",
+      "answer": "Günlük üretimin 10-15 katı kadar tank kapasitesi önerilir. 10 ton/gün için ~15-20 ton tank yeterli."
+    },
+    {
+      "question": "Sezon dışında fabrika ne yapar?",
+      "answer": "Mayıs-Ekim arası fabrika kapalıdır. Bakım, temizlik ve yeni sezon hazırlıkları yapılır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Tarımsal Depo",
+      "url": "/tarimsal-depo",
+      "icon": "🏭"
+    },
+    {
+      "title": "Kurutma Tesisi",
+      "url": "/kurutma-tesisi",
+      "icon": "☀️"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Zeytinyağı Fabrikası Nasıl Kurulur? İzinler ve Şartlar | Tarım İmar",
+    "description": "Zeytinyağı üretim tesisi kurulumu. Minimum arazi şartları, %10 emsal oranı, prina ve karasu arıtma gereksinimleri.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Zeytinyağı fabrikası maliyeti ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kurulum maliyeti; kapasite, teknoloji seçimi, arıtma sistemi ve altyapı gereksinimlerine göre değişir. Net bir maliyet için yerel tedarikçilerden ve mühendislik firmalarından teklif almanızı öneririz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Karasu arıtma zorunlu mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, zeytinyağı üretiminde oluşan karasu (zeytin suyu) çevreye zararlıdır. Arıtma sistemi yasal zorunluluktur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Prina ne işe yarar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Prina, zeytin posasıdır. Prina yağı çıkarma tesislerine satılır veya enerji kaynağı olarak kullanılabilir. Prina gelirleri kalite ve piyasa koşullarına göre değişir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "2 fazlı ve 3 fazlı sistem farkı nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "2 fazlı sistemde az su kullanılır, daha çevre dostu. 3 fazlı sistemde su tüketimi fazla, karasu miktarı yüksek."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Yıllık kaç ton zeytin işlenir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sezon 3-4 ay sürer. 10 ton/gün kapasiteli fabrika ~1200 ton/sezon zeytin işler."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Zeytinyağı verimi ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "1 ton zeytinden ortalama 150-200 kg sızma zeytinyağı elde edilir (%15-20 verim)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hangi izinler gerekir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Gıda İşletme Ruhsatı, Çevre İzni, İşletme Belgesi, Kapasite Raporu gerekir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kapalı havzada fabrika kurulabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kapalı havza alanlarında zeytinyağı fabrikası kurulumu yasaklanabilir veya ek kısıtlamalar getirilebilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Depolama tankı ne kadar olmalı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Günlük üretimin 10-15 katı kadar tank kapasitesi önerilir. 10 ton/gün için ~15-20 ton tank yeterli."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Sezon dışında fabrika ne yapar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mayıs-Ekim arası fabrika kapalıdır. Bakım, temizlik ve yeni sezon hazırlıkları yapılır."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T21:00:00.000Z"
+  }
+}

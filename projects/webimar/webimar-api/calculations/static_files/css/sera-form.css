@@ -1,0 +1,33 @@
+/* Sera formu animasyonları ve stil tanımları */
+
+@keyframes highlight {
+  0% {
+    background-color: rgba(255, 255, 150, 0.7);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+#sera-form-group {
+  padding: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+#sera-form-group:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#sera-form-group .form-label.option-label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#sera-form-group .form-text {
+  display: block;
+  margin-top: 5px;
+}

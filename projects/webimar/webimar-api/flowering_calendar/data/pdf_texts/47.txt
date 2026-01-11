@@ -1,0 +1,83 @@
+                                    MARDİN
+
+Merkez- İlçe                               Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                        Başlangıç Tarihi   Bitiş Tarihi
+               Badem                        1 Nisan           20 Mayıs
+               Elma, Koyun Yumağı, Sumak ,
+                                            1 Nisan           1 Haziran
+               Üçgül, Alıç, Karahindiba
+Artuklu
+               Kapari                       10 haziran        10 temmuz
+               Kiraz                        1 Nisan           20 Mayıs
+               Nar, Pamuk                   1 Temmuz          1 Agustos
+               Acı Badem                    25 Şubat          15 Mart
+               Alıç                         15 Haziran        1 Temmuz
+               Bade ve Meşe salgısı         30 Ağustos        30 Eylül
+               Badem                        10 Mart           25 Mart
+               Dağ Kekiği                   25 Haziran        15 Temmuz
+Savur
+               Deve Dikeni ( Topuz dikeni ) 10 Haziran        30 Haziran
+               Geven                        25 Haziran        20 Temmuz
+               Sarı Diken                   1 Mayıs           15 Mayıs
+               Üçgül                        15 Nisan          20 Mayıs
+               Yavşan Otu Çiçeği            10 Mayıs          30 Haziran
+               Kayısı                       15 Mart           20Nisan
+Nusaybin
+               Nektarin                     15 Mart           15Nisan
+               Acı Badem                    1 Mart            15 Mart
+               Alıç                         15 Haziran        1 Temmuz
+               Bade ve Meşe salgısı         30 Ağustos        30 Eylül
+               Badem                        15 Mart           1 Nisan
+               Dağ Kekiği                   25 Haziran        15 Temmuz
+Midyat
+               Deve Dikeni ( Topuz dikeni ) 10 Haziran        30 Haziran
+               Geven                        25 Haziran        20 Temmuz
+               Sarı Diken                   1 Mayıs           15 Mayıs
+               Üçgül                        15 Nisan          20 Mayıs
+               Yavşan Otu Çiçeği            10 Mayıs          30 Haziran
+               Geven                        28 Haziran        15 Temmuz
+               Hardal                       25 Mayıs          10 Haziran
+               Kangal Mor Diken             12 Haziran        25 Temmuz
+Mazıdağı
+               Sarı Diken                   1 Haziran         10 Temmuz
+               Topuz Dikeni                 20 Haziran        30 Temmuz
+               Yonca(üçgül)                 17 Nisan          15 Mayıs
+Dargeçit       Kekik                       20 Nisan           30 Ağustos
+               Kekik                       15 Nisan           1 Haziran
+Yeşilli
+               Kiraz                       1 Mart             1 Nisan
+            Badem                           25-30 Nisan    15-25 Mayıs
+            Dağ kekiği,Diken, Geven,
+                                            5- 10 Nisan    5-10 Haziran
+            Bostan, Sütleğen
+            Mısır                           15 Ağustos     10 Eylül
+Derik
+            Nar                             15-20 Mart     15-20 Mayıs
+            Pamuk                           5-10 Ağustos   5-10 Eylül
+            Üzüm                            5-10 Mayıs     15-20 Haziran
+            Yonca                           5-10 Mayıs     5-10 Eylül
+            Deve Dikeni                     1 Haziran      1 Ağustos
+            Hardal                          1 Mart         20 Temmuz
+            Sarı Diken                      1 Mayıs        1 Ağustos
+Kızıltepe
+            Sütleğen                        1 Haziran      1 Ekim
+            Üçgül                           15 Mart        15 Haziran
+            Yabani Yonca                    1 Nisan        1 Temmuz
+            Çiğdem                          Şubat          Nisan
+            Sütleğen, Karahindiba           Mart           Nisan
+            Kiraz, Badem                    15 Mart        15 Nisan
+            Vişne, Yabani Yonca, Üçgül,
+            Şeftali, Yabani Hardal, Taş
+                                            Nisan          Mayıs
+            Yoncası, Yabani Bakla, Fiğ,
+            Gelincik, Kayısı
+Ömerli      Yalancı Akasya                  1 Mayıs        1 Haziran
+            Korunga, Gül                    Mayıs          Haziran
+            Orman Gülü, Hatmi Çiçeği, Mor   Haziran        Temmuz
+            Diken, Dağ Kekiği
+            Sarı Diken, Deve Dikeni         Temmuz         Ağustos
+            Böğürtlen                       Ağustos        Eylül
+            Yabani Safran                   Ekim           Kasım
+            Bozot                           1 Eylül        15 Kasım
+

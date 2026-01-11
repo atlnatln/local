@@ -1,0 +1,1165 @@
+/* Ana CSS Dosyası - Tarım Arazilerinde Yapılaşma Şartları Bilgi Portalı */
+/* Responsive & Mobile-First Tasarım - Her cihazda mükemmel görüntü */
+
+/* Temel font ve stiller */
+:root {
+    --color-primary: #5D4037;       /* Koyu kahverengi */
+    --color-secondary: #8D6E63;     /* Orta kahverengi */
+    --color-accent: #A1887F;        /* Açık kahverengi */
+    --color-background: #F5F5DC;    /* Bej - kağıt/keten benzeri */
+    --color-text: #3E2723;          /* Çok koyu kahverengi */
+    --color-success: #33691E;       /* Koyu yeşil */
+    --color-warning: #F57C00;       /* Turuncu */
+    --color-danger: #BF360C;        /* Kızıl kahve */
+    --border-radius: 8px;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    --wood-texture: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="#8D6E63"/><path d="M0 50h200 M0 100h200 M0 150h200" stroke="#5D4037" stroke-width="1" opacity="0.3"/></svg>');
+    --placeholder-color: #999; /* Placeholder metni için soluk renk */
+}
+
+/* Placeholder stili */
+.placeholder-option {
+    color: var(--placeholder-color) !important;
+    font-style: italic;
+}
+
+/* Mobile-first yaklaşım: Önce küçük ekranlar için stil tanımı */
+html {
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+/* Sayfanın genel stilleri */
+body {
+    font-family: 'Source Serif Pro', Georgia, serif;
+    line-height: 1.7;
+    margin: 0;
+    padding: 10px;
+    color: var(--color-text);
+    background-color: var(--color-background);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F5F5DC"/><path d="M0 25h100 M0 50h100 M0 75h100 M25 0v100 M50 0v100 M75 0v100" stroke="#D7CCA3" stroke-width="1" opacity="0.3"/></svg>');
+    max-width: 100%;
+}
+
+/* Container stilleri */
+.container {
+    width: 100%;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+/* Content Section Stilleri (Base.html'den taşındı) */
+.content-section {
+    background: #FFF8E1;
+    padding: 20px 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d7cca3;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Border Bottom (Base.html'den taşındı) */
+.border-bottom {
+    border-bottom: 2px solid var(--color-secondary) !important;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Legend Stilleri (Base.html'den taşındı) */
+legend {
+    font-family: 'Playfair Display', serif;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+/* Button Stilleri (Base.html'den taşındı) */
+.btn-outline-info {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-outline-info:hover {
+    background-color: var(--color-primary);
+    color: #FFF8E1;
+}
+
+/* Page Header Stilleri (Base.html'den taşındı) */
+.page-header {
+    text-align: center;
+    padding: 15px 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--color-primary);
+    position: relative;
+}
+
+.page-header h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--color-primary);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    font-size: 1.8rem;
+    margin-bottom: 0;
+}
+
+.page-header .logo-link h1 {
+    font-size: 2.2rem;
+}
+
+/* Logo Stilleri (Base.html'den taşındı) */
+.logo-text {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: -1px;
+}
+
+.logo-prefix {
+    color: #8D6E63;
+    font-weight: normal;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.logo-suffix {
+    color: #5D4037;
+    font-weight: bold;
+}
+
+/* Header Links Stilleri (Base.html'den taşındı) */
+.header-links {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logout-form {
+    display: inline;
+}
+
+.header-link, .header-link-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-secondary);
+    text-decoration: none;
+    font: inherit;
+    padding: 0;
+    margin: 0 10px;
+    font-weight: bold;
+    transition: color 0.3s;
+    font-size: 0.9rem;
+}
+
+.header-link:hover, .header-link-button:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.header-link i {
+    margin-right: 5px;
+}
+
+/* Back Link Stilleri (Base.html'den taşındı) */
+.back-link {
+    display: inline-block;
+    margin: 15px 0;
+    padding: 10px 15px;
+    background-color: #6b4226;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.back-link:hover {
+    background-color: #8b5a2b;
+    text-decoration: none;
+    color: white;
+}
+
+/* Rustik panel stilleri taşındı - modules/common-panels.css dosyasında */
+
+/* Harita stili */
+#map {
+    height: 350px;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 2px solid var(--color-secondary);
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    min-height: 300px;
+}
+
+/* Bilgi kutuları */
+.map-info-panel {
+    padding: 12px;
+    background-color: rgba(245, 245, 220, 0.8);
+    border-top: 1px solid #D7CCA3;
+}
+
+#koordinatlar, #izmir-siniri-bilgisi, #poligon-bilgisi, #kapali-alan-bilgisi {
+    margin: 8px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #D7CCA3;
+    border-radius: var(--border-radius);
+}
+
+#poligon-bilgisi {
+    background-color: #EFF8E8;
+    border: 1px solid #A5D6A7;
+}
+
+#kapali-alan-bilgisi {
+    background-color: #FFF3E0;
+    border: 1px solid #FFCC80;
+}
+
+#izmir-siniri-bilgisi {
+    background-color: #E8F4FD;
+    border: 1px solid #90CAF9;
+}
+
+/* Durum göstergeleri */
+.icerisinde {
+    color: var(--color-success);
+    font-weight: bold;
+}
+
+.disarisinda {
+    color: var(--color-danger);
+}
+
+.yukleniyor {
+    color: var(--color-accent);
+    font-style: italic;
+}
+
+/* İsim stilleri */
+.ova-ismi {
+    font-weight: bold;
+    color: var(--color-success);
+    font-size: 15px;
+}
+
+.kapali-alan-ismi {
+    font-weight: bold;
+    color: var(--color-warning);
+    font-size: 15px;
+}
+
+.izmir-ismi {
+    font-weight: bold;
+    color: #1565C0;
+    font-size: 15px;
+}
+
+/* Büyük Ova uyarı kutusu */
+.buyuk-ova-uyari {
+    border: 2px solid #FFB74D;
+    background-color: #FFF8E1;
+    padding: 12px;
+    border-radius: var(--border-radius);
+}
+
+.buyuk-ova-uyari-baslik {
+    color: #E65100;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.buyuk-ova-uyari-icerik {
+    color: var(--color-text);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.buyuk-ova-link {
+    color: #0D47A1;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.buyuk-ova-detay {
+    margin-top: 12px;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #D7CCA3;
+    border-radius: var(--border-radius);
+}
+
+/* Bilgi formu bölümü */
+.info-section {
+    background-color: #FFF8E1;
+    border: 2px solid var(--color-secondary);
+    border-radius: var(--border-radius);
+    padding: 15px 10px;
+}
+
+.info-section h2 {
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.info-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+    transition: all 0.5s ease;
+}
+
+.form-group {
+    margin: 15px 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: var(--color-secondary);
+}
+
+/* Ortak form input stilleri */
+.form-input-base {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #D7CCA3;
+    border-radius: var(--border-radius);
+    background-color: rgba(255, 255, 255, 0.9);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-input-base:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.2);
+}
+
+.form-group select, .form-group input {
+    /* Bu stilleri temel sınıftan alır */
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #D7CCA3;
+    border-radius: var(--border-radius);
+    background-color: rgba(255, 255, 255, 0.9);
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.form-group select:focus, .form-group input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.2);
+}
+
+.button-group {
+    text-align: center;
+    margin: 20px 0 10px;
+}
+
+.submit-button {
+    background-color: var(--color-primary);
+    color: #FFF8E1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    width: 100%;
+}
+
+.submit-button:hover {
+    background-color: var(--color-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button i {
+    margin-right: 8px;
+}
+
+/* Yeni görünür hale gelecek form grupları için animasyon */
+@keyframes formFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-fade-in {
+    animation: formFadeIn 0.6s ease-out forwards;
+}
+
+/* Sonuçlar kutusu */
+.results-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #D7CCA3;
+    border-radius: var(--border-radius);
+}
+
+.sonuc-baslik {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
+.sonuc-container {
+    padding: 12px;
+    background-color: #FFFFFF;
+    border-radius: var(--border-radius);
+    margin-top: 12px;
+    border: 1px solid #D7CCA3;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sonuc-uygun {
+    color: var(--color-success);
+    font-weight: bold;
+}
+
+.sonuc-uyari {
+    color: var(--color-warning);
+    font-weight: bold;
+}
+
+.sonuc-red {
+    color: var(--color-danger);
+    font-weight: bold;
+}
+
+.sonuc-detay {
+    font-style: italic;
+    margin-top: 12px;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Link düğmeleri */
+.link-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Responsive Navigasyon Menüsü */
+.nav-menu {
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-item {
+    border-bottom: 1px solid rgba(255, 248, 225, 0.2);
+}
+
+.nav-item:last-child {
+    border-bottom: none;
+}
+
+.nav-link {
+    display: block;
+    padding: 12px 15px;
+    color: #FFF8E1;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+    background-color: var(--color-secondary);
+}
+
+.menu-toggle {
+    display: block;
+    padding: 12px 15px;
+    background-color: var(--color-primary);
+    color: #FFF8E1;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+}
+
+.menu-toggle:after {
+    content: "☰";
+    float: right;
+}
+
+.menu-toggle.active:after {
+    content: "✕";
+}
+
+.nav-list {
+    display: none;
+}
+
+.nav-list.active {
+    display: flex;
+}
+
+/* Footer stili */
+.page-footer {
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 25px;
+    color: var(--color-accent);
+    border-top: 2px solid var(--color-secondary);
+    font-size: 12px;
+}
+
+/* Popup özelleştirmesi */
+.izmir-disinda-popup .leaflet-popup-content-wrapper {
+    background-color: #FFEBEE;
+    color: var(--color-danger);
+    font-weight: bold;
+    border: 1px solid #FFCDD2;
+}
+
+.izmir-disinda-popup .leaflet-popup-tip {
+    background-color: #FFEBEE;
+}
+
+/* Hata mesajları */
+.form-error {
+    color: var(--color-danger);
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Mevzuat kartları için rustik stil */
+.mevzuat-kartlar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.mevzuat-kart {
+    background: linear-gradient(to bottom, #e6d7c3, #d4c4a8);
+    border: 2px solid #a48e6a;
+    border-radius: 8px;
+    padding: 20px;
+    text-decoration: none;
+    color: #4b3621;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.mevzuat-kart:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    border-color: #7d6b50;
+}
+
+.mevzuat-kart::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #a48e6a, #c0aa87, #a48e6a);
+}
+
+.kart-ikon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #6b4226;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
+}
+
+.kart-baslik {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #4b3621;
+}
+
+.kart-aciklama {
+    font-size: 0.9rem;
+    color: #5d4037;
+    line-height: 1.4;
+}
+
+/* Hoş bir hover efekti */
+.mevzuat-kart::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mevzuat-kart:hover::after {
+    opacity: 1;
+}
+
+/* Yukarı Çıkma Ok İşareti Stili */
+.back-to-top {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 42px;
+    height: 42px;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s, background-color 0.3s, transform 0.3s;
+    z-index: 1000;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.35);
+}
+.back-to-top.visible {
+    opacity: 0.85;
+    visibility: visible;
+}
+.back-to-top:hover {
+    background-color: var(--color-secondary);
+    opacity: 1;
+    transform: translateY(-3px) scale(1.05);
+}
+
+/* Genel Markdown İçerik Alanı Stilleri */
+.markdown-container {
+    padding: 25px;
+    background-color: #f9f5eb;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+    margin: 25px auto;
+    max-width: 900px;
+    font-family: 'Source Serif Pro', serif;
+    line-height: 1.75;
+    color: #3E2723;
+}
+
+.markdown-container h1, 
+.markdown-container h2, 
+.markdown-container h3, 
+.markdown-container h4,
+.markdown-container h5,
+.markdown-container h6 {
+    color: #5D4037;
+    border-bottom: 1px solid #d1c4e9;
+    padding-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-family: 'Playfair Display', serif;
+}
+
+.markdown-container > h1:first-child {
+    display: none;
+}
+
+.markdown-container > h2:first-of-type {
+    margin-top: 0;
+    border-bottom: 2px solid #c8bca8;
+    padding-bottom: 15px;
+}
+
+.markdown-container strong {
+    color: #6D4C41;
+    font-weight: 600;
+}
+
+.markdown-container a {
+    color: #00695C;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.markdown-container a:hover {
+    text-decoration: underline;
+    color: #004D40;
+}
+
+.markdown-container ul, 
+.markdown-container ol {
+    padding-left: 25px;
+    margin-bottom: 1.2em;
+}
+
+.markdown-container li {
+    margin-bottom: 0.6em;
+}
+
+.markdown-container blockquote {
+    border-left: 5px solid #A1887F;
+    padding: 15px 20px;
+    margin: 20px 0;
+    font-style: italic;
+    color: #543e32;
+    background-color: #fdfbf7;
+    border-radius: 0 6px 6px 0;
+}
+
+.markdown-container p {
+    margin-bottom: 1.2em;
+}
+
+.markdown-container code {
+  background-color: #e8e2d8;
+  padding: 0.2em 0.5em;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  color: #5D4037;
+}
+
+.markdown-container pre {
+  background-color: #e8e2d8;
+  padding: 1em;
+  border-radius: 6px;
+  overflow-x: auto;
+  border: 1px solid #d1c4b2;
+}
+
+.markdown-container pre code {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+
+/* Leaflet kontrolünü gizle */
+.leaflet-control-attribution {
+    display: none !important;
+}
+
+/* Limit aşıldı uyarısı için stil */
+.limit-asildi-uyari {
+    background-color: #fff3cd;
+    border: 2px solid #ffeeba;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    margin: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.limit-asildi-uyari p {
+    color: #856404;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-family: 'Source Serif Pro', serif;
+}
+
+.limit-asildi-uyari i {
+    margin-right: 8px;
+    color: #f0ad4e;
+}
+
+.login-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.login-buttons .btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #6A4928;
+    color: white !important;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #A67C52;
+    color: white !important;
+    border: none;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    opacity: 0.9;
+    text-decoration: none !important;
+}
+
+/* Yükleme göstergesi */
+.loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Su tahsis belgesi bölümü */
+.option-label {
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.switch-field {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    max-width: 240px;
+    margin: 5px 0 15px;
+    background-color: #f7f7f7;
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.switch-field input {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+}
+
+.switch-field label {
+    background-color: transparent;
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1;
+    text-align: center;
+    padding: 12px 0;
+    width: 50%;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.switch-field label:hover {
+    color: #333;
+}
+
+.switch-field input:checked + label {
+    color: #fff;
+    font-weight: 500;
+}
+
+.switch-selection {
+    position: absolute;
+    height: 100%;
+    width: 50%;
+    background-color: #4a7c59;
+    border-radius: 20px;
+    transition: all 0.3s ease-out;
+    opacity: 0; /* Başlangıçta görünmez */
+}
+
+/* Herhangi bir radio düğmesi seçildiğinde görünür hale gelir */
+.switch-field input:checked ~ .switch-selection {
+    opacity: 1;
+}
+
+.switch-field input:nth-of-type(1):checked ~ .switch-selection {
+    transform: translateX(0);
+}
+
+.switch-field input:nth-of-type(2):checked ~ .switch-selection {
+    transform: translateX(100%);
+}
+
+#su-tahsis-belgesi-group {
+    padding: 12px 15px;
+    border-radius: 8px;
+    background-color: rgba(74, 124, 89, 0.05);
+    border-left: 3px solid #4a7c59;
+    transition: all 0.3s ease;
+}
+
+#su-tahsis-belgesi-group.highlight {
+    animation: pulse 2s;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(74, 124, 89, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0); }
+}
+
+/* Media query ortak özellikler */
+@media (max-width: 600px) {
+    body {
+        padding: 8px;
+    }
+    
+    .page-header {
+        padding: 10px 15px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .panel-header {
+        font-size: 0.85rem !important;
+        padding: 3px 0 !important;
+    }
+    
+    .panel-header i {
+        font-size: 0.85rem !important;
+        margin-right: 5px !important;
+    }
+    
+    .panel-header:has(i.fa-map-location-dot) {
+        height: 30px;
+        letter-spacing: -0.3px;
+    }
+    
+    /* Rustik button stili taşındı - modules/common-panels.css dosyasında */
+    
+    #map {
+        height: 300px;
+    }
+    
+    /* Typography adjustments */
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.2rem; }
+    .logo-text { font-size: 1.8rem; }
+    
+    /* Card and content adjustments */
+    .mevzuat-kartlar {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .mevzuat-kart {
+        padding: 10px 8px;
+        font-size: 0.95rem;
+        border-radius: 6px;
+    }
+    
+    .kart-ikon { font-size: 1.3rem; margin-bottom: 6px; }
+    .kart-baslik { font-size: 1.05rem; margin-bottom: 4px; }
+    .kart-aciklama { font-size: 0.85rem; line-height: 1.2; }
+    
+    .rustik-baslik { font-size: 1.1rem; margin-bottom: 8px; }
+    .rustik-ayrac { margin: 8px 0; }
+    .ayrac-motif { font-size: 1rem; }
+    .rustik-aciklama { font-size: 0.9rem; margin-bottom: 10px; }
+    
+    .back-to-top {
+        width: 48px;
+        height: 48px;
+        font-size: 23px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* Tablet ve daha büyük ekranlar için ortak ayarlar */
+@media (min-width: 768px) {
+    body { padding: 15px; }
+    
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        padding: 10px 20px;
+    }
+
+    /* Typography scaling */
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.5rem; }
+    
+    .page-header {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .page-header:after {
+        bottom: -10px;
+        height: 2px;
+    }
+
+    /* Form layout improvements */
+    .info-form {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        padding: 0 15px;
+    }
+    
+    .link-buttons {
+        flex-direction: row;
+        gap: 15px;
+    }
+    
+    .link-buttons .rustik-button {
+        flex: 1;
+    }
+    
+    .submit-button {
+        width: auto;
+        padding: 12px 25px;
+    }
+    
+    .panel-content { padding: 20px; }
+    #map { height: 400px; }
+    
+    /* Navigation improvements */
+    .nav-list {
+        flex-direction: row;
+        display: flex;
+    }
+    
+    .nav-item {
+        border-bottom: none;
+        border-right: 1px solid rgba(255, 248, 225, 0.2);
+    }
+    
+    .nav-item:last-child { border-right: none; }
+    .menu-toggle { display: none; }
+    
+    .mevzuat-kartlar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Büyük ekranlar için optimizasyonlar */
+@media (min-width: 1024px) {
+    .container { width: 85%; }
+    
+    /* Typography scaling */
+    h1 { font-size: 2.5rem; }
+
+    #map { height: 450px; }
+    
+    .info-form {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Content scaling */
+    .panel-header { font-size: 1.3rem; }
+    .center-node h2 { font-size: 1.6rem; }
+    .branch-title h3 { font-size: 1.3rem; }
+    
+    .article-title {
+        padding: 12px 15px;
+        font-size: 1.1rem;
+    }
+    
+    .article-content { padding: 15px 20px; }
+    
+    .mevzuat-kartlar {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Map Entry Panel Styles taşındı - modules/tarla-bag-evi.css dosyasında */
+
+/* Area Input Panel Styles taşındı - modules/tarla-bag-evi.css dosyasında */
+
+/* Manual Entry Panel Styles taşındı - modules/tarla-bag-evi.css dosyasında */
+
+/* Utility Classes for Inline Style Replacements */
+.hidden {
+    display: none !important;
+}
+
+.panel-header-orange {
+    background-color: #e67e22 !important;
+}
+
+.special-note {
+    font-style: italic;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.form-group {
+    margin: 15px 0;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.top-margin {
+    margin-top: 20px;
+}
+
+.submit-button-orange {
+    background-color: #e67e22;
+}
+
+.submit-button-orange:hover {
+    background-color: #d35400;
+}
+
+.bottom-margin {
+    margin-bottom: 20px;
+}

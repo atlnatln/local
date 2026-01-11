@@ -1,0 +1,243 @@
+{
+  "slug": "solucan-tesisi",
+  "id": 1,
+  "name": "Solucan Gübresi Üretim Tesisi",
+  "category": "Özel Üretim Tesisleri",
+  "seo": {
+    "title": "Solucan Gübresi Üretim Tesisi Nasıl Kurulur? | Tarım İmar",
+    "description": "Solucan gübresi (vermikompost) üretim tesisi kurulumu. Kapasite hesaplama, müştemilat gereksinimleri, kompost alanı ve üretim hattı planlaması.",
+    "keywords": [
+      "solucan gübresi",
+      "vermikompost",
+      "solucan tesisi",
+      "organik gübre üretimi",
+      "kompost tesisi",
+      "solucan üretimi"
+    ],
+    "canonical": "/solucan-tesisi"
+  },
+  "hero": {
+    "title": "Solucan Gübresi Üretim Tesisi",
+    "subtitle": "Organik tarımın vazgeçilmezi vermikompost üretimi. Minimum 550 m² arazi ile başlayın!",
+    "icon": "🪱"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Solucan gübresi (vermikompost) tesisi</strong>, organik atıkların solucanlar aracılığıyla değerli gübreye dönüştürüldüğü üretim tesisleridir.</p>",
+    "purpose": "<p>Tesislerin amaçları:</p><ul><li>Organik gübre üretimi</li><li>Atık değerlendirme</li><li>Solucan biyomass üretimi</li><li>Çevre dostu üretim</li></ul>",
+    "whoCanBuild": "<p>Solucan tesisi kurabilmek için:</p><ul><li>Minimum 550 m² arazi</li><li>Kompost hazırlama alanı</li><li>Üretim hattı planlaması</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Yüksek Karlılık",
+      "description": "Organik gübre talebi sürekli artıyor",
+      "icon": "💰"
+    },
+    {
+      "title": "Düşük Başlangıç",
+      "description": "550 m² arazi ile başlanabilir",
+      "icon": "📊"
+    },
+    {
+      "title": "Çevre Dostu",
+      "description": "Organik atıkları değerli ürüne dönüştürür",
+      "icon": "🌱"
+    },
+    {
+      "title": "Ölçeklenebilir",
+      "description": "Mikro ölçekten endüstriyel ölçeğe kadar",
+      "icon": "📈"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Minimum arazi büyüklüğü: 550 m²",
+        "Zorunlu müştemilatlar: WC/duş, temiz/kirli alan, kompost alanı",
+        "Isıl işlem ünitesi gerekli",
+        "Paketleme ve depolama alanı zorunlu"
+      ],
+      "genelge": [
+        "Tarımsal üretim tesisleri kapsamında değerlendirilir"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "ton/gün",
+        "referenceCapacity": 15,
+        "minArea": 550
+      },
+      "specifications": [
+        "Kompost hazırlama platformu: Kapasite bazlı (min 30 m²)",
+        "Üretim hattı alanı: Kapasite ile orantılı",
+        "Isıl işlem ünitesi: Min 25 m²",
+        "Paketleme ünitesi: Min 30 m²",
+        "Bitmiş ürün deposu: Min 40 m²",
+        "WC ve duş: Min 15 m²",
+        "İdari büro: Min 15 m²",
+        "Pastörizasyon odası: Büyük tesislerde zorunlu"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Solucan Tesisi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Solucan Gübresi Üretim Tesisi alanını hesaplayın",
+    "ctaText": "Solucan Tesisi Hesapla",
+    "ctaLink": "/hesaplama/solucan-tesisi"
+  },
+  "faq": [
+    {
+      "question": "Solucan gübresi tesisi için minimum arazi ne kadar?",
+      "answer": "Minimum 550 m² arazi gereklidir. Bu büyüklük ile mikro ölçekli (1-3 ton/gün) üretim yapılabilir."
+    },
+    {
+      "question": "Solucan tesisi karlı mı?",
+      "answer": "Evet, organik tarım ürünlerine talep arttıkça vermikompost için pazar fırsatları genişliyor; fiyat ürün kalitesi ve yerel talebe göre değişir. Doğru fiyatlandırma için yerel pazar araştırması yapın."
+    },
+    {
+      "question": "Hangi solucan türü kullanılır?",
+      "answer": "Eisenia fetida (Kırmızı Kaliforniya solucanı) en yaygın kullanılan türdür. Hızlı ürer ve organik atıkları verimli şekilde işler."
+    },
+    {
+      "question": "Üretim süresi ne kadar?",
+      "answer": "Organik atıkların solucan gübresine dönüşmesi 60-90 gün sürer. Sürekli üretim sistemiyle her hafta hasat yapılabilir."
+    },
+    {
+      "question": "Hammadde nereden temin edilir?",
+      "answer": "Hayvansal gübre (büyükbaş, kümes), tarımsal atıklar (sap, saman), gıda atıkları kullanılabilir. Yerel çiftliklerden temin edilir."
+    },
+    {
+      "question": "Kompost hazırlama alanı neden gerekli?",
+      "answer": "Ham organik atıkların ön işleme (karıştırma, nemlendirme) tabi tutulması gerekir. Bu alan tesis kapasitesine göre 30-120 m² arasındadır."
+    },
+    {
+      "question": "Isıl işlem ünitesi ne işe yarar?",
+      "answer": "Bitmiş solucan gübresinin zararlı mikroorganizmalardan arındırılması ve stabilize edilmesi için gereklidir."
+    },
+    {
+      "question": "Tesis maliyeti ne kadar?",
+      "answer": "Maliyet, tesis kapasitesi, ekipman seçimi, altyapı ve arazi koşullarına göre değişir. Projeniz için yerel tedarikçilerden ve mühendislik firmalarından teklif almanızı öneririz."
+    },
+    {
+      "question": "Ölçek seviyeleri nelerdir?",
+      "answer": "Mikro (1-3 ton/gün), Küçük (3-8 ton), Orta (12-20 ton), Büyük (20-45 ton), Endüstriyel (80+ ton/gün) ölçekler vardır."
+    },
+    {
+      "question": "Pazarlama nasıl yapılır?",
+      "answer": "Organik tarım kooperatifleri, tarım marketleri, online satış platformları ve doğrudan çiftçilere satış yapılabilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Mantar Üretim Tesisi",
+      "url": "/mantar-tesisi",
+      "icon": "🍄"
+    },
+    {
+      "title": "Arıcılık Tesisi",
+      "url": "/aricilik",
+      "icon": "🐝"
+    },
+    {
+      "title": "Kompost Tesisi",
+      "url": "/kompost-tesisi",
+      "icon": "♻️"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Solucan Gübresi Üretim Tesisi Kurulum Rehberi",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Solucan gübresi tesisi için minimum arazi ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Minimum 550 m² arazi gereklidir. Bu büyüklük ile mikro ölçekli (1-3 ton/gün) üretim yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Solucan tesisi karlı mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, organik tarım ürünlerine talep arttıkça vermikompost için pazar fırsatları genişliyor; fiyat ürün kalitesi ve yerel talebe göre değişir. Doğru fiyatlandırma için yerel pazar araştırması yapın."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hangi solucan türü kullanılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Eisenia fetida (Kırmızı Kaliforniya solucanı) en yaygın kullanılan türdür. Hızlı ürer ve organik atıkları verimli şekilde işler."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Üretim süresi ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Organik atıkların solucan gübresine dönüşmesi 60-90 gün sürer. Sürekli üretim sistemiyle her hafta hasat yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hammadde nereden temin edilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayvansal gübre (büyükbaş, kümes), tarımsal atıklar (sap, saman), gıda atıkları kullanılabilir. Yerel çiftliklerden temin edilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kompost hazırlama alanı neden gerekli?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ham organik atıkların ön işleme (karıştırma, nemlendirme) tabi tutulması gerekir. Bu alan tesis kapasitesine göre 30-120 m² arasındadır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Isıl işlem ünitesi ne işe yarar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bitmiş solucan gübresinin zararlı mikroorganizmalardan arındırılması ve stabilize edilmesi için gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Tesis maliyeti ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Maliyet, tesis kapasitesi, ekipman seçimi, altyapı ve arazi koşullarına göre değişir. Projeniz için yerel tedarikçilerden ve mühendislik firmalarından teklif almanızı öneririz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Ölçek seviyeleri nelerdir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mikro (1-3 ton/gün), Küçük (3-8 ton), Orta (12-20 ton), Büyük (20-45 ton), Endüstriyel (80+ ton/gün) ölçekler vardır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Pazarlama nasıl yapılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Organik tarım kooperatifleri, tarım marketleri, online satış platformları ve doğrudan çiftçilere satış yapılabilir."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T18:00:00.000Z"
+  }
+}

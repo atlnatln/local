@@ -1,0 +1,47 @@
+                                ADIYAMAN
+
+Merkez - İlçe                                Çiçeklenme         Çiçeklenme
+                  Majör (Yaygın) Bitki Adı
+Adı                                          Başlangıç Tarihi   Bitiş Tarihi
+                Geven                        15 Haziran         30 Temmuz
+                Kekik                        15 Mayıs           15 Haziran
+                Badem                        20 Mart            20 Mayıs
+                Hardal                       1 Mart             1 Haziran
+Merkez          Sütleyen(haşül)              15 Ağustos         15 Ekim
+                Sert Çekirdekli Meyve        15 Mart            15 Nisan
+                Nar                          20 Mayıs           10 Haziran
+                Kır Çiçekleri                15 Mart            15 Ağustos
+                Pamuk                        30 Ağustos         15 Ekim
+                Keven                        15 Haziran         15 Temmuz
+Çelikhan        Sert Çekirdekli Meyve        20 Mart            20 Mayıs
+                Kekik                        15 Mayıs           30 Temmuz
+                Geven                        14 Temmuz          5 Ağustos
+                Sumak                        1 Temmuz           15 Temmuz
+Gerger
+                Kekik                        20 Haziran         25 Temmuz
+                Adaçayı                      10 Ağustos         30 Ağustos
+                badem, Hardal, Yonca         1 Nisan            30 Nisan
+                Kekik                        15 Ağustos         15 Eylül
+Gölbaşı
+                Keven                        10 Temmuz          20 Ağustos
+                Ayçiçeği                     20 Temmuz          15 Ağustos
+                Badem                        20 Mart            20 Mayıs
+Kahta           Nar                          20 Mayıs           10 Haziran
+                Kır Çiçekleri                1 Nisan            31 Mayıs
+                Badem, Sert Çekirdekli Meyve 20 Mart            20 Mayıs
+Besni           Pamuk                        15 Ağustos         30 Eylül
+                Kır Çiçeği                   1 Nisan            31 Mayıs
+                Kır Çiçeği                   20 Mart            15 Mayıs
+Samsat          Pamuk                        15 Ağustos         30 Eylül
+                Badem                        20 Mart            20 Mayıs
+                Geven                        14 Temmuz          5 Ağustos
+                Sumak                        1 Temmuz           15 Temmuz
+Sincik
+                Badem                        20 Mart            20 Mayıs
+                Kekik                        20 Haziran         25 Temmuz
+                Geven,Sert Çekirdekli Meyve 14 Temmuz           5 Ağustos
+                Kekik                        20 Haziran         25 Temmuz
+Tut
+                Sumak                        1 Temmuz           15 Temmuz
+                Kır Çiçeği                   20 Mart            15 Mayıs
+

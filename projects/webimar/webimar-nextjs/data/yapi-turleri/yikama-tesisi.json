@@ -1,0 +1,153 @@
+{
+  "slug": "yikama-tesisi",
+  "id": 7,
+  "name": "Tarımsal Ürün Yıkama Tesisi",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Tarımsal Ürün Yıkama Tesisi Nasıl Kurulur? | Tarım İmar",
+    "description": "Yumrulu bitki yıkama tesisi kurulumu. Minimum 500 m² arazi. Sadece yıkama tesisi yapılır, ek müştemilat izni yok.",
+    "keywords": [
+      "yıkama tesisi",
+      "patates yıkama",
+      "soğan yıkama",
+      "yumrulu bitki",
+      "tarımsal yıkama",
+      "ürün temizleme",
+      "su tahsis belgesi"
+    ],
+    "canonical": "/yikama-tesisi"
+  },
+  "hero": {
+    "title": "Tarımsal Ürün Yıkama Tesisi",
+    "subtitle": "Yumrulu bitkilerin yıkanması için özel tesis. Minimum 500 m² arazi ile başlayın!",
+    "icon": "💦"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Tarımsal ürün yıkama tesisi</strong>, yumrulu bitkiler (patates, soğan, havuç vb.) ve diğer tarımsal ürünlerin yıkanması, temizlenmesi için kullanılan tesislerdir.</p>",
+    "purpose": "<p>Yıkama tesisinin amaçları:</p><ul><li>Toprak ve kir temizliği</li><li>Ürün hijyeni sağlama</li><li>Pazara hazırlık</li><li>Depolama öncesi temizlik</li></ul>",
+    "whoCanBuild": "<p>Yıkama tesisi yapabilmek için:</p><ul><li>Minimum 500 m² arazi</li><li>Sadece yıkama alanı (ek müştemilat yok)</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Basit Sistem",
+      "description": "Sadece yıkama tesisi, ek bina yok",
+      "icon": "✅"
+    },
+    {
+      "title": "Düşük Eşik",
+      "description": "500 m² arazi yeterli",
+      "icon": "📊"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Minimum arazi: 500 m²",
+        "Sadece yıkama tesisi yapılabilir",
+        "İdari bina, depo, müştemilat yapılamaz",
+        "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+      ],
+      "genelge": [
+        "Yalnızca açıkta tarımsal ürün yıkama tesisi yapılabilir",
+        "Ek yapı ve müştemilat izni yoktur"
+      ],
+      "genelgeUrl": ""
+    },
+    "technical": {
+      "capacity": {
+        "unit": "ton/saat",
+        "waterUsage": "Kapalı devre sistem önerilir"
+      },
+      "specifications": [
+        "Yıkama havuzu veya bant sistemi",
+        "Su filtrasyon sistemi",
+        "Atık su arıtma ünitesi",
+        "Yükleme/boşaltma platformu",
+        "Elektrik ve su bağlantısı",
+        "Drenaj sistemi"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Yıkama Tesisi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Tarımsal Ürün Yıkama Tesisi alanını hesaplayın",
+    "ctaText": "Yıkama Tesisi Hesapla",
+    "ctaLink": "/hesaplama/yikama-tesisi"
+  },
+  "faq": [
+    {
+      "question": "Yıkama tesisinde ek bina yapılabilir mi?",
+      "answer": "Hayır, sadece yıkama tesisi yapılabilir. İdari bina, depo veya müştemilat izni yoktur."
+    },
+    {
+      "question": "Minimum arazi ne kadar?",
+      "answer": "Minimum 500 m² arazi gereklidir."
+    },
+    {
+      "question": "Atık su nasıl bertaraf edilir?",
+      "answer": "Atık su yönetimi için uygun arıtma sistemleri ve kontrol mekanizmaları önerilir. Kapalı devre su kullanımı tavsiye edilir; su tasarrufu sağlar."
+    },
+    {
+      "question": "Su tahsis belgesi nedir ve gerekli midir?",
+      "answer": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Kurutma Tesisi",
+      "url": "/kurutma-tesisi",
+      "icon": "☀️"
+    },
+    {
+      "title": "Tarımsal Depo",
+      "url": "/tarimsal-depo",
+      "icon": "🏭"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Tarımsal Ürün Yıkama Tesisi Nasıl Kurulur? | Tarım İmar",
+    "description": "Yumrulu bitki yıkama tesisi kurulumu. Minimum 500 m² arazi. Sadece yıkama tesisi yapılır, ek müştemilat izni yok.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Yıkama tesisinde ek bina yapılabilir mi?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Hayır, sadece yıkama tesisi yapılabilir. İdari bina, depo veya müştemilat izni yoktur." }
+        },
+        {
+          "@type": "Question",
+          "name": "Minimum arazi ne kadar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Minimum 500 m² arazi gereklidir." }
+        },
+        {
+          "@type": "Question",
+          "name": "Atık su nasıl bertaraf edilir?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Atık su yönetimi için uygun arıtma sistemleri ve kontrol mekanizmaları önerilir. Kapalı devre su kullanımı tavsiye edilir; su tasarrufu sağlar." }
+        },
+        {
+          "@type": "Question",
+          "name": "Su tahsis belgesi nedir ve gerekli midir?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir." }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T20:00:00.000Z"
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "slug": "kaz-ordek",
+  "id": 23,
+  "name": "Kaz ve Ördek Çiftliği",
+  "category": "Hayvancılık Tesisleri",
+  "seo": {
+  "title": "Kaz ve Ördek Çiftliği Kurulum Rehberi | Tarım İmar",
+  "description": "Kaz ve ördek çiftliği kurulum rehberi; barınak düzeni, yoğunluk, su havuzlarının işletme ihtiyacı, su tahsis belgesi gereklilikleri, bakım ve devlet destekleri hakkında pratik bilgiler.",
+      "keywords": [
+      "kaz çiftliği",
+      "ördek çiftliği",
+      "su tahsis belgesi",
+      "su tahsis",
+      "1000 adet kaz bakıcı evi"
+    ],
+    "canonical": "/kaz-ordek"
+  },
+  "hero": {
+    "title": "Kaz ve Ördek Çiftliği Kurulumu",
+  "subtitle": "Kaz ve ördek yetiştiriciliği: barınak, yoğunluk ve su havuzu uygulamalarıyla sağlıklı üretim.",
+    "icon": "🦆"
+  },
+  "introduction": {
+  "whatIs": "<p><strong>Kaz ve ördek çiftliği</strong>, kaz ve ördeklerin barındırıldığı, et ve yumurta üretimi için kullanılan tesislerdir.</p>",
+    "purpose": "<p>Çiftliğin amaçları:</p><ul><li>Kaz/ördek eti üretimi</li><li>Yumurta üretimi</li><li>Tüy üretimi (kaz tüyü)</li></ul>",
+  "whoCanBuild": "<p>Kaz ve ördek çiftlikleri küçük aile işletmelerinden 1.000+ kapasiteye kadar ölçeklenebilir. Başlangıç için öneriler:</p><ul><li>Etkin hava sirkülasyonu ve doğal ışık sağlayan barınak</li><li>Minimum alan yoğunluğu: 1 m²’de 2-3 adet (tür ve yaşa göre değişir)</li><li>1000+ kapasitede bakıcı evi ve idari tesis gerekliliği</li><li>Tarım İl/İlçe Müdürlüğü'ne işletme kaydı ve hijyen/atık su yönetimi planı</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Az Yoğunluk",
+      "description": "1 m²'de sadece 2-3 adet",
+      "icon": "📏"
+    },
+    {
+      "title": "Bakıcı Evi (1000+)",
+      "description": "1000 adet ve üzeri için",
+      "icon": "🏠"
+    },
+    {
+      "title": "Tüy Geliri",
+      "description": "Kaz tüyü yüksek fiyatlı",
+      "icon": "🪶"
+    }
+    ,
+    {
+      "title": "Düşük Girdi Maliyeti",
+      "description": "Yem ve bakım maliyetlerinin planlanması ile sürdürülebilir işletme maliyeti sağlanabilir.",
+      "icon": "💸"
+    },
+    {
+      "title": "Pazarlama ve Hibe Desteği",
+      "description": "Devlet destekleri, TKDK ve ilçe hibe programları ile yatırım geri dönüşü kısaltılabilir.",
+      "icon": "📈"
+    }
+  ],
+  "requirements": {
+      "legal": {
+      "restrictions": [
+        "Kapalı barınak yoğunluğu: 1 m²'de 2-3 kaz/ördek (tür ve yaşa göre uyarlanmalı)",
+        "1000+ kapasite durumunda bakıcı evi ve idari bina yapılabilir",
+        "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir.",
+        "İşletme kaydı: Tarım İl/İlçe Müdürlüğü'ne kayıt ve işletme belgesi gerekliliği",
+        "Atık su ve gübre yönetimi ile çevre koruma önlemlerine uyulmalı"
+      ],
+      "genelge": [
+        "Kaz ve ördek için 1 m²'de 2-3 adet"
+      ]
+    },
+  "technical": {
+      "capacity": {
+        "unit": "adet",
+        "perUnit": 0.4,
+        "minCapacity": 50
+      },
+      "specifications": [
+        "Barınak: 2-3/m²",
+        "Barınak tavan yüksekliği ve havalandırma: doğal ya da mekanik havalandırma sağlanmalı",
+        "Su havuzu: Opsiyonel ama önerilir"
+        ,"Su havuzları: Ördek yetiştiriciliğinde yüzme/havuz alanı üretim kalitesini artırır; atık su yönetimi planı gerektirebilir",
+        "Yem depolama: Kuru, nemsiz ve haşeresiz depolama zorunluluğu",
+        "Giriş/çıkış biyogüvenlik önlemleri: Hastalık riskini azaltmak için kontrol noktası ve temizlik alanı gereklidir"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Kaz/Ördek Çiftliği Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Kaz ve Ördek Çiftliği alanını hesaplayın",
+    "ctaText": "Çiftlik Hesapla",
+    "ctaLink": "/hesaplama/kaz-ordek"
+  },
+  "faq": [
+    {
+      "question": "Su havuzu gerekli mi?",
+      "answer": "Ördek için su havuzu, davranış ve üretim kalitesini iyileştirir; kazlarda ise küçük yüzme alanları faydalıdır fakat büyük su havuzları her durumda zorunlu değildir. Atık su yönetimi planı önemlidir."
+    },
+    {
+      "question": "Su tahsis belgesi nedir ve gerekli midir?",
+      "answer": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+    },
+    {
+      "question": "İşletme kaydı zorunlu mu?",
+      "answer": "Evet; ticari üretim yapan tüm işletmeler Tarım İl/İlçe Müdürlüğü'ne kayıt olmak ve ilgili belgeleri almak zorundadır. 1.000+ kapasite için ek yapısal gereksinimler istenebilir."
+    },
+    {
+      "question": "Devlet desteği var mı?",
+      "answer": "Tarım ve Orman Bakanlığı ile TKDK gibi programlar çerçevesinde hibe ve destekler sağlanabiliyor; şartlar proje bazlıdır." 
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Hindi Kümesi",
+      "url": "/kumes-hindi",
+      "icon": "🦃"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+  "headline": "Kaz Ördek Çiftliği Nasıl Kurulur? Kaz ve Ördek Yetiştiriciliği | Tarım İmar",
+  "description": "Kaz ve ördek çiftliği kurulumu. 1 m²'de 2-3 adet yoğunluk, 1000+ için bakıcı evi. Barınak, su havuzu düzenlemeleri ve su tahsis belgesi gereklilikleri.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+    "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Su havuzu gerekli mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ördek için su havuzu üretim kalitesini artırır; kazlarda ise yüzme alanları yararlı ama büyük su havuzları her durumda zorunlu değildir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Su tahsis belgesi nedir ve gerekli midir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "İşletme kaydı zorunlu mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet; Tarım İl/İlçe Müdürlüğü'ne kayıt ve uygun belge ile kayıt gereklidir." 
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": true,
+    "pythonModule": true,
+    "webScraping": true,
+    "lastUpdated": "2025-11-16T00:00:00.000Z"
+  }
+}

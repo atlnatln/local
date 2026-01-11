@@ -1,0 +1,29 @@
+                                MUĞLA
+Merkez- İlçe                            Çiçeklenme       Çiçeklenme
+             Majör(yaygın) Bitki Adı
+Adı                                     Başlangıç Tarihi Bitiş Tarihi
+                Adaçayı                 30 Nisan         30 EYLÜL
+Tüm İl
+                Kekik                   1 Nisan          30 Haziran
+Seydikemer
+Fethiye         Lavanta                 1 Mayıs          1 Eylül
+Dalaman
+                Defne                   1 Nisan          30 Mayıs
+                Mor Reyhan              1 Nisan          1 Ekim
+Kavaklıdere     Mercan Köşk             1 Mayıs          1 Eylül
+hariç Tüm İl    Yeni Dünya              1 Ocak           15 Nisan
+                Keçiboynuzu             1 Şubat          30 Mayıs
+                Karabaş Otu             1 Nisan          1 Haziran
+                Sahlep                  1 Şubat          1 Mayıs
+                Pamuklan                1 Nisan          30 Haziran
+                Püren                   30 Ağustos       30 Ekim
+                Dağ Çileği              30 Eylül         1 Kasım
+                Dağ Sarmaşığı           1 Haziran        1 Ekim
+Tüm Kıyı        Sütleğen                15 Şubat         15 Mart
+şeridi/ sahil   Badem                   15 Ocak          1 Mart
+                Sandal Üzümü            1 Eylül          30 Ekim
+                Okaliptus               1 Şubat          30 Haziran
+                Narenciye               1 Şubat          30 Mayıs
+                Basra                   15 Ağustos       15 Ekim
+                Akasya                  30 Mart          1 Mayıs
+

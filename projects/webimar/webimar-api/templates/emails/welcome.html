@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webimar - Hoş Geldiniz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #8b4513;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 0 0 8px 8px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        .button {
+            display: inline-block;
+            background-color: #8b4513;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌾 Webimar'a Hoş Geldiniz!</h1>
+    </div>
+    
+    <div class="content">
+        <h2>Merhaba {{ username }}!</h2>
+        
+        <p>Webimar - Arazilerde Yapılaşma Mevzuatı ve Hesaplama Sistemi'ne hoş geldiniz!</p>
+        
+        <p>Artık sistemimizi kullanarak:</p>
+        <ul>
+            <li>Tarımsal arazi hesaplamalarını yapabilirsiniz</li>
+            <li>Mevzuat kontrollerini gerçekleştirebilirsiniz</li>
+            <li>Raporlarınızı oluşturabilirsiniz</li>
+            <li>Geçmiş hesaplamalarınızı takip edebilirsiniz</li>
+        </ul>
+        
+        <p>Sisteme giriş yapmak için aşağıdaki butona tıklayabilirsiniz:</p>
+        
+        <a href="{{ login_url }}" class="button">Sisteme Giriş Yap</a>
+        
+        <p>Herhangi bir sorunuz olursa bizimle iletişime geçmekten çekinmeyin.</p>
+        
+        <p>İyi çalışmalar dileriz!</p>
+    </div>
+    
+    <div class="footer">
+        <p>Bu email Webimar sistemi tarafından otomatik olarak gönderilmiştir.</p>
+        <p>© 2025 Webimar - Tüm hakları saklıdır.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+                                         BAYBURT
+Merkez- İlçe                                   Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                            Başlangıç Tarihi   Bitiş Tarihi
+               Karahindiba, Çiğdem             15 Mayıs           1 Eylül
+               Dağ Kekiği                      1 Temmuz           1 Ağustos
+               Papatya                         20 Mayıs           15 Eylül
+               Ballıbabagiller                 30 Mayıs           30 Ağustos
+               Geven                           15 Haziran         15 Temmuz
+               Korunga, Yonca                  1 Haziran          30 Ağustos
+Aydıntepe
+               Arı otu                         1 Haziran          30 Eylül
+               Fiğ                             30 Mayıs           30 Haziran
+               Biberiye                        20 Mayıs           1 Eylül
+               Üçgüller                        10 Mayıs           30 Eylül
+               Devedikeni                      1 Temmuz           30 Eylül
+               İğde                            1 Mayıs            1 Haziran
+               Papatya                         20 Mayıs           15 Eylül
+               Geven                           15 Haziran         15 Temmuz
+               Yonca                           1 Temmuz           30 Ağustos
+Demirözü
+               Korunga                         15 Haziran         30 Ağustos
+               Fiğ                             1 Haziran          30 Temmuz
+               Dağ Kekiği                      1 Temmuz           1 Ağustos
+               Papatya, Sütleğen, Ballıbaba,
+                                               15 Mayıs           30 Ağustos
+               Karahindiba
+               Yonca, Korunga, Adaçayı         1 Haziran          30 Ağustos
+               Kar Çiçeği                      1 Mart             1 Nisan
+               Üçgül                           1 Mayıs            1 Eylül
+               Sığır Kuyruğu                   1 Haziran          1 Eylül
+               Fiğ                             30 Mayıs           30 Temmuz
+               Geven                           1 Haziran          15 Ağustos
+               Kekik                           15 Haziran         30 Temmuz
+Merkez         Hatmi                           1 Haziran          15 Eylül
+               Kuşburnu, Anuk Otu, Kızambuk,
+                                               15 Mayıs           15 Haziran
+               Alıç
+               Söğüt                           1 Nisan            15 Mayıs
+               Germişo                         1 Haziran          1 Temmuz
+               Çakal eriği                     1 Nisan            1 Mayıs
+               Ekşi Elma, Ahlat                15 Nisan           15 Mayıs
+               Kenger, Pıtırak Otu             15 Mayıs           1 Temmuz
+               Hasır Otu, Salep Bitkisi        15 Mayıs           15 Temmuz
+               Çakşır Otu                      15 Mayıs           30 Haziran
+

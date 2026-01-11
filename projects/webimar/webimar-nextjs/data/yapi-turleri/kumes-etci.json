@@ -1,0 +1,264 @@
+{
+  "slug": "kumes-etci",
+  "id": 20,
+  "name": "Kümes (Etçi Tavuk)",
+  "category": "Hayvancılık Tesisleri",
+  "seo": {
+    "title": "Etçi Tavuk Kümesi Nasıl Kurulur? Şartları ve Hesaplama | Tarım İmar",
+  "description": "Etçi tavuk (broiler) kümesi kurulumu için şartlar, 14-18 tavuk/m² yoğunluk, 10000+ adet için bakıcı evi; su tahsis belgesi gereklilikleri, atık su ve gübre yönetimi dahil. Kümes tesisi hesaplaması.",
+    "keywords": [
+      "etçi tavuk",
+      "broiler kümes",
+      "tavuk kümesi",
+      "su tahsis belgesi",
+      "14-18 tavuk metrekare",
+      "10000 adet bakıcı evi",
+      "kanatlı hayvancılık",
+      "tavuk çiftliği"
+    ],
+    "canonical": "/kumes-etci"
+  },
+  "hero": {
+    "title": "Kümes (Etçi Tavuk) Tesisi Kurulumu",
+    "subtitle": "Broiler (etçi tavuk) kümesi kurulumu. 1 m²'de 14-18 tavuk + 10000 adet üzeri bakıcı evi!",
+    "icon": "🍗"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Etçi tavuk (broiler) kümesi</strong>, et üretimi için tavukların 40-45 günde kesime hazır hale getirildiği yoğun üretim tesisleridir.</p>",
+    "purpose": "<p>Tesisinin amaçları:</p><ul><li>Beyaz et üretimi</li><li>Hızlı döngü (45 gün)</li><li>Yüksek verim</li></ul>",
+    "whoCanBuild": "<p>Etçi kümes kurabilmek için:</p><ul><li>1 m²'de 14-18 tavuk kapasitesi</li><li>10000+ tavuk için bakıcı evi hakkı</li><li>Veterinerlik izni gerekli</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Yüksek Yoğunluk",
+      "description": "1 m²'de 14-18 etçi tavuk barındırılabilir",
+      "icon": "📊"
+    },
+    {
+      "title": "Hızlı Döngü",
+      "description": "40-45 günde kesime hazır, yılda 6-7 dönem",
+      "icon": "⏱️"
+    },
+    {
+      "title": "Bakıcı Evi (10000+)",
+      "description": "10000 adet ve üzeri için bakıcı evi yapılabilir",
+      "icon": "🏠"
+    },
+    {
+      "title": "Ekonomik Üretim",
+      "description": "Düşük birim maliyetle et üretimi",
+      "icon": "💰"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Kapalı sistem: 1 m²'de 14-18 etçi tavuk",
+        "10000 adet ve üzeri için bakıcı evi hakkı",
+        
+        "Gübre çukuru/deposu zorunlu (1000 tavuk için ~1.84 m²)"
+      ],
+      "genelge": [
+        "Etçi tavuk için 1 m²'de 14-18 adet yoğunluk",
+        "10000 adet ve üzeri etçi tavuk için bakıcı evi yapılabilir",
+        "Gübre çukuru yapılmalı"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "adet",
+        "perUnit": 0.0625,
+        "minCapacity": 500
+      },
+      "specifications": [
+        "Kümes alanı: 14-18 tavuk/m² (kapalı sistem)",
+        "Yem deposu: Hayvan başına 0.08 m² (min 6 m², max 40 m²)",
+        "Su deposu: Hayvan başına 0.02 m² (min 3 m², max 20 m²)",
+        "Gübre deposu: 1000 tavuk için 1.84 m² (4m derinlik)",
+        "Havalandırma sistemi zorunlu",
+        "Otomatik sulama ve yemleme sistemi önerilir",
+        "Tavan yüksekliği: 3-3.5 m"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Etçi Tavuk Kümesi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Kümes (Etçi Tavuk) alanını hesaplayın",
+    "ctaText": "Etçi Kümes Hesapla",
+    "ctaLink": "/hesaplama/kumes-etci"
+  },
+  "faq": [
+    {
+      "question": "1 m²'de kaç etçi tavuk bakılır?",
+      "answer": "Kapalı sistemde 1 m²'de 14-18 adet etçi tavuk (broiler) bakılabilir. Genellikle 16 tavuk/m² ortalaması kullanılır."
+    },
+    {
+      "question": "Etçi tavuk kümesi için bakıcı evi kaç tavuktan itibaren yapılır?",
+      "answer": "10000 adet ve üzeri etçi tavuk kapasitesi için bakıcı evi hakkı doğar. 75 m² taban alan 150 m²'yi geçmeyen bakıcı evine izin verilebilir."
+    },
+    {
+      "question": "Etçi tavuklar kaç günde kesime hazır olur?",
+      "answer": "Broiler tavuklar ortalama 40-45 günde 2-2.5 kg canlı ağırlığa ulaşır ve kesime gönderilir. Yılda 6-7 dönem üretim yapılabilir."
+    },
+    {
+      "question": "Etçi kümes maliyeti ne kadar?",
+      "answer": "Etçi kümes maliyeti, tesis büyüklüğü, otomasyon düzeyi, altyapı ihtiyaçları (su, enerji, gübre depolama) ve bölgesel işçilik/malzeme fiyatlarına göre önemli ölçüde değişir. Net maliyeti öğrenmek için birden fazla teklif alın ve proje bazlı fizibilite çalışması yapın; yerel İl Tarım ve Orman Müdürlüğü ve bir teknik danışman size doğru yönlendirecektir."
+    },
+    {
+      "question": "Gübre deposu zorunlu mu?",
+      "answer": "10.000 etçi tavuk için 3m derinlikte yaklaşık 25 m² taban alanı gerekir"
+    },
+    {
+      "question": "Yumurtacı ile etçi kümes arasındaki fark nedir?",
+      "answer": "Etçi kümeste tavuk yoğunluğu daha fazladır (14-18/m² vs 6-8/m²). Bakıcı evi eşiği de daha yüksektir (10000 vs 7500 adet)."
+    },
+    {
+      "question": "Etçi kümes için hangi izinler gerekir?",
+      "answer": "İl Tarım ve Orman Müdürlüğü'nden tarımsal amaçlı hayvancılık tesisi izni gereklidir."
+    },
+    {
+      "question": "Su tahsis belgesi nedir ve gerekli midir?",
+      "answer": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+    },
+    {
+      "question": "Havalandırma sistemi şart mı?",
+      "answer": "Evet, yoğun etçi tavuk üretiminde oksijen ihtiyacı nedeniyle otomatik havalandırma sistemi zorunludur."
+    },
+    {
+      "question": "Minimum kaç tavukla başlanır?",
+      "answer": "Ekonomik üretim için minimum 500-1000 etçi tavuk kapasitesi önerilir. Daha küçük kapasiteler karlılık açısından risklidir."
+    },
+    {
+      "question": "Yem tüketimi ne kadar?",
+      "answer": "Bir etçi tavuk 45 günlük döngüde ortalama 3-3.5 kg yem tüketir. Yem dönüşüm oranı (FCR) 1.6-1.8 arasındadır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Yumurtacı Tavuk Kümesi",
+      "url": "/kumes-yumurtaci",
+      "icon": "🥚"
+    },
+    {
+      "title": "Gezen Tavuk Kümesi",
+      "url": "/kumes-gezen",
+      "icon": "🐔"
+    },
+    {
+      "title": "Hindi Kümesi",
+      "url": "/kumes-hindi",
+      "icon": "🦃"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Etçi Tavuk Kümesi Kurulumu Rehberi",
+  "description": "Broiler tavuk kümesi kurulumu için gerekli şartlar, kapasite hesaplaması, su tahsis belgesi gereklilikleri ve mevzuat bilgileri.",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "1 m²'de kaç etçi tavuk bakılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kapalı sistemde 1 m²'de 14-18 adet etçi tavuk (broiler) bakılabilir. Genellikle 16 tavuk/m² ortalaması kullanılır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Etçi tavuk kümesi için bakıcı evi kaç tavuktan itibaren yapılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "10000 adet ve üzeri etçi tavuk kapasitesi için bakıcı evi hakkı doğar. 75 m² taban alan 150 m²'yi geçmeyen bakıcı evine izin verilebilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Etçi tavuklar kaç günde kesime hazır olur?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Broiler tavuklar ortalama 40-45 günde 2-2.5 kg canlı ağırlığa ulaşır ve kesime gönderilir. Yılda 6-7 dönem üretim yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Etçi kümes maliyeti ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Etçi kümes maliyeti proje ölçeği, otomasyon, altyapı ve yerel maliyetlere göre değişir; net maliyet için proje teklifleri alın ve bir fizibilite çalışması yaptırın."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Gübre deposu zorunlu mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "10.000 etçi tavuk için 3m derinlikte yaklaşık 25 m² taban alanı gerekir"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Yumurtacı ile etçi kümes arasındaki fark nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Etçi kümeste tavuk yoğunluğu daha fazladır (14-18/m² vs 6-8/m²). Bakıcı evi eşiği de daha yüksektir (10000 vs 7500 adet)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Etçi kümes için hangi izinler gerekir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İl Tarım ve Orman Müdürlüğü'nden hayvancılık tesisi izni, çevre izni ve veteriner sağlık sertifikası gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Havalandırma sistemi şart mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, yoğun etçi tavuk üretiminde oksijen ihtiyacı nedeniyle otomatik havalandırma sistemi zorunludur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Minimum kaç tavukla başlanır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ekonomik üretim için minimum 500-1000 etçi tavuk kapasitesi önerilir. Daha küçük kapasiteler karlılık açısından risklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Yem tüketimi ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bir etçi tavuk 45 günlük döngüde ortalama 3-3.5 kg yem tüketir. Yem dönüşüm oranı (FCR) 1.6-1.8 arasındadır."
+          }
+        }
+        ,
+        {
+          "@type": "Question",
+          "name": "Su tahsis belgesi nedir ve gerekli midir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": true,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T17:00:00.000Z"
+  }
+}

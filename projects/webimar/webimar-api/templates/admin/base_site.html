@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Webimar Yönetim Paneli{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name">
+    <img src="{% static 'logo.svg' %}" alt="Webimar" style="height:2.5rem;vertical-align:middle;margin-right:15px;filter:drop-shadow(0 2px 8px rgba(255,255,255,0.3));">
+    Webimar
+  </h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/custom_admin.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{% endblock %}
+
+{% block footer %}
+  <div id="footer" style="text-align:center;padding:20px;color:#7f8c8d;font-size:0.9rem;">
+    <p>© 2025 Webimar - Tarımsal Arazi Yapılaşma Hesaplama Sistemi</p>
+  </div>
+{% endblock %}

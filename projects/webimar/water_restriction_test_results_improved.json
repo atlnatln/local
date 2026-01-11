@@ -1,0 +1,548 @@
+[
+  {
+    "province": "AKSARAY",
+    "district": "AKSARAY",
+    "coordinates": [
+      38.4076455365539,
+      34.06042231654877
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "AKSARAY",
+    "district": "ESKIL",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "AKSARAY",
+    "district": "GÜLAĞAÇ",
+    "coordinates": [
+      38.41686159300006,
+      34.34379839347373
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "AKSARAY",
+    "district": "GÜZELYURT",
+    "coordinates": [
+      38.29303238052244,
+      34.307609056447816
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "AKSARAY",
+    "district": "SULTANHANI",
+    "coordinates": [
+      38.2196,
+      33.5921
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "ANKARA",
+    "district": "BALA",
+    "coordinates": [
+      39.464618284112085,
+      33.159352391116236
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "ANKARA",
+    "district": "GÖLBAŞI",
+    "coordinates": [
+      39.564036933603354,
+      32.784755546508315
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "ANKARA",
+    "district": "HAYMANA",
+    "coordinates": [
+      39.31556081187683,
+      32.55914896422754
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "ANKARA",
+    "district": "ŞEREFLIKOÇHISAR",
+    "coordinates": [
+      39.0297,
+      33.5469
+    ],
+    "coordinate_accurate": false,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "ESKIŞEHIR",
+    "district": "ALPU",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "ESKIŞEHIR",
+    "district": "BEYLIKOVA",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "ESKIŞEHIR",
+    "district": "ÇIFTELER",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "ESKIŞEHIR",
+    "district": "MAHMUDIYE",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "ESKIŞEHIR",
+    "district": "MIHALIÇCIK",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "ESKIŞEHIR",
+    "district": "SIVRIHISAR",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "HATAY",
+    "district": "KUMLU",
+    "coordinates": [
+      36.3633,
+      36.4447
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "HATAY",
+    "district": "REYHANLI",
+    "coordinates": [
+      36.2697,
+      36.5642
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KARAMAN",
+    "district": "AYRANCI",
+    "coordinates": [
+      37.279702585327094,
+      33.8501761580881
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KARAMAN",
+    "district": "KARAMAN",
+    "coordinates": [
+      37.16655410937505,
+      33.16566273173269
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KARAMAN",
+    "district": "KAZIMKARABEKIR",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KIRŞEHIR",
+    "district": "BOZTEPE",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KIRŞEHIR",
+    "district": "MUCUR",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KONYA",
+    "district": "AKÖREN",
+    "coordinates": [
+      37.41943542178266,
+      32.374790237739184
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "AKŞEHIR",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KONYA",
+    "district": "ALTINEKIN",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KONYA",
+    "district": "CIHANBEYLI",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KONYA",
+    "district": "ÇUMRA",
+    "coordinates": [
+      37.492103496860516,
+      32.75500856154424
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "DERBENT",
+    "coordinates": [
+      37.977485442520596,
+      32.01245739983567
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "DOĞANHISAR",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KONYA",
+    "district": "EMIRGAZI",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KONYA",
+    "district": "EREĞLI",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "KONYA",
+    "district": "GÜNEYSINIR",
+    "coordinates": [
+      37.180298474165,
+      32.71043926290727
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "HALKAPINAR",
+    "coordinates": [
+      37.371559136534934,
+      34.29772586615122
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "KADINHANI",
+    "coordinates": [
+      38.44632932581255,
+      32.205166266263944
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "KARAPINAR",
+    "coordinates": [
+      37.7179,
+      33.5515
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "KARATAY",
+    "coordinates": [
+      37.944366030748746,
+      32.970519476979106
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "KULU",
+    "coordinates": [
+      39.107994469676036,
+      32.9773968544358
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "MERAM",
+    "coordinates": [
+      37.695154903344644,
+      32.277183098047345
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "SARAYÖNÜ",
+    "coordinates": [
+      38.426342826814334,
+      32.42950156297862
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "SELÇUKLU",
+    "coordinates": [
+      38.062055386431744,
+      32.48259070065579
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "KONYA",
+    "district": "TUZLUKÇU",
+    "coordinates": [
+      38.48417154648724,
+      31.68867582766672
+    ],
+    "coordinate_accurate": true,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  },
+  {
+    "province": "MARDIN",
+    "district": "ARTUKLU",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "MARDIN",
+    "district": "DERIK",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "MARDIN",
+    "district": "KIZILTEPE",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "NEVŞEHIR",
+    "district": "ACIGÖL",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "NEVŞEHIR",
+    "district": "DERINKUYU",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "NEVŞEHIR",
+    "district": "GÜLŞEHIR",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "NIĞDE",
+    "district": "ALTUNHISAR",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "NIĞDE",
+    "district": "BOR",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "NIĞDE",
+    "district": "ÇIFTLIK",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "NIĞDE",
+    "district": "NIĞDE",
+    "coordinates": null,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "reason": "Koordinat bulunamadı"
+  },
+  {
+    "province": "ŞANLIURFA",
+    "district": "VIRANŞEHIR",
+    "coordinates": [
+      37.2411,
+      39.7619
+    ],
+    "coordinate_accurate": false,
+    "sut_sigirciligi": false,
+    "besi_sigirciligi": false,
+    "sut_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha...",
+    "besi_message": "HTTP 400: 📍 Haritada işaretlediğiniz nokta su kısıtı olan yerler arasında olup büyükbaş ha..."
+  }
+]

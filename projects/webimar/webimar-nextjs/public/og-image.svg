@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d2691e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b4513;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="600" y="200" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="72" font-weight="bold">🌾 TARIM İMAR</text>
+  <text x="600" y="280" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="36">Tarımsal Yapılaşma Hesaplama Sistemi</text>
+  <text x="600" y="350" text-anchor="middle" fill="#f0f0f0" font-family="Arial, sans-serif" font-size="24">Mevzuata Uygun • Bilimsel • Güvenilir</text>
+  <text x="600" y="550" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18">tarimimar.com.tr</text>
+</svg>

@@ -1,0 +1,59 @@
+                               TRABZON
+                                             Çiçeklenme         Çiçeklenme
+Merkez-İlçe Adı   Majör (Yaygın) Bitki Adı
+                                             Başlangıç Tarihi   Bitiş Tarihi
+                   Akasya                    5 Mayıs            25 Mayıs
+Akçaabat
+                   Kestane                   25 Mayıs           10 Temmuz
+                   Kestane                   25 Mayıs           10 Temmuz
+Araklı
+                   Ormangülü                 25 Nisan           10 Haziran
+                   Kestane                   25 Mayıs           10 Temmuz
+Arsin
+                   Ormangülü                 25 Nisan           10 Haziran
+                   Kestane                   25 Mayıs           10 Temmuz
+Beşikdüzü
+                   Ormangülü                 25 Nisan           10 Haziran
+                   Akasya                    5 Mayıs            25 Mayıs
+Çarşıbaşı
+                   Ormangülü                 25 Nisan           10 Haziran
+                   Kestane                   5 Haziran          15 Temmuz
+Çaykara
+                   Ormangülü                 15 Mayıs           20 Haziran
+                   Kestane                   5 Haziran          15 Temmuz
+Dernekpazarı
+                   Ormangülü                 15 Mayıs           20 Haziran
+                   Akasya                    10 Mayıs           30 Mayıs
+Düzköy
+                   Kestane                   5 Haziran          15 Temmuz
+                   Kestane                   5 Haziran          15 Temmuz
+Hayrat
+                   Ormangülü                 15 Mayıs           20 Haziran
+                   Kestane                   5 Haziran          15 Temmuz
+Köprübaşı
+                   Ormangülü                 15 Mayıs           20 Haziran
+                   Ormangülü                 15 Mayıs           20 Haziran
+Maçka
+                   Akasya                    10 Mayıs           30 Mayıs
+                   Kestane                   25 Mayıs           10 Temmuz
+Of
+                   Ormangülü                 10 Mayıs           10 Haziran
+                   Akasya                    5 Mayıs            25 Mayıs
+Ortahisar(Merkez )
+                   Kestane                   25 Mayıs           10 Temmuz
+                   Kestane                   25 Mayıs           10 Temmuz
+Sürmene
+                   Ormangülü                 25 Nisan           10 Haziran
+                   Ormangülü                 15 Mayıs           20 Haziran
+Şalpazarı
+                   Kestane                   5 Haziran          15 Temmuz
+                   Kestane                   5 Haziran          15 Temmuz
+Tonya
+                   Ormangülü                 15 Mayıs           20 Haziran
+                   Kestane                   25 Mayıs           10 Temmuz
+Vakfıkebir
+                   Ormangülü                 10 Mayıs           25 Mayıs
+                   Kestane                   25 Mayıs           10 Temmuz
+Yomra
+                   Ormangülü                 25 Nisan           10 Haziran
+

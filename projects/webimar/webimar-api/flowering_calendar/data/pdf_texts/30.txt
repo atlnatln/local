@@ -1,0 +1,25 @@
+                                    HAKKARİ
+Merkez- İlçe                                  Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                           Başlangıç Tarihi   Bitiş Tarihi
+               Kardelen                       1 Nisan            1 Mayıs
+               Asmin Çiçeği                   5 Nisan            15 Mayıs
+               Yabani Badem                   10 Nisan           15 Mayıs
+               Kayısı, Erik                   15 Nisan           20 Mayıs
+               Elma                           20 Nisan           25 Mayıs
+               Armut                          25 Nisan           30 Mayıs
+               Yumuşan (Alıç)                 1 Mayıs            15 Haziran
+               Korunga                        10 Mayıs           20 Haziran
+               Yonca                          20 Mayıs           15 Ağustos
+Merkez ve      Üçgül                          25 Mayıs           30 Haziran
+İlçeler        Çakşır Otu                     30 Mayıs           15 Temmuz
+               Sığırdili, Yabani Nerniz       1 Haziran          15 Ağustos
+               Kekik                          1 Haziran          30 Temmuz
+               Hatmıgül                       1 Haziran          10 Ağustos
+               Yabani Korunga                 10 Haziran         25 Temmuz
+               Geven                          25 Haziran         30 Temmuz
+               Çoban Yastığı                  30 Haziran         1 Ağustas
+               Deve Dikeni                    1 Temmuz           10 Ağustos
+               Boğa Dikeni                    1 Temmuz           15 Ağostos
+               Mısır, Ayçiçek                 1 Temmuz           1 Eylül
+

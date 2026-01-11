@@ -1,0 +1,195 @@
+                                  MANİSA
+Merkez- İlçe                               Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                        Başlangıç Tarihi   Bitiş Tarihi
+               Badem                       1 Şubat            1 Nisan
+               Hayıt                       3 Mayıs            5 Temmuz
+               Çam                         15 Ağustos         1 Kasım
+Ahmetli        Papatya                     15 Şubat           15 Nisan
+               Kekik                       15 Mayıs           15 Haziran
+               Dağ Çileği                  1 Nisan            1 Mayıs
+               Sarmaşık                    1 Nisan            15 Ekim
+               Hardal                      15 Nisan           7 Mayıs
+               Karaağaç                    20 Ocak            10 Şubat
+               Dilfir                      20 Nisan           15 Mayıs
+               Papatya                     1 Şubat            20 Mart
+               Çaltı                       15 Mayıs           10 Haziran
+               Taş Bademi(Acıbadem)        20 Ocak            20 Şubat
+               Mor Diken                   15 Mayıs           20 Haziran
+               Deve Dikeni                 20 Mayıs           25 Haziran
+               Çiriş otu                   15 Nisan           1 Mayıs
+               Ilgın                       20 Nisan           10 Mayıs
+               Gelincik                    20 Nisan           30 Haziran
+               Fışılga(Karaot)             1 Temmuz           10 Ağustos
+               Sütlü Sarmaşık              20 Temmuz          10 Eylül
+               Çörtük                      20 Haziran         10 Ağustos
+Akhisar        Yabani Nane                 1 Temmuz           30 Temmuz
+               Semizotu                    30 Haziran         1 Eylül
+               Deve Çökerten               20 Haziran         1 Ağustos
+               Domuz Pıtrağı               1 Temmuz           1 Eylül
+               Isırgan                     1 Mayıs            1 Temmuz
+               Hayıt                       20 Haziran         20 Temmuz
+               Ebegümeci                   1 Mayıs            1 1 haziran
+               Yaban Fiği                  20 Nisan           20 Mayıs
+               Akasya                      10 Mayıs           1 Haziran
+               İğde                        1 Mayıs            30 Mayıs
+               Sumak                       1 Ağustos          1 Eylül
+               Davulga                     1 Mart             30 Mart
+               Yabani Böğürtlen            20 Haziran         1 Eylül
+               Güvem                       1 Haziran          1 Eylül
+               Domuz Eriği                 25 Haziran         15 Temmuz
+               Hardal                      15 Nisan           7 Mayıs
+               Karaağaç                    20 Ocak            10 Şubat
+Alaşehir
+               Çaltı                       15 Mayıs           10 Haziran
+               Deve Dikeni                 20 Mayıs           25 Haziran
+             Çiriş otu                     15 Nisan     1 Mayıs
+             Gelincik                      20 Nisan     30 Haziran
+             Sütlü Sarmaşık                20 Temmuz    10 Eylül
+             Semizotu                      30 Haziran   1 Eylül
+             Deve Çökerten                 20 Haziran   1 Ağustos
+             Hayıt                         20 Haziran   20 Temmuz
+             Yaban Fiği                    20 Nisan     20 Mayıs
+             Akasya                        10 Mayıs     1 Haziran
+             Davulga                       1 Mart       30 Mart
+             Yabani Böğürtlen              20 Haziran   1 Eylül
+             Geven                         Temmuz       Ağustos
+             Çaltı                         Haziran      Temmuz
+             Adaçayı                       Mayıs        Haziran
+             Kiraz                         Mayıs        Mayıs
+             Badem                         Şubat        Mart
+             Elma                          Nisan        Mayıs
+             Güneş Çiçeği(Yazgelin
+Demirci                                    Haziran      Ağustos
+             Düğmesi)
+             Hünnap                        Mart         Mayıs
+             Nar                           Nisan        Mayıs
+             Devedikeni                    Mayıs        Ağustos
+             Yeni Dünya                    Şubat        Mart
+             Kestane                       Haziran      Ağustos
+             Palamut-Meşe                  Ağustos      Eylül
+
+           Kırkekiği, Üçgül, Yonca, Hayıt,
+           Devedikeni, Hardal, Kiriş otu,
+Gölmarmara                                 15 Nisan     30 Mayıs
+           Sarmaşık, Badem, Karahindiba
+           çiçeği, Sığır Kuyruğu, Lavanta
+
+             Elma, Kiraz                   1 Nisan      20 Mayıs
+             Ayva, Kestane                 15 Mayıs     15 Haziran
+             Badem                         1 Nisan      20 Mayıs
+             Ihlamur                       1Mayıs       15 Haziran
+Gördes
+             Hayıt                         1 Haziran    15 Ağustos
+             Yonca                         1 Nisan      30 Eylül
+             Papatya, Karahindiba,
+                                           1 Nisan      15 Haziran
+             Ballıbabagiller
+             Kekik                         1 Nisan      25 Haziran
+             Geven                         1 Nisan      20 Haziran
+Kırkağaç     Adaçayı                       1 Mayıs      20 Temmuz
+             Sarı kanteron                 20 Nisan     15 Temmuz
+             Ebegümeci                     10 Haziran   25 Ağustos
+            Davulga ağacı                 5 Temmuz     5 Ağustos
+            Kiraz                         5 Nisan      5 Mayıs
+            Badem                         15 Nisan     20 Mayıs
+            Hayıt                         3 Mayıs      5 Temmuz
+            Zeytin                        1 Nisan      30 Mayıs
+            Ceviz                         15 Nisan     15 Mayıs
+Köprübaşı
+            Kiraz                         15 Mayıs     15 Haziran
+            Çilek                         1 Nisan      1 Haziran
+            Nar                           15 Nisan     15 Mayıs
+            Palamut                       1 Nisan      1 Haziran
+            Badem                         20 Mart      30 Nisan
+            Çaltı                         20 Mayıs     1 Haziran
+            Hayıt                         1 Haziran    30 Ağustos
+Kula        Susam Otu                     15 Temmuz    15 Eylül
+            Lavanta                       10 Haziran   31 Temmuz
+            Yabani Kekik                  15 Ağustos   15 Eylül
+            Meşe Ağacı Nektarı            15 Eylül     30 Ekim
+            Yabani Badem                  1 Şubat      30 Şubat
+            Kiriş                         20 Mart      25 Nisan
+            Üçgül (Tırfıl)                1 Nisan      30 Mayıs
+            Efenk                         1 Mayıs      1 Haziran
+            Yabani Roka                   15 Şubat     30 Mayıs
+            Hardal                        15 Mart      1 Haziran
+            Hayıt, Mor Diken, Mor Diken   1 Temmuz     30 Temmuz
+            Karaçalı (Çaltı)              1 Mayıs      25 Mayıs
+            Meşe                          25 Ağustos   30 Ekim
+            Kekik                         25 Haziran   25 Eylül
+Salihli     Susam                         1 Temmuz     15 Ağustos
+            Bambulotu (Bostanotu)         15 Haziran   15 Ağustos
+            Sığır Kuyruğu                 1 Haziran    1 Temmuz
+            Kiraz                         15 Nisan     15 Mayıs
+            Kayısı                        1 Mart       20 Mart
+            Pamuk                         1 Temmuz     30 Ağustos
+            Badem                         15 Mart      5 Nisan
+            Çam                           25 Temmuz    30 Ekim
+            Çiğdem                        15 Ocak      15 Şubat
+            Morca                         1 Ekim       15 Kasım
+            Yer Kekiği                    25 Haziran   30 Temmuz
+            Kiraz                         1 Nisan      25 Mayıs
+            Zeytin                        20 Nisan     10 Haziran
+Sarıgöl     Yabani Badem                  1 Şubat      30 Şubat
+            Kiriş                         20 Mart      25 Nisan
+            Mor Diken, Susam, Hayıt       1 Temmuz     30 Temmuz
+             Salkım                           1 Nisan      20 Mayıs
+             Hayıt                            3 Mayıs      5 Temmuz
+             Diken                            5 Mayıs      25 Temmuz
+             Kiriş                            1 Nisan      30 Nisan
+             Kiraz                            1 Mart       20 Mart
+             Badem                            5 Şubat      20 Şubat
+             Akasya                           25 Nisan     10 Mayıs
+             Ihlamur                          10 Nisan     30 Nisan
+             Arı Otu                          1 Haziran    30 Haziran
+Saruhanlı
+             Çaltı                            15 Nisan     1 Mayıs
+             Çam                              1 Eylül      20 Kasım
+             Kekik                            10 Temmuz    15 Ağustos
+             Pamuk                            20 Temmuz    15 Ağustos
+             Karaağaç                         15 Şubat     25 Şubat
+             Sütlü Sarmaşık, Semizlik         15 Nisan     30 Ağustos
+             Hardal                           20 Haziran   10 Temmuz
+             Kengel Dikeni                    10 Haziran   15 Ağustos
+             Sazlık                           15 Temmuz    30 Ağustos
+             Badem                            20 Mart      30 Nisan
+             Çaltı                            20 Mayıs     1 Haziran
+Selendi      Hayıt                            1 Haziran    30 Ağustos
+             Susam Otu                        15 Temmuz    15 Eylül
+             Meşe Ağacı Nektarı               15 Eylül     30 Ekim
+             Erguvan, Çaltı, Akasya, Defne,
+                                              Nisan        Mayıs
+             Üçgül, Davulgu
+Soma         Karahindiba                      Mart         Mayıs
+             Yabani Yonca, Ada Çayı, Hayıt    Nisan        Haziran
+             Basra Böceği                     Ağustos      Ekim
+             Hayıt                            01 Mayıs     30 Eylül
+             Pamuk                            01 Haziran   31 Ağustos
+Şehzadeler   Çam                              01 Ağustos   01 Kasım
+             Karaçalı                         01 Mayıs     01 Ağustos
+             Kekik                            01 Haziran   15 Eylül
+             Badem                            20 Şubat     20 Mart
+             Erik                             25 Şubat     25 Mart
+             Şeftali, Kayısı, Kiraz           1 Mart       30 Mart
+Turgutlu     Armut                            1 Nisan      20 Nisan
+             Ihlamur                          15 Haziran   30 Haziran
+             Hayıt                            15 Haziran   20 Temmuz
+             Kestane                          20 Haziran   10 Temmuz
+             Badem                            1 Şubat      15 Nisan
+Yunusemre    Kiriş                            20 Mart      25 Nisan
+             Üçgül (Tırfıl)                   1 Nisan      30 Mayıs
+Kekiği             25 Haziran   30 Temmuz
+Çam                25 Temmuz    30 Kasım
+Hardal             15 Mart      1 Haziran
+Hayıt, Mor Diken   1 Temmuz     30 Temmuz
+Karaçalı (Çaltı)   1 Mayıs      25 Mayıs
+Meşe               25 Ağustos   30 Ekim
+Kekik              25 Haziran   25 Eylül
+Susam              1 Temmuz     15 Ağustos
+Pamuk              1 Temmuz     30 Ağustos
+Pamucak            15 Nisan     30 Haziran
+Sığır Kuyruğu      1 Haziran    1 Temmuz
+Kiraz              15 Nisan     15 Mayıs
+Kayısı             1 Mart       20 Mart
+

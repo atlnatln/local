@@ -1,0 +1,116 @@
+{
+  "slug": "zeytinyagi-uretim-tesisi",
+  "id": 14,
+  "name": "Zeytinyağı Üretim Tesisi",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Zeytinyağı Üretim Tesisi (Küçük Ölçek) Nasıl Kurulur? | Tarım İmar",
+    "description": "Küçük ölçekli zeytinyağı üretim tesisi kurulumu. Minimum yatırımla sızma zeytinyağı üretimi.",
+    "keywords": [
+      "zeytinyağı üretimi",
+      "küçük ölçek",
+      "zeytin işleme",
+      "sızma yağ"
+    ],
+    "canonical": "/zeytinyagi-uretim-tesisi"
+  },
+  "hero": {
+    "title": "Zeytinyağı Üretim Tesisi (Küçük Ölçek)",
+  "subtitle": "Kendi zeytinlerinizden sızma yağ üretin. Küçük ölçekli üretim tesisi!",
+    "icon": "🫒"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Küçük ölçekli zeytinyağı üretim tesisi</strong>, bireysel veya kooperatif bazında zeytinyağı üretimi için kullanılan mini fabrikadır.</p>",
+    "purpose": "<p>Amaçları:</p><ul><li>Kendi zeytin bahçelerinden yağ üretimi</li><li>Yerel pazara satış</li><li>Organik sertifikalı üretim</li></ul>",
+    "whoCanBuild": "<p>Küçük üretim tesisi kurabilmek için:</p><ul><li>%10 emsal</li><li>Minimal ekipman</li><li>Karasu arıtma (küçük ölçek)</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Düşük Yatırım",
+      "description": "Büyük fabrikaya göre uygun",
+      "icon": "💰"
+    },
+    {
+      "title": "Kendi Üretim",
+      "description": "Kendi zeytinlerinizi işleyin",
+      "icon": "🫒"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Emsal: %10",
+        "Gıda ruhsatı",
+        "Karasu arıtma (basit)"
+      ],
+      "genelge": [
+        "Küçük ölçekli tesisler için kolaylaştırılmış izin"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "kg/gün",
+        "minCapacity": 100
+      },
+      "specifications": [
+        "Kırıcı",
+        "Harman makinesi",
+        "Separatör",
+        "Tanklar"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Zeytinyağı Üretim Hesapla",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Zeytinyağı Üretim Tesisi alanını hesaplayın",
+    "ctaText": "Hemen Hesapla",
+    "ctaLink": "/hesaplama/zeytinyagi-uretim-tesisi"
+  },
+  "faq": [
+    {
+      "question": "Büyük fabrika ile farkı nedir?",
+      "answer": "Kapasite daha düşüktür (ör. 100-500 kg/gün). Yatırım tutarı kapasite, ekipman seçimi ve arıtma gereksinimlerine göre değişir; yerel tedarikçilerden teklif almanızı öneririz."
+  }
+  ],
+  "relatedPages": [
+    {
+      "title": "Zeytinyağı Fabrikası",
+      "url": "/zeytinyagi-fabrikasi",
+      "icon": "🫒"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Zeytinyağı Üretim Tesisi (Küçük Ölçek) Nasıl Kurulur? | Tarım İmar",
+    "description": "Küçük ölçekli zeytinyağı üretim tesisi kurulumu. Minimum yatırımla sızma zeytinyağı üretimi.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Büyük fabrika ile farkı nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kapasite daha düşüktür (ör. 100-500 kg/gün). Yatırım tutarı kapasite, ekipman seçimi ve arıtma gereksinimlerine göre değişir; yerel tedarikçilerden teklif almanızı öneririz."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-16T02:30:00.000Z"
+  }
+}

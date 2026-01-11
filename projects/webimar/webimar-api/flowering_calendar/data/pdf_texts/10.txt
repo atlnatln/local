@@ -1,0 +1,123 @@
+                                       BALIKESİR
+Merkez- İlçe                                  Çiçeklenme         Çiçeklenme
+             Majör(yaygın) Bitki Adı
+Adı                                           Başlangıç Tarihi   Bitiş Tarihi
+             Ayçiçeği                         10 Temmuz          20 Ağustos
+             Kanola                           15 Ağustos         20 Eylül
+             Kiraz                            1 Nisan            30 Nisan
+Bandırma
+             Kestane                          5 Haziran          30 Haziran
+             Piren                            15 Mart            20 Nisan
+             Karaçalı                         15 Mayıs           5 Haziran
+             Kestane                          1 Haziran          1 Temmuz
+             Ihlamur                          10 Haziran         1 Temmuz
+             Davulga                          20 Ekim            10 Aralık
+             Püren Otu                        1 Şubat            15 Mart
+Erdek
+             Karabaş Otu                      1 Nisan            1 Mayıs
+             Pamukleğen Otu, Tespih Ağacı     1 Mayıs            1 Haziran
+             Kızıl Ağaç                       1 Şubat            1 Mart
+             Ballı Baba Bitkisi               15 Şubat           20 Mart
+             Karaçaltı                        15 Mayıs           5 Haziran
+             Çam                              1 Ağustos          30 Kasım
+Altıeylül    Mordiken                         1 Temmuz           30 Temmuz
+             Meşe                             15 Temmuz          15 Ağustos
+             Trifolium                        10 Mayıs           15 Haziran
+             Narenciye, Zeytin, Kestane,
+Edremit      Kekik, Çam                       15 Nisan           15 Kasım
+
+             Badem                            1 Şubat            31 Mart
+             Tilfil(Üçgül)                    1 Nisan            30 Mayıs
+             Pamuk Otu                        15 Nisan           15 Haziran
+             Davulga                          1 Şubat            28 Şubat
+             Kiraz, Mandalina                 1 Mayıs            30 Mayıs
+Havran
+             Erik                             15 Mart            15 Nisan
+             Hayıt                            1 Temmuz           30 Temmuz
+             Çam                              1 Eylül            15 Nisan
+             Püren                            15 Ekim            30 Kasım
+             Kestane                          10 Haziran         10 Temmuz
+             Davulga                          1 Eylül            30 Ekim
+             Hayıt, Çaltı                     1 Nisan            1 Temmuz
+Kepsut       Çam, Meşe                        1 Ağustos          30 Eylül
+             Ihlamur                          15 Mayıs           15 Haziran
+             Yonca                            1 Nisan            1 Eylül
+             Tırfıl                           15 Mayıs           30 Mayıs
+Karesi
+             Karaçaltı                        15 Mayıs           15 Haziran
+            Meşe                              15 Ağustos   15 Eylül
+            Çam                               1 Ağustos    30 Kasım
+            Mor Diken                         15 Temmuz    15 Ağustos
+            Ayçiçeği                          1 Temmuz     30 Temmuz
+            Karaçalı                          25 Mayıs     20 Haziran
+            Ihlamur                           20 Haziran   10 Temmuz
+            Mor Diken                         25 Haziran   15 Ağustos
+Susurluk
+            Ayçiçeği                          5 Temmuz     15 Ağustos
+            Meşe                              15 Ağustos   5 Ekim
+            Kocayemiş(Dağ Çileği)             15 Kasım     30 Ocak
+            Hıdrellez Kamçışı(Çiriş)          30 Mart      30 Nisan
+            Tirfil(Tirfolium)                 15 Nisan     1 Haziran
+            Karaçalı                          10 Mayıs     15 Haziran
+Gönen       Tesbih Ağacı                      1 Mayıs      20 Mayıs
+            Püren(Davulga)                    1 Eylül      30 Kasım
+            Ayçiçeği                          15 Temmuz    15 Ağustos
+            Kanola                            1 Nisan      15 Mayıs
+            Kızılcık                          15 Şubat     31 Mart
+            Akasya                            1 Nisan      31 Haziran
+            Karaçalı, Pamucak                 1 Mayıs      31 Haziran
+İvrindi     Kestane, Ihlamur                  1 Haziran    15 Temmuz
+            Kekik                             15 Mayıs     31 Ağustos
+            Meşe                              1 Ağustos    31 Eylül
+            Çam                               1 Ağustos    1 Eylül
+Dursunbey   Kara Çaltı                        15 Nisan     15 Haziran
+            Piren                             1 Eylül      30 Kasım
+Ayvalık     Hayıt                             1 Temmuz     1 Eylül
+            Çam                               1 Haziran    30 Kasım
+            Davulga, Çaltı                    1 Nisan      30 Mayıs
+            Kestane                           1 Temmuz     30 Ağustos
+Bigadiç
+            Murt                              30 Mayıs     30 Haziran
+            Çam                               1 Eylül      30 Kasım
+            Badem Ağaçı, Ballı Bala, Hardal   1 Mart       15 Mart
+            Karabaş Otu                       1 Nisan      20 Nisan
+            Üçgül, Akasya                     1 Nisan      15 Mayıs
+            Tilfir, Tesbih                    1 Nisan      20 Nisan
+Manyas      Kara Çalı, Fiğ                    1 Mayıs      31 Mayıs
+            Kestane                           15 Mayıs     1 Haziran
+            Ihlamur                           15 Mayıs     15 Haziran
+            Ayçiçeği, Mor Diken, Yonca        15 Temmuz    15 Ağustos
+            Sarmaşık                          1 Ağustos    1 Eylül
+Marmara     Adaçayı                           15 Mayıs     20 Haziran
+            Hıdırellez Kamçısı                28 Nisan     15 Mayıs
+            Yaban Ayvası                      15 Mayıs     1 Haziran
+            Kekik                             5 Mayıs      15 Ağustos
+            Hindiba                           10 Mayıs     30 Haziran
+            Üçgül                             1 Mayıs      20 Mayıs
+            Hayıt, Kekik                      10 Haziran   30 Haziran
+            Karaçalı                          15 Mayıs     30 Mayıs
+            Davulga                           15 Mart      30 Nisan
+Savaştepe
+            Tavşanak, Ballıbaba               20 Nisan     10 Mayıs
+            Hardal Otu                        15 Mart      30 Mart
+            Püren                             10 Nisan     30 Nisan
+            Boğa Dikeni                       1 Haziran    30 Haziran
+            Çaltı, Çam, Diş Otu, Civanperçemi 1 Mayıs      1 Temmuz
+            Sarmaşık                          1 Ağustos    1 Ekim
+            Kekik, Sarı Kantaron              1 Nisan      1 Temmuz
+            Ballıbaba, Karahindiba            1 Mart       1 Eylül
+Sındırgı    Adaçayı                           1 Haziran    1 Ağustos
+            Deve Dikeni                       1 Mayıs      1 Ağustos
+            İt Üzümü, Mısır                   1 Temmuz     1 Eylül
+            Üçgül, Yonca                      1 Nisan      1 Ağustos
+            Ceviz                             1 Nisan      1 Haziran
+            Davulgu(Koca Yemiş)               Nisan        Mayıs
+Balya       Çam                               Ağustos      Ekim
+            Meşe                              Haziran      Ağustos
+            Hayıt                             1 Haziran    15 temmuz
+            Çam(Ezek)                         1 Nisan      15 Mayıs
+Burhaniye
+            Çam                               1 Ağustos    1 Ekim
+            Beyaz Püren                       1 Nisan      15 Nisan
+Gömeç       Hayıt                             1 Mayıs      10 Temmuz
+

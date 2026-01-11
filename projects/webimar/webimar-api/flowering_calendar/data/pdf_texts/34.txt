@@ -1,0 +1,119 @@
+                                     İSTANBUL
+Merkez- İlçe                                Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                         Başlangıç Tarihi   Bitiş Tarihi
+               Tesbih ağacı                 1 Mayıs            20 Haziran
+               Dişbudak, Boylu dişbudak     10 Mart            30 Nisan
+               Toros sediri                 3 Eylül            25 Kasım
+               Çitlembik                    15 Mart            30 Mayıs
+               Kızılçam                     1 Haziran          30 Haziran
+               Hurma                        3 Mayıs            30 Haziran
+               Gümüşi ıhlamur               1 Haziran          30 Temmuz
+               At kestanesi                 5 Nisan            30 Mayıs
+               Kanada akçaağacı             3 Mart             30 Nisan
+               Saplı meşe                   5 Mayıs            20 Haziran
+               İğde                         5 Nisan            25 Mayıs
+               Gladiçya                     10 Mayıs           20 Temmuz
+               Söğüt                        20 Mart            20 Mayıs
+Adalar         Kuşburnu                     10 Mayıs           25 Temmuz
+               Kocayemiş                    1 Eylül            25 Ekim
+               Kekik                        7 Nisan            20 Ağustos
+               Kaya kekiği                  3 Haziran          15 Ekim
+               Sarmaşık                     15 Nisan           15 Eylül
+               Pamucak                      10 Mart            15 Haziran
+               Süpürge çalışı, püren        5 Ağustos          20 Ekim
+               Deve dikeni                  10 Temmuz          15 Eylül
+               Dağ karanfili, ölmez otu     5 Haziran          20 Eylül
+               Duvar sarmaşığı, orman
+               sarmaşığı                    5 Eylül            20 Ekim
+               Karaçalı                     10 Mayıs           25 Haziran
+               Böğürtlen                    7 Mayıs            22 Ağustos
+               Meryem otu                   3 Nisan            20 Mayıs
+               Elma                         01 Mayıs           20 Mayıs
+               kestane                      3 Mayıs            5 Mayıs
+               Ihlamur                      01 Haziran         21 Haziran
+Sarıyer        Meşe                         21 Mayıs           15 Haziran
+               akasya                       15 Mart            01 Nisan
+               Çam                          15 Nisan           15 Mayıs
+               Püren                        15 Eylül           15 Ekim
+               Ayçiçeği                     1 Temmuz           1 Ağustos
+Avcılar
+               Kanola                       15 Mayıs           15 Haziran
+               Elma                         Nisan-Mayıs        Haziran
+Sancaktepe     Armut                        Mayıs              Haziran
+               Ballıbaba                    Mart               Haziran
+              Yabani Hardal             Şubat        Haziran
+              Papatya                   Mart-Nisan   Haziran
+              Üçgül                     Mart         Eylül
+              Ayçiçeği                  1 Temmuz     1 Ağustos
+Büyükçekmec
+              Kanola                    1 Mayıs      1 Haziran
+e
+              Ihlamur                   20 Haziran   15 Temmuz
+              Kanola                    20 Mart      20 Nisan
+Silivri
+              Ayçiçeği                  15 Haziran   30 Temmuz
+              Kolza Kanola              1 Mayıs      15 Haziran
+Çatalca       Ayçiçeği, Ihlamur         15 Haziran   15 Temmuz
+              Püren                     1 Eylül      1 Ekim
+              Ballı Baba                Mart         Haziran
+              Fındık                    Şubat        Mart
+              Kızılcık                  Şubat        Nisan
+              Akasya, Ihlamur           Nisan        Mayıs
+Eyüpsultan    Üskül                     Mayıs        Mayıs
+              Kestane                   Mayıs        Haziran
+              Kantaron                  Mayıs        Eylül
+              Meşe                      Ağustos      Ağustos
+              Funda, Kocayemiş, Püren   Ekim         Kasım
+              Akasya                    1 Mayıs      20 Mayıs
+              Kanola, Püren             1 Nisan      1 Mayıs
+Başakşehir    Karaçalı                  15 Mart      5 Nisan
+              Püren                     1 Ekim       1 Kasım
+              Ayçiçeği                  15 Temmuz    15 Ağustos
+              Kızılcık                  20 Şubat     10 Mart
+              Ballı Baba                15 Mart      10 Mayıs
+              Erik                      15 Mart      30 Mart
+              Beyaz Püren               15 Mart      15 Nisan
+              Üçgül                     10 Nisan     1 Eylül
+              Elma, Akasya              10 Mayıs     30 Mayıs
+              Muşmula                   10 Mayıs     1 Haziran
+              Defne                     10 Mart      10 Nisan
+              Kuşburnu                  15 Mayıs     1 Haziran
+Arnavutköy
+              Karaçalı                  10 Nisan     10 Mayıs
+              Ahlat                     1 Nisan      20 Nisan
+              Kanola                    5 Nisan      30 Nisan
+                                        10 Mayıs     30 Mayıs
+              Ihlamur                   5 Haziran    20 Haziran
+              Kestane                   1 Haziran    20 Haziran
+              Kekik                     10 Haziran   30 Eylül
+              Böğürtlen                 20 Mayıs     20 Ağustos
+              Ayçiçeği                  30 Haziran   30 Temmuz
+              Oğul Otu(Melisa)                 20 Haziran   1 Eylül
+              Püren                            1 Eylül      1 Kasım
+              Sarmaşık                         1 Eylül      1 Ekim
+              Deve Dikeni                      5 Temmuz     10 Ağustos
+              Geyik Dikeni                     10 Nisan     10 Haziran
+              Kocayemiş                        5 Ekim       30 Aralık
+              Meşe                             5 Temmuz     25 Ağustos
+              Kestane-Ihlamur-Meşe(Salgı)      05 Haziran   20 Temmuz
+Şile          Sonbahar Püreni- Üçgül- Yonca-
+                                               05 Mayıs     10 Ekim
+              Korunga- Fiğ
+              Erik                             1 Nisan      30 Mayıs
+              Çiğdem                           1 Nisan      30 Haziran
+              Sığır kuyruğu                    1 Mayıs      30 Haziran
+Sultanbeyli
+              Kestane, Püren , Kocayemiş,
+                                               1 Mayıs      30 Temmuz
+              Ballıbaba , Karabaş, Böğürtlen
+
+              Elma                             1 Nisan      20 Mayıs
+              Püren                            15 Ağustos   1 Ekim
+Kartal
+              Böğürtlen                        15 Mayıs     15 Temmuz
+              Akasya                           1 Nisan      15 Mayıs
+              Akasya, Kestane , Ihlamur,
+Beykoz                                         1 Haziran    30 Ekim
+              Püren
+

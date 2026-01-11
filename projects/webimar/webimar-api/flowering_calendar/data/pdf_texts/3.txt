@@ -1,0 +1,255 @@
+                              AFYONKARAHİSAR
+Merkez- İlçe                                  Çiçeklenme         Çiçeklenme
+             Majör(yaygın) Bitki Adı
+Adı                                           Başlangıç Tarihi   Bitiş Tarihi
+             Erik, Badem                      15 Mart            15 Nisan
+             Vişne ,Kiraz                     10 Nisan           10 Mayıs
+             Elma                             20 Nisan           10 Mayıs
+             Ahlat                            20 Nisan           20 Mayıs
+             Efekt, Kekik                     15 Haziran         30 Haziran
+             Geven                            01 Temmuz          30 Haziran
+             Ballıbaba                        15 Nisan           15 Mayıs
+Merkez
+             Sığır Kuyruğu                    15 Temmuz          15 Ağustos
+             Böğürlern                        01 Ağustos         1 Eylül
+             İt Burnu                         20 Temmuz          10 Ağustos
+             Davşanak Pinar                   15 Haziran         15 Temmuz
+             Hardal Turp Otu,Haşhaş,Kestane   5 Mayıs            5 Haziran
+             Ayçiçek                          01 Temmuz          20 Temmuz
+             Akasya                           01 Mayıs           01 Haziran
+             Erik,Badem                       15 Mart            15 Nisan
+             Vişne , Kiraz                    10 Nisan           10 Mayıs
+             Elma                             20 Nisan           10 Mayıs
+             Ahlat                            20 Nisan           20 Mayıs
+             Efekt                            15 Haziran         30 Haziran
+             Kekik                            1 Haziran          20 Haziran
+             Geven                            15 Mayıs           15 Haziran
+             Ballıbaba                        5 Nisan            5 Mayıs
+             Sığır Kuyruğu, İt Burnu          1 Temmuz           1 Ağustos
+Başmakçı
+             Gül (Yağlık)                     15 Nisan           5 Haziran
+             Gelincik Otu, Hardal Turp
+             Otu,Haşhaş                       5 Mayıs            5 Haziran
+             Ayçiçek                          20 Haziran         5 Temmuz
+             Akasya                           01 Mayıs           01 Haziran
+             Kornişon Hıyar                   01 Temmuz          30 Ekim
+             Civanperçemi Otu                 15 Mayıs           15 Temmuz
+             Hardal Otu                       05 Mayıs           15 Haziran
+             Yabani Fiğ                       15 Nisan           15 Haziran
+             Erik,Badem                       15 Mart            15 Nisan
+             Vişne ,Kiraz                     10 Nisan           10 Mayıs
+             Efekt,Kekik                      15 Haziran         30 Haziran
+             Geven                            01 Temmuz          30 Haziran
+Bayat        Ballıbaba                        15 Nisan           15 Mayıs
+             Sığır Kuyruğu,Boğa Dikeni        15 Temmuz          15 Ağustos
+             Böğürtlen                        01 Ağustos         1 Eylül
+             İt Burnu                         20 Temmuz          10 Ağustos
+             Davşanak Pinar                   15 Haziran         15 Temmuz
+            Hardal Turp Otu         5 Mayıs      5 Haziran
+           Haşhas                   15 Mayıs     15 Haziran
+           Ayçiçek                  01 Temmuz    20 Temmuz
+           Akasya                   01 Mayıs     01 Haziran
+           Boz Ot                   15 Temmuz    30 Ağustos
+           Macar Fiği               01 Mayıs     15 Haziran
+           Erik,Badem               25 Mart      25 Nisan
+           Vişne ,Kiraz             15 Nisan     15 Mayıs
+           Elma                     20 Nisan     10 Mayıs
+           Ahlat                    20 Nisan     20 Mayıs
+           Efekt                    20 Haziran   10 Temmuz
+           Kekik                    25 Haziran   10 Temmuz
+           Geven                    01 Temmuz    30 Haziran
+           Ballıbaba                25 Nisan     25 Mayıs
+Bolvadin   Sığır Kuyruğu            30 Temmuz    30 Ağustos
+           Böğürtlen                15 Haziran   20 Ağustos
+           İt Burnu                 20 Temmuz    10 Ağıstos
+           Davşanak Pinar           20 Haziran   15 Temmuz
+            Hardal Turp Otu         5 Mayıs      5 Haziran
+           Haşhas                   15 Mayıs     15 Haziran
+           Ayçiçek                  01 Temmuz    20 Temmuz
+           Akasya                   01 Mayıs     01 Haziran
+           Kestane                  20 Mayıs     20 Temmuz
+           Badem                    15 Mart      30 Nisan
+           Kiraz                    1 Nisan      1 Mayıs
+           Elma,Ballıbaba           15 Nisan     15 Mayıs
+           Kekik,Lavanta            1 Haziran    1 Temmuz
+Dazkırı
+           Geven                    1 Haziran    15 Temmuz
+           Sığır Kuyruğu            1 Haziran    15 Ağustos
+           Hardal Turp Otu,Haşhaş   1 Mayıs      1 Haziran
+           Ayçiçek                  01 Temmuz    30 Temmuz
+           Erik                     15 Mart      15 Nisan
+           Badem                    10 Mart      10 Nisan
+           Vişne,Kiraz              10 Nisan     10 Mayıs
+           Kekik                    05 Haziran   20 Haziran
+           Ballıbaba                10 Nisan     20 Ağustos
+Dinar
+           Böğürlern                20 Temmuz    20 Ağustos
+           Hardal Turp Otu          30 Nisan     30 Haziran
+           Haşhaş                   20 Nisan     20 Mayıs
+           Ayçiçeği                 15 Haziran   5 Temmuz
+           Ihlamur                  15 Nisan     15 Haziran
+           Badem                    15 Mart      15 Nisan
+           Elma                     20 Nisan     10 Mayıs
+Emirdağ
+           Ahlat                    20 Nisan     20 Mayıs
+           Kekik                    15 Haziran   30 Haziran
+            Geven              01 Temmuz    30 Haziran
+            Ballıbaba          15 Nisan     15 Mayıs
+            Sığır Kuyruğu      15 Temmuz    15 Ağustos
+            İt Burnu           20 Temmuz    10 Ağustos
+            Haşhaş             15 Mayıs     15 Haziran
+            Ayçiçeği           01 Temmuz    20 Temmuz
+            Akasya             01 Mayıs     01 Haziran
+            Ayçiçek (Yağlık)   10 Haziran   25 Temmuz
+Evciler     Kekik,Lavanta      15 Haziran   30 Haziran
+            Elma               01 Nisan     30 Mayıs
+            Aspir              1 Mayıs      1 Haziran
+            Haşhas             15 Mayıs     15 Haziran
+            Badem,Erik         15 Mart      15 Nisan
+            Vişne              10 Nisan     10 Mayıs
+            Elma               20 Nisan     10 Mayıs
+            Ahlat              20 Nisan     20 Mayıs
+İhsaniye    Sığır Kuyruğu      15 Temmuz    15 Ağustos
+            Kekik              15 Haziran   30 Haziran
+            Geven              01 Temmuz    30 Haziran
+            Kuşburnu           20 Temmuz    10 Ağustos
+            Davşanak Pinar     15 Haziran   15 Temmuz
+            Hardal Turp Otu    5 Mayıs      5 Haziran
+            Ayçiçek            01 Temmuz    20 Temmuz
+            Erik               3 Nisan      30 Nisan
+            Badem              10 Mart      20 Nisan
+            Vişne ,Kiraz       15 Nisan     20 Mayıs
+            Elma               5 Nisan      10 Mayıs
+            Ahlat              25 Nisan     25 Mayıs
+            Efekt,Kekik        20 Nisan     30 Haziran
+            Geven              20 Nisan     1 Temmuz
+İscehisar   Ballıbaba          15 Nisan     30 Mayıs
+            Sığır Kuyruğu      5 Mayıs      5 Temmuz
+            Böğürlern          10 Temmuz    10 Eylül
+            İt Burnu           1 Temmuz     15 Ağustos
+            Davşanak Pinar     30 Mayıs     20 Temmuz
+             Hardal Turp Otu   30 Nisan     10 Haziran
+            Haşhas             1 Mayıs      20 Haziran
+            Ayçiçek            25 Haziran   25 Temmuz
+            Erik,Badem         15 Mart      15 Nisan
+            Vişne,Kiraz        10 Nisan     10 Mayıs
+            Elma               20 Nisan     10 Mayıs
+Kızılören   Ahlat              20 Nisan     20 Mayıs
+            Efekt,Kekik        15 Haziran   30 Haziran
+            Geven              01 Temmuz    30 Haziran
+            Sığır Kuyruğu      15 Temmuz    15 Ağustos
+             Böğürlern                           01 Ağustos        1 Eylül
+             Hardal Turp Otu                     5 Mayıs           5 Haziran
+             Haşhas                              15 Mayıs          15 Haziran
+             Ayçiçek                             01 Temmuz         20 Temmuz
+             Akasya,Macar Fiğ                    01 Mayıs          01 Haziran
+             Top Diken,Kabak                     01 Temmuz         31 Ağustos
+             Korunga,Sedir                       01 Haziran        31 Temmuz
+             Yonca                               Sezon Süresince   Sezon Süresince
+             İğde                                01 Mayıs          31 Mayıs
+             Beyaz Sarmaşık                      01 Mayıs          30 Haziran
+             Dikfir                              01 Nisan          31 Mayıs
+             Erik,Badem                          5 Mart            5 Nisan
+             Vişne,Kiraz                         1 Nisan           1 Mayıs
+             Elma                                10 Nisan          1 Mayıs
+             Ahlat                               10 Nisan          10 Mayıs
+             Efekt,Kekik                         5 Haziran         20 Haziran
+             Geven                               20 Haziran        20 Temmuz
+             Ballıbaba                           5 Nisan           5 Mayıs
+             Sığır Kuyruğu                       5 Temmuz          5 Ağustos
+Sandıklı
+             Böğürlern                           20 Temmuz         20 Ağustos
+             İt Burnu                            10 Temmuz         1 Ağustos
+             Davşanak Pinar                      5 Haziran         5 Temmuz
+              Hardal Turp Otu                    25 Nisan          25 Mayıs
+             Haşhas                              5 Mayıs           5 Haziran
+             Ayçiçek                             20 Haziran        10 Temmuz
+             Akasya                              20 Nisan          20 Mayıs
+             Kestane                             5 Mayıs           5 Temmuz
+             Efekt,Kekik,Adaçayı                 15 Haziran        30 Haziran
+             Geven                               15 Haziran        15 Temmuz
+             Erik,Badem                          15 Mart           15 Nisan
+             Vişne ,Kiraz,Elma,Ahlat,Ballıbaba   10 Nisan          10 Mayıs
+             Korunga                             15 Haziran        30 Haziran
+Sinanpaşa
+             Davşanak Pinar                      16 Haziran        15 Temmuz
+             Haşhaş,Yabani Yonca,Devedikeni      15 Mayıs          15 Haziran
+             Ayçiçek                             1 Temmuz          31 Temmuz
+             Kuşburnu                            10 Haziran        15 temmuz
+             Böğürtlen                           1 Ağustos         30 ağustos
+             Erik,Badem                          15 Mart           15 Nisan
+             Vişne,Kiraz                         1 Nisan           1 Mayıs
+             Elma,Ahlat                          10 Nisan          10 Mayıs
+             Kekik                               15 Mayıs          30 Haziran
+Sultandağı
+             Geven                               1 Mayıs           30 Haziran
+             Ballıbaba                           1 Mart            20 Mayıs
+             Sığır Kuyruğu                       1 Haziran         10 Ağustos
+             Böğürlern                           15 Temmuz         20 Ağustos
+           İt Burnu,Davşanak Pinar       1 Temmuz     20 Ağustos
+           Hardal Turp Otu               5 Mayıs      5 Haziran
+           Haşhas                        15 Mayıs     15 Haziran
+           Ayçiçek                       01 Temmuz    30 Temmuz
+           Akasya                        01 Mayıs     01 Haziran
+           Erik,Badem                    1 Nisan      1 Mayıs
+           Vişne ,Kiraz                  10 Nisan     10 Mayıs
+           Elma                          20 Nisan     10 Mayıs
+           Ahlat                         20 Nisan     20 Mayıs
+           Efekt,Kekik                   15 Haziran   30 Haziran
+           Geven                         01 Temmuz    30 Haziran
+           Ballıbaba                     15 Nisan     15 Mayıs
+Şuhut
+           Sığır Kuyruğu                 15 Temmuz    15 Ağustos
+           Böğürtlen                     01 Ağustos   1 Eylül
+           İt Burnu                      20 Temmuz    10 Ağıstos
+           Davşanak Pinar                15 Haziran   15 Temmuz
+            Hardal Turp Otu              5 Mayıs      5 Haziran
+           Haşhas                        15 Mayıs     15 Haziran
+           Ayçiçek                       20 Haziran   20 Temmuz
+           Kayısı,Erik,Badem,Ballıbaba   1 Mart       15 Nisan
+           Geven                         1 Nisan      30 Haziran
+           Hardal                        1 Nisan      15 Haziran
+           Kiraz                         1 Nisan      10 Mayıs
+           Vişne                         10 Nisan     15 Mayıs
+           Kekik                         15 Nisan     30 Temmuz
+Çay        Elma                          10 Nisan     10 Mayıs
+           Ahlat                         20 Nisan     20 Mayıs
+           Akasya                        1 Mayıs      1 Haziran
+           Böğürtlen                     1 Mayıs      1 Temmuz
+           Kuş Burnu,Haşhaş,Kestane      15 Mayıs     15 Haziran
+           Ayçiçek                       15 Haziran   20 Temmuz
+           Sığır Kuyruğu                 1 Temmuz     15 Ağustos
+           Erik,Badem                    15 Mart      15 Nisan
+           Vişne,Kiraz                   10 Nisan     10 Mayıs
+           Elma                          20 Nisan     10 Mayıs
+           Ahlat                         20 Nisan     20 Mayıs
+           Efekt,Kekik                   15 Haziran   30 Haziran
+           Geven                         01 Temmuz    30 Haziran
+Çobanlar   Ballıbaba                     15 Nisan     15 Mayıs
+           Sığır Kuyruğu                 15 Temmuz    15 Ağustos
+           Böğürlern                     01 Ağustos   1 Eylül
+           İt Burnu                      20 Temmuz    10 Ağıstos
+           Davşanak Pinar                15 Haziran   15 Temmuz
+            Hardal Turp Otu              5 Mayıs      5 Haziran
+           Haşhas                        15 Mayıs     15 Haziran
+          Ayçiçek                  01 Temmuz    20 Temmuz
+          Akasya                   01 Mayıs     01 Haziran
+          Kestane                  15 Mayıs     15 Temmuz
+          Erik,Badem               22 Mart      22 Nisan
+          Vişne ,Kiraz             20 Nisan     20 Mayıs
+          Elma                     28 Nisan     20 Mayıs
+          Ahlat                    27 Nisan     27 Mayıs
+          Efekt                    22 Haziran   10 Temmuz
+          Kekik                    22 Haziran   7 Temmuz
+          Geven                    08 Temmuz    7 Temmuz
+          Ballıbaba                22 Nisan     22 Mayıs
+Hocalar
+          Sığır Kuyruğu            22 Temmuz    22 Ağustos
+          Böğürlern                08 Ağustos   8 Eylül
+          İt Burnu                 27 Temmuz    17 Ağustos
+          Davşanak Pinar,Kestane   22 Haziran   22 Temmuz
+           Hardal Turp Otu         12 Mayıs     12 Haziran
+          Haşhas                   22 Mayıs     22 Haziran
+          Ayçiçek                  08 Temmuz    27 Temmuz
+          Akasya                   08 Mayıs     08 Haziran
+

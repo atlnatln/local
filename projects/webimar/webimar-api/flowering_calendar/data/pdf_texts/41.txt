@@ -1,0 +1,63 @@
+                                   KOCAELİ
+Merkez- İlçe                              Çiçeklenme         Çiçeklenme
+                Majör(yaygın) Bitki Adı
+Adı                                       Başlangıç Tarihi   Bitiş Tarihi
+                Kekik                     15 Mayıs           25 Haziran
+                Hardal                    20 Mart            15 Mayıs
+                Nane                      1 Haziran          15 Eylül
+                Üçgül                     1 Mayıs            1 Eylül
+İzmit, Kartepe,
+                Akasya                    1 Mayıs            25 Mayıs
+Başiskele
+                Kestane                   1 Haziran          25 Haziran
+                Ihlamur                   1 Haziran          30 Haziran
+                Yabani Yonca              1 Nisan            20 Temmuz
+                Korunga                   15 Mayıs           25 Haziran
+                Kekik                     15 Mayıs           25 Haziran
+                Orman Gülü                5 Mayıs            5 Haziran
+                Hardal                    20 Mart            15 Mayıs
+                Üçgül                     1 Mayıs            1 Eylül
+                Kestane                   1 Haziran          25 Haziran
+                Ihlamur                   1 Haziran          30 Haziran
+Gölcük
+                Dağ Çileği                10 Nisan           1 Temmuz
+                Akasya                    1 Mayıs            25 Mayıs
+                Yabani Yonca              1 Nisan            20 Temmuz
+                Kır Yoncası               1 Nisan            1 Temmuz
+                Kara Yemiş                1 Mayıs            15 Haziran
+                Ballı Baba                1 Mart             15 Nisan
+                Kestane                   1 Haziran          25 Haziran
+                Sığır Kuyruğu             1 Haziran          1 Temmuz
+                Akasya                    1 Mayıs            25 Mayıs
+                Hardal                    20 Mart            15 Mayıs
+Karamürsel      Ihlamur                   1 Haziran          30 Haziran
+                Kekik                     15 Mayıs           25 Haziran
+                Kır Yoncası               1 Nisan            20 Temmuz
+                Korunga                   15 Mayıs           25 Haziran
+                Ballı Baba                1 Mart             15 Nisan
+                Kır Yoncası               1 Nisan            20 Temmuz
+                Kara Yemiş                1 Mayıs            15 Haziran
+Körfez,
+                Akasya                    1 Mayıs            25 Mayıs
+Derince
+                Hardal                    20 Mart            15 Mayıs
+                Kekik                     15 Mayıs           25 Haziran
+                Kekik                     15 Mayıs           25 Haziran
+                Sığır Kuyruğu             1 Haziran          1 Temmuz
+Kandıra
+                Korunga                   15 Mayıs           25 Haziran
+                Akasya                    1 Mayıs            25 Mayıs
+            Hardal          20 Mart     15 Mayıs
+            Ballı Baba      1 Mart      15 Nisan
+            Kestane         1 Haziran   25 Haziran
+            Ihlamur         1 Haziran   30 Haziran
+            Hardal          20 Mart     15 Mayıs
+            Ballı Baba      1 Mart      15 Nisan
+Gebze,      Kekik           15 Mayıs    25 Haziran
+Dilovası,
+            Akasya          1 Mayıs     25 Mayıs
+Çayırova,
+Darıca      Yanbani Yonca   1 Nisan     20 Temmuz
+            Yabani Fiğ      20 Mart     15 Haziran
+            Papatya         20 Mart     20 Temmuz
+

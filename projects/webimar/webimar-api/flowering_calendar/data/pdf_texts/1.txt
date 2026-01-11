@@ -1,0 +1,118 @@
+                                     ADANA
+Merkez- İlçe                                            Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                                     Başlangıç Tarihi   Bitiş Tarihi
+               Kekik                                    10 Temmuz          20 Ağustos
+               Geven                                    1 Temmuz           30 Ağustos
+               Yayla Çayı                               20 Temmuz          25 Ağustos
+Aladağ
+               Hartlap                                  5 Mart             22 Nisan
+               Üçgül                                    3 Nisan            28 Mayıs
+               Püren                                    1 Eylül            28 Kasım
+               Şeftali,Nektarin,Kayısı                  20 Şubat           20 Mart
+               Erik                                     20 Şubat           30 Mart
+Ceyhan         Portakal,Mandarin, Limon                 01 Mart            30 Nisan
+               Ayçiçeği                                 15 Mayıs           15 Haziran
+               Pamuk                                    01 Haziran         15 Temmuz
+               Nektarin,Şeftali, Kayısı                 15 Şubat           30 Nisan
+               Limon, Mandalina                         15 Mart            20 Mayıs
+Çukurova       Armut,Erik                               15 Şubat           30 Nisan
+               Badem                                    15 Şubat           20 Nisan
+               Ayçiçeği                                 10 Mayıs           15 Haziran
+               Kiraz(polen) bölgesel                    1 Nisan            25 Nisan
+               Akasya(nektar) bölgesel                  15 Nisan           1 Mayıs
+               Geven(nektar) yayğın                     1 Temmuz           30 Temmuz
+               Göknar(mezla) ağacı(nektar) yayğın       1 Haziran          15 Temmuz
+Feke           Karaçalı(nektar) bölgesel                15 Mayıs           30 Mayıs
+               Püren(nektar/polen) bölgesel             1 Ekim             15 Kasım
+               Tesbih ağacı(styrax) (nektar) bölgesel   1 Nisan            1 Mayıs
+               Kekik(nektar) bölgesel                   1 Haziran          20 Temmuz
+               Lavanta(polen)(nektar) bölgesel          14 Haziran         10 Temmuz
+               Ayçiçeği                                 10 Mayıs           15 Haziran
+               Çeti                                     5 Mayıs            30 Ağustos
+İmamoğlu
+               Sakarca                                  1 Ağustos          20 Ekim
+               Püren(ormanlık alanlarda)                1 Ekim             30 Ocak
+               ORMAN                                    1 Ocak             31 Aralık
+Karaisalı      PÜREN                                    1 Eylül            1 Aralık
+               AYÇİÇEĞİ                                 15 Mayıs           1 Ağustos
+               Narenciye                                1 Nisan            10 Mayıs
+               Çam                                      1 Nisan            1 Mayıs
+               Nektarin                                 20 Şubat           15 Mart
+Karataş
+               Okaliptüs                                20 Nisan           20 Mayıs
+               Mısır                                    10 Haziran         1 Ağustos
+               Soya                                     10 Haziran         10 Temmuz
+            Pamuk                                  10 Temmuz    1 Ağustos
+            Portakal, Limon,Altıntop,Kiraz         1 Nisan      1 Mayıs
+            Mandalin                               1 Mart       1 Haziran
+            Kayısı,Nektarin,Şeftali,Akasya         1 Şubat      1 Haziran
+            Trabzon Hurması                        1 Haziran    1 Ağustos
+            Mısır                                  1 Haziran    1 Kasım
+            Soya,Yer fıstığı                       1 Mayıs      1 Haziran
+Kozan
+            Zeytin                                 1 Nisan      1 Temmuz
+            Nar                                    1 Nisan      1 Eylül
+            Keçiboynuzu                            1 Eylül      1 Kasım
+            Ayçiçeği                               1 Haziran    1 Ekim
+            Püren                                  1 Ekim       1 Aralık
+            Defne                                  1 Nisan      1 Haziran
+            Tespih Çiçeği                          1 Mayıs      20 Mayıs
+            Püren                                  15 Temmuz    30 Ağustos
+            Badem                                  1 Nisan      18 Nisan
+            Elma                                   22 Mart      7 Haziran
+Pozantı
+            Kiraz                                  13 Nisan     5 Haziran
+            Keven                                  25 Nisan     15 Ağustos
+            Kekik                                  10 Nisan     10 Haziran
+            Ayı Dikeni, Boğa Dikeni, Deve Dikeni   25 Haziran   15 Ağustos
+            Kiraz                                  20 Nisan     20 Mayıs
+Saimbeyli   Keven                                  15 Temmuz    15 Ağustos
+            Mezra(Sedir)                           15 Mayıs     1 Haziran
+            Turunçgil                              1 Nisan      1 Mayıs
+            Nektarin/Şeftali,Erik,Kayısı, Badem    15 Mart      15 Nisan
+            Keçi Boynuzu (Harnup)                  1 Eylül      1 Kasım
+            Ayçiçeği                               1 Mayıs      1 Ağustos
+            Bezelye/Baklagil, Fiğ/Yonca            1 Mart       1 Mayıs
+Sarıçam
+            Çilek                                  1 Mart       1 Eylül
+            Kekik                                  1 Nisan      1 Haziran
+            Patates                                15 Nisan     1 Haziran
+            Soya                                   15 Haziran   15 Ağustos
+            Yeni Dünya,Lavanta                     1 Mart       1 Nisan
+            Narenciye                              15 Mart      30 Nisan
+            Susam                                  1 Ağustos    30 Ağustos
+            Okaliptus                              15 Mayıs     30 Haziran
+            Okaliptus                              1 Ekim       30 Kasım
+Seyhan      Çeti dikeni                            1 Haziran    30 Haziran
+            Pamuk                                  15 Temmuz    15 Eylül
+            Böğürtlen                              1 Haziran    1 Temmuz
+            BozotU                                 1 Haziran    30 Temmuz
+            Üçgül                                  1 Nisan      30 Mayıs
+             Keven, Kantaron, Korunga, Fiğ, kekik,
+Tufanbeyli   Kuşburnu, Alıç, Dağ Armudu, Ayrık       Nisan        Eylül
+             otu, Çağla
+             Narenciye                               1 Mart       20 Haziran
+             Püren                                   1 Mart       30 Nisan
+             Çeti                                    1 Haziran    10 Ağustos
+Yumurtalık
+             Ayçiçeği                                10 Mayıs     20 Haziran
+             Pamuk                                   1 Haziran    20 Temmuz
+             Okaliptus                               15 Ocak      15 Mayıs
+             Narenciye(Mandalina, Portakal,
+             Limon, Greyfurt),Sert Çegirdekli
+                                                     01 Mayıs     01 Haziran
+             Meyve Ağaçları (Şeftali-Nektarin, Erik,
+             Kayısı )
+             Pamuk                                   10 Nisan     01 Eylül
+             Ayçiçeği ,Çiriş Otu                     01 Mayıs     15 Haziran
+             Korunga                                 15 Mart      30 Haziran
+Yüreğir      Okaliptüs                               Yılboyu      Yılboyu
+             Melisa                                  01 Haziran   01 Ağustos
+             Lavandula                               15 Mayıs     15 Haziran
+             Ballıbaba(Lamiyum)                      Mart         Nisan
+             Ihlamur                                 Mayıs        Temmuz
+             Kocayemiş                               Şubat        Ekim
+             Püren                                   Ekim         Kasım
+             Fazelya(Arı Otu),Akçaağaç               Nisan        Haziran
+

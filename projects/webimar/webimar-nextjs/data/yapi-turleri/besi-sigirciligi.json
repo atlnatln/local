@@ -1,0 +1,191 @@
+{
+  "slug": "besi-sigirciligi",
+  "id": 27,
+  "name": "Besi Sığırcılığı",
+  "category": "Hayvancılık Tesisleri",
+  "seo": {
+    "title": "Besi Sığırcılığı Tesisi Nasıl Kurulur? Şartları ve Hesaplama | Tarım İmar",
+    "description": "Besi sığırcılığı için gerekli şartlar, ahır alanı hesaplaması (15 m²/baş) ve 50+ bakıcı evi koşulları. Arazinizi kontrol edip hesaplayın!",
+  "keywords": [
+      "besi sığırcılığı",
+      "besi sığırı ahırı",
+      "besi tesisi",
+      "besi ahırı hesaplama",
+      "besi bakıcı evi",
+      "50 baş besi",
+      "hayvancılık tesisi",
+      "besi sığırı mevzuat"
+      ,
+      "su tahsis belgesi"
+    ],
+    "canonical": "https://tarimimar.com.tr/besi-sigirciligi"
+  },
+  "hero": {
+    "title": "Besi Sığırcılığı Tesisi Kurulumu",
+    "subtitle": "Besi sığırcılığı için ahır, yem deposu ve bakıcı evi hesaplaması. 50 baş ve üzeri için bakıcı evi hakkı!",
+    "icon": "🐃"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Besi sığırcılığı tesisi</strong>, genç erkek sığırların (buzağı, düve) et üretimi amacıyla beslendiği, belirli bir süre sonunda kesime gönderildiği hayvancılık yapılarıdır.</p>",
+    "purpose": "<p>Besi sığırcılığı tesislerinin amaçları:</p><ul><li>Kırmızı et üretimi</li><li>Kısa sürede canlı ağırlık artışı</li><li>Ekonomik et üretimi</li></ul>",
+    "whoCanBuild": "<p>Besi tesisi kurabilmek için:</p><ul><li>Hayvan başına 15 m² kapalı alan</li><li>50 baş+ için bakıcı evi hakkı</li><li>İl Tarım izni</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Kısa Süreli Yatırım",
+      "description": "6-12 ayda kesime hazır, hızlı geri dönüş",
+      "icon": "⏱️"
+    },
+    {
+      "title": "Bakıcı Evi (50+)",
+      "description": "50 baş+ için bakıcı evi hakkı",
+      "icon": "🏠"
+    },
+    {
+      "title": "Düşük Bakım",
+      "description": "Süt sığırına göre daha az bakım gerektirir",
+      "icon": "🔧"
+    },
+    {
+      "title": "Et Üretimi",
+      "description": "Kırmızı et piyasasına yönelik üretim",
+      "icon": "🥩"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Ahır + yem deposu: Hayvan başına maksimum 15 m²",
+        "50 baş+ için bakıcı evi yapılabilir",
+        "Tesis 550-1500 m²: Bakıcı evi 75 m² taban, 150 m² toplam",
+  "Tesis 1500 m²+: Bakıcı evi 150 m² taban, 300 m² toplam",
+  "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+      ],
+      "genelge": [
+        "Büyükbaş hayvanlar için ahır ve yem deposu toplam 15 m²/baş",
+        "Besi sığırcılığı için 50 baş+ bakıcı evi",
+        "Ahır, yem deposu ve gübre çukuru bakıcı evinden önce yapılmalı"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "baş",
+        "perUnit": 15,
+        "minCapacity": 10
+      },
+      "specifications": [
+        "Ahır: 10-12 m²/baş",
+        "Yem deposu: 3-5 m²/baş",
+        "Toplam: Max 15 m²/baş",
+        "Besi ekipman alanı: 30 baş+ için 20-50 m²",
+        "Tavan: 3-3,5 m"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Besi Sığırcılığı Tesisi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Besi Sığırcılığı alanını hesaplayın",
+    "ctaText": "Besi Tesisi Hesapla",
+    "ctaLink": "/hesaplama/besi-sigirciligi"
+  },
+  "faq": [
+    {
+      "question": "Besi sığırı için kaç m² alan gereklidir?",
+      "answer": "Hayvan başına max 15 m² (ahır + yem deposu)."
+    },
+    {
+      "question": "Bakıcı evi hakkı kazanmak için en az kaç hayvan olmalı?",
+      "answer": "50 baş ve üzeri besi sığırı için bakıcı evi yapılabilir."
+    },
+    {
+      "question": "Besi süresi ne kadar?",
+      "answer": "6-12 ay, ırk ve başlangıç ağırlığına göre değişir."
+    },
+    {
+      "question": "Su tahsis belgesi nedir ve gerekli midir?",
+      "answer": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+    },
+    {
+      "question": "Büyük Ova'da kaç başa izin veriliyor?",
+      "answer": "12.06.2025 tarihli ve 2025/2 sayılı Tarımsal Üretim Planlaması Kararı gereği, bazı Büyük Ova alanlarında yeni büyükbaş işletmeleri kurulmasına izin verilmemektedir. Ancak ailelerin zati ihtiyaçları kapsamında 5 başa (5 baş dahil) kadar işletmeler bu kısıtlamanın dışında bırakılmıştır; bu nedenle hesaplanan kapasite Büyük Ova alanlarında mevzuat gereği 5 baş ile sınırlandırılabilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Süt Sığırcılığı",
+      "url": "/sut-sigirciligi",
+      "icon": "🐄"
+    },
+    {
+      "title": "Ağıl (Küçükbaş)",
+      "url": "/agil-kucukbas",
+      "icon": "🐑"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Besi Sığırcılığı Tesisi Nasıl Kurulur? Şartları ve Hesaplama | Tarım İmar",
+    "description": "Besi sığırcılığı tesisi kurulumu için gerekli şartlar, ahır alanı hesaplaması (15m²/baş), 50 baş+ bakıcı evi koşulları. Arazinizde besi sığırcılığı yapabilir misiniz?",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Besi sığırı için kaç m² alan gereklidir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayvan başına max 15 m² (ahır + yem deposu)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bakıcı evi hakkı kazanmak için en az kaç hayvan olmalı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "50 baş ve üzeri besi sığırı için bakıcı evi yapılabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Besi süresi ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "6-12 ay, ırk ve başlangıç ağırlığına göre değişir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Su tahsis belgesi nedir ve gerekli midir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Su tahsis belgesi, DSİ veya yerel belediye tarafından verilen; yeraltı/yerüstü/şebeke suyunun belirli bir amaç ve miktarda kullanım hakkını gösteren resmi belgedir. DSİ tarafından belirlenen kapalı havzalar için gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Büyük Ova'da kaç başa izin veriliyor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "12.06.2025 tarihli ve 2025/2 sayılı Tarımsal Üretim Planlaması Kararı gereği, bazı Büyük Ova alanlarında yeni büyükbaş işletmeleri kurulmasına izin verilmemektedir. Ancak ailelerin zati ihtiyaçları kapsamında 5 başa (5 baş dahil) kadar işletmeler bu kısıtlamanın dışında bırakılmıştır; bu nedenle hesaplanan kapasite Büyük Ova alanlarında mevzuat gereği 5 baş ile sınırlandırılabilir."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": true,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T15:00:00.000Z"
+  }
+}

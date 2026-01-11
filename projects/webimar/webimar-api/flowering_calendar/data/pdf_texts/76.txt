@@ -1,0 +1,27 @@
+                                      IĞDIR
+Merkez- İlçe                              Çiçeklenme            Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                       Başlangıç Tarihi      Bitiş Tarihi
+               Kayısı                     15-20 Mart            20-25 Nisan
+               Elma, Armut                7-14 Nisan            7-14 Mayıs
+Merkez
+               Kiraz                      15-25 Nisan           5-10 Mayıs
+               Şeftali                    10-15 Nisan           30 Nisan 5 Mayıs
+               Kayısı                     15-20 Mart            20-25 Nisan
+               Elma, Armut                7-14 Nisan            7-14 Mayıs
+Karakoyunlu
+               Kiraz                      15-25 Nisan           5-10 Mayıs
+               Şeftali                    10-15 Nisan           30 Nisan 5 Mayıs
+               Kayısı                     15-20 Mart            20-25 Nisan
+               Elma, Armut                7-14 Nisan            7-14 Mayıs
+Aralık
+               Kiraz                      15-25 Nisan           5-10 Mayıs
+               Şeftali                    10-15 Nisan           30 Nisan 5 Mayıs
+               Kayısı                     25 Mart-05 Nisan      30 Nisan-05 Mayıs
+               Elma                       20-25 Nisan           20-25 Mayıs
+Tuzluca        Kiraz                      15-20 Nisan           15-20 Mayıs
+               Şeftali                    20-30 Nisan           15-25 Mayıs
+               Armut                      25-30 Nisan           25-30 Mayıs
+* Bu tarihler o yılın hava durumuna göre 7-10 gün arasında ileri yada geri değişim
+göstermektedir.
+

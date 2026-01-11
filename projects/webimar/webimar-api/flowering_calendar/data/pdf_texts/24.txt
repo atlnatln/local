@@ -1,0 +1,81 @@
+                                  ERZİNCAN
+Merkez- İlçe                              Çiçeklenme         Çiçeklenme
+               Majör( Yaygın Bitki Adı)
+Adı                                       Başlangıç Tarihi   Bitiş Tarihi
+               Badem, Kızılcık            15 Mart            30 Mart
+               Kayısı                     1 Nisan            15 Nisan
+               Vişne-Kiraz                15 Nisan           30 Nisan
+               Armut, Şeftali             20 Nisan           10 Mayıs
+               Elma                       25 Nisan           15 Mayıs
+               Ayva                       15 Mayıs           30 Mayıs
+Merkez
+               Akasya                     20 Mayıs           10 Haziran
+               Yabani yonca-Sarı yonca    15 Mayıs           25 Haziran
+               Kekik türleri              1 Haziran          15 Ağustos
+               Keven                      15 Haziran         15 Temmuz
+               Yabani Korunga             25 Haziran         20 Temmuz
+               Dikenli bitkiler           15 Temmuz          20 Eylül
+               Badem                      17 Mart            2 Nisan
+               Kızılcık                   16 Mart            1 Nisan
+               Kayısı                     4 Nisan            18 Nisan
+               Vişne- Kiraz               17 Nisan           2 Mayıs
+               Armut                      23 Nisan           13 Mayıs
+               Şeftali                    22 Nisan           12 Mayıs
+Üzümlü         Elma                       26 Nisan           11 Mayıs
+               Ayva                       17 Mayıs           2 Haziran
+               Akasya                     21 Mayıs           11 Haziran
+               Yabani Yonca- Sarı Yonca   18 Mayıs           28 Haziran
+               Kekik Türleri              4 Haziran          18 Ağustos
+               Keven                      17 Haziran         17 Temmuz
+               Yabani Korunga             28 Haziran         23 Temmuz
+               Keven                      1 Temmuz           1 Ağustos
+               Kekik Türleri              20 Haziran         2 Eylül
+               Korunga                    1 Haziran          30 Ağustos
+               Yonca                      30 Mayıs           15 Eylül
+Tercan
+               Fiğ                        15 Mayıs           15 Temmuz
+               Üçgül                      15 Mayıs           10 Eylül
+               Sığır Kuyruğu              20 Temmuz          15Ağustos
+               Ayçiçeği                   20 Temmuz          30 Ağustos
+               Mısır                      20 Eylül           5 Ekim
+               Vişne                      15 Mayıs           29 Mayıs
+               Korunga                    15 Haziran         22 Haziran
+Çayırlı
+               Keven, Kekik türleri       20 Haziran         30 Temmuz
+               Üçgül                      1 Haziran          30 Temmuz
+               Ayva                       15 Mayıs           23 Mayıs
+            Elma                       12 Mayıs     30 Mayıs
+            Ayçiçeği                   15 Temmuz    15 Ağustos
+            Kenger                     10 Temmuz    30 Temmuz
+            Ayçiçeği                   15 Temmuz    15 Ağustos
+            Adaçayı                    5 Temmuz     5 Ekim
+Otlukbeli   Yonca                      15 Mayıs     15 Eylül
+            Alıç                       20 Mayıs     10 Haziran
+            Keven                      1 Temmuz     10 Ağustos
+            Kar Çiçeği(Kardelen)       5 Mart       1Nisan
+            Söğüt                      1 Nisan      18Nisan
+            İğde                       3 Haziran    20 Haziran
+            Kuşburnu                   25 Mayıs     5 Haziran
+Kemah       Alıç                       15 Mart      01 Nisan
+            Kayısı                     25 Mart      10 Nisan
+            Kiraz, Vişne               2 Nisan      17 Nisan
+            Armut                      5 Nisan      20 Nisan
+            Elma                       12 Nisan     28 Nisan
+            Kekik                      26 Mayıs     20 Ağustos
+            Geven                      10 Haziran   10 Temmuz
+İliç        Karaçalı                   20 Nisan     20 Ekim
+            Badem                      13 Mart      28 Mart
+            Papatyagiller              10 Mayıs     10 Ekim
+            Geven                      20 Haziran   20 Temmuz
+            Korunga, Maydanozgiller,
+            Baklagiller, Hayıt,
+Refahiye    Papatyagiller, Gül,        1 Haziran    30 Haziran
+            Hodangiller, Kekik, Dağ
+            Armutu, Kuşburnu,Yonca ,
+            Fiğ, Böğürtlen
+            Yabani Korunga             15 Haziran   10 Temmuz
+            Yabani Yonca               5 Mayıs      15 Haziran
+Kemaliye    Keven                      5 Haziran    5 Temmuz
+            Kekik Türleri              20 Mayıs     5 Ağustos
+            Çiğdem, Hardal             1 Mayıs      15 Temmuz
+

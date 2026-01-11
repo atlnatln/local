@@ -1,0 +1,438 @@
+import { useState, useEffect } from 'react';
+import Head from 'next/head';
+import Layout from '../components/Layout';
+import Seo from '../components/Seo';
+import styles from '../styles/Ca      <Seo
+        title="Sığır Ahırı Kapasite Hesaplama | Maksimum Hayvan Sayısı"
+        description="Ahır alanınıza göre maksimum sığır kapasitesini hesaplayın. Yaş gruplarına göre hayvan başına alan gereksinimleri ve teknik kriterleri hesaplayın."
+        canonical="https://tarimimar.com.tr/sigir-ahiri-kapasite-hesaplama"
+        jsonLd={structuredData}
+      />
+      
+      <Layout>
+        <div className={styles.calculationContainer}>
+          <div className={styles.calculationHeader}>
+            <h1>🐄 Sığır Ahırı Kapasite Hesaplama</h1>
+            <p>Ahır alanınıza göre maksimum hayvan kapasitesini hesaplayın</p>
+          </div>.module.css';
+
+interface CalculationResult {
+  maksimumHayvanSayisi: number;
+  kullanilabilirAlanM2: number;
+  ahirIciAlanBasinaM2: number;
+  ahirDisiGezintiAlanBasinaM2: number;
+  reviAlaniM2: number;
+  dogumBolmesiAlaniM2?: number;
+  kalanAlanM2: number;
+  durakBoyutlari?: {
+    genislik: number;
+    uzunluk: number;
+    durakBasinaAlan: number;
+  };
+  teknikKriterler: {
+    saçakAltiYukseklik: string;
+    pencereAlani: string;
+    havalandirmaAlani: string;
+  };
+  detaylar: string[];
+}
+
+export default function SigirAhiriHesaplama() {
+  const [sigirTipi, setSigirTipi] = useState<'besi' | 'sut'>('besi');
+  const [yasGrubu, setYasGrubu] = useState<'6-12' | '12-18' | '18+' | 'buzagi'>('12-18');
+  const [ahirAlani, setAhirAlani] = useState<number>(1000);
+  const [durakPlanlaniyor, setDurakPlanlaniyor] = useState<boolean>(true);
+  const [durakGenisligi, setDurakGenisligi] = useState<number>(0);
+  const [durakUzunlugu, setDurakUzunlugu] = useState<number>(0);
+  const [gubreYoluGenisligi, setGubreYoluGenisligi] = useState<number>(3);
+  const [sonuc, setSonuc] = useState<CalculationResult | null>(null);
+
+  // Yaş grubuna göre varsayılan durak boyutlarını ayarla
+  useEffect(() => {
+    if (durakPlanlaniyor) {
+      switch (yasGrubu) {
+        case '6-12':
+          setDurakGenisligi(0.7);
+          setDurakUzunlugu(1.2);
+          break;
+        case '12-18':
+          setDurakGenisligi(0.9);
+          setDurakUzunlugu(1.45);
+          break;
+        case '18+':
+          setDurakGenisligi(1.1);
+          setDurakUzunlugu(1.8);
+          break;
+        case 'buzagi':
+          setDurakGenisligi(0.5);
+          setDurakUzunlugu(1.0);
+          break;
+      }
+    }
+  }, [yasGrubu, durakPlanlaniyor]);
+
+  const hesapla = () => {
+    let ahirIciAlanBasinaM2 = 0;
+    let ahirDisiGezintiAlanBasinaM2 = 0;
+    let durakBoyutlari;
+    const detaylar: string[] = [];
+
+    // Yaş grubuna göre minimum alan gereksinimleri
+    switch (yasGrubu) {
+      case '6-12':
+        ahirIciAlanBasinaM2 = 4;
+        ahirDisiGezintiAlanBasinaM2 = 4;
+        detaylar.push(`6-12 ay arası sığırlar için hayvan başına minimum 4m² ahır içi alan`);
+        detaylar.push(`6-12 ay arası sığırlar için hayvan başına minimum 4m² ahır dışı gezinti alanı`);
+        break;
+      case '12-18':
+        ahirIciAlanBasinaM2 = 6;
+        ahirDisiGezintiAlanBasinaM2 = 6;
+        detaylar.push(`12-18 ay arası sığırlar için hayvan başına minimum 6m² ahır içi alan`);
+        detaylar.push(`12-18 ay arası sığırlar için hayvan başına minimum 6m² ahır dışı gezinti alanı`);
+        break;
+      case '18+':
+        ahirIciAlanBasinaM2 = 7;
+        ahirDisiGezintiAlanBasinaM2 = 7;
+        detaylar.push(`18+ ay sığırlar için hayvan başına minimum 7m² ahır içi alan`);
+        detaylar.push(`18+ ay sığırlar için hayvan başına minimum 7m² ahır dışı gezinti alanı`);
+        break;
+      case 'buzagi':
+        ahirIciAlanBasinaM2 = 1.8;
+        ahirDisiGezintiAlanBasinaM2 = 1.8;
+        detaylar.push(`2-6 aylık grup buzağılar için hayvan başına minimum 1.8m² ahır içi alan`);
+        detaylar.push(`2-6 aylık grup buzağılar için hayvan başına minimum 1.8m² ahır dışı gezinti alanı`);
+        break;
+    }
+
+    // Durak planlanmışsa hesaplama
+    if (durakPlanlaniyor) {
+      const durakAlani = durakGenisligi * durakUzunlugu;
+      const durakVeGubreYoluAlani = durakAlani + (durakGenisligi * gubreYoluGenisligi);
+      
+      // Minimum alan ile karşılaştır
+      const gerekliAhirIciAlan = Math.max(durakVeGubreYoluAlani, ahirIciAlanBasinaM2);
+      
+      durakBoyutlari = {
+        genislik: durakGenisligi,
+        uzunluk: durakUzunlugu,
+        durakBasinaAlan: gerekliAhirIciAlan
+      };
+
+      detaylar.push(`Durak boyutları: ${durakGenisligi}m × ${durakUzunlugu}m = ${durakAlani.toFixed(2)}m²`);
+      detaylar.push(`Gübre yolu genişliği: ${gubreYoluGenisligi}m`);
+      detaylar.push(`Durak + gübre yolu alanı: ${durakVeGubreYoluAlani.toFixed(2)}m²`);
+      
+      if (gerekliAhirIciAlan > durakVeGubreYoluAlani) {
+        detaylar.push(`⚠️ Minimum alan gereksinimi (${ahirIciAlanBasinaM2}m²) durak alanından büyük olduğu için minimum alan kullanıldı`);
+      }
+
+      ahirIciAlanBasinaM2 = gerekliAhirIciAlan;
+    } else {
+      detaylar.push(`Durak planlanmadığı için gübre yolu dahil minimum alan kullanıldı: ${ahirIciAlanBasinaM2}m²`);
+    }
+
+    // Toplam hayvan başına alan gereksinimi
+    const hayvanBasinaToplamAlan = ahirIciAlanBasinaM2 + ahirDisiGezintiAlanBasinaM2;
+    
+    // Revir alanı tahmini (ortalama 50 hayvan için 15.75m²)
+    const reviAlaniM2 = 15.75; // Başlangıç tahmini
+    
+    // Süt sığırı için doğum bölmesi (ortalama 25 hayvan için 15.75m²)
+    let dogumBolmesiAlaniM2 = 0;
+    if (sigirTipi === 'sut' && yasGrubu !== 'buzagi') {
+      dogumBolmesiAlaniM2 = 15.75; // Başlangıç tahmini
+    }
+
+    // Kullanılabilir alan = toplam ahır alanı - revir - doğum bölmesi
+    const kullanilabilirAlanM2 = ahirAlani - reviAlaniM2 - dogumBolmesiAlaniM2;
+    
+    // Maksimum hayvan sayısı hesaplama
+    const maksimumHayvanSayisi = Math.floor(kullanilabilirAlanM2 / hayvanBasinaToplamAlan);
+    
+    // Gerçek revir ve doğum bölmesi alanlarını hesapla
+    const gercekReviAlaniM2 = Math.ceil(maksimumHayvanSayisi / 50) * 15.75;
+    if (sigirTipi === 'sut' && yasGrubu !== 'buzagi') {
+      dogumBolmesiAlaniM2 = Math.ceil(maksimumHayvanSayisi / 25) * 15.75;
+    }
+    
+    // Kalan alanı yeniden hesapla
+    const kalanAlanM2 = ahirAlani - gercekReviAlaniM2 - dogumBolmesiAlaniM2;
+    
+    detaylar.push(`Hayvan başına toplam alan gereksinimi: ${hayvanBasinaToplamAlan.toFixed(2)}m²`);
+    detaylar.push(`Revir alanı: Her 50 hayvan başına 15.75m² = ${gercekReviAlaniM2.toFixed(2)}m²`);
+    if (dogumBolmesiAlaniM2 > 0) {
+      detaylar.push(`Doğum bölmesi: Her 25 sağmal hayvan başına 15.75m² = ${dogumBolmesiAlaniM2.toFixed(2)}m²`);
+    }
+    detaylar.push(`Kullanılabilir alan: ${ahirAlani}m² - ${gercekReviAlaniM2.toFixed(2)}m² - ${dogumBolmesiAlaniM2.toFixed(2)}m² = ${kalanAlanM2.toFixed(2)}m²`);
+    detaylar.push(`Maksimum kapasite: ${kalanAlanM2.toFixed(2)}m² ÷ ${hayvanBasinaToplamAlan.toFixed(2)}m² = ${maksimumHayvanSayisi} hayvan`);
+
+    const sonuc: CalculationResult = {
+      maksimumHayvanSayisi,
+      kullanilabilirAlanM2: kalanAlanM2,
+      ahirIciAlanBasinaM2,
+      ahirDisiGezintiAlanBasinaM2,
+      reviAlaniM2: gercekReviAlaniM2,
+      dogumBolmesiAlaniM2: dogumBolmesiAlaniM2 > 0 ? dogumBolmesiAlaniM2 : undefined,
+      kalanAlanM2,
+      durakBoyutlari,
+      teknikKriterler: {
+        saçakAltiYukseklik: "3-5 metre arası",
+        pencereAlani: `${(ahirAlani / 20).toFixed(2)}m² (taban alanının 1/20'si)`,
+        havalandirmaAlani: `${(ahirAlani / 100).toFixed(2)}m² (taban alanının 1/100'ü)`
+      },
+      detaylar
+    };
+
+    setSonuc(sonuc);
+  };
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Sığır Ahırı Kapasite Hesaplama",
+    "description": "Besi ve süt sığırı ahırı kapasite hesaplama aracı. Yaş gruplarına göre alan gereksinimleri ve teknik kriterler.",
+    "url": "https://tarimimar.com.tr/sigir-ahiri-kapasite-hesaplama"
+  };
+
+  return (
+    <>
+      <Seo
+        title="Sığır Ahırı Kapasite Hesaplama | Besi ve Süt Sığırı"
+        description="Besi ve süt sığırı ahırı kapasite hesaplama aracı. Yaş gruplarına göre alan gereksinimleri, durak boyutları ve teknik kriterleri hesaplayın."
+        canonical="https://tarimimar.com.tr/sigir-ahiri-kapasite-hesaplama"
+        jsonLd={structuredData}
+      />
+      
+      <Layout>
+        <div className={styles.calculationContainer}>
+          <div className={styles.calculationHeader}>
+            <h1>🐄 Sığır Ahırı Kapasite Hesaplama</h1>
+            <p>Besi ve süt sığırı ahırı için alan gereksinimlerini ve teknik kriterleri hesaplayın</p>
+          </div>
+
+          <div className={styles.calculationForm}>
+            <div className={styles.formSection}>
+              <h3>Sığır Tipi ve Yaş Grubu</h3>
+              
+              <div className={styles.radioGroup}>
+                <label>
+                  <input
+                    type="radio"
+                    name="sigirTipi"
+                    value="besi"
+                    checked={sigirTipi === 'besi'}
+                    onChange={(e) => setSigirTipi(e.target.value as 'besi' | 'sut')}
+                  />
+                  🐃 Besi Sığırı
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="sigirTipi"
+                    value="sut"
+                    checked={sigirTipi === 'sut'}
+                    onChange={(e) => setSigirTipi(e.target.value as 'besi' | 'sut')}
+                  />
+                  🥛 Süt Sığırı
+                </label>
+              </div>
+
+              <div className={styles.selectGroup}>
+                <label>Yaş Grubu:</label>
+                <select value={yasGrubu} onChange={(e) => setYasGrubu(e.target.value as any)}>
+                  <option value="6-12">6-12 ay arası</option>
+                  <option value="12-18">12-18 ay arası</option>
+                  <option value="18+">18+ ay (erişkin)</option>
+                  <option value="buzagi">2-6 aylık grup buzağılar</option>
+                </select>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label>Ahır Alanı (m²):</label>
+                <input
+                  type="number"
+                  min="50"
+                  max="10000"
+                  step="10"
+                  value={ahirAlani}
+                  onChange={(e) => setAhirAlani(parseInt(e.target.value) || 0)}
+                />
+                <small>Toplam ahır alanınız (m²)</small>
+              </div>
+            </div>
+
+            <div className={styles.formSection}>
+              <h3>Durak Planlaması</h3>
+              
+              <div className={styles.checkboxGroup}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={durakPlanlaniyor}
+                    onChange={(e) => setDurakPlanlaniyor(e.target.checked)}
+                  />
+                  Durak planlanıyor
+                </label>
+              </div>
+
+              {durakPlanlaniyor && (
+                <>
+                  <div className={styles.inputGroup}>
+                    <label>Durak Genişliği (metre):</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0.5"
+                      max="2.0"
+                      value={durakGenisligi}
+                      onChange={(e) => setDurakGenisligi(parseFloat(e.target.value) || 0)}
+                    />
+                    <small>
+                      Minimum gereksinim: {yasGrubu === '6-12' ? '0.7m' : yasGrubu === '12-18' ? '0.9m' : yasGrubu === '18+' ? '1.1m' : '0.5m'}
+                    </small>
+                  </div>
+
+                  <div className={styles.inputGroup}>
+                    <label>Durak Uzunluğu (metre):</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0.8"
+                      max="2.5"
+                      value={durakUzunlugu}
+                      onChange={(e) => setDurakUzunlugu(parseFloat(e.target.value) || 0)}
+                    />
+                    <small>
+                      Minimum gereksinim: {yasGrubu === '6-12' ? '1.2m' : yasGrubu === '12-18' ? '1.45m' : yasGrubu === '18+' ? '1.8m' : '1.0m'}
+                    </small>
+                  </div>
+
+                  <div className={styles.inputGroup}>
+                    <label>Gübre Yolu Genişliği (metre):</label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="2.0"
+                      max="5.0"
+                      value={gubreYoluGenisligi}
+                      onChange={(e) => setGubreYoluGenisligi(parseFloat(e.target.value) || 3)}
+                    />
+                    <small>Önerilen: 3-4 metre arası</small>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <button 
+              className={styles.calculateButton}
+              onClick={hesapla}
+              disabled={ahirAlani <= 0}
+            >
+              🧮 Kapasiteyi Hesapla
+            </button>
+          </div>
+
+          {sonuc && (
+            <div className={styles.resultSection}>
+              <h3>📊 Hesaplama Sonuçları</h3>
+              
+              <div className={styles.resultGrid}>
+                <div className={styles.resultCard}>
+                  <h4>🐄 Kapasite Hesaplama Sonucu</h4>
+                  <div className={styles.resultItem}>
+                    <span>Maksimum Hayvan Sayısı:</span>
+                    <strong>{sonuc.maksimumHayvanSayisi} hayvan</strong>
+                  </div>
+                  <div className={styles.resultItem}>
+                    <span>Kullanılabilir Alan:</span>
+                    <strong>{sonuc.kullanilabilirAlanM2.toFixed(2)} m²</strong>
+                  </div>
+                  <div className={styles.resultItem}>
+                    <span>Hayvan Başına Ahır İçi Alan:</span>
+                    <strong>{sonuc.ahirIciAlanBasinaM2.toFixed(2)} m²</strong>
+                  </div>
+                  <div className={styles.resultItem}>
+                    <span>Hayvan Başına Gezinti Alanı:</span>
+                    <strong>{sonuc.ahirDisiGezintiAlanBasinaM2.toFixed(2)} m²</strong>
+                  </div>
+                </div>
+
+                <div className={styles.resultCard}>
+                  <h4>🏥 Yardımcı Alanlar</h4>
+                  <div className={styles.resultItem}>
+                    <span>Revir Alanı:</span>
+                    <strong>{sonuc.reviAlaniM2?.toFixed(2)} m²</strong>
+                  </div>
+                  {sonuc.dogumBolmesiAlaniM2 && (
+                    <div className={styles.resultItem}>
+                      <span>Doğum Bölmesi Alanı:</span>
+                      <strong>{sonuc.dogumBolmesiAlaniM2.toFixed(2)} m²</strong>
+                    </div>
+                  )}
+                  <div className={styles.resultItem}>
+                    <span>Kalan Alan:</span>
+                    <strong>{sonuc.kalanAlanM2.toFixed(2)} m²</strong>
+                  </div>
+                </div>
+
+                {sonuc.durakBoyutlari && (
+                  <div className={styles.resultCard}>
+                    <h4>📐 Durak Bilgileri</h4>
+                    <div className={styles.resultItem}>
+                      <span>Durak Genişliği:</span>
+                      <strong>{sonuc.durakBoyutlari.genislik} m</strong>
+                    </div>
+                    <div className={styles.resultItem}>
+                      <span>Durak Uzunluğu:</span>
+                      <strong>{sonuc.durakBoyutlari.uzunluk} m</strong>
+                    </div>
+                    <div className={styles.resultItem}>
+                      <span>Durak Başına Alan:</span>
+                      <strong>{sonuc.durakBoyutlari.durakBasinaAlan.toFixed(2)} m²</strong>
+                    </div>
+                  </div>
+                )}
+
+                <div className={styles.resultCard}>
+                  <h4>🔧 Teknik Kriterler</h4>
+                  <div className={styles.resultItem}>
+                    <span>Saçak Altı Yükseklik:</span>
+                    <strong>{sonuc.teknikKriterler.saçakAltiYukseklik}</strong>
+                  </div>
+                  <div className={styles.resultItem}>
+                    <span>Pencere Alanı:</span>
+                    <strong>{sonuc.teknikKriterler.pencereAlani}</strong>
+                  </div>
+                  <div className={styles.resultItem}>
+                    <span>Havalandırma Alanı:</span>
+                    <strong>{sonuc.teknikKriterler.havalandirmaAlani}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.detailsSection}>
+                <h4>📝 Hesaplama Detayları</h4>
+                <ul className={styles.detailsList}>
+                  {sonuc.detaylar.map((detay, index) => (
+                    <li key={index}>{detay}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className={styles.warningSection}>
+                <h4>⚠️ Önemli Uyarılar</h4>
+                <ul>
+                  <li>Bu hesaplamalar minimum yasal gereksinimleri temel alır</li>
+                  <li>Yerel iklim koşulları ve işletme büyüklüğüne göre alanlar artırılabilir</li>
+                  <li>Projenizi hayvan sağlığı uzmanı ile kontrol ettirin</li>
+                  <li>İmar mevzuatı ve çevre düzenlemeleri ayrıca kontrol edilmelidir</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+      </Layout>
+    </>
+  );
+}

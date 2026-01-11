@@ -1,0 +1,162 @@
+{
+  "slug": "lisansli-depo",
+  "id": 11,
+  "name": "Lisanslı Depo",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Lisanslı Depo Nasıl Kurulur? TMO Antrepo İzinleri ve Yönetmelik | Tarım İmar",
+    "description": "Lisanslı depo (TMO antrepo) kurulumu ve Lisanslı Depoculuk Yönetmeliği (Resmi Gazete: 12.04.2013 - 28616) gereksinimleri. Hububat ve bakliyat için teknik şartlar, lisans prosedürleri ve denetimler.",
+    "keywords": [
+      "lisanslı depo",
+      "TMO antrepo",
+      "hububat deposu",
+      "bakliyat deposu",
+      "antrepo lisansı",
+      "Lisanslı Depoculuk Yönetmeliği",
+      "28616",
+      "TMO yönetmelik"
+    ],
+    "canonical": "/lisansli-depo"
+  },
+  "hero": {
+    "title": "Lisanslı Depo (TMO Antrepo)",
+  "subtitle": "Resmi hububat ve bakliyat deposu. TMO lisanslı depolama tesisi (Yönetmelik: RG 12.04.2013 / 28616).",
+    "icon": "📦"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Lisanslı depo</strong>, Toprak Mahsulleri Ofisi (TMO) tarafından lisanslandırılan, resmi standartlara uygun hububat ve bakliyat depolama tesisleridir.</p>",
+    "whoCanBuild": "<p>Lisanslı depo kurabilmek için:</p><ul><li>TMO teknik standartlarına uyum</li><li>Kapasite ve hijyen şartları</li><li>Yangın güvenliği</li><li>Elektronik tartı sistemi</li><li>Yönetmelik (Resmi Gazete 12.04.2013/28616) gereksinimlerine uygunluk</li></ul>"
+  },
+  "features": [
+    {
+      "title": "TMO Lisanslı",
+      "description": "Resmi standartlara uygun depo",
+      "icon": "✅"
+    },
+    {
+      "title": "Rehin Uygun",
+      "description": "Ürün rehni ile kredi imkanı",
+      "icon": "🏦"
+    },
+    {
+      "title": "Yüksek Standart",
+      "description": "Hijyen ve güvenlik standartları",
+      "icon": "⭐"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "TMO lisansı zorunlu",
+        "Minimum kapasite şartları (Yönetmelik şartlarına göre)",
+        "Yangın güvenlik sistemi",
+        "Elektronik tartı",
+        "Hijyen ve nem kontrol sistemleri",
+        "Periyodik denetimler ve kayıt tutma zorunluluğu"
+      ],
+      "genelge": [
+        "Lisanslı Depoculuk Yönetmeliği (Resmi Gazete: 12.04.2013, 28616) gereksinimleri ve TMO lisanslama süreci"
+      ],
+      "genelgeUrl": "https://mevzuat.gov.tr/mevzuat?MevzuatNo=17274&MevzuatTur=7&MevzuatTertip=5"
+    },
+    "technical": {
+      "specifications": [
+        "Havalandırma sistemi",
+        "Nem kontrolü",
+        "Elektronik tartı",
+        "Yangın söndürme"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Lisanslı Depo Hesapla",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Lisanslı Depo alanını hesaplayın",
+    "ctaText": "Hemen Hesapla",
+    "ctaLink": "/hesaplama/lisansli-depo"
+  },
+  "faq": [
+    {
+      "question": "TMO lisansı nasıl alınır?",
+      "answer": "Toprak Mahsulleri Ofisi'ne başvuru yapılır, tesis denetlenir, standartlara uygunsa lisans verilir."
+    }
+    ,
+    {
+      "question": "Lisanslı Depoculuk Yönetmeliği (28616) nelere vurgu yapar?",
+      "answer": "Yönetmelik; lisans başvuru koşulları, tesis teknik standartları (kapasite, nem kontrolü, elektronik tartı, yangın güvenliği), denetim ve kayıt prosedürlerini düzenler. Başvuru için gerekli belgeler ve denetimler TMO tarafından yürütülür."
+    },
+    {
+      "question": "Lisanslı depoda hangi denetimler yapılır?",
+      "answer": "TMO ve yetkili kurumlar tarafından teknik uygunluk, kapasite, hijyen, yangın güvenliği ve elektronik tartı sistemleri denetlenir; uygunluk sağlanırsa lisans verilir ve periyodik denetimler yapılır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Hububat Silosu",
+      "url": "/hububat-silo",
+      "icon": "🌾"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Lisanslı Depo Nasıl Kurulur? TMO Antrepo İzinleri | Tarım İmar",
+  "description": "Lisanslı depo (TMO antrepo) kurulumu. Hububat, bakliyat depolama standartları, lisans gereksinimleri ve Lisanslı Depoculuk Yönetmeliği (RG: 12.04.2013, 28616) referansı.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "TMO lisansı nasıl alınır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Toprak Mahsulleri Ofisi'ne başvuru yapılır, tesis denetlenir, standartlara uygunsa lisans verilir."
+          }
+        }
+        ,
+        {
+          "@type": "Question",
+          "name": "Lisanslı Depoculuk Yönetmeliği (28616) nelere vurgu yapar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yönetmelik; lisans başvuru koşulları, tesis teknik standartları (kapasite, nem kontrolü, elektronik tartı, yangın güvenliği), denetim ve kayıt prosedürlerini düzenler."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Lisanslı depoda hangi denetimler yapılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TMO ve yetkili kurumlar tarafından teknik uygunluk, kapasite, hijyen, yangın güvenliği ve elektronik tartı sistemleri denetlenir; periyodik kontroller uygulanır."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": true,
+    "pythonModule": true,
+  "webScraping": false,
+  "genelgeUrl": "https://mevzuat.gov.tr/mevzuat?MevzuatNo=17274&MevzuatTur=7&MevzuatTertip=5",
+    "lastUpdated": "2024-11-16T01:00:00.000Z"
+  }
+  ,
+  "imar": {
+    "title": "İmar, Yapı Ruhsatı ve Arazi Belgeleri",
+    "summary": "<p>Lisanslı depo kuruluşu ve faaliyet izni süreçlerinde \"yapı ruhsatı\" ve taşınmazla ilgili tapu veya kira sözleşmesi gibi belgelerin sunulması gerekebilir. Kuruluş iznini takiben belirli süreler içinde tapu/kira ve faaliyet izni başvuruları gereklidir (Yönetmelik: MADDE 7, MADDE 9).</p>",
+    "requirements": [
+      "Kuruluş iznini takiben en geç 1 yıl içinde taşınmazın mülk sahibi veya kiracısı olunduğuna dair tapu belgesi veya kira sözleşmesi Bakanlığa ibrazı (MADDE 7)",
+      "Faaliyet izni verilmeden ürün kabul edilemez; faaliyet izni başvurusunda depo tesisleri ve yapı ruhsatı sureti gibi belgeler istenebilir (MADDE 7 ve MADDE 9.m)",
+      "Şirketin faaliyet izni alabilmesi için depoların Bakanlıkça belirlenen şartları taşıması gerekir; buna ilişkin yerinde incelemeler yapılır (MADDE 8-11)"
+    ],
+    "referenceUrl": "https://mevzuat.gov.tr/mevzuat?MevzuatNo=17274&MevzuatTur=7&MevzuatTertip=5"
+  }
+}

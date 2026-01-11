@@ -1,0 +1,314 @@
+{
+  "slug": "ipek-bocekciligi",
+  "id": 25,
+  "name": "İpek Böcekçiliği Tesisi",
+  "category": "Özel Üretim Tesisleri",
+  "seo": {
+    "title": "İpek Böcekçiliği Tesisi Nasıl Kurulur? Koza Üretimi | Tarım İmar",
+    "description": "İpek böcekçiliği tesisi kurulumu: dut bahçesi, kerevet sistemleri, üretim döngüsü ve koza verimi hakkında rehber bilgiler. Ticari veya hobi amaçlı kurulum için dikkat edilmesi gereken şartlar ve hesaplama aracı.",
+    "keywords": [
+      "ipek böcekçiliği",
+      "ipek böceği",
+      "koza üretimi",
+      "kerevet",
+      "dut yaprağı",
+      "ipek üretimi",
+      "dut bahçesi",
+      "kooperatif",
+      "biyogüvenlik"
+    ],
+    "canonical": "/ipek-bocekciligi"
+  },
+  "hero": {
+    "title": "İpek Böcekçiliği Tesisi Kurulumu",
+    "subtitle": "Dut bahçesiyle desteklenen kerevet sistemleriyle verimli koza üretimi; başlangıçtan sanayi ölçeğine rehber.",
+    "icon": "🐛"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>İpek böcekçiliği tesisi</strong>, dut yaprağıyla beslenen ipek böceklerinin yetiştirildiği ve kozaların üretildiği tesis tipidir. Kozalar tekstil sanayine hammadde olarak satılır veya yerel kooperatiflerle işlenir.</p>",
+    "purpose": "<p>Tesisin temel amaçları:</p><ul><li>Yüksek katma değerli koza üretimi</li><li>Tekstil sektörüne hammadde sağlama</li><li>Yerel ekonomi ve istihdam yaratma</li><li>Dut bahçesi ve tarımsal çeşitliliği destekleme</li></ul>",
+  "whoCanBuild": "<p>İpek böcekçiliği tesisleri, küçük ölçekten ticari üretime kadar çeşitlenebilir. Başlangıç için:</p><ul><li>Minimum 500 m² arazi ve uygun yapılaşma koşulları</li><li>Emsal ve yapı ruhsatlarına uygunluk (%5 gibi sınırlamalara dikkat)</li><li>En az 50 m² kapalı üretim alanı (kutu/kapasite ihtiyacına göre artar)</li><li>Dut bahçesi ya da güvenilir dut yaprağı tedarik zinciri</li><li>Dut bahçesi kurulumu için İl Tarım ve Orman Müdürlüğü'nden uygun görüş/izin alınması zorunludur</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Düşük Emsal",
+      "description": "%5 emsal ile sınırlı yapılaşma",
+      "icon": "📊"
+    },
+    {
+      "title": "3 Katlı Kerevet",
+      "description": "Kerevetler 3 katlı yapılabilir, verim artar",
+      "icon": "📈"
+    },
+    {
+      "title": "Dut Bahçesi",
+      "description": "Kendi dut yapraklarınızı üretin",
+      "icon": "🌳"
+    },
+    {
+      "title": "Kültürel Değer",
+      "description": "Geleneksel ipekçilik mesleği",
+      "icon": "🎨"
+    }
+    ,
+    {
+      "title": "Yüksek Katma Değer",
+      "description": "Koza ve ipek, işlenmiş tekstile göre yüksek katma değer sağlar; küçük alanlarda yüksek gelir potansiyeli sunar.",
+      "icon": "💰"
+    },
+    {
+      "title": "Hastalık & İklim Yönetimi",
+      "description": "Sıcaklık, nem ve hijyen yönetimi üretim verimi için kritik; uygun havalandırma ve karantina uygulamaları gerekir.",
+      "icon": "🌡️"
+    },
+    {
+      "title": "Kooperatif ve Pazara Erişim",
+      "description": "Kooperatifler veya Koza Birlik gibi alım organizasyonları üreticilere fiyat avantajı sağlayabilir.",
+      "icon": "🤝"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Minimum arazi: 500 m²",
+        "Emsal oranı: %5 (dikili arazi)",
+        "Minimum üretim alanı: 50 m²",
+  "Dut bahçesi bulunması zorunludur; dut bahçesi kurulumu için İl Tarım ve Orman Müdürlüğü'nden uygun görüş/izin alınması zorunludur",
+        "Bakıcı evi: 75 m²",
+        "İdari bina: 75 m²"
+        ,
+        "İş yeri açma ve çalışma ruhsatları ile yerel imar koşullarına uyulmalı"
+      ],
+      "genelge": [
+        "İpek böcekçiliği tesisleri %5 emsal ile sınırlıdır",
+        "Minimum 50 m² üretim alanı zorunludur"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "kutu",
+        "kerevetKat": 3,
+        "yaprakPerKutu": 600,
+        "kozaPerKutu": 37
+      },
+      "specifications": [
+        "Üretim alanı: Min 50 m²",
+        "Kerevet/besleme alanı: Üretim alanının %50'si",
+        "Kerevetler 3 katlı yapılabilir (kapasite x3)",
+        "1 kutu için 600 kg dut yaprağı gerekir",
+        "1 kutu ~37 kg yaş koza üretir",
+        "Çekim odası: İpek çekimi için",
+        "Depo: Koza ve malzeme deposu",
+        "Sıcaklık kontrolü: 23-25°C ideal",
+        "Nem: %70-80 arası",
+        "Havalandırma: Yeterli hava akımı ve nem denetimi için mekanik veya doğal havalandırma",
+        "Yaprak depolama: Kısa vadeli soğuk veya gölgeli depo alanı gereklidir",
+        "Biyogüvenlik: Hastalıkları önlemek için karantina ve temizlik protokolleri uygulanmalı",
+        "Ölçeklendirme: Hobi tesisleri 50-500 kutu; ticari tesisler 1.000+ kutu arasında değişir"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "İpek Böcekçiliği Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, İpek Böcekçiliği alanını hesaplayın",
+    "ctaText": "İpek Tesisi Hesapla",
+    "ctaLink": "/hesaplama/ipek-bocekciligi"
+  },
+  "faq": [
+    {
+      "question": "İpek böcekçiliği karlı mı?",
+      "answer": "Karlılık çeşitli faktörlere bağlıdır: koza fiyatları, dut yaprağı temini, işçilik ve büyüklük. Dut bahçesi olan bölgelerde, doğru ölçeklendirildiğinde ek gelir sağlayabilir; piyasa koşullarına göre karlılık değişir."
+    },
+    {
+      "question": "Kerevet nedir?",
+      "answer": "Kerevet, ipek böceklerinin beslendiği raf sistemidir. 3 katlı yapılabilir, böylece kapasite 3 katına çıkar."
+    },
+    {
+      "question": "1 kutu ipek böceği ne kadar koza verir?",
+      "answer": "1 kutu (10.000-15.000 ipek böceği) yaklaşık 37 kg yaş koza verir. Kurutma sonrası 7-8 kg kuru koza kalır."
+    },
+    {
+      "question": "Dut bahçesi zorunlu mu?",
+      "answer": "Evet; ipek böcekçiliği tesisleri için dut bahçesi gereklidir ve dut bahçesi kurulumu için İl Tarım ve Orman Müdürlüğü'nden uygun görüş/izin alınması zorunludur. 1 kutu için yaklaşık 600 kg dut yaprağı gerekir; düzenli tedarik üretimin sürdürülebilirliği için kritiktir."
+    },
+    {
+      "question": "İpek böceği besleme süresi?",
+      "answer": "İpek böceği larvası 25-30 gün beslenir, sonra koza yapar. Toplam döngü 40-45 gündür."
+    },
+    {
+      "question": "Yılda kaç dönem üretim yapılır?",
+      "answer": "Yılda 3-4 dönem üretim yapılabilir. İlkbahar ve yaz aylarında dut yaprağı bulunduğu sürece."
+    },
+    {
+      "question": "Minimum tesis alanı ne kadar?",
+      "answer": "Minimum 50 m² üretim alanı zorunludur. 500 m² arazi ile %5 emsal = 25 m² yapılaşma yetersizdir, daha büyük arazi gerekir."
+    },
+    {
+      "question": "Çekim odası ne işe yarar?",
+      "answer": "Çekim odası, kozadan ipek çekildiği alandır. Özel makinelerle koza kaynatılır ve ipek elyafı çekilir."
+    },
+    {
+      "question": "İpek böcekçiliği zor mu?",
+      "answer": "Uzmanlık gerektirir. Sıcaklık, nem kontrolü ve düzenli besleme kritiktir. Deneyim şarttır."
+    },
+    {
+      "question": "Devlet desteği var mı?",
+      "answer": "Tarım ve Orman Bakanlığı geleneksel ipekçiliği desteklemektedir. Koza başına prim ödemesi yapılabilir."
+    }
+    ,
+    {
+      "question": "İpek böcekçiliğinde en büyük riskler nelerdir?",
+      "answer": "Hastalık ve parazitler, düzensiz sıcaklık ve nem, yaprak tedarikindeki aksamalar ile hijyen eksikliği en önemli risklerdir. Bu nedenle temizleme, karantina ve ortam kontrolü kritik öneme sahiptir."
+    },
+    {
+      "question": "Devlet desteği nasıl alınır?",
+      "answer": "Tarım ve Orman Bakanlığı’nın destek ve hibe programları ile yerel kalkınma ajansları aracılığıyla fonlar sağlanabilir; başvuru süreçleri, proje ve fizibilite şartlarına bağlıdır."
+    },
+    {
+      "question": "Kooperatiflerle çalışmanın avantajı nedir?",
+      "answer": "Kooperatifler, ortak alım organizasyonları ve pazarlama desteği sağlayarak fiyatlandırma ve lojistik avantajları sunabilir; küçük üreticilerin pazara erişimini kolaylaştırır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Arıcılık Tesisi",
+      "url": "/aricilik",
+      "icon": "🐝"
+    },
+    {
+      "title": "Solucan Tesisi",
+      "url": "/solucan-tesisi",
+      "icon": "🪱"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "İpek Böcekçiliği Tesisi Nasıl Kurulur? Koza Üretimi | Tarım İmar",
+  "description": "İpek böcekçiliği tesisi kurulumu: dut bahçesi, kerevet sistemleri, üretim döngüsü ve koza verimi hakkında rehber bilgiler. Ticari veya hobi amaçlı kurulum için dikkat edilmesi gereken şartlar ve hesaplama aracı.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+  "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "İpek böcekçiliği karlı mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Karlılık çeşitli faktörlere bağlıdır: koza fiyatları, dut yaprağı temini, işçilik ve ölçek. Dut bahçesi olan bölgelerde, doğru ölçeklendirildiğinde ek gelir sağlayabilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kerevet nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kerevet, ipek böceklerinin beslendiği raf sistemidir. 3 katlı yapılabilir, böylece kapasite 3 katına çıkar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "1 kutu ipek böceği ne kadar koza verir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "1 kutu (10.000-15.000 ipek böceği) yaklaşık 37 kg yaş koza verir. Kurutma sonrası 7-8 kg kuru koza kalır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Dut bahçesi zorunlu mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet; ipek böcekçiliği tesisleri için dut bahçesi gereklidir ve dut bahçesi kurulumu için İl Tarım ve Orman Müdürlüğü'nden uygun görüş/izin alınması zorunludur. 1 kutu için yaklaşık 600 kg dut yaprağı gerekir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "İpek böceği besleme süresi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İpek böceği larvası 25-30 gün beslenir, sonra koza yapar. Toplam döngü 40-45 gündür."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Yılda kaç dönem üretim yapılır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yılda 3-4 dönem üretim yapılabilir. İlkbahar ve yaz aylarında dut yaprağı bulunduğu sürece."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Minimum tesis alanı ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Minimum 50 m² üretim alanı zorunludur. 500 m² arazi ile %5 emsal = 25 m² yapılaşma yetersizdir, daha büyük arazi gerekir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Çekim odası ne işe yarar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Çekim odası, kozadan ipek çekildiği alandır. Özel makinelerle koza kaynatılır ve ipek elyafı çekilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "İpek böcekçiliği zor mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Uzmanlık gerektirir. Sıcaklık, nem kontrolü ve düzenli besleme kritiktir. Deneyim şarttır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Devlet desteği var mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tarım ve Orman Bakanlığı ve yerel kalkınma ajansları destek programları sunar; hibe ve teşvik koşulları projeye göre değişir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "İpek böcekçiliğinde en büyük riskler nelerdir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hastalıklar, parazitler, düzensiz sıcaklık ve nem ile yaprak tedarikindeki aksamalar üretimi olumsuz etkiler; karantina ve hijyen protokolleri gereklidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Devlet desteği nasıl alınır?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tarım ve Orman Bakanlığı’nın destek programları ve yerel hibe kaynakları proje bazında başvurularla alınabilir; fizibilite raporu ve bütçe gerektirir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kooperatiflerle çalışmanın avantajı nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kooperatifler ortak alım, lojistik ve pazarlama desteği sağlayarak üreticilere stabil fiyat ve pazar erişimi sunar."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": true,
+  "lastUpdated": "2025-11-16T00:00:00.000Z"
+  }
+}

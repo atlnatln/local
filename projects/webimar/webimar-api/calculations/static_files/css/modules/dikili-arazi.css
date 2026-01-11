@@ -1,0 +1,474 @@
+/**
+ * Dikili Arazi Panel Sistemi CSS
+ * Bu dosya 15-dikili-arazi.js modülüne özgü stilleri içerir
+ */
+
+/* Dikili Options Panel */
+.dikili-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.option-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #fff;
+}
+
+.option-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.option-card h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #3498db;
+    font-size: 1.1rem;
+}
+
+.option-card p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.option-card i {
+    margin-right: 8px;
+    color: #3498db;
+}
+
+/* Agac Secici Form Elements */
+.agac-secici {
+    margin-bottom: 15px;
+}
+
+.agac-secici select,
+.agac-secici input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.agac-secici label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.agac-secici .btn {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.agac-secici .btn:hover {
+    background-color: #218838;
+}
+
+.agac-secici .btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Agac Listesi */
+.agac-listesi {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+    margin-top: 15px;
+}
+
+.agac-listesi .agac-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.agac-listesi .agac-item:last-child {
+    border-bottom: none;
+}
+
+.agac-listesi .agac-info {
+    flex: 1;
+    font-size: 14px;
+}
+
+.agac-listesi .agac-remove {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.agac-listesi .agac-remove:hover {
+    background-color: #c82333;
+}
+
+.agac-listesi-bos {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* Alan Bilgisi */
+.alan-bilgisi {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+}
+
+.alan-bilgisi h5 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #495057;
+}
+
+.alan-bilgisi .alan-degeri {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Sonuc Paneli */
+.sonuc-paneli {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+.sonuc-paneli.success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.sonuc-paneli.warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.sonuc-paneli.error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.sonuc-paneli h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.sonuc-paneli .dikili-sonuc-detay {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+}
+
+/* Harita Polygon Controls */
+.polygon-controls {
+    margin: 15px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.polygon-controls .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.polygon-controls .btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.polygon-controls .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.polygon-controls .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.polygon-controls .btn-success:hover {
+    background-color: #218838;
+}
+
+.polygon-controls .btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.polygon-controls .btn-danger:hover {
+    background-color: #c82333;
+}
+
+.polygon-controls .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.polygon-controls .btn-secondary:hover {
+    background-color: #545b62;
+}
+
+.polygon-controls .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Secilen Alan Bilgisi */
+.secilen-alan-bilgisi {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #e8f4fd;
+    border: 1px solid #90caf9;
+    border-radius: 5px;
+    border-left: 4px solid #2196f3;
+}
+
+.secilen-alan-bilgisi h4 {
+    margin-top: 0;
+    color: #1976d2;
+}
+
+.secilen-alan-bilgisi .alan-detay {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.secilen-alan-bilgisi .alan-detay strong {
+    color: #0d47a1;
+}
+
+/* Manuel Alan Input */
+.manuel-alan-input {
+    margin: 15px 0;
+}
+
+.manuel-alan-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.manuel-alan-input input {
+    width: 100%;
+    max-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.manuel-alan-input .input-hint {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 3px;
+    font-style: italic;
+}
+
+/* Button Groups */
+.button-group {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.button-group.space-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.button-group .btn {
+    margin: 0 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button-group .btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.button-group .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.button-group .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.button-group .btn-success:hover {
+    background-color: #218838;
+}
+
+.button-group .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.button-group .btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* Dikili Alan Hesaplama Sonucu */
+.dikili-alan-sonuc {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.dikili-alan-sonuc.yeterli {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-left: 4px solid #28a745;
+}
+
+.dikili-alan-sonuc.yetersiz {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-left: 4px solid #dc3545;
+}
+
+.dikili-alan-sonuc h4 {
+    margin-top: 0;
+    color: inherit;
+}
+
+.dikili-alan-sonuc .alan-ozet {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+}
+
+.dikili-alan-sonuc .alan-ozet .ozet-satir {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.dikili-alan-sonuc .alan-ozet .ozet-satir.toplam {
+    font-weight: bold;
+    border-top: 1px solid #ddd;
+    padding-top: 5px;
+    margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .polygon-controls {
+        flex-direction: column;
+    }
+    
+    .polygon-controls .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .button-group.space-between {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .button-group.space-between .btn {
+        width: 100%;
+        margin: 0;
+    }
+    
+    .dikili-options {
+        gap: 10px;
+    }
+    
+    .option-card {
+        padding: 12px;
+    }
+    
+    .option-card h4 {
+        font-size: 1rem;
+    }
+    
+    .agac-listesi {
+        max-height: 150px;
+    }
+    
+    .secilen-alan-bilgisi {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .option-card {
+        padding: 10px;
+    }
+    
+    .option-card h4 {
+        font-size: 0.95rem;
+    }
+    
+    .option-card p {
+        font-size: 0.85rem;
+    }
+    
+    .agac-secici select,
+    .agac-secici input {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+    
+    .polygon-controls .btn,
+    .button-group .btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}

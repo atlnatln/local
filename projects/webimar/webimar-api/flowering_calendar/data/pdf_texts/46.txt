@@ -1,0 +1,42 @@
+                               KAHRAMANMARAŞ
+Merkez - İlçe                              Çiçeklenme         Çiçeklenme
+                Major (yaygın) Bitki Adı
+Adı                                        Başlangıç Tarihi   Bitiş Tarihi
+              Kekik                        Mayıs              Ağustos
+Afşin
+              Mısır                        Mayıs              Eylül
+              Kiraz                        Mayıs              Mayıs
+Andırın       Kekik                        Mayıs              Ağustos
+              Turunçgiller(Mandarin)       Nisan              Nisan
+              Kiraz                        Nisan              Nisan
+Çağlayancerit Kekik                        Mayıs              Ağustos
+              Elma                         Nisan              Mayıs
+              Mısır                        Mayıs              Eylül
+              Badem                        Nisan              Mayıs
+Dulkadiroğlu
+              Sumak                        Haziran            Ağustos
+              Yonca                        Nisan              Eylül
+              Geven                        Nisan              Ağustos
+Ekinözü       Lavanta                      Mart               Nisan
+              Elma                         Nisan              Mayıs
+              Kayısı, Badem, Elma, Kiraz   Nisan              Mayıs
+Elbistan      Yonca                        Nisan              Eylül
+              Ayçiçeği                     Temmuz             Ağustos
+              Elma                         Nisan              Mayıs
+Göksun        Kiraz                        Nisan              Nisan
+              Kekik                        Mayıs              Ağustos
+Nurhak        Elma                         Nisan              Mayıs
+              Mısır                        Mayıs              Eylül
+              Ayva, Elma, Kiraz            Nisan              Mayıs
+              Kekik                        Mayıs              Ağustos
+Onikişubat
+              Geven                        Nisan              Ağustos
+              Kiraz                        Nisan              Nisan
+              Yonca                        Nisan              Eylül
+              Mısır                        Mayıs              Eylül
+Pazarcık
+              Badem                        Mart               Mart
+              Mısır                        Mayıs              Eylül
+Türkoğlu
+              Badem                        Mart               Mart
+

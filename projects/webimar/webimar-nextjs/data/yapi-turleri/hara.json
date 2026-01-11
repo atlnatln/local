@@ -1,0 +1,241 @@
+{
+  "slug": "hara",
+  "id": 24,
+  "name": "Hara (At Yetiştiriciliği)",
+  "category": "Hayvancılık Tesisleri",
+  "seo": {
+    "title": "Hara Nasıl Kurulur? At Yetiştiriciliği Tesisi İzinleri | Tarım İmar",
+    "description": "At yetiştiriciliği tesisi (hara) kurulumu. Minimum 10 boks, kısrak/aygır alanları, padok, manej gereksinimleri. %20 emsal.",
+    "keywords": [
+      "hara",
+      "at yetiştiriciliği",
+      "at çiftliği",
+      "boks",
+      "padok",
+      "manej",
+      "kısrak",
+      "aygır"
+    ],
+    "canonical": "/hara"
+  },
+  "hero": {
+    "title": "Hara (At Yetiştiriciliği) Tesisi",
+    "subtitle": "At çiftliği kurulumu. Minimum 10 boks + padok + manej alanları!",
+    "icon": "🐴"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Hara</strong>, at yetiştiriciliği, eğitimi ve bakımının yapıldığı profesyonel tesislerdir.</p>",
+    "purpose": "<p>Haranın amaçları:</p><ul><li>Safkan at yetiştiriciliği</li><li>Yarış atı üretimi</li><li>Rekreasyon amaçlı binicilik</li><li>At sporları</li></ul>",
+    "whoCanBuild": "<p>Hara kurabilmek için:</p><ul><li>Minimum 10 boks (16-25 m²/boks)</li><li>Padok alanı (32 m²/at)</li><li>Manej alanı (18 m²)</li><li>Minimum 1000 m² arazi</li></ul>"
+  },
+  "features": [
+    {
+      "title": "Yüksek Değer",
+      "description": "Safkan atlar yüksek fiyatlı",
+      "icon": "💎"
+    },
+    {
+      "title": "Geniş Alanlar",
+      "description": "At başına 16-25 m² boks + padok",
+      "icon": "🏇"
+    },
+    {
+      "title": "Veteriner Kliniği",
+      "description": "40 m² veteriner alanı yapılabilir",
+      "icon": "🏥"
+    },
+    {
+      "title": "Kapalı Manej",
+      "description": "800 m² kapalı eğitim alanı",
+      "icon": "🎯"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Minimum 10 boks zorunlu",
+        "Kısrak boksu: 16 m² (4m x 4m)",
+        "Aygır boksu: 25 m² (5m x 5m)",
+        "Padok alanı: Boksun 2 katı (32 m²/at)",
+        "Manej alanı: 18 m² (3m x 6m)"
+      ],
+      "genelge": [
+        "Minimum 10 boks şartı"
+      ]
+    },
+    "technical": {
+      "capacity": {
+        "unit": "boks",
+        "minBoks": 10,
+        "kisrakArea": 16,
+        "aygirArea": 25
+      },
+      "specifications": [
+        "Kısrak boksu: 4m x 4m = 16 m²",
+        "Aygır boksu: 5m x 5m = 25 m²",
+        "Yavrulama bölmesi: 25 m²",
+        "Padok: 32 m²/at (açık alan)",
+        "Manej: 18 m²",
+        "Kapalı manej: 800 m² (opsiyonel)",
+        "Yem deposu: 50-75 m²",
+        "Malzeme deposu: 30 m²",
+        "Veteriner kliniği: 40 m²",
+        "İdari bina: 100 m²"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Hara Tesisi Hesaplayın",
+    "description": "Arazinizin yerini işaretleyin, alanını ve arazi vasfını girin, Hara alanını hesaplayın",
+    "ctaText": "Hara Hesapla",
+    "ctaLink": "/hesaplama/hara"
+  },
+  "faq": [
+    {
+      "question": "Kaç boks zorunlu?",
+      "answer": "Minimum 10 boks gereklidir. Her boks 16-25 m² arasındadır (kısrak/aygır farkı)."
+    },
+    {
+      "question": "Padok nedir?",
+      "answer": "Padok, atların boks dışında hareket edebileceği açık alandır. Boks alanının 2 katı olmalıdır (32 m²/at)."
+    },
+    {
+      "question": "Manej zorunlu mu?",
+      "answer": "Evet, atların eğitimi için manej alanı gereklidir. 3m x 6m = 18 m² manej zorunludur."
+    },
+    {
+      "question": "Kapalı manej yapılabilir mi?",
+      "answer": "Evet, 800 m² kapalı manej yapılabilir. Kış aylarında eğitim için önerilir."
+    },
+    {
+      "question": "Veteriner kliniği şart mı?",
+      "answer": "Hayır ama 40 m² veteriner kliniği yapılabilir. Atlar için sağlık hizmeti açısından önemlidir."
+    },
+    {
+      "question": "Hara maliyeti ne kadar?",
+      "answer": "10 boksluk küçük hara için 2-3 milyon TL (arazi hariç). Kapalı manej ve lüks yapılarla 5-10 milyon TL'ye çıkar."
+    },
+    {
+      "question": "At besleme maliyeti?",
+      "answer": "At başına aylık 3000-5000 TL yem, bakım, veteriner gideri öngörülmelidir."
+    },
+    {
+      "question": "Safkan at satış fiyatı?",
+      "answer": "Safkan yarış atları 100.000-500.000 TL arasında satılır. Şampiyonlar milyonlarca TL edebilir."
+    },
+    {
+      "question": "İdari bina yapılabilir mi?",
+      "answer": "Evet, 100 m² idari bina yapılabilir. Ofis, dinlenme alanı olarak kullanılır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Süt Sığırcılığı",
+      "url": "/sut-sigirciligi",
+      "icon": "🐄"
+    },
+    {
+      "title": "Besi Sığırcılığı",
+      "url": "/besi-sigirciligi",
+      "icon": "🐃"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Hara Nasıl Kurulur? At Yetiştiriciliği Tesisi İzinleri | Tarım İmar",
+    "description": "At yetiştiriciliği tesisi (hara) kurulumu. Minimum 10 boks, kısrak/aygır alanları, padok, manej gereksinimleri. %20 emsal.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/og-image.svg"
+      }
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Kaç boks zorunlu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Minimum 10 boks gereklidir. Her boks 16-25 m² arasındadır (kısrak/aygır farkı)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Padok nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Padok, atların boks dışında hareket edebileceği açık alandır. Boks alanının 2 katı olmalıdır (32 m²/at)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Manej zorunlu mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, atların eğitimi için manej alanı gereklidir. 3m x 6m = 18 m² manej zorunludur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kapalı manej yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, 800 m² kapalı manej yapılabilir. Kış aylarında eğitim için önerilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Veteriner kliniği şart mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır ama 40 m² veteriner kliniği yapılabilir. Atlar için sağlık hizmeti açısından önemlidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hara maliyeti ne kadar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "10 boksluk küçük hara için 2-3 milyon TL (arazi hariç). Kapalı manej ve lüks yapılarla 5-10 milyon TL'ye çıkar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "At besleme maliyeti?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "At başına aylık 3000-5000 TL yem, bakım, veteriner gideri öngörülmelidir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Safkan at satış fiyatı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Safkan yarış atları 100.000-500.000 TL arasında satılır. Şampiyonlar milyonlarca TL edebilir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "İdari bina yapılabilir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, 100 m² idari bina yapılabilir. Ofis, dinlenme alanı olarak kullanılır."
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "genelge": false,
+    "pythonModule": true,
+    "webScraping": false,
+    "lastUpdated": "2024-11-15T23:30:00.000Z"
+  }
+}

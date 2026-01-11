@@ -1,0 +1,46 @@
+                                        ORDU
+Merkez- İlçe                                 Çiçeklenme         Çiçeklenme
+               Majör(yaygın) Bitki Adı
+Adı                                          Başlangıç Tarihi   Bitiş Tarihi
+
+               Kekik, Geven, Adaçayı, Yakı
+               Otu, Orman Gülü, F iğ
+Akkuş                                        15 Nisan           15 Temmuz
+               Orman Gülü,
+               Kestane, Ihlamur, Akasya.
+
+               Akasya, Kestane,
+Altınordu      Böğürtlen, Orman              25 Nisan           1 Ağustos
+               Sarmaşığı
+               Orman Gülü                    15 Haziran         15 Eylül
+Aybastı
+               Üçgül, Akasya,
+               Kargaburnu, Ihlamur,
+Çamaş                                        5 Mayıs            5 Temmuz
+               Taflan, Kiraz, Akasya,
+               Kestane
+               Kekik, Geven, Kestane,
+Çaybaşı                                      15 Nisan           15 Temmuz
+               Akasya, Orman Gülü
+               Kiraz, Elma, Armut,
+Fatsa          Akasya, Kestane, Kekik,       15 Nisan           15 Temmuz
+               Ormangülü, Taflan
+               Kestane, Orman Gülü,
+Gölköy                                       15 Nisan           15 Temmuz
+               Akasya, Kekik
+               Kestane, Orman Gülü,
+Gülyalı                                  15 Nisan               15 Temmuz
+               Akasya
+               Akasya, Ormangülü,
+                                         15 Nisan               15 Temmuz
+Gürgentepe     Kestane, Kekik
+               Akasya, Kestane, Ihlamur,
+İkizce
+               Taflan, Üçgül
+               Kekik, Orman Gülü,
+Kabadüz                                      5 Haziran          20 Ağustos
+               Kestane. Akasya, Ihlamur
+               Kekik, Ormangülü,
+Kabataş        Akasya, Ihlamur, Kestane, 15 Nisan               15 Temmuz
+               Yaban Mersini, Üçgül
+
