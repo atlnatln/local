@@ -27,11 +27,11 @@ if ! docker info > /dev/null 2>&1; then
 fi
 
 # Set up environment for Docker development
-if [ -f .env.local.docker ]; then
-    ln -sf .env.local.docker .env
-    echo -e "${GREEN}📦 Linked .env.local.docker → .env (REACT_APP_API_BASE_URL=$(grep REACT_APP_API_BASE_URL .env.local.docker | cut -d'=' -f2))${NC}"
+if [ -f .env.local ]; then
+    ln -sf .env.local .env
+    echo -e "${GREEN}📦 Linked .env.local → .env (REACT_APP_API_BASE_URL=$(grep REACT_APP_API_BASE_URL .env.local | cut -d'=' -f2))${NC}"
 else
-    echo -e "${YELLOW}⚠️  .env.local.docker not found, using defaults${NC}"
+    echo -e "${YELLOW}⚠️  .env.local not found, using defaults${NC}"
 fi
 
 # Stop any running containers first (workspace aware)

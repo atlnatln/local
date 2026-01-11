@@ -18,7 +18,7 @@ services:
       - "443"
     volumes:
       # Only SSL certs are mounted, nginx.conf is baked into image
-      - ./ssl:/etc/nginx/ssl:ro
+      - ../../infrastructure/ssl:/etc/nginx/ssl:ro
       - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - webimar-api

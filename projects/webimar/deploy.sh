@@ -168,19 +168,8 @@ fi
 
 # Agent files removed (ops-bot specific)
 
-# Create SSL directory and setup certs
-mkdir -p ssl
-if [ -d "/etc/letsencrypt/live/tarimimar.com.tr" ]; then
-    # Copy real certs (not symlinks, for Docker compatibility)
-    cp -L /etc/letsencrypt/live/tarimimar.com.tr/fullchain.pem ssl/fullchain.pem 2>/dev/null || true
-    cp -L /etc/letsencrypt/live/tarimimar.com.tr/privkey.pem ssl/privkey.pem 2>/dev/null || true
-    echo "✅ SSL certificates copied"
-else
-    echo "⚠️  SSL certificates not found, creating self-signed..."
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-        -keyout ssl/privkey.pem -out ssl/fullchain.pem \
-        -subj "/CN=localhost" 2>/dev/null
-fi
+# SSL certificates are now managed by infrastructure layer
+echo "ℹ️  SSL certificates managed by infrastructure layer"
 
 # Stop existing containers
 docker compose -f docker-compose.prod.yml down --remove-orphans 2>/dev/null || true
@@ -267,9 +256,14 @@ if [ "$SKIP_VPS" = false ]; then
 set -euo pipefail
 
 base="http://127.0.0.1"
+host_header="tarimimar.com.tr"
+
+curl_common=("-sS" "-o" "/dev/null" "--max-time" "10" "-H" "Host: ${host_header}")
 
 get_code() {
-    curl -s -o /dev/null -w "%{http_code}" "$1" || echo "000"
+    # Loopback üzerinden infra nginx'e giderken Host header şart; aksi halde default server
+    # bağlantıyı kapatabilir (örn. 444) ve curl "000" görür.
+    curl "${curl_common[@]}" -w "%{http_code}" "$1" || echo "000"
 }
 
 wait_for_200() {

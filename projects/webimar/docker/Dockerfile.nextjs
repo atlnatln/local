@@ -20,10 +20,15 @@ COPY webimar-nextjs/ ./
 
 # Build arguments - Production defaults
 ARG NEXT_PUBLIC_API_BASE_URL=https://tarimimar.com.tr/api
+ARG NEXT_PUBLIC_BASE_URL=https://tarimimar.com.tr
 ARG NEXT_PUBLIC_REACT_SPA_URL=https://tarimimar.com.tr/hesaplama
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 ENV NEXT_PUBLIC_REACT_SPA_URL=$NEXT_PUBLIC_REACT_SPA_URL
 ENV NODE_ENV=production
+
+# Ensure dev-only env files don't override production during build
+RUN rm -f .env.local .env.development
 
 # Build standalone output
 RUN npm run build
