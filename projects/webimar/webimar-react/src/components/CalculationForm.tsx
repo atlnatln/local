@@ -4,34 +4,6 @@ import { calculateBagEvi, calculateSera, calculateHayvancilik, calculateDepoAmba
 import { useStructureTypes } from '../contexts/StructureTypesContext';
 import { useLocationValidation } from '../contexts/LocationValidationContext';
 import { toast } from 'react-toastify';
-import { checkIzmirBelediyesi5000M2 } from '../utils/izmirBelediyesiKontrol';
-import AlanKontrol from './AlanKontrol';
-import { BagEviCalculator } from '../modules/BagEvi';
-import IzmirBelediyesiUyari from './IzmirBelediyesiUyari';
-import SmartDetectionFeedback from './CalculationForm/SmartDetectionFeedback';
-import FormField from './CalculationForm/FormField';
-import AlanKontrolButtons from './CalculationForm/AlanKontrolButtons';
-import FormSectionComponent from './CalculationForm/FormSectionComponent';
-import { BagEviForm } from '../modules/BagEvi';
-import TarimsalDepoFormFields from './CalculationForm/TarimsalDepoFormFields';
-import { FormValidator } from './CalculationForm/FormValidator';
-import { useTypewriter } from './CalculationForm/useTypewriter';
-import {
-  FormContainer,
-  FormTitle,
-  FormContent,
-  FormGrid,
-  FormGroup,
-  Label,
-  SubmitButton,
-  ErrorMessage,
-  RequiredIndicator,
-  AnimatedSelectContainer,
-  AnimatedSelect,
-  TypewriterPlaceholder
-} from './CalculationForm/styles';
-import SuTahsisModal from './Modals/SuTahsisModal';
-import LocationSelectionModal from './Modals/LocationSelectionModal';
 
 console.log('🔧 CalculationForm LOADED - V2.1 (Mantar Tesisi Added)');
 
@@ -78,8 +50,36 @@ const apiService = {
     gübreli_alan: calculateDepoAmbar, 
   }
 };
+import { checkIzmirBelediyesi5000M2 } from '../utils/izmirBelediyesiKontrol';
+import AlanKontrol from './AlanKontrol';
+import { BagEviCalculator } from '../modules/BagEvi';
+import IzmirBelediyesiUyari from './IzmirBelediyesiUyari';
 
-console.log('🔧 CalculationForm LOADED - V2.1 (Mantar Tesisi Added)');
+// Ayrılmış bileşen ve stil import'ları
+import SmartDetectionFeedback from './CalculationForm/SmartDetectionFeedback';
+import FormField from './CalculationForm/FormField';
+import AlanKontrolButtons from './CalculationForm/AlanKontrolButtons';
+import FormSectionComponent from './CalculationForm/FormSectionComponent';
+import { BagEviForm } from '../modules/BagEvi';
+import TarimsalDepoFormFields from './CalculationForm/TarimsalDepoFormFields';
+import { FormValidator } from './CalculationForm/FormValidator';
+import { useTypewriter } from './CalculationForm/useTypewriter';
+import {
+  FormContainer,
+  FormTitle,
+  FormContent,
+  FormGrid,
+  FormGroup,
+  Label,
+  SubmitButton,
+  ErrorMessage,
+  RequiredIndicator,
+  AnimatedSelectContainer,
+  AnimatedSelect,
+  TypewriterPlaceholder
+} from './CalculationForm/styles';
+import SuTahsisModal from './Modals/SuTahsisModal';
+import LocationSelectionModal from './Modals/LocationSelectionModal';
 
 // Backend constants.py ile senkronize yapı türü labels - artık types dosyasından import ediliyor
 

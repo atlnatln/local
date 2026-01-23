@@ -236,9 +236,10 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   useEffect(() => {
     const loadLocationData = async () => {
       try {
-        // API base URL'den değil, Next.js public folder'ından yükle
-        const nextjsUrl = (window as any)._webimar_env?.REACT_APP_NEXTJS_URL || 'https://tarimimar.com.tr';
-        const response = await fetch(`${nextjsUrl}/kml_places_final.csv`);
+        // Hem local (3001) hem prod için root-relative path kullan.
+        // Prod: Nginx isteği Next.js'e iletir (dosya orada olmalı).
+        // Dev: React server kendi public klasöründen sunar (CORS derdi yok).
+        const response = await fetch('/kml_places_final.csv');
         const csvText = await response.text();
         const locations = parseCSV(csvText) as LocationData[];
 

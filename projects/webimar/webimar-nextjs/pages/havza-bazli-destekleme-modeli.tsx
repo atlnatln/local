@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Seo from '../components/Seo';
 import Layout from '../components/Layout';
-import Footer from '../components/Footer';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -16,9 +15,11 @@ interface UrunSecimi {
   urun: string;
   dekar: number;
   uretimTipi?: 'acikta' | 'ortualti';
+  sulamaTipi?: 'kuru' | 'sulu';
   destekTipi?: 'yok' | 'organik' | 'iyiTarim';
   sertifikaliTohum: boolean;
   yerliSertifikaliTohum: boolean;
+  katiOrganikGubre: boolean;
   organikTarim: {
     urunGrubu?: 'birinci_kategori' | 'ikinci_kategori' | 'ucuncu_kategori';
     sertifikaTuru: 'bireysel' | 'grup';
@@ -28,10 +29,6 @@ interface UrunSecimi {
     uretimTipi: 'ortualti' | 'acikta' | null;
     sertifikaTuru: 'bireysel' | 'grup';
   };
-}
-
-interface UretimGelistirmeDestek {
-  katiOrganikGubre: boolean;
 }
 
 interface HesaplamaResponseDetaylar {
@@ -380,6 +377,8 @@ const URUN_DROPDOWN_GRUPLARI: UrunDropdownGrup[] = [
   }
 ];
 
+const GUBRE_DESTEK_BIRIM_TL = 99.2;
+
 const ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN = {
   birinci_kategori:
     'Acur, Ahududu, Alıç, Altınçilek, Altıntop, Armut, Avokado, Ayva, Badem, Bakla, Balkabağı, Bamya, Barbunya Fasulye, Barbunya Fasulye (kuru), Bergamot, Biber, Böğürtlen, Brokoli, Ceviz, Çay, Çilek, Dereotu, Domates, Dut, Elma, Enginar, Erik, Fasulye (kuru), Fasulye, Fındık, Gilaburu, Hıyar, Ispanak, İğde, İncir, Kabak, Kuşüzümü, Karnabahar, Karpuz, Kavun, Kayısı, Kereviz, Kestane, Kızılcık, Kiraz, Kivi, Kuşkonmaz, Kuzukulağı, Lahana, Limon, Mandalina, Mantar, Marul, Maydanoz, Meyve Fidanı, Sebze Fideleri, Muşmula, Muz, Nane, Nar, Nektarin, Örtü Altı Fidecilik, Palamut, Patlıcan, Pazı, Pepino, Pırasa, Portakal, Roka, Sarımsak, Semizotu, Soğan, Şalgam, Şeftali, Tere, Trabzon Hurması, Turp, Turunç, Üvez, Üzüm, Üzüm Kurutmalık, Üzüm Sofralık, Vişne, Yenidünya, Yerelması, Zerdali.',
@@ -592,9 +591,11 @@ export default function HavzaBazliDesteklemeModeliPage() {
       urun: '',
       dekar: 0,
       uretimTipi: 'acikta',
+      sulamaTipi: 'kuru',
       destekTipi: 'yok',
       sertifikaliTohum: false,
       yerliSertifikaliTohum: false,
+      katiOrganikGubre: false,
       organikTarim: { sertifikaTuru: 'bireysel' },
       iyiTarim: { uretimTipi: null, sertifikaTuru: 'bireysel' }
     }
@@ -617,9 +618,6 @@ export default function HavzaBazliDesteklemeModeliPage() {
   const [uyariModalBaslik, setUyariModalBaslik] = useState('');
   const [uyariModalMetin, setUyariModalMetin] = useState('');
   const [havzaData, setHavzaData] = useState<Record<string, Record<string, string[]>>>({});
-  const [uretimiGelistirme, setUretimiGelistirme] = useState<UretimGelistirmeDestek>({
-    katiOrganikGubre: false
-  });
   const [il, setIl] = useState('');
   const [ilce, setIlce] = useState('');
   const [loading, setLoading] = useState(false);
@@ -762,9 +760,11 @@ export default function HavzaBazliDesteklemeModeliPage() {
         urun: '',
         dekar: 0,
         uretimTipi: 'acikta',
+        sulamaTipi: 'kuru',
         destekTipi: 'yok',
         sertifikaliTohum: false,
         yerliSertifikaliTohum: false,
+        katiOrganikGubre: false,
         organikTarim: { sertifikaTuru: 'bireysel' },
         iyiTarim: { uretimTipi: null, sertifikaTuru: 'bireysel' }
       }
@@ -871,6 +871,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
           ...current,
           urun: nextUrun,
           destekTipi: 'yok',
+          katiOrganikGubre: false,
           organikTarim: { ...current.organikTarim, sertifikaTuru: current.organikTarim?.sertifikaTuru || 'bireysel', urunGrubu: undefined },
           iyiTarim: { ...current.iyiTarim, uretimTipi: null, sertifikaTuru: current.iyiTarim?.sertifikaTuru || 'bireysel', urunGrubu: undefined }
         };
@@ -882,6 +883,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
           ...current,
           urun: nextUrun,
           destekTipi: 'yok',
+          katiOrganikGubre: false,
           organikTarim: { ...current.organikTarim, sertifikaTuru: current.organikTarim?.sertifikaTuru || 'bireysel', urunGrubu: undefined },
           iyiTarim: { ...current.iyiTarim, uretimTipi: null, sertifikaTuru: current.iyiTarim?.sertifikaTuru || 'bireysel', urunGrubu: undefined }
         };
@@ -897,6 +899,16 @@ export default function HavzaBazliDesteklemeModeliPage() {
   const formSelectedProducts = urunler.map((u) => u.urun).filter(Boolean) as string[];
   const selectedProductsForMap = formSelectedProducts.length > 0 ? formSelectedProducts : (haritaUrunSecimi ? [haritaUrunSecimi] : []);
   const haritaUrunModuAktif = formSelectedProducts.length === 0;
+
+  const gubreDestegiSeciliMi = urunler.some((u) => u.katiOrganikGubre);
+
+  const toggleKatiOrganikGubre = (index: number) => {
+    const yeniUrunler = [...urunler];
+    const current = yeniUrunler[index];
+    if (!current) return;
+    yeniUrunler[index] = { ...current, katiOrganikGubre: !current.katiOrganikGubre };
+    setUrunler(yeniUrunler);
+  };
 
   const toggleTohumSecimi = (index: number, alan: 'sertifikaliTohum' | 'yerliSertifikaliTohum') => {
     const mevcut = urunler[index]?.[alan];
@@ -1020,7 +1032,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
         kadinCiftci,
         kobuksKayitli,
         orgutUyesi,
-        uretimiGelistirme
+        uretimiGelistirme: { katiOrganikGubre: gubreDestegiSeciliMi }
       });
       
       setSonuc(response.data);
@@ -1034,16 +1046,16 @@ export default function HavzaBazliDesteklemeModeliPage() {
   return (
     <Layout>
       <Seo
-        title="2026 Yılı Bitkisel Üretim Desteği Hesaplama | Havza Bazlı Destekleme Modeli"
-        description="2026 yılı bitkisel üretim destekleri hesaplama aracı. Temel destek, planlı üretim, organik tarım ve iyi tarım uygulamaları desteklerini hesaplayın. Genç ve kadın çiftçiler için özel destekler."
-        canonical="https://webimar.org/havza-bazli-destekleme-modeli/"
-        keywords="2026 bitkisel üretim desteği, tarım destekleri, havza bazlı destekleme modeli, organik tarım desteği, iyi tarım desteği, genç çiftçi desteği, kadın çiftçi desteği, KOBÜKS, bitkisel üretim destek fiyatları"
+        title="2026 Mazot Gübre Desteği Ne Kadar | Bitkisel Üretim Desteği Hesaplama"
+        description="2026 mazot gübre desteği ne kadar öğrenin. Bitkisel üretim destekleri hesaplama aracı. Temel destek, planlı üretim, organik tarım ve iyi tarım uygulamaları desteklerini hesaplayın. Genç ve kadın çiftçiler için özel destekler."
+        canonical="https://tarimimar.com.tr/havza-bazli-destekleme-modeli/"
+        keywords="2026 mazot gübre desteği ne kadar, 2026 bitkisel üretim desteği, tarım destekleri, havza bazlı destekleme modeli, organik tarım desteği, iyi tarım desteği, genç çiftçi desteği, kadın çiftçi desteği, KOBÜKS, bitkisel üretim destek fiyatları"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebApplication",
-          "name": "2026 Yılı Bitkisel Üretim Desteği Hesaplayıcı",
-          "description": "Türkiye'de 2026 yılı tarımsal desteklerini hesaplayın. Temel destek, planlı üretim, organik ve iyi tarım destekleri.",
-          "url": "https://webimar.org/havza-bazli-destekleme-modeli/",
+          "name": "2026 Mazot Gübre Desteği Hesaplayıcı",
+          "description": "2026 mazot gübre desteği ne kadar öğrenin. Türkiye'de 2026 yılı tarımsal desteklerini hesaplayın. Temel destek, planlı üretim, organik ve iyi tarım destekleri.",
+          "url": "https://tarimimar.com.tr/havza-bazli-destekleme-modeli/",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "Web Browser",
           "offers": {
@@ -1055,7 +1067,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
           "provider": {
             "@type": "Organization",
             "name": "Webimar",
-            "url": "https://webimar.org"
+            "url": "https://tarimimar.com.tr"
           },
           "audience": {
             "@type": "Audience",
@@ -1112,7 +1124,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
                     urunGuncelle(index, 'dekar', next);
                   }}
                 />
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', minWidth: '160px' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                   <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px' }}>
                     <input
                       type="radio"
@@ -1131,10 +1143,29 @@ export default function HavzaBazliDesteklemeModeliPage() {
                     />
                     Örtü altı
                   </label>
+
+                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px' }}>
+                    <input
+                      type="radio"
+                      name={`sulamaTipi-${index}`}
+                      checked={(urun.sulamaTipi || 'kuru') === 'kuru'}
+                      onChange={() => urunGuncelle(index, 'sulamaTipi', 'kuru')}
+                    />
+                    Kuru
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px' }}>
+                    <input
+                      type="radio"
+                      name={`sulamaTipi-${index}`}
+                      checked={urun.sulamaTipi === 'sulu'}
+                      onChange={() => urunGuncelle(index, 'sulamaTipi', 'sulu')}
+                    />
+                    Sulu
+                  </label>
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', minWidth: '240px', flexWrap: 'wrap' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px', whiteSpace: 'nowrap' }}>
                     <input
                       type="checkbox"
                       checked={urun.destekTipi === 'organik'}
@@ -1144,7 +1175,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
                     />
                     Organik
                   </label>
-                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px', whiteSpace: 'nowrap' }}>
                     <input
                       type="checkbox"
                       checked={urun.destekTipi === 'iyiTarim'}
@@ -1154,23 +1185,33 @@ export default function HavzaBazliDesteklemeModeliPage() {
                     />
                     İyi Tarım
                   </label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', width: '100%' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px', whiteSpace: 'nowrap' }}>
+                      <input
+                        type="checkbox"
+                        checked={urun.sertifikaliTohum}
+                        onChange={() => toggleTohumSecimi(index, 'sertifikaliTohum')}
+                      />
+                      Sertifikalı Tohum
+                    </label>
 
-                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px', whiteSpace: 'nowrap' }}>
+                      <input
+                        type="checkbox"
+                        checked={urun.yerliSertifikaliTohum}
+                        onChange={() => toggleTohumSecimi(index, 'yerliSertifikaliTohum')}
+                      />
+                      Yerli Sertifikalı
+                    </label>
+                  </div>
+
+                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px', whiteSpace: 'nowrap' }}>
                     <input
                       type="checkbox"
-                      checked={urun.sertifikaliTohum}
-                      onChange={() => toggleTohumSecimi(index, 'sertifikaliTohum')}
+                      checked={urun.katiOrganikGubre}
+                      onChange={() => toggleKatiOrganikGubre(index)}
                     />
-                    Sertifikalı Tohum
-                  </label>
-
-                  <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px' }}>
-                    <input
-                      type="checkbox"
-                      checked={urun.yerliSertifikaliTohum}
-                      onChange={() => toggleTohumSecimi(index, 'yerliSertifikaliTohum')}
-                    />
-                    Yerli Sertifikalı
+                    Katı Organik / Organomineral Gübre
                   </label>
                 </div>
 
@@ -1453,15 +1494,6 @@ export default function HavzaBazliDesteklemeModeliPage() {
                   </CheckboxLabel>
                 </SubCheckboxGroup>
               )}
-
-              <CheckboxLabel>
-                <input
-                  type="checkbox"
-                  checked={uretimiGelistirme.katiOrganikGubre}
-                  onChange={(e) => setUretimiGelistirme({...uretimiGelistirme, katiOrganikGubre: e.target.checked})}
-                />
-                Katı Organik / Organomineral Gübre Desteği alıyorum
-              </CheckboxLabel>
             </CheckboxGroup>
           </FormSection>
 
@@ -1500,7 +1532,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
                 selectedLocation={{ il, ilce }}
                 selectedProducts={selectedProductsForMap}
                 havzaData={havzaData}
-                showSupportedDistricts={gosterDigerIlceler}
+                showSupportedDistricts={gosterDigerIlceler || (formSelectedProducts.length > 0)}
               />
             </div>
           </FormSection>
@@ -2032,7 +2064,6 @@ export default function HavzaBazliDesteklemeModeliPage() {
           </FormSection>
         </Container>
       </PageOuter>
-      <Footer />
     </Layout>
   );
 }

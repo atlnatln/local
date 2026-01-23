@@ -1191,7 +1191,7 @@ export default function CiceklenmeTakvimi() {
           {mapLoaded && (
             <MapContainer
               center={[39, 35]}
-              zoom={6}
+              zoom={typeof window !== 'undefined' && window.innerWidth < 768 ? 5 : 6}
               style={{ height: '100%', width: '100%' }}
               ref={mapRef}
             >

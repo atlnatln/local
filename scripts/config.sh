@@ -13,6 +13,10 @@ COMPOSE_CANDIDATES=(
   "docker-compose.dev.yml"
 )
 
+# Opsiyonel ikinci compose dosyası (ör. infrastructure ağına bağlanma override'ı).
+# Varsayılan: kapalı. Açmak için: VPS_WITH_INFRA=1 bash scripts/up.sh
+INFRA_COMPOSE_FILE="docker-compose.infra.yml"
+
 project_dir() {
   local project="$1"
   echo "$PROJECTS_DIR/$project"
@@ -44,11 +48,30 @@ compose_file_for_dir() {
   return 1
 }
 
+compose_files_for_dir() {
+  local dir="$1"
+  local base
+  base="$(compose_file_for_dir "$dir")"
+  echo "$base"
+
+  if [[ "${VPS_WITH_INFRA:-}" == "1" && -f "$dir/$INFRA_COMPOSE_FILE" ]]; then
+    echo "$INFRA_COMPOSE_FILE"
+  fi
+}
+
 run_compose_dir() {
   local dir="$1"; shift
-  local file
-  file="$(compose_file_for_dir "$dir")"
-  (cd "$dir" && docker compose -f "$file" "$@")
+  local -a files
+  mapfile -t files < <(compose_files_for_dir "$dir")
+
+  local -a args
+  args=()
+  local f
+  for f in "${files[@]}"; do
+    args+=("-f" "$f")
+  done
+
+  (cd "$dir" && docker compose "${args[@]}" "$@")
 }
 
 run_compose() {

@@ -238,14 +238,14 @@ def get_seo_meta(request):
             'keywords': 'tarımsal yapılaşma, sera hesaplama, hayvancılık tesisi, tarımsal depo, emsal hesaplama, ziraat mühendisliği',
             'og_title': 'Tarımsal Yapılaşma Hesaplama Sistemi',
             'og_description': 'Tarımsal arazilerde yapılaşma süreçlerinde güncel mevzuata uygun hesaplama çözümleri',
-            'og_image': '/static/images/webimar-og-image.jpg',
-            'canonical_url': 'https://webimar.com/',
+            'og_image': 'https://tarimimar.com.tr/static/images/webimar-og-image.jpg',
+            'canonical_url': 'https://tarimimar.com.tr/',
             'schema_data': {
                 '@context': 'https://schema.org',
                 '@type': 'SoftwareApplication',
                 'name': 'Webimar Tarımsal Yapılaşma Sistemi',
                 'description': 'Tarımsal arazilerde yapılaşma hesaplamaları için profesyonel yazılım',
-                'url': 'https://webimar.com',
+                'url': 'https://tarimimar.com.tr',
                 'applicationCategory': 'Engineering',
                 'operatingSystem': 'Web Browser',
                 'offers': {

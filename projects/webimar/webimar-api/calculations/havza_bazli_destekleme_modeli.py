@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from typing import Dict, List, Any
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -72,16 +73,13 @@ SERTIFIKALI_TOHUM_KATSAYILARI = {
     'arpa': 0.56,
     'bugday': 0.56,
     'cavdar': 0.56,
-    'cavdar (yem)': 0.56,
     'celtik': 0.56,
-    'fasulye (kuru)': 0.56,
+    'fasulye': 0.56,
     'tritikale': 0.56,
-    'tritikale (yem)': 0.56,
     'yulaf': 0.56,
-    'yulaf (yem)': 0.56,
     # 0.2
     'aspir': 0.2,
-    'kolza (kanola)': 0.2,
+    'kolza': 0.2,
     'susam': 0.2,
     # 0.6
     'korunga': 0.6,
@@ -100,9 +98,8 @@ SERTIFIKALI_TOHUM_KATSAYILARI = {
 # Yerli sertifikalı tohum kullanım desteği katsayıları (normalize_name çıktısı ile uyumlu)
 # Kaynak: 2026 Üretim Yılı Bitkisel Üretim Destekleme Birim Fiyatları (Yerli Sertifikalı tohum kullanım desteği)
 YERLI_SERTIFIKALI_TOHUM_KATSAYILARI = {
-    'aycicegi (yaglik)': 0.6,
+    'aycicegi': 0.6,
     'misir': 0.6,
-    'misir (dane)': 0.6,
     'soya': 0.6,
     # STKD'ye ilave olarak ödenir
     'patates': 3.2,
@@ -241,6 +238,37 @@ def normalize_name(name: str) -> str:
     return result.strip().lower()
 
 
+def normalize_urun_name(name: str) -> str:
+    """Ürün adı normalizasyonu.
+
+    UI'da gelen ürün adları ile havza_urun_desen.json'daki ürün adları aynı olmayabiliyor
+    (örn: "Ayçiçeği (yağlık)" vs "Ayçiçeği"). Bu fonksiyon ürün adlarını daha agresif
+    normalize ederek eşleştirmeyi sağlamlaştırır.
+    """
+    base = normalize_name(name)
+    if not base:
+        return ""
+
+    # Parantez içi açıklamaları kaldır: "(yağlık)", "(dane)", "(kuru)", "(yem)"...
+    base = re.sub(r"\s*\([^)]*\)\s*", " ", base)
+
+    # Farklı tire karakterlerini tek tipe yaklaştır (ihtiyaten)
+    base = base.replace("–", "-").replace("—", "-")
+
+    # Çoklu boşlukları tek boşluğa indir
+    base = re.sub(r"\s+", " ", base).strip()
+
+    # UI varyantlarını kanonik forma eşle
+    canonical_map = {
+        # UI: "Sorgum-Sudan Otu Melezi" -> listelerde genelde "sorgum-sudan melezi"
+        "sorgum-sudan otu melezi": "sorgum-sudan melezi",
+        # Bazı veri setlerinde "kolza (kanola)" yerine sadece "kolza" geçebilir
+        "kolza kanola": "kolza",
+    }
+
+    return canonical_map.get(base, base)
+
+
 def resolve_havza_urun_desen_path() -> str | None:
     """Havza ürün deseni JSON dosyasının yolunu bulur.
 
@@ -261,8 +289,8 @@ def resolve_havza_urun_desen_path() -> str | None:
         os.path.join(settings.BASE_DIR, 'static', 'havza_urun_desen.json'),
         os.path.join(settings.BASE_DIR, 'static', 'data', 'havza_urun_desen.json'),
         os.path.join(settings.BASE_DIR, 'data', 'havza_urun_desen.json'),
-        # Backward-compatible (host repo layout)
-        os.path.join(settings.BASE_DIR, '../havza_urun_desen.json'),
+        # Host repo layout (yerel geliştirme): Next.js public altından oku
+        os.path.join(settings.BASE_DIR, '../webimar-nextjs/public/havza_urun_desen.json'),
     ]
 
     for candidate in candidates:
@@ -278,6 +306,26 @@ def find_matching_key_by_normalized(mapping: dict, target: str) -> str | None:
     for key in mapping.keys():
         if normalize_name(str(key)) == target_norm:
             return key
+    return None
+
+
+def find_matching_ilce_key(il_data: dict, il_name: str, target_ilce: str) -> str | None:
+    """İlçe anahtarını bulur, gerekirse il adı = ilçe adı durumunda MERKEZ ile eşleştirir."""
+    # Önce doğrudan eşleştirmeyi dene
+    if target_ilce in il_data:
+        return target_ilce
+    
+    # Normalize edilmiş eşleştirmeyi dene
+    normalized_match = find_matching_key_by_normalized(il_data, target_ilce)
+    if normalized_match:
+        return normalized_match
+    
+    # İl adı = İlçe adı durumu: MERKEZ ile eşleştirmeyi dene
+    # Örn: "YOZGAT" ili için "YOZGAT" ilçesi -> "MERKEZ" ile eşleştir
+    if (normalize_name(il_name) == normalize_name(target_ilce) and 
+        'MERKEZ' in il_data):
+        return 'MERKEZ'
+    
     return None
 
 def su_kisiti_kontrolu(il: str, ilce: str) -> bool:
@@ -305,7 +353,7 @@ def yem_bitkisi_mi(urun: str) -> bool:
         'yonca', 'korunga', 'yapay cayir mera', 'silajlik misir',
         'silajlik soya', 'sorgum otu', 'sudan otu', 'sorgum-sudan melezi'
     ]
-    return normalize_name(urun) in yem_bitkileri_norm
+    return normalize_urun_name(urun) in yem_bitkileri_norm
 
 def planli_uretim_destegi_var_mi(urun: str) -> bool:
     """2026 listesine göre planlı üretim desteği verilen ürünler (normalize edilmiş)"""
@@ -325,11 +373,11 @@ def planli_uretim_destegi_var_mi(urun: str) -> bool:
         'pamuk'
         # NOT: Fındık, Çay, Çeltik planlı üretim listesinde yok!
     ]
-    return normalize_name(urun) in planli_desteklenen_norm
+    return normalize_urun_name(urun) in planli_desteklenen_norm
 
 def urun_grubu_belirle(urun: str) -> str:
     """Ürünün hangi gruba ait olduğunu belirler (organik/iyi tarım için) - normalize edilmiş"""
-    urun_norm = normalize_name(urun)
+    urun_norm = normalize_urun_name(urun)
     
     birinci_grup_norm = [
         'aspir', 'mercimek', 'nohut', 'patates', 'sogan',
@@ -418,6 +466,21 @@ def havza_bazli_destekleme_modeli(request):
         # Su kısıtı kontrolü
         su_kisiti_bolgesi = su_kisiti_kontrolu(il, ilce)
         sut_havzasi_bolgesi = sut_havzasi_kontrolu(il)
+
+        havza_il_key: str | None = None
+        havza_ilce_key: str | None = None
+        havza_urun_listesi: list[str] | None = None
+        desteklenen_urunler_norm: set[str] | None = None
+
+        if havza_data:
+            havza_il_key = il if il in havza_data else find_matching_key_by_normalized(havza_data, il)
+            if havza_il_key:
+                havza_ilce_key = find_matching_ilce_key(havza_data[havza_il_key], il, ilce)
+            if havza_il_key and havza_ilce_key:
+                desteklenen_urunler = havza_data[havza_il_key][havza_ilce_key]
+                if isinstance(desteklenen_urunler, list):
+                    havza_urun_listesi = list(desteklenen_urunler)
+                    desteklenen_urunler_norm = {normalize_urun_name(u) for u in havza_urun_listesi}
         
         # Hesaplama değişkenleri
         toplam_temel_destek = 0
@@ -432,10 +495,16 @@ def havza_bazli_destekleme_modeli(request):
         toplam_gubre = 0
         
         mesajlar = []
+        desteklenmeyen_urunler: list[str] = []
+
+        debug_urun_kayitlari: list[dict] = []
         
         # Ürün bazlı hesaplamalar
         urun_bazli_destek_tipi_var = any(
             (u.get('destekTipi') in ['organik', 'iyiTarim']) for u in urunler if isinstance(u, dict)
+        )
+        urun_bazli_gubre_var = any(
+            bool(u.get('katiOrganikGubre')) for u in urunler if isinstance(u, dict)
         )
 
         for urun_info in urunler:
@@ -446,7 +515,30 @@ def havza_bazli_destekleme_modeli(request):
                 continue
             
             # Ürün adını normalize et (Türkçe karakterler için)
-            urun_norm = normalize_name(urun)
+            urun_norm = normalize_urun_name(urun)
+
+            sulama_tipi = str(urun_info.get('sulamaTipi') or 'kuru')
+            sulama_tipi = 'sulu' if sulama_tipi == 'sulu' else 'kuru'
+
+            havzada_urun_deseni_var = True
+            havza_eslesme_tipi: str | None = None
+
+            if havza_urun_listesi is not None and desteklenen_urunler_norm is not None:
+                if yem_bitkisi_mi(urun):
+                    havzada_urun_deseni_var = any(
+                        normalize_name(u) == normalize_name('Yem Bitkileri') for u in havza_urun_listesi
+                    )
+                    havza_eslesme_tipi = 'yem_bitkileri_etiketi' if havzada_urun_deseni_var else 'eslesme_yok'
+                else:
+                    havzada_urun_deseni_var = normalize_urun_name(urun) in desteklenen_urunler_norm
+                    havza_eslesme_tipi = 'dogrudan_urun_adi' if havzada_urun_deseni_var else 'eslesme_yok'
+            else:
+                havza_eslesme_tipi = 'il_ilce_bulunamadi' if havza_data else 'havza_verisi_yok'
+
+            if havza_urun_listesi is not None and not havzada_urun_deseni_var:
+                if urun not in desteklenmeyen_urunler:
+                    desteklenmeyen_urunler.append(urun)
+                continue
             
             # Su kısıtı yasağı kontrolü
             if su_kisiti_bolgesi and urun_norm in ['misir', 'patates']:
@@ -457,7 +549,7 @@ def havza_bazli_destekleme_modeli(request):
             katsayi = URUN_KATEGORILERI.get(urun, 1)  # Önce orijinal isimle dene
             if katsayi == 1 and urun != 'Diğer Ürünler':  # Eğer bulunamadıysa normalize edilmişle dene
                 # Normalize edilmiş anahtarları oluştur
-                normalized_keys = {normalize_name(k): v for k, v in URUN_KATEGORILERI.items()}
+                normalized_keys = {normalize_urun_name(k): v for k, v in URUN_KATEGORILERI.items()}
                 katsayi = normalized_keys.get(urun_norm, 1)
             
             # Temel destek (katsayı ile çarpılır)
@@ -467,29 +559,29 @@ def havza_bazli_destekleme_modeli(request):
             # Planlı üretim desteği (sadece listede olanlar ve havzada desteklenenler için)
             planli_var = planli_uretim_destegi_var_mi(urun_norm)
             havzada_desteklenen = False
-            
-            if planli_var and havza_data:
-                # Havza verisinde bu ilçede bu ürün destekleniyor mu kontrol et
-                il_key = il if il in havza_data else find_matching_key_by_normalized(havza_data, il)
-                if il_key and ilce in havza_data[il_key]:
-                    ilce_key = ilce
-                elif il_key:
-                    ilce_key = find_matching_key_by_normalized(havza_data[il_key], ilce)
-                else:
-                    ilce_key = None
-
-                if il_key and ilce_key:
-                    desteklenen_urunler = havza_data[il_key][ilce_key]
-                    desteklenen_urunler_norm = {normalize_name(u) for u in desteklenen_urunler}
-                    # Yem bitkileri özel kontrolü
-                    if yem_bitkisi_mi(urun):
-                        havzada_desteklenen = any(
-                            normalize_name(u) == normalize_name('Yem Bitkileri') for u in desteklenen_urunler
-                        )
-                    else:
-                        havzada_desteklenen = normalize_name(urun) in desteklenen_urunler_norm
+            if planli_var and havza_urun_listesi is not None:
+                havzada_desteklenen = havzada_urun_deseni_var
+            elif not havza_data:
+                havza_eslesme_tipi = 'havza_verisi_yok'
+            elif not planli_var:
+                havza_eslesme_tipi = 'planli_listede_yok'
             
             debug_log(f"DEBUG: {urun} -> planli_var: {planli_var}, havzada_desteklenen: {havzada_desteklenen}")
+
+            if debug_enabled:
+                debug_urun_kayitlari.append(
+                    {
+                        'urun_girdi': urun,
+                        'urun_norm': urun_norm,
+                        'dekar': dekar,
+                        'planli_listede': bool(planli_var),
+                        'havza_il_key': havza_il_key,
+                        'havza_ilce_key': havza_ilce_key,
+                        'havzada_desteklenen': bool(havzada_desteklenen),
+                        'havza_eslesme_tipi': havza_eslesme_tipi,
+                        'havza_desteklenen_urunler': havza_urun_listesi,
+                    }
+                )
             
             if planli_var and havzada_desteklenen:
                 planli = TEMEL_DESTEK * katsayi * dekar
@@ -510,7 +602,7 @@ def havza_bazli_destekleme_modeli(request):
                 toplam_sut_havzasi += sut_ilave
             
             # Su kısıtı desteği
-            if su_kisiti_bolgesi and urun_norm in SU_KISITI_KATSAYILARI:
+            if su_kisiti_bolgesi and sulama_tipi == 'sulu' and urun_norm in SU_KISITI_KATSAYILARI:
                 su_katsayi = SU_KISITI_KATSAYILARI[urun_norm]
                 su_ilave = TEMEL_DESTEK * su_katsayi * dekar
                 toplam_su_kisiti += su_ilave
@@ -576,6 +668,10 @@ def havza_bazli_destekleme_modeli(request):
                         iyi_destek = TEMEL_DESTEK * iyi_katsayi * dekar
                         toplam_iyi_tarim += iyi_destek
 
+            # Katı organik / organomineral gübre desteği (ürün bazlı)
+            if urun_info.get('katiOrganikGubre'):
+                toplam_gubre += 99.2 * dekar
+
         # Geriye dönük uyumluluk: ürün bazlı seçim yapılmadıysa eski global alanları kullan
         if not urun_bazli_destek_tipi_var:
             # Organik tarım desteği (global)
@@ -626,8 +722,8 @@ def havza_bazli_destekleme_modeli(request):
                         )
                         toplam_iyi_tarim += TEMEL_DESTEK * iyi_katsayi * toplam_dekar
         
-        # Gübre desteği
-        if uretimi_gelistirme.get('katiOrganikGubre', False):
+        # Gübre desteği (geriye dönük global alan - ürün bazlı yoksa)
+        if not urun_bazli_gubre_var and uretimi_gelistirme.get('katiOrganikGubre', False):
             toplam_dekar = sum(float(u.get('dekar', 0)) for u in urunler if u.get('urun') and float(u.get('dekar', 0)) > 0)
             toplam_gubre = 99.2 * toplam_dekar
         
@@ -648,8 +744,21 @@ def havza_bazli_destekleme_modeli(request):
         # Başarı mesajı
         mesaj_parts = ["✅ Hesaplama başarıyla tamamlandı."]
         
-        if su_kisiti_bolgesi:
+        if su_kisiti_bolgesi and toplam_su_kisiti > 0:
             mesajlar.append("🌊 Su kısıtı bölgesi desteği uygulandı.")
+
+        if desteklenmeyen_urunler:
+            desteklenmeyen_unique = list(dict.fromkeys(desteklenmeyen_urunler))
+            if len(desteklenmeyen_unique) == 1:
+                mesajlar.append(
+                    "Seçtiğiniz ürün, seçilen havzanın ürün deseni içerisinde bulunmadığından destekleme ödemesi yapılmamaktadır: "
+                    f"{desteklenmeyen_unique[0]}."
+                )
+            else:
+                mesajlar.append(
+                    "Seçtiğiniz ürünler, seçilen havzanın ürün deseni içerisinde bulunmadığından destekleme ödemesi yapılmamaktadır: "
+                    f"{', '.join(desteklenmeyen_unique)}."
+                )
         
         if sut_havzasi_bolgesi:
             mesajlar.append("🥛 Süt havzası bölgesi ilavesi uygulandı.")
@@ -676,7 +785,8 @@ def havza_bazli_destekleme_modeli(request):
                 'organik_tarim': round(toplam_organik_tarim, 2),
                 'iyi_tarim': round(toplam_iyi_tarim, 2),
                 'gubre': round(toplam_gubre, 2),
-                'toplam': round(toplam_destek, 2)
+                'toplam': round(toplam_destek, 2),
+                **({'debug': {'urunler': debug_urun_kayitlari}} if debug_enabled else {})
             }
         })
         

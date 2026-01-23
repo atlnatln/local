@@ -1,29 +1,30 @@
 # Local Docker Compose Notları (İki Proje)
 
-Bu repo’nun yaklaşımı: her proje kendi dizinindeki Compose ile çalışır, bu repo sadece tek noktadan yönetir.
+Bu repo’nun yaklaşımı: her proje kendi dizinindeki Compose ile çalışır; bu repo sadece tek noktadan orkestrasyon yapar.
 
-## Neden böyle?
+## Önerilen akış
 
-- Proje içi compose’lar zaten oturmuş olur.
-- Canlıda çalışan `webimar` için risk düşük.
-- Çakışma yönetimi daha kolay: her proje kendi compose “project name”’i ile ayağa kalkar.
+- Tam stack (infrastructure + iki proje): `./dev-docker.sh`
+- Sadece projeler (infrastructure olmadan): `bash scripts/up.sh`
 
 ## Çakışma kontrol listesi
 
-- Host’a publish edilen portlar eşsiz olmalı (ör: webimar `3000/8000`, anka `3100/8100`).
-- Container name’ler compose içinde hard-coded ise çakışabilir.
-  - Mümkünse `container_name:` kullanmayın veya projeye özgü prefix verin.
+- Host’a publish edilen portlar eşsiz olmalı.
+  - Webimar (docker dev): `3000` (Next.js), `3001` (React), `8001` (API)
+  - Anka (docker dev): `3100` (frontend), `8100` (backend)
+  - Infrastructure: `80/443/8080` (reverse proxy + health)
+- Compose içinde hard-coded `container_name:` kullanımı çakışma çıkarabilir.
 
-## İpucu: compose project name zorlamak
+## İpucu: Compose project name zorlamak
 
-Bazı makinelerde proje adı çakışması yaşarsanız, manuel çalıştırırken `-p` kullanabilirsiniz:
+Nadir durumlarda “compose project name” çakışması yaşarsanız manuel çalıştırırken `-p` kullanabilirsiniz:
 
 ```bash
-cd /home/akn/Genel/webimar
+cd /home/akn/vps/projects/webimar
 docker compose -p webimar up -d
 
-cd /home/akn/anka
+cd /home/akn/vps/projects/anka
 docker compose -p anka up -d
 ```
 
-Scriptler şu an dizin bazlı çalıştığı için genelde buna gerek kalmaz.
+Repo içindeki `scripts/*` zaten dizin bazlı çalıştığı için çoğu zaman buna gerek kalmaz.

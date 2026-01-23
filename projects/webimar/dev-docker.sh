@@ -27,23 +27,16 @@ if ! docker info > /dev/null 2>&1; then
 fi
 
 # Set up environment for Docker development
-if [ -f .env.local ]; then
-    ln -sf .env.local .env
-    echo -e "${GREEN}📦 Linked .env.local → .env (REACT_APP_API_BASE_URL=$(grep REACT_APP_API_BASE_URL .env.local | cut -d'=' -f2))${NC}"
+if [ -f .env.local.docker ]; then
+    ln -sf .env.local.docker .env
+    echo -e "${GREEN}📦 Linked .env.local.docker → .env (REACT_APP_API_BASE_URL=$(grep REACT_APP_API_BASE_URL .env.local.docker | cut -d'=' -f2))${NC}"
 else
-    echo -e "${YELLOW}⚠️  .env.local not found, using defaults${NC}"
+    echo -e "${YELLOW}⚠️  .env.local.docker not found, using defaults${NC}"
 fi
 
-# Stop any running containers first (workspace aware)
+# Stop any running containers first
 echo -e "\n${YELLOW}🛑 Stopping existing containers...${NC}"
 docker compose down --remove-orphans > /dev/null 2>&1 || true
-
-# Stop other workspace projects to avoid port conflicts
-if [ -f "../../scripts/down.sh" ]; then
-    echo -e "${YELLOW}⚠️  Workspace projelerini durduruluyor...${NC}"
-    (cd ../.. && bash scripts/down.sh > /dev/null 2>&1 || true)
-    sleep 2
-fi
 
 # Build and start
 echo -e "\n${YELLOW}🔨 Building and starting containers...${NC}"
@@ -58,12 +51,19 @@ wait_for_endpoint() {
     local service_name="$2"
     local max_attempts=30
     local attempt=0
+
+    get_code() {
+        curl -s -o /dev/null -w "%{http_code}" "$1" 2>/dev/null || echo "000"
+    }
     
     while [ $attempt -lt $max_attempts ]; do
-        if curl -s -f "$url" > /dev/null 2>&1; then
-            echo -e "${GREEN}  ✓ $service_name ready${NC}"
-            return 0
-        fi
+        code="$(get_code "$url")"
+        case "$code" in
+            200|301|302|307|308)
+                echo -e "${GREEN}  ✓ $service_name ready ($code)${NC}"
+                return 0
+                ;;
+        esac
         attempt=$((attempt + 1))
         sleep 2
         echo -n "."
@@ -73,29 +73,28 @@ wait_for_endpoint() {
     return 1
 }
 
-# Check API health via nginx proxy
+# Check API health
 wait_for_endpoint "http://localhost/api/calculations/health/" "Django API"
 
-# Check Next.js via nginx proxy  
+# Check Next.js
 wait_for_endpoint "http://localhost" "Next.js"
 
-# Check React direct port first (nginx routing may take longer)
-wait_for_endpoint "http://localhost:3001" "React SPA (direct)"
+# Check React via nginx routing (test with specific route)
+wait_for_endpoint "http://localhost/sera" "React SPA"
 
 echo -e "\n${GREEN}╔════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║     🚀 Docker Environment Ready!       ║${NC}"
 echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
 echo -e ""
 echo -e "${BLUE}Services:${NC}"
-echo -e "  🌐 Main site:    http://localhost (Next.js via nginx)"
-echo -e "  📊 Admin:        http://localhost/admin/ (Django via nginx)"
-echo -e "  🔧 API:          http://localhost/api/ (Django via nginx)"
-echo -e "  ⚛️  React SPA:    http://localhost/hesaplama (React via nginx)"
+echo -e "  🌐 Main site:    http://localhost (Next.js)"
+echo -e "  📊 Admin:        http://localhost/admin/ (Django)"
+echo -e "  🔧 API:          http://localhost/api/ (Django)"
+echo -e "  ⚛️  React SPA:    http://localhost/{yapi-turu} (via nginx routing)"
 echo -e ""
 echo -e "${BLUE}Test Links:${NC}"
-echo -e "  🧪 API Health:   http://localhost/api/health/"
-echo -e "  🏗️ Next.js:      http://localhost:3000 (direct)"
-echo -e "  ⚛️  React SPA:    http://localhost:3001 (direct)"
+echo -e "  🧪 API Health:   http://localhost/api/calculations/health/"
+echo -e "  🏗️ Calculator:   http://localhost/sera"
 echo -e ""
 echo -e "${BLUE}Commands:${NC}"
 echo -e "  📋 Logs:   docker compose logs -f"

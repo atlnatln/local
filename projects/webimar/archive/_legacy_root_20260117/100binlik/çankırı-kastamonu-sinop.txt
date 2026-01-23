@@ -1,0 +1,95 @@
+SİNOP-KASTAMONU-ÇANKIRI PLANLAMA BÖLGESİ
+1/100.000 ÖLÇEKLİ ÇEVRE DÜZENİ PLANI
+PLAN HÜKÜMLERİ (TARIM İLE İLGİLİ KISIMLAR)
+
+1. AMAÇ
+...Sürdürülebilir ve yaşanabilir bir çevre yaratılmasını; tarımsal, turistik ve tarihsel kimliğin korunmasını... amaçlamaktadır.
+
+4. TANIMLAR
+4.16. Tarımsal Sanayi Alanları: Bitkisel ve hayvansal tarım ürünlerinin mamul hale getirilmelerini sağlayan, entegre ya da entegre nitelikte olmayan sanayi işletme tesisleri için ayrılan alanlardır.
+4.42. Mera Alanları: 5178/4342 sayılı “Mera Kanunu” uyarınca saptanmış ve saptanacak olan, hayvanların otlatılması ve otundan yararlanılması için tahsis edilen veya kadimden beri bu amaçla kullanılan alanlardır.
+4.43. Yaylak: Çiftçilerin hayvanları ile birlikte yaz mevsimini geçirmeleri, hayvanlarını otlatmaları ve otundan yararlanmaları için tahsis edilen veya kadimden beri bu amaçla kullanılan alanlardır.
+4.44. Kışlak: Hayvanların kış mevsiminde barındırılması ve otundan yararlanılması için tahsis edilen veya kadimden beri bu amaçla kullanılan alanlardır.
+4.45. Tarım Arazileri: Toprak, topografya ve diğer iklimsel özellikleri tarımsal üretim için uygun olup hâlihazırda tarımsal üretim yapılan veya yapılmaya uygun olan alanlardır.
+4.45.1. Mutlak Tarım Arazileri: Bitkisel üretimde; toprağın fiziksel, kimyasal ve biyolojik özelliklerinin kombinasyonu yöre ortalamasında ürün alınabilmesi için sınırlayıcı olmayan, topoğrafik sınırlamaları yok veya çok az olan; ülkesel, bölgesel veya yerel önemi bulunan, hâlihazırda tarımsal üretimde kullanılan veya bu amaçla kullanıma elverişli olan arazilerdir.
+4.45.2. Özel Ürün Arazileri: Mutlak tarım arazileri dışında kalan; toprak ve topografik sınırlamaları nedeniyle yöreye adapte olmuş bitki türlerinin tamamının tarımının yapılamadığı, ancak özel bitkisel ürünlerin yetiştiriciliği ile su ürünleri yetiştiriciliğinin ve avcılığının yapılabildiği; ülkesel, bölgesel veya yerel önemi bulunan arazilerdir.
+4.45.3. Dikili Tarım Arazileri: Mutlak ve özel ürün arazileri dışında kalan ve üzerinde yöre ekolojisine uygun çok yıllık ağaç, ağaççık ve çalı formundaki bitkilerin tarımı yapılan, ülkesel, bölgesel veya yerel önemi bulunan arazilerdir.
+4.45.4. Marjinal Tarım Arazileri: Mutlak tarım arazileri, özel ürün arazileri ve dikili tarım arazileri dışında kalan; toprak ve topografik sınırlamalar nedeniyle üzerinde sadece geleneksel toprak işlemeli tarımın yapıldığı arazilerdir.
+4.45.5. Örtü Altı Tarım Arazileri: İklim ve diğer dış etkilerin olumsuzluklarının kaldırılması veya azaltılması için cam, naylon veya benzeri malzeme kullanılarak oluşturulan örtüler altında, ileri tarım teknikleri kullanılarak tarım yapılan arazilerdir.
+4.46. Arazi Toplulaştırma Alanları: Arazilerin doğal ve yapay etkilerle bozulmasını ve parçalanmasını önlemek, parçalanmış arazilerde ise doğal özellikleri, kullanım bütünlüğü ve mülkiyet hakları gözetilerek birden fazla arazi parçasının birleştirilip ekonomik, ekolojik ve toplumsal yönden daha işlevsel yeni parsellerin oluşturulmasını ve bu parsellerin arazi özellikleri ve alanı değerlendirilerek kullanım şekillerinin belirlenmesini, köy ve arazi gelişim hizmetlerinin sağlanmasını amaçlayan alanlardır.
+4.47. Tarımsal Amaçlı Yapılar: Toprak koruma ve sulamaya yönelik altyapı tesisleri, entegre nitelikte olmayan hayvancılık ve su ürünleri üretim ve muhafaza tesisleri ile zorunlu olarak tesis edilmesi gerekli olan müştemilatı, mandıralar, üreticinin bitkisel üretime bağlı olarak elde ettiği ürünü için ihtiyaç duyacağı yeterli boyut ve hacimde depolar, un değirmeni, tarım alet ve makinelerinin muhafazasında kullanılan sundurma ve çiftlik atölyeleri, seralar, tarımsal işletmede üretilen ürünün özelliği itibarıyla hasattan sonra iki saat içinde işlenmediği takdirde ürünün kalite ve besin değeri kaybolması söz konusu ise bu ürünlerin işlenmesi için kurulan tesisler ile T.C. Tarım ve Orman Bakanlığı tarafından tarımsal amaçlı olduğu kabul edilen, entegre nitelikte olmayan diğer tesislerdir.
+4.48. Tarımsal Amaçlı Entegre Yapılar: İlçe, belde veya birden fazla köy sınırları içerisinde, birden fazla işletmede üretilen tarımsal ürünlerin üretimden sonra işlenerek, fiziksel veya kimyasal özellikleri değiştirilip, bir veya birden fazla yeni ürüne dönüştürülmesinin yapıldığı tesislerdir.
+4.49. Organize Tarım Alanları: Bu alanlar tarım ve hayvancılık faaliyetlerinin sürdürüleceği ve tarımsal ürünlerin katma değerlerini artırmaya yönelik araştırma, geliştirme ve üretim birimleri ile ürün toplama, depolama, saklama alanları; tarımsal amaçlı yapılar ve tarımsal amaçlı entegre tesislerin toplu olarak (organize şekilde) yer alabileceği alanlardır.
+
+5. İLKELER
+5.1.3. Mera alanlarında koruma-kullanma dengesinin gözetilmesi.
+5.1.5. Bitkisel üretimde önemli paya sahip olan tarım toprakları ile su ürünleri üretim yerleri ve çevrelerinin korunması.
+5.1.6. Üzerinde yetişen özel ürünler açısından önem taşıyan tarım alanlarının korunması.
+5.1.9. İçme suyu ve tarımda sulama amacı ile kullanılan ve kullanılacak olan su kaynakları ve bu kaynaklar çevresindeki su toplama havzaları ile rezerv alanlarının korunması.
+5.1.10. İlgili kuruluşların yatırım programında yer alan veya alacak olan sulama alanlarının korunması.
+5.2.4. Planlama Bölgesi’nde yer alan tüm gelişme alanlarının, verimi yüksek tarım arazilerine ve enerji kaynak alanlarına zarar vermeyecek biçimde geliştirilmesi.
+5.3.4. Verimli tarım arazilerine baskı yapan plansız sanayileşmenin önlenmesi ve mevcut sanayilerin çevresel etkilerinin kontrol altına alınması.
+
+8. UYGULAMA HÜKÜMLERİ
+
+8.1.2. Kırsal Yerleşim Alanları
+8.1.2.3. Kırsal yerleşim alanlarında imar planları yapılıncaya kadar konut, tarım ve hayvancılık amaçlı yapılarda yapılanma koşulları Plansız Alanlar İmar Yönetmeliği hükümlerine göre belirlenir. Silo, samanlık, yem deposu, vb. yapılar için maksimum bina yüksekliği ihtiyaç doğrultusunda belirlenir.
+8.1.3. 4626/3083 sayılı “Sulama Alanlarında Arazi Düzenlemesine Dair Tarım Reformu Kanunu” ve ilgili yönetmelikleri kapsamında tespit edilen köy gelişme alanlarında konut ve tarımsal amaçlı yapılarda yapılanma koşulları:
+Min. İfraz = 400 m2.
+Emsal (E) = 0.50
+Mak. İnşaat Alanı = 250 m2
+Mak. Bina Yüksekliği = 6.50 m. (2 kat) olacaktır.
+Emsale göre inşaat alanının 100 m2’yi aştığı durumlarda maksimum inşaat alanı esas alınacaktır.
+
+8.2.6. Organize Tarım Alanları
+8.2.6.1. Bu alanlarda yer alacak işletmelerin yapılanma koşulları ve nitelikleri imar planlarında belirlenecek olup imar planları, ilgili kurum ve kuruluşların görüşü doğrultusunda, ilgili idarece onaylanmadan uygulamaya geçilemez.
+
+8.3. Tarım Alanları
+8.3.1. Bu planda yer alan tarım alanları “Tarımsal Nitelikli Alanlar” olarak tek gösterim altında toplanmış olup 5578/5403 sayılı “Toprak Koruma ve Arazi Kullanımı Kanunu” ve ilgili yönetmeliğinde tanımlanan “Tarım Arazileri Sınıflarına” ayrılmamıştır. Tarım arazilerinin sınıflaması, ilgili kurum ya da kuruluşlarca yapılacaktır.
+8.3.2. Nitelikli tarım toprakları ile fiilen sulanan veya sulama projeleri ilgili kuruluşlar tarafından hazırlanmış ve yatırım programına alınmış / alınacak tarım topraklarının tarımsal üretim amaçlı korunması esastır. Nitelikli tarım alanlarında, mutlak tarım arazileri, özel ürün arazileri, dikili tarım arazileri ile sulu tarım arazileri için 5578/5403 sayılı yasada öngörülen ifraz koşulları geçerli olacaktır.
+8.3.3. Tarım arazilerinin amaç dışı kullanımı taleplerinde, 5578/5403 sayılı “Toprak Koruma ve Arazi Kullanım Kanunu” çerçevesinde işlem yapılacaktır.
+8.3.4. 5403 sayılı Kanun’un Geçici 1. maddesi uyarınca tarım kullanımı dışına çıkarılmış alanlarda bu planın Marjinal Tarım Alanlarına ilişkin hükümleri uygulanır.
+8.3.5. Bu alanlarda yapılacak uygulamalar bu plan ile verilmiş olan yapılanma koşullarını aşmamak kaydıyla, 3194 sayılı İmar Kanunu; “Plansız Alanlar Yönetmeliği”nin 6. Bölümünde belirtilen esaslara göre yapılacak olup tarımsal amaçlı yapılar için yükseklik Tarım ve Orman Bakanlığı tarafından projesine uygun olarak belirlenecektir.
+8.3.6. İçme ve kullanma suyu temin edilen kıta içi yüzeysel su kaynaklarının bulunduğu havzalarda, mutlak ve kısa mesafeli koruma kuşaklarında yapılan tarımsal faaliyetlerde, organik tarım özendirilecektir.
+8.3.7. Bu alanlarda, örtü altı tarım yapılması durumunda seralar emsale dahil değildir.
+8.3.8. Dünya Bankası, Avrupa Birliği Fonları, Tarım ve Kırsal Kalkınmayı Destekleme Kurumu ve T.C. Tarım ve Orman Bakanlığı tarafından desteklenen tarımsal ve hayvancılık amaçlı projeler T.C. Tarım ve Orman Bakanlığı’nca projesine göre değerlendirilerek sonuçlandırılır. Ancak fiilen sulanan ve/veya sulama projesi kapsamında kalan tarım arazilerinde bu hüküm uygulanmaz. Tarımsal amaçlı yapılar amacı dışında kullanılamaz ve başka bir kullanıma dönüştürülemez.
+
+8.3.9. Mutlak Tarım Arazileri
+8.3.9.1. Bu alanların tarım faaliyeti amaçlı kullanılması esastır. Tarımsal amaçlı yapılar yapılması durumunda; Emsal (E) = 0.20’dir.
+8.3.9.2. Çiftçinin barınma ihtiyacını karşılayacak yapı yapılması durumunda maksimum inşaat alanı 50 m2’yi geçemez. Bu yapılar tarımsal amaçlı yapılar için belirlenmiş emsal değerine dahildir.
+
+8.3.10. Özel Ürün Arazileri
+8.3.10.1. Bu alanların tarım faaliyeti amaçlı kullanılması esastır. Tarımsal amaçlı yapılar yapılması durumunda; Emsal (E) = 0.10’dur.
+8.3.10.2. Çiftçinin barınma ihtiyacını karşılayacak yapı yapılması durumunda maksimum inşaat alanı 50 m2’yi geçemez. Bu yapılar tarımsal amaçlı yapılar için belirlenmiş emsal değerine dahildir.
+8.3.10.3. Zeytinlik alanlarda, 3573 sayılı “Zeytinciliğin Islahı ve Yabanilerinin Aşılattırılması Hakkında Kanun” hükümleri geçerlidir.
+Bu alanlarda, zeytinyağı fabrikaları ile küçük ölçekli tarımsal sanayi işletmeleri yapımı ve işletilmesi T.C. Tarım ve Orman Bakanlığı’nın iznine tabidir.
+Belediye sınırları içinde bulunan zeytinlik sahaların imar hudutları kapsamı içine alınması halinde, çiftçinin barınma ihtiyacını karşılayacak yapı ile altyapı ve sosyal tesisler dahil toplam yapılaşma alanı, zeytinlik alaninin %10’unu geçemez.
+
+8.3.11. Dikili Tarım Arazileri
+8.3.11.1. Bu alanların tarım faaliyeti amaçlı kullanılması esastır. Tarımsal amaçlı yapılar yapılması durumunda; Emsal (E) = 0.10’dur.
+8.3.11.2. Çiftçinin barınma ihtiyacını karşılayacak yapı yapılması durumunda maksimum inşaat alanı 100 m2’yi geçemez. Bu yapılar tarımsal amaçlı yapılar için belirlenmiş emsal değerine dahildir.
+
+8.3.12. Marjinal Tarım Arazileri
+8.3.12.1. Tarımsal amaçlı ve bölgeye özel tarımsal ürünlere yönelik olarak küçük ve orta ölçekli tarıma dayalı sanayi tesisleri için en yüksek Emsal (E) = 0.50’dir.
+8.3.12.2. Çiftçinin barınma ihtiyacını karşılayacak yapı yapılması durumunda maksimum inşaat alanı 150 m2’yi geçemez. Bu yapılar tarımsal amaçlı yapılar için belirlenmiş emsal değerine dahildir.
+
+8.10. Orman Alanları
+8.10.5. Bu planda orman veya ağaçlandırılacak alan olarak belirlenmiş, ancak özel mülkiyete tabi olup mülkiyeti kesinleşmiş ve tapuya tescil edilmiş parsellerde kadastral bir yola cephesi bulunmak şartı ile sadece konut ve tarımsal amaçlı yapılar yer alabilir.
+8.10.5.1. Bu alanlarda yapılanma koşulu:
+Min. İfraz = 5000 m2
+Emsal = 0.05
+Mak. İnşaat Alanı = 250 m²
+Mak. Bina Yüksekliği = 6.50 m. (2 kat) olacaktır.
+Emsale göre inşaat alanının 250 m2’yi aştığı durumlarda maksimum inşaat alanı esas alınacaktır.
+8.10.6. Orman Kanunu’nun 2. maddesinin (B) bendine konu olan alanlarda... Tarımsal nitelik kazanmış olan kısımlarda ise çevre düzeni planı değişikliği yapılmasına gerek duyulmaksızın, bu planın “Tarım Arazileri” plan hükümleri uyarınca işlem yapılır.
+
+8.13. Makilik-Fundalık Alanlar
+8.13.1. Bu alanların doğal yapısının korunması esastır, ancak özel mülkiyete tabi olan parsellerde kadastral bir yola cephesi bulunmak şartı ile konut ya da tarımsal amaçlı yapılar yer alabilir.
+
+8.14. Mera Alanları
+8.14.1. Bu alanlarda, 5178/4342 sayılı “Mera Kanunu” kapsamında uygulama yapılacaktır.
+
+8.15. Yaylak ve Kışlak Alanları
+8.15.1. Bu alanlarda ilgili mevzuata aykırı uygulama yapılamaz.
+
+8.28.5. Zorunlu olması halinde, bu tesislerin (Karayolu kenarında yapılacak yapı ve tesisler) tarım arazilerinde yer alabilmesi, 5578/5403 sayılı “Toprak Koruma ve Arazi Kullanım Kanunu” ve ilgili yönetmelik hükümleri uyarınca gerçekleşebilir.

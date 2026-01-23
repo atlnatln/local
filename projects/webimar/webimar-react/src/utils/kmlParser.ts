@@ -207,7 +207,7 @@ export class KMLLoader {
 export const DEFAULT_KML_LAYERS: KMLLayerConfig[] = [
   {
     name: 'İzmir Sınırları',
-    url: '/static/izmir.kml',
+    url: '/izmir.kml',
     style: {
       color: '#006600',
       weight: 3,
@@ -217,7 +217,7 @@ export const DEFAULT_KML_LAYERS: KMLLayerConfig[] = [
   },
   {
     name: 'İzmir Kapalı Alanlar',
-    url: '/static/izmir_kapali_alan.kml',
+    url: '/izmir_kapali_alan.kml',
     style: {
       color: 'red',
       weight: 0,
@@ -228,7 +228,7 @@ export const DEFAULT_KML_LAYERS: KMLLayerConfig[] = [
   },
   {
     name: 'Büyük Ovalar İzmir',
-    url: '/static/Büyük Ovalar İzmir.kml',
+    url: '/Büyük Ovalar İzmir.kml',
     style: {
       color: 'blue',
       weight: 0,

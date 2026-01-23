@@ -17,17 +17,58 @@ NC='\033[0m'
 # Proje dizini (Scriptin olduğu yer)
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Background mode detection
-BACKGROUND_MODE=false
-if [[ "$1" == "--background" || "$1" == "-bg" ]]; then
-    BACKGROUND_MODE=true
-    echo -e "${BLUE}🔄 Running in background mode...${NC}"
-fi
+# Komut kontrol helper
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Port kontrol helper
+port_in_use() {
+    local port="$1"
+    if command_exists lsof; then
+        lsof -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1
+        return $?
+    elif command_exists ss; then
+        ss -ltnp | awk '{print $4}' | grep -q ":${port}$"
+        return $?
+    elif command_exists fuser; then
+        fuser -n tcp "$port" >/dev/null 2>&1
+        return $?
+    fi
+    return 1
+}
+
+free_port() {
+    local port="$1"
+    if command_exists fuser; then
+        fuser -k "$port"/tcp >/dev/null 2>&1 || true
+    elif command_exists lsof; then
+        local pids
+        pids=$(lsof -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)
+        if [ -n "$pids" ]; then
+            kill $pids 2>/dev/null || true
+        fi
+    fi
+}
 
 echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║     Webimar Local Dev Environment      ║${NC}"
 echo -e "${BLUE}╚════════════════════════════════════════╝${NC}"
 echo -e "📂 Proje Dizini: ${PROJECT_DIR}"
+
+# Gerekli komutlar
+MISSING=false
+for cmd in python3 curl node npm; do
+    if ! command_exists "$cmd"; then
+        echo -e "${RED}❌ Gerekli komut bulunamadı: ${cmd}${NC}"
+        MISSING=true
+    fi
+done
+
+if [ "$MISSING" = true ]; then
+    echo -e "${YELLOW}⚠️  Lütfen eksik bağımlılıkları yükleyip tekrar deneyin.${NC}"
+    exit 1
+fi
 
 # Cleanup fonksiyonu
 cleanup() {
@@ -57,22 +98,34 @@ cleanup() {
     exit 0
 }
 
-# Ctrl+C yakala
-trap cleanup SIGINT SIGTERM
-
-# Docker container'ları durdur (eğer çalışıyorsa) - workspace düzeninde
-echo -e "\n${YELLOW}🛑 Docker container'ları kontrol ediliyor...${NC}"
-if docker compose ps --services --filter "status=running" 2>/dev/null | grep -q .; then
-    echo -e "${YELLOW}⚠️  Docker container'ları durduruluyor...${NC}"
-    docker compose down --remove-orphans > /dev/null 2>&1 || true
-    sleep 2
+# Arka plan modu kontrolü
+RUN_IN_BACKGROUND=false
+if [[ "$1" == "--background" || "$1" == "-b" ]]; then
+    RUN_IN_BACKGROUND=true
 fi
 
-# Workspace seviyesinde tüm projeleri durdur (eğer scripts mevcutsa)
-if [ -f "../../scripts/down.sh" ]; then
-    echo -e "${YELLOW}⚠️  Workspace projelerini durduruluyor...${NC}"
-    (cd ../.. && bash scripts/down.sh webimar > /dev/null 2>&1 || true)
-    sleep 1
+# Ctrl+C yakala (arka plan modunda kapanışı engelle)
+if [ "$RUN_IN_BACKGROUND" != true ]; then
+    trap cleanup SIGINT SIGTERM
+fi
+
+# Docker container'ları durdur (eğer çalışıyorsa)
+echo -e "\n${YELLOW}🛑 Docker container'ları kontrol ediliyor...${NC}"
+if command_exists docker && docker info >/dev/null 2>&1; then
+    if docker compose -f docker-compose.prod.yml ps --services --filter "status=running" 2>/dev/null | grep -q .; then
+        echo -e "${YELLOW}⚠️  Docker container'ları durduruluyor...${NC}"
+        docker compose -f docker-compose.prod.yml down --remove-orphans > /dev/null 2>&1 || true
+        sleep 2
+    fi
+
+    # Regular docker-compose.yml kontrolü de ekle
+    if docker compose ps --services --filter "status=running" 2>/dev/null | grep -q .; then
+        echo -e "${YELLOW}⚠️  Regular Docker container'ları durduruluyor...${NC}"
+        docker compose down --remove-orphans > /dev/null 2>&1 || true
+        sleep 2
+    fi
+else
+    echo -e "${YELLOW}ℹ️  Docker çalışmıyor, container kontrolü atlandı.${NC}"
 fi
 
 # Set up environment for native development  
@@ -86,56 +139,56 @@ fi
 # Port kontrolü ve temizliği
 echo -e "\n${YELLOW}🔍 Port kontrolü yapılıyor...${NC}"
 for port in 8000 3000 3001; do
-    if lsof -i:$port > /dev/null 2>&1; then
+    if port_in_use "$port"; then
         echo -e "${YELLOW}⚠️  Port $port kullanımda, temizleniyor...${NC}"
-        fuser -k $port/tcp 2>/dev/null || true
+        free_port "$port"
         sleep 1
     fi
 done
 
 # 1. Django API Başlat
 echo -e "\n${BLUE}📡 [1/3] Django API başlatılıyor...${NC}"
-if [ -d "${PROJECT_DIR}/webimar-api/venv" ]; then
-    cd "${PROJECT_DIR}/webimar-api"
-    source venv/bin/activate
-    
-    # Requirements kontrolü ve kurulumu
-    if ! python -c "import django_redis" 2>/dev/null; then
-        echo -e "${YELLOW}  ⚠️  Python paketleri eksik, yükleniyor...${NC}"
-        pip install -r requirements.txt
+cd "${PROJECT_DIR}/webimar-api"
+
+if [ ! -d ".venv" ]; then
+    echo -e "${YELLOW}  ⚠️  Virtual environment yok, oluşturuluyor...${NC}"
+    python3 -m venv .venv
+fi
+
+source .venv/bin/activate
+python -m pip install --upgrade pip >/dev/null 2>&1 || true
+
+# Requirements kontrolü ve kurulumu
+if ! python -c "import django" 2>/dev/null; then
+    echo -e "${YELLOW}  ⚠️  Python paketleri eksik, yükleniyor...${NC}"
+    pip install -r requirements.txt
+fi
+
+# Django migrations kontrol
+echo -e "${YELLOW}  🔄 Django migrations kontrol ediliyor...${NC}"
+python manage.py migrate --run-syncdb > /dev/null 2>&1 || true
+
+# Django'yu python ile çalıştır (detaylı log için)
+echo -e "${YELLOW}  🚀 Django server başlatılıyor...${NC}"
+python manage.py runserver 0.0.0.0:8000 &
+DJANGO_PID=$!
+
+# API'nin başladığını kontrol et (daha uzun bekleme)
+echo -e "${YELLOW}  ⏳ API sağlık kontrolü (10 saniye)...${NC}"
+for i in {1..10}; do
+    sleep 1
+    if curl -s -f http://localhost:8000/api/calculations/health/ > /dev/null 2>&1; then
+        echo -e "${GREEN}  ✓ Django API sağlıklı (PID: $DJANGO_PID) -> http://localhost:8000${NC}"
+        API_READY=true
+        break
     fi
-    
-    # Django migrations kontrol
-    echo -e "${YELLOW}  🔄 Django migrations kontrol ediliyor...${NC}"
-    python3 manage.py migrate --run-syncdb > /dev/null 2>&1 || true
-    
-    # Django'yu python3 ile çalıştır (detaylı log için)
-    echo -e "${YELLOW}  🚀 Django server başlatılıyor...${NC}"
-    python3 manage.py runserver 0.0.0.0:8000 &
-    DJANGO_PID=$!
-    
-    # API'nin başladığını kontrol et (daha uzun bekleme)
-    echo -e "${YELLOW}  ⏳ API sağlık kontrolü (10 saniye)...${NC}"
-    for i in {1..10}; do
-        sleep 1
-        if curl -s -f http://localhost:8000/api/calculations/health/ > /dev/null 2>&1; then
-            echo -e "${GREEN}  ✓ Django API sağlıklı (PID: $DJANGO_PID) -> http://localhost:8000${NC}"
-            API_READY=true
-            break
-        fi
-        echo -n "."
-    done
-    
-    if [ "$API_READY" != true ]; then
-        echo -e "\n${RED}  ❌ Django API sağlık kontrolü başarısız!${NC}"
-        echo -e "${YELLOW}     Django loglarını kontrol edin. Manuel test: curl http://localhost:8000/api/calculations/health/${NC}"
-        # API başarısız olsa da diğer servisleri başlat
-    fi
-else
-    echo -e "${RED}  ❌ Virtual environment bulunamadı! (${PROJECT_DIR}/webimar-api/venv)${NC}"
-    echo -e "${YELLOW}     Çalıştır: cd webimar-api && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt${NC}"
-    echo -e "${YELLOW}     Alternatif: Docker ile çalıştırın: bash dev-docker.sh${NC}"
-    exit 1
+    echo -n "."
+done
+
+if [ "$API_READY" != true ]; then
+    echo -e "\n${RED}  ❌ Django API sağlık kontrolü başarısız!${NC}"
+    echo -e "${YELLOW}     Django loglarını kontrol edin. Manuel test: curl http://localhost:8000/api/calculations/health/${NC}"
+    # API başarısız olsa da diğer servisleri başlat
 fi
 
 # 2. Next.js Başlat
@@ -145,7 +198,7 @@ cd "${PROJECT_DIR}/webimar-nextjs"
 # Node modules kontrolü
 if [ ! -d "node_modules" ]; then
     echo -e "${YELLOW}  📦 npm install çalıştırılıyor...${NC}"
-    npm install
+    npm install || npm install --legacy-peer-deps
 fi
 
 # Next.js'i geliştirme modunda başlat
@@ -169,7 +222,7 @@ cd "${PROJECT_DIR}/webimar-react"
 # Node modules kontrolü
 if [ ! -d "node_modules" ]; then
     echo -e "${YELLOW}  📦 npm install çalıştırılıyor...${NC}"
-    npm install
+    npm install || npm install --legacy-peer-deps
 fi
 
 # React'i başlat
@@ -199,13 +252,22 @@ echo -e ""
 echo -e "${BLUE}Test Links:${NC}"
 echo -e "  🧪 API Health:             http://localhost:8000/api/calculations/health/"
 echo -e "  🏗️ Calculator Example:     http://localhost:3001/sera"
-echo -e "  🔄 Calculator via Next.js:  http://localhost:3000/hesaplama/sera (redirect test)"
 echo -e ""
 echo -e "${YELLOW}💡 Servis loglarını görmek için ayrı terminalde:${NC}"
 echo -e "   Django: cd webimar-api && tail -f nohup.out"
 echo -e "   React:  cd webimar-react && npm start"
 echo -e ""
 echo -e "${YELLOW}🛑 Çıkmak için Ctrl+C'ye basın${NC}"
+
+# Arka plan modunda PID'leri yaz ve çık
+if [ "$RUN_IN_BACKGROUND" = true ]; then
+    PID_FILE="${PROJECT_DIR}/.dev-local.pids"
+    echo "DJANGO_PID=${DJANGO_PID}" > "$PID_FILE"
+    echo "NEXTJS_PID=${NEXTJS_PID}" >> "$PID_FILE"
+    echo "REACT_PID=${REACT_PID}" >> "$PID_FILE"
+    echo -e "${GREEN}✅ Arka plan modu aktif. PID dosyası: ${PID_FILE}${NC}"
+    exit 0
+fi
 
 # Scriptin kapanmasını engelle ve processleri bekle
 wait

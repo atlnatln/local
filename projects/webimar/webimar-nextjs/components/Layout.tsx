@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Footer from './Footer';
 import styles from '../styles/Layout.module.css';
 
 // Basit cookie okuma yardımcı fonksiyonu
@@ -402,6 +403,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className={styles.contentArea}>
           {children}
         </div>
+        <Footer />
       </main>
     </div>
     </>

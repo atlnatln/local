@@ -93,7 +93,7 @@ services:
     container_name: vps_nginx_exporter
     restart: unless-stopped
     command:
-      - -nginx.scrape-uri=http://vps_infrastructure_nginx:8080/nginx_status
+      - -nginx.scrape-uri=http://vps_nginx_main:8080/nginx-status
     ports:
       - "9113:9113"
     networks:

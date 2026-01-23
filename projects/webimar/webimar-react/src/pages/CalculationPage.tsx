@@ -716,7 +716,7 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
           <MapComponent
             ref={mapRef}
             center={[39.0, 35.0]}
-            zoom={6}
+            zoom={window.innerWidth < 768 ? 5 : 6}
             onMapClick={handleMapClick}
             selectedCoordinate={locationState.selectedPoint}
             showMarker={isManualSelection}

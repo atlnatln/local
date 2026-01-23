@@ -52,6 +52,22 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
+    // Local docker fallback: if 8000 is down, try 8001 once
+    const isNetworkError = !error.response;
+    const currentBaseUrl = original?.baseURL || getApiBaseUrl();
+    const isLocal8000 = typeof currentBaseUrl === 'string' &&
+      (currentBaseUrl.includes('http://localhost:8000') || currentBaseUrl.includes('http://127.0.0.1:8000'));
+
+    if (isNetworkError && isLocal8000 && !original._baseUrlRetry) {
+      original._baseUrlRetry = true;
+      const fallbackBase = currentBaseUrl.replace('localhost:8000', 'localhost:8001').replace('127.0.0.1:8000', 'localhost:8001');
+      if (typeof window !== 'undefined') {
+        (window as any).WEBIMAR_API_BASE_URL = fallbackBase;
+      }
+      original.baseURL = fallbackBase;
+      return api(original);
+    }
+
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
 

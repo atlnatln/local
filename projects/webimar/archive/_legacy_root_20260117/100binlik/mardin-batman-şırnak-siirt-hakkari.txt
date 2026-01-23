@@ -1,0 +1,119 @@
+MARDİN-BATMAN-SİİRT-ŞIRNAK-HAKKÂRİ PLANLAMA BÖLGESİ
+1/100.000 ÖLÇEKLİ ÇEVRE DÜZENİ PLANI
+PLAN HÜKÜMLERİ (TARIM İLE İLGİLİ KISIMLAR)
+
+4. TANIMLAR
+
+4.18. Organize Tarım ve Hayvancılık Alanları: Tarım ve hayvan yetiştiriciliğini destekleyen, hububat, meyve, sebze üretimi için uygun tarım alanları, meralar, mantarcılık, orman ürünleri, sebze ve çiçek yetiştiriciliği için seralar, depo veya soğuk hava deposu, mandıra vb., sadece 5403 sayılı “Toprak Koruma ve Arazi Kullanım Kanunu” ve 27298 sayılı Tarım Arazilerinin Korunması, Kullanılması ve Arazi Toplulaştırmasına İlişkin Tüzük’ün 4. Maddesinde tanımlanan “Tarımsal Amaçlı Yapılar” ile besicilik, süt sığırcılığı, meyvecilik, sebzecilik, seracılık, çiçekçilik vb. tarımsal üretim ve ürün işleme faaliyetlerinin bir arada yapıldığı, disipline edildiği, tek elden sevk ve idare edildiği entegre veya entegre nitelikte olmayan tarımsal tesislerin ile tarımsal sanayi tesislerinin yer alabileceği alanlardır.
+4.19. Tarıma Dayalı Sanayi Alanları: Bitkisel ve hayvansal tarım ürünlerinin mamul hale getirilmelerini sağlayan, entegre ya da entegre nitelikte olmayan sanayi işletme tesislerinin yer alabileceği alanlardır.
+4.20. Tarımsal Amaçlı Yapılar: Toprak koruma ve sulamaya yönelik altyapı tesisleri, entegre nitelikte olmayan hayvancılık ve su ürünleri üretim ve muhafaza tesisleri ile zorunlu olarak tesis edilmesi gerekli olan müştemilatı, mandıralar, üreticinin bitkisel üretime bağlı olarak elde ettiği ürünü için ihtiyaç duyacağı yeterli boyut ve hacimde depolar, un değirmeni, tarım alet ve makinelerinin muhafazasında kullanılan sundurma ve çiftlik atölyeleri, seralar, tarımsal işletmede üretilen ürünün özelliği itibarıyla hasattan sonra iki saat içinde işlenmediği takdirde ürünün kalite ve besin değeri kaybolması söz konusu ise bu ürünlerin işlenmesi için kurulan tesisler ile T.C. Gıda, Tarım ve Hayvancılık Bakanlığı tarafından tarımsal amaçlı olduğu kabul edilen, entegre nitelikte olmayan diğer tesislerdir.
+4.21. Tarımsal Amaçlı Entegre Yapılar: İlçe, belde veya birden fazla köy sınırları içerisinde, birden fazla işletmede üretilen tarımsal ürünlerin, üretimden sonra işlenerek, fiziksel veya kimyasal özellikleri değiştirilip, bir veya birden fazla yeni ürüne dönüştürülmesinin yapıldığı tesislerdir.
+4.26. Agro Turizmi: Temel olarak küçük çiftlikler olmak üzere çiftçilere ek gelir sağlamak amacıyla bağ-bahçe, tarla, ahır, ağıl, kümes vb. tarımsal üretim alanları ile küçük ölçekli ve geleneksel gıda işleme tesisleri gibi faaliyet alanlarını ziyaret etmek, günlük işlerine katılmak, çiftlik evinde gecelemek, gezinmek, eğlenmek, alışveriş yapmak ve bazen de eğitim almak gibi aktivitelerin bir veya birkaçını kapsayan alanlardır.
+4.33. Tarım Arazisi: 5403 sayılı “Toprak Koruma ve Arazi Kullanım Kanunu” uyarınca toprak, topografya ve iklimsel özellikleri tarımsal üretim için uygun olup, hâlihazırda tarımsal üretim yapılan veya yapılmaya uygun olan veya imar, ihya, ıslah edilerek tarımsal üretim yapılmaya uygun hale dönüştürülebilen arazilerdir.
+4.33.1. Mutlak Tarım Arazisi: 5403 sayılı “Toprak Koruma ve Arazi Kullanım Kanunu” uyarınca bitkisel üretimde; toprağın fiziksel, kimyasal ve biyolojik özelliklerinin kombinasyonu yöre ortalamasında ürün alınabilmesi için sınırlayıcı olmayan, topografik sınırlamaları yok veya çok az olan; ülkesel, bölgesel veya yerel önemi bulunan, hâlihazır tarımsal üretimde kullanılan veya bu amaçla kullanıma elverişli olan arazilerdir.
+4.33.2. Özel Ürün Arazisi: 5403 sayılı “Toprak Koruma ve Arazi Kullanım Kanunu” uyarınca mutlak tarım arazileri dışında kalan, toprak ve topografik sınırlamaları nedeniyle yöreye adapte olmuş bitki türlerinin tamamının tarımının yapılamadığı ancak özel bitkisel ürünlerin yetiştiriciliği ile su ürünleri yetiştiriciliğinin ve avcılığın yapılabildiği, ülkesel, bölgesel veya yerel önemi bulunan arazilerdir.
+4.33.3. Dikili Tarım Arazisi: 5403 sayılı “Toprak Koruma ve Arazi Kullanım Kanunu” uyarınca mutlak ve özel ürün arazileri dışında kalan ve üzerinde yöre ekolojisine uygun çok yıllık ağaç, ağaççık ve çalı formundaki bitkilerin tarımı yapılan ülkesel, bölgesel veya yerel önemi bulunan arazilerdir.
+4.33.4. Marjinal Tarım Arazisi: 5403 sayılı “Toprak Koruma ve Arazi Kullanım Kanunu” uyarınca mutlak tarım arazileri, özel ürün arazileri ve dikili tarım arazileri dışında kalan, toprak ve topografik sınırlamalar nedeni ile üzerinde sadece geleneksel toprak işlemeli tarımın yapıldığı arazilerdir.
+4.33.5. Örtü Altı Tarım Arazileri: İklim ve diğer dış etkilerin olumsuzluklarının kaldırılması veya azaltılması için cam, naylon veya benzeri malzeme kullanılarak oluşturulan örtüler altında, ileri tarım teknikleri kullanılarak tarım yapılan arazilerdir.
+4.34. Organik Tarım: Toprak, su bitki ve doğal kaynaklar kullanılarak organik ürün veya girdi üretilmesi ya da yetiştirilmesi, doğal alan ve kaynaklardan ürün toplanması, hasat, kesim, işleme, tasnif, ambalajlama, etiketleme, muhafaza, depolama, taşıma, pazarlama, ithalat, ihracat ile ürün veya girdinin tüketiciye ulaşıncaya kadar olan diğer işlemleri içeren etkinliklerdir.
+4.35. Sulama Alanı: Devletçe sulamaya açılan veya projeleri bitirilmiş olup da sulama yatırımlarına başlanan ve devam eden alanlardır.
+4.36. Çayır ve Mera Alanları: 5178/4342 sayılı Mera Kanunu uyarınca saptanmış/saptanacak olan alanlardır. Çayır; taban suyunun yüksek bulunduğu veya sulanabilen yerlerde biçilmeye elverişli, yem üretilen ve genellikle kuru ot üretimi için kullanılan yeri, Mera; hayvanların otlatılması ve otundan faydalanılması için tahsis edilen veya kadimden veri bu amaçla kullanılan yeri ifade eder.
+4.37. Su Ürünleri Yetiştirme Alanları: T.C. Gıda, Tarım ve Hayvancılık Bakanlığı’nın koordinasyonunda oluşturulan komisyonca, su ürünlerini üretmek ve yetiştirmek için, 5491/2872 sayılı Çevre Kanunu ve bu kanun uyarınca çıkarılan mevzuatta yasaklanmış alanlar dışındaki alanlarda, tespit edilmiş/edilecek olan sahalardır.
+
+5. GENEL İLKELER
+5.1. KORUMA İLKELERİ
+• Planlama bölgesindeki topografya ve iklimsel özellikleri tarımsal üretim için uygun olup, hâlihazırda tarımsal üretim yapılan veya yapılmaya uygun olan veya imar, ihya ıslah edilerek tarımsal üretim yapılmaya uygun hale dönüştürülebilecek tarım arazileri korunacaktır.
+• Mutlak tarım arazileri, özel ürün arazileri, dikili tarım arazileri ile sulu tarım arazileri tarımsal üretim amacı dışında kullanılamaz.
+• İlgili kurum ve kuruluşlarca yatırım yapılarak fiilen sulanan, sulanması için projelendirilmiş ve yapımı başlamış olan alanlarla, projelendirilmiş ancak henüz yapımı başlamamış alanlar ve projelendirilmek üzere programa alınmış sulama alanları korunacaktır.
+• Mera, yaylak (yayla, yaylakiye), kışlak, otlakiyelerin korunarak kullanılması esastır.
+• Yeraltı ve yerüstü içme suyu kaynaklarını kirletici faaliyetlere kesinlikle izin verilmeyecektir. İçme ve kullanma suyu ile tarımda sulama amacıyla kullanılan ve kullanılacak olan göllerin, barajların, göletlerin su kaynakları ve çevresindeki su toplama havzaları ile rezerv alanları korunacak olup, su havzalarının, yeraltı ve yerüstü su kaynaklarının ilgili mevzuat uyarınca korunması ve kullanılması esastır.
+
+5.2. PLANLAMA İLKELERİ
+5.2.7. Planlama bölgesinde, tarım ve hayvancılık sektörünü geliştirmeye yönelik tesislerin oluşturulması yönünde alt ölçekli planlarla kararlar üretilecektir.
+
+5.3. GELİŞME İLKELERİ
+5.3.1. Planlama bölgesinde yer alan tüm gelişme alanlarının, verimi yüksek tarım arazilerine, enerji kaynak alanlarına ve ekolojik yapıya zarar vermeyecek biçimde geliştirilmesi esastır.
+
+7. GENEL HÜKÜMLER
+7.22. Termal kaynak tespiti yapılan alanlar çevresinde, bu kaynakları kullanacak olan tarım ve turizm sektörüne yönelik yatırımlar, Bakanlığın uygun görüşü alınmak şartı ile ilgili kurum ve kuruluş görüşleri doğrultusunda yapılabilir. Yapılanma koşulları alt ölçekli planlarda belirlenecektir.
+
+8. ÖZEL HÜKÜMLER
+8.2. KIRSAL YERLEŞME ALANLARI
+8.2.3. Kırsal yerleşme alanlarında imar planları yapılıncaya kadar konut, tarım ve hayvancılık amaçlı yapılarda yapılanma koşulları Plansız Alanlar İmar Yönetmeliği hükümlerine göre belirlenir. Silo, samanlık, yem deposu, vb. yapılar için maksimum bina yüksekliği ihtiyaç doğrultusunda belirlenir.
+
+8.3.7. ORGANİZE TARIM /HAYVANCILIK ALANLARI
+8.3.7.1. Bu alanlar içerisinde; tarımsal amaçlı yapılar ile hububat, meyve ve sebze üretimi için uygun tarım alanları, sebze ve çiçek yetiştiriciliği için seralar, mantarcılık, hayvancılık ve et entegre tesisleri, otlaklar, tarımsal işletmeler, tarımsal ürün paketleme tesisleri, meyve işleme tesisleri, soğuk hava depoları, yem depoları, tarımsal işletmelerinin ön arıtma ya da toplu arıtma tesisleri, organik atıkların geri dönüşüm tesisleri, hayvan klinikleri, kireçli ölü hayvan gömü çukurları, tarımsal araç-gereç parkları, tarımsal ürün pazarlama hizmetleri, ürün borsası, tarımsal eğitim merkezleri, tarımsal Ar-Ge ve laboratuvar alanları gibi Gıda Tarım ve Hayvancılık Bakanlığı bölge stratejisine uygun ve olumlu görüş verebileceği tesisler yer alacaktır. Bunun dışındaki, tekstil, boya sanayi, metal veya plastik hammaddeleri kullanan vb. kirletici sanayiye ve tarımsal ürünlerin doğrudan işlenmediği sanayi işletmelerine kesinlikle yer verilemeyecektir. Bu alandaki yapılanma koşulları alt ölçekli planlarda belirlenecektir.
+8.3.7.2. Bu alanların, Tarıma Dayalı İhtisas OSB Uygulama Yönetmeliği çerçevesinde yer seçimine konu olması halinde çevre düzeni planı değişikliğine gerek olmaksızın, alt ölçekli planları yapılmak suretiyle Tarıma Dayalı İhtisas OSB olarak kullanılabilir.
+8.3.7.3. Bu alanlarda çevre sorunlarını önlemeye yönelik, her tür atığa ilişkin teknik altyapı önlemleri alınması zorunludur. Bu alanların yer seçimi; planda tanımlanan alanlar dikkate alınarak ve en az 20 ha. olacak şekilde, bu planda değişikliğe gerek olmaksızın, İl Toprak Kurulu marifetiyle, ilgili kurum ve kuruluşların görüşleri doğrultusunda yapılabilir.
+8.3.7.4. Bu alanlara ilişkin yapılaşma koşulları, tesis türleri, teknoloji ve yöresel özellikler dikkate alınarak imar planlarında belirlenecektir. Seçilmiş alanlara ilişkin onaylanan planlar sayısal ortamda-koordinatlı olarak veri tabanına işlenmek üzere Bakanlığa gönderilir. Bu alanlar amacı dışında kullanılamazlar.
+
+8.3.8. TARIM ARAZİLERİ (5403 SAYILI TOPRAK KORUMA VE ARAZİ KULLANIMI KANUNUNA TABİ ARAZİLER)
+8.3.8.1. Bu kapsamdaki tarım arazileri, 5403 sayılı “Toprak Koruma ve Arazi Kullanımı Kanunu” ve ilgili yönetmeliğinde tanımlanan tarım arazileri sınıflarına ayrılmamış olup tarım arazilerinin sınıflaması, ilgili kurum ya da kuruluşlarca yapılacaktır. Tarım alanlarında yapılacak ifraz işlemlerinde 5403 sayılı kanun ve bu kanuna istinaden çıkarılmış yönetmelik hükümleri uyarınca işlem yapılacaktır.
+8.3.8.2. 5403 sayılı Toprak Koruma ve Arazi Kullanımı Kanununda dikili, özel ürün, fiilen sulanan veya sulama projesi kapsamında kalan tarım arazilerinde 3194 sayılı İmar Kanununun 27. maddesi kapsamında kalan hayvancılık amaçlı yapılar hariç, hayvancılık tesisi yapılmasına izin verilmez.
+8.3.8.3. Tarım dışı kullanım taleplerinin, öncelikle niteliği en düşük tarım alanlarında değerlendirilmesi esastır. Bu kapsamdaki tarım arazileri ve fiilen sulanan veya sulama projeleri ilgili kuruluşlar tarafından hazırlanmış ve yatırım programına alınmış / alınacak tarım arazilerinin tarımsal üretim amaçlı korunması esastır.
+8.3.8.4. Tarım arazilerinin amaç dışı kullanımı taleplerinde, 5403 sayılı Toprak Koruma ve Arazi Kullanım Kanunu ve T.C. Gıda, Tarım ve Hayvancılık Bakanlığı’nın izni çerçevesinde bu plan karar ve hükümlerine göre işlem yapılacaktır.
+8.3.8.5. Tarım alanlarındaki yapılaşma taleplerinde tarım arazileri sınıflamasına göre Toprak Koruma Kurulu’nun görüşlerinin alınması zorunludur.
+8.3.8.6. İçme ve kullanma suyu temin edilen kıta içi yüzeysel su kaynaklarının bulunduğu havzalarda, mutlak ve kısa mesafeli koruma kuşağında, tarımsal faaliyetlerde, organik tarımın özendirilmesi esastır.
+8.3.8.7. Tarımsal amaçlı yapılar kullanım amacı dışında kullanılamaz ve dönüştürülemez.
+8.3.8.8. Eğitim, sağlık gibi sosyal ve teknik altyapı tesisleri için gerekli alanların kentsel alanlardan karşılanamaması halinde, ilgili kurum ve kuruluşların görüşü alınarak, öncelikle marjinal tarım arazilerinde yer seçilmesi kaydıyla uygulama yapılabilir.
+8.3.8.9. Tarım alanlarında uygulamalar bu plan ile verilmiş olan yapılanma koşullarını aşmamak kaydıyla, 3194 sayılı İmar Kanunu; “Plansız Alanlar Yönetmeliği”nin 6. Bölüm’ünde belirtilen esaslara göre yapılır.
+8.3.8.10. 5403 sayılı Toprak Koruma ve Arazi Kullanımı Kanunu’nun geçici 1. maddesi ve geçici 4. maddesi kapsamında tarım dışı amaçla kullanıma açılmış alanlarda ve T.C. Gıda, Tarım ve Hayvancılık Bakanlığı veya İl Gıda, Tarım ve Hayvancılık Müdürlüğünün söz konusu kanun kapsamında görüş veremediği alanlarda, bu planın marjinal tarım arazilerine ilişkin hükümleri uygulanır.
+8.3.8.11. Tarım arazileri ıslah çalışmaları alt ölçekte Gıda, Tarım ve Hayvancılık Bakanlığı ve bağlı kurumları tarafından yapılacaktır.
+8.3.8.12. Başbakanlık, Gıda, Tarım ve Hayvancılık Bakanlığı, ilgili bakanlıklar ve bunların bağlı kuruluşları tarafından desteklenen projeye dayalı tarımsal faaliyetler kapsamında tarımsal amaçlı yapılar (tarımsal kalkınma kooperatiflerince uygulanan projeler, üretici birlikleri/kooperatifleri tarafından uygulanan projeler, Avrupa Birliği kaynaklı projeler, Dünya Bankası destekli projeler, sosyal riski azaltma projesi kapsamında uygulanacak projeler gibi) ile destekleme projeleri ile en az 100 büyükbaş, 200 küçükbaş ve üzeri kapasiteli hayvancılık veya 50.000 adet ve üzeri kapasiteli kanatlı hayvancılık yatırımlarında yukarıda belirtilen yapılaşma emsali %50 oranında arttırılabilir.
+8.3.8.13. Bu planın onayından önce yürürlükteki mevzuat uyarınca inşaat ruhsatı veya yapı kullanma izni verilmiş olan tarımsal amaçlı yapılara ilişkin haklar saklıdır.
+8.3.8.14. Organik tarım alanları içerisinde Organik Tarımın Esasları ve Uygulamasına İlişkin Yönetmelik hükümleri geçerlidir.
+8.3.8.15. Tarım arazisi olarak gösterilmiş alanlarda, mera vasıflı alanlar bulunması durumunda, bu alanlarda “8.3.24 Çayır-Mera” başlığı altındaki plan hükümleri doğrultusunda uygulama yapılır.
+8.3.8.16. Planda belirlenen agro-turizm alanlarının sınırları alt ölçekli planlarla belirlenecek ve bu alanlarda Gıda, Tarım ve Hayvancılık Bakanlığı ve Kültür ve Turizm Bakanlığı master planlarının entegre edilmesi zorunludur.
+8.3.8.17. Agro-turizm alanlarında yapılacak tesisler için Kültür ve Turizm Bakanlığı tarafından belirlenecek yapılaşma koşulları geçerli olacaktır. Tarım arazileri sınıflaması Gıda, Tarım ve Hayvancılık Bakanlığı'nca yapılacak/yaptırılacaktır.
+8.3.8.18. Tarımsal nitelikli alanlarda, 5403 sayılı Toprak Koruma ve Arazi Kullanımı Kanunu kapsamındaki tarım arazilerinde (özel ürün arazileri, dikili tarım arazileri, örtü altı tarım alanları, fiilen sulanan veya ilgili kurum ve kuruluşlarca sulama projesi kapsamında olan alanlar hariç) yapılacak olan tarım ve hayvancılık amaçlı yapılara ilişkin;
+
+8.3.8.18.1. Mutlak Tarım Arazileri
+Bu alanlarda; tarımsal amaçlı yapılar yapılabilir. Çiftçinin barınabileceği yapı emsale dahil olup inşaat alanı 75 m2’yi geçemez. Maks. Emsal=0.20’dir.
+Bir parsel üzerinde müştemilat hariç birden fazla yapı yapılamaz. Müştemilat binaları inşaat alanına dâhildir. Bir yapıda birden fazla bağımsız bölüm bulunabilir.
+Tarım alanlarında bu koşullara uygun yapılan yapılar, amacı dışında kullanılamaz. Örtü altı tarımın yapıldığı, fiilen sulanan veya ilgili kurum ve kuruluşlarca sulama projesi kapsamında olan mutlak tarım arazilerinde 3194 sayılı İmar Kanununun 27. maddesi kapsamında kalan hayvancılık amaçlı yapılar hariç, hayvancılık tesisi yapılmasına izin verilmez.
+Bu alanlarda örtü altı tarım yapılması durumunda sera yapıları emsale dahil değildir.
+
+8.3.8.18.2. Özel Ürün Arazileri
+Bu alanlarda, 3194 sayılı İmar Kanununun 27. maddesi kapsamında kalan hayvancılık amaçlı yapılar hariç, hayvancılık tesisi yapılmasına izin verilmez.
+Çiftçinin barınabileceği yapı emsale dahil olup inşaat alanı 75 m2’yi geçemez, tarımsal amaçlı yapılar için E(Emsal) = 0,10’dur.
+Bu alanlarda örtü altı tarım yapılması durumunda sera yapıları emsale dahil değildir.
+Bu alanların niteliğinin ve ürün deseninin korunması esastır. Yapılacak ürün değişikliği için İl Gıda, Tarım ve Hayvancılık Müdürlükleri’ne bildirilmesi zorunludur.
+
+8.3.8.18.3. Dikili Tarım Arazileri
+Bu alanlarda, 3194 sayılı İmar Kanununun 27. maddesi kapsamında kalan hayvancılık amaçlı yapılar hariç, hayvancılık tesisi yapılmasına izin verilmez.
+Çiftçinin barınabileceği yapı emsale dahil olup inşaat alanı 75 m2’yi geçemez, tarımsal amaçlı yapılar için E(Emsal) = 0,10’dur.
+Bu alanlarda örtü altı tarım yapılması durumunda sera yapıları emsale dahil değildir.
+Bu alanların niteliğinin ve ürün deseninin korunması esastır. Yapılacak ürün değişikliği için İl Gıda, Tarım ve Hayvancılık Müdürlükleri’ne bildirilmesi zorunludur.
+
+8.3.8.18.4. Marjinal Tarım Arazileri
+Doğal afet sonrası ortaya çıkan geçici yerleşim yeri ihtiyacı marjinal tarım arazilerinde karşılanabilir. Bu alanlarda; Emsal (E): 0.30’dir.
+Çiftçinin barınabileceği konut yapılması durumunda max. inşaat alanı 150 m2’yi geçemez. Bu yapılar, tarımsal amaçlı yapılar ile yukarıda belirtilen tesisler için belirlenmiş emsal değerine dahildir. Örtü altı tarımın yapıldığı, fiilen sulanan veya ilgili kurum ve kuruluşlarca sulama projesi kapsamında olan marjinal tarım arazilerinde 3194 sayılı İmar Kanununun 27. maddesi kapsamında kalan hayvancılık amaçlı yapılar hariç, hayvancılık tesisi yapılmasına izin verilmez.
+Bu alanlarda örtü altı tarım yapılması durumunda sera yapıları emsale dahil değildir.
+
+8.3.9. TARIM ARAZİLERİ (3083 SAYILI SULAMA ALANLARINDA ARAZİ DÜZENLEMESİNE DAİR TARIM REFORMU KANUNUNA TABİ ARAZİLER)
+8.3.9.1. Bu arazilerde, ilgili kanun kapsamında yapılan/yapılacak uygulamalarda bu plan kararlarına uyulacaktır.
+8.3.9.2. Yapılacak ifrazlarda 3083 sayılı Sulama Alanlarında Arazi Düzenlemesine Dair Tarım Reformu Kanunu ve ilgili yönetmelik hükümleri uyarınca işlem yapılacaktır.
+8.3.9.3. Bu arazilerin tarımsal üretim amaçlı korunması esastır. Uygulama alanlarında, imar planları ve mücavir alanlar dışında kalan ve “Sulama Alanlarında Arazi Düzenlenmesine Dair Tarım Reformu Kanunu Uygulama Yönetmeliği” hükümlerine göre, sahibine bırakılan, dağıtılan veya T.C. Tarım, Gıda ve Hayvancılık Bakanlığı’nın emrine geçen tarım arazisi, tarım dışı amaçla kullanılamaz.
+8.3.9.4. 3083 sayılı Sulama Alanlarında Arazi Düzenlemesine Dair Tarım Reformu Kanunu uyarınca sulama alanı ve sulu arazi olarak belirlenen/belirlenecek tarım arazilerinde bu planın “8.3.7. Organize Tarım ve Hayvancılık Alanları” hükmü çerçevesinde ilgili idarelerce yapılacak olan uygulamalar haricinde hayvancılık tesisi yapılmasına izin verilmez.
+8.3.9.5. Başbakanlık, Gıda, Tarım ve Hayvancılık Bakanlığı, ilgili bakanlıklar ve bunların bağlı kuruluşları tarafından desteklenen projeye dayalı tarımsal faaliyetler kapsamında tarımsal amaçlı yapılar... ile destekleme projeleri ile en az 100 büyükbaş, 200 küçükbaş ve üzeri kapasiteli hayvancılık veya 50.000 adet ve üzeri kapasiteli kanatlı hayvancılık yatırımlarında yukarıda belirtilen yapılaşma emsali %50 oranında arttırılabilir.
+8.3.9.6. Bu arazilerde; tarımsal amaçlı yapılar yapılabilir. Çiftçinin barınabileceği yapı emsale dahil olup inşaat alanı 75 m2’yi geçemez. Tarımsal amaçlı yapılar için maks. emsal = 0,20’dir.
+8.3.9.7. 3083 sayılı Sulama Alanlarında Arazi Düzenlemesine Dair Tarım Reformu Kanunu kapsamı dışına çıkarılması durumunda, bu arazilerde, “8.3.8. Tarım Arazileri” plan hükümlerine uyulacaktır.
+
+8.3.10. SU ÜRÜNLERİ ÜRETİM ALANLARI
+8.3.10.1. Su ürünleri üretim alanlarının 1380 sayılı Su Ürünleri Kanunu ve ilgili yönetmelikleri uyarınca yapılacak yer seçimlerinde, ilgili kurum ve kuruluşların görüşlerinin alınması ve bu planla kullanım kararı belirlenmiş alanlara (turizm alanları, yerleşme alanları, kıyı yapıları, korunan alanlar vb.) olası olumsuz etkilerinin önlenmesi için mesafe, akıntı hızı, akıntı yönü, derinlik vb. kriterlerin göz önünde bulundurulması esastır. Bu alanlara ilişkin koordinatlar ve onaylanan planlar sayısal ortamda, veri tabanına işlenmek üzere, Bakanlığa gönderilir.
+8.3.10.2. Bu alanlarda 1380 sayılı “Su Ürünleri Kanunu”, 2830/3621 sayılı Kıyı Kanunu, 5491/2872 sayılı Çevre Kanunu ve ilgili yönetmelikleri ile yürürlükteki diğer mevzuat hükümleri doğrultusunda uygulama yapılacaktır.
+
+8.3.24. ÇAYIR-MERA
+8.3.24.1. Bu alanlarda 5178/4342 sayılı Mera Kanunu kapsamında uygulama yapılacaktır.
+8.3.24.2. Mera alanlarının tahsis ve tescillerinin alt ölçeklerde tespit çalışması yapılacaktır.
+8.3.24.3. Mera ıslah çalışmaları Gıda, Tarım ve Hayvancılık Bakanlığı ve bağlı kurumları tarafından alt ölçeklerde hazırlanacaktır.
+8.3.24.4. Mera otlatma kapasitelerinin ve hayvan varlığının belirlenerek operasyonel planları Gıda, Tarım ve Hayvancılık Bakanlığı ve bağlı kurumları tarafından alt ölçeklerde hazırlanacaktır.
+8.3.24.5. Planda “Çayır ve Mera Alanı” olarak gösterilmiş alanlarda Mera Kanunu dışında ve özel mülkiyete konu alanlar bulunması halinde, alanın tarım arazisi sınıfına göre plan hükümlerinin tarım arazilerine ilişkin plan hükümleri uygulanır.
+8.3.24.6. Bu planın onayından önce, alt ölçekli planlarla kullanım kararı getirilmiş tescilli meralarda, mevzuata uygun olarak mera vasfı kaldırılmadan imar uygulaması yapılamaz. İnşaat izni verilemez.
+
+8.3.26. EKOLOJİK ÖNEME SAHİP ALANLAR
+8.3.26.6. Ekolojik öneme sahip alanlardaki mevcut ve potansiyel tarımsal faaliyetlerde; toprak verimliliği arttırıcı müdahalelerin (gübreleme, toprak iyileştirme teknikleri, sulama vb.) Gıda, Tarım ve Hayvancılık Bakanlığı ve/veya bağlı kuruluşlarının denetiminde gerçekleştirmesi esastır.
+8.3.26.7. Planlama bölgesine Avrupa Birliği, T.C. Gıda, Tarım ve Hayvancılık Bakanlığı, kalkınma ajansları, uluslararası organizasyonlar, vb. tarafından yapılacak iyi tarım uygulamaları desteklerinin, öncelikli olarak bu alanlar üzerinde bulunan tarım arazilerine yönlendirilmesi ve T.C. Gıda, Tarım ve Hayvancılık Bakanlığı’nca izlemenin yapılarak gerekli tedbirlerin alınması esastır.
+
+8.3.30. ENERJİ ÜRETİM ALANLARI VE ENERJİ İLETİM TESİSLERİ
+• Tarımsal üretim amaçlı korunması esas olan 5403 sayılı Toprak Koruma ve Arazi Kullanımı Kanunu kapsamında kalan tarım arazilerinde yapılacak olan yatırımlarda 5403 sayılı kanun hükümleri kapsamında “tarım dışı amaçla kullanım izni” nin alınması zorunludur.

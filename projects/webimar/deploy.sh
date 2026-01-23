@@ -16,15 +16,10 @@ NC='\033[0m'
 
 # Configuration - DÜZENLE
 VPS_HOST="akn@89.252.152.222"
+# Monorepo yapısına uygun hedef dizin (VPS tarafında)
 VPS_PATH="/home/akn/vps/projects/webimar"
-SSL_PATH="/etc/letsencrypt"
+SSL_PATH="/home/akn/webimar-backup/letsencrypt"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# GitHub (monorepo: /home/akn/vps)
-REPO_ROOT="$(cd "$PROJECT_DIR/../.." && pwd)"
-GIT_REMOTE_NAME="origin"
-GIT_REMOTE_URL="https://github.com/atlnatln/vps.git"
-GIT_BRANCH="main"
 
 # Parse arguments
 SKIP_BUILD=false
@@ -68,6 +63,10 @@ echo -e "${CYAN}╚════════════════════�
 
 cd "$PROJECT_DIR"
 
+# Env seçimi (secrets repoda tutulmadığı için .local destekle)
+ENV_SOURCE=""
+NEXT_ENV_SOURCE=""
+
 require_file() {
     local path="$1"
     local hint="$2"
@@ -89,8 +88,30 @@ warn_file() {
 
 # Preflight: package mode için env dosyaları zorunlu.
 if [[ "$DEPLOY_MODE" == "package" ]]; then
-    require_file ".env.production" "package mode, VPS'e .env üretmek için .env.production dosyasını kopyalar. Oluştur: cp .env.production.example .env.production (varsa)"
-    require_file "webimar-nextjs/.env.production" "Next.js container build/runtime için webimar-nextjs/.env.production bekleniyor."
+    # Root env: öncelik .env.production (varsa), yoksa .env.production.local
+    if [ -f ".env.production" ]; then
+        ENV_SOURCE=".env.production"
+    elif [ -f ".env.production.local" ]; then
+        ENV_SOURCE=".env.production.local"
+    else
+        echo -e "${RED}❌ Missing required env file for package mode${NC}"
+        echo -e "   ${YELLOW}Create one of these:${NC}"
+        echo -e "   - .env.production (tracked değil önerilmez)"
+        echo -e "   - .env.production.local (önerilen, gitignore)"
+        echo -e "   ${YELLOW}Start from:${NC} cp .env.production.example .env.production.local"
+        exit 1
+    fi
+
+    # Next.js için ayrı env dosyası artık zorunlu değil (compose build args root .env'den geliyor).
+    # Varsa pakete dahil ederiz.
+    if [ -f "webimar-nextjs/.env.production" ]; then
+        NEXT_ENV_SOURCE="webimar-nextjs/.env.production"
+    elif [ -f "webimar-nextjs/.env.production.local" ]; then
+        NEXT_ENV_SOURCE="webimar-nextjs/.env.production.local"
+    else
+        NEXT_ENV_SOURCE=""
+        warn_file "webimar-nextjs/.env.production.local" "Opsiyonel: Next.js için ekstra runtime env gerekiyorsa ekleyin. Yoksa root .env içindeki NEXT_PUBLIC_* build arg'ları yeterli."
+    fi
 else
     warn_file ".env" "git mode: VPS tarafında docker compose varsayılan olarak .env dosyasını okur (VPS'de olması gerekir)."
 fi
@@ -109,8 +130,13 @@ if [ "$SKIP_BUILD" = false ]; then
         rm .env
     fi
     
-    ln -sf .env.production .env
-    echo -e "${GREEN}  ✓ Linked .env → .env.production (NEXT_PUBLIC_REACT_SPA_URL=$(grep NEXT_PUBLIC_REACT_SPA_URL .env.production | cut -d'=' -f2))${NC}"
+    if [[ "$DEPLOY_MODE" == "package" ]]; then
+        ln -sf "$ENV_SOURCE" .env
+        echo -e "${GREEN}  ✓ Linked .env → ${ENV_SOURCE} (NEXT_PUBLIC_REACT_SPA_URL=$(grep NEXT_PUBLIC_REACT_SPA_URL "$ENV_SOURCE" | cut -d'=' -f2))${NC}"
+    else
+        ln -sf .env.production .env
+        echo -e "${GREEN}  ✓ Linked .env → .env.production${NC}"
+    fi
     
     docker compose -f docker-compose.prod.yml build
     
@@ -141,9 +167,11 @@ if [[ "$DEPLOY_MODE" == "package" ]]; then
 
     # Copy configs (nginx config is now baked into image)
     cp docker-compose.prod.yml "$BUILD_DIR/docker-compose.prod.yml"
-    cp .env.production "$BUILD_DIR/.env"
+    cp "$ENV_SOURCE" "$BUILD_DIR/.env"
     mkdir -p "$BUILD_DIR/webimar-nextjs"
-    cp webimar-nextjs/.env.production "$BUILD_DIR/webimar-nextjs/.env.production"
+    if [ -n "${NEXT_ENV_SOURCE:-}" ]; then
+        cp "$NEXT_ENV_SOURCE" "$BUILD_DIR/webimar-nextjs/.env.production"
+    fi
     
     # Agent files removed (ops-bot specific)
 
@@ -168,8 +196,19 @@ fi
 
 # Agent files removed (ops-bot specific)
 
-# SSL certificates are now managed by infrastructure layer
-echo "ℹ️  SSL certificates managed by infrastructure layer"
+# Create SSL directory and setup certs
+mkdir -p ssl
+if [ -d "/etc/letsencrypt/live/tarimimar.com.tr" ]; then
+    # Copy real certs (not symlinks, for Docker compatibility)
+    cp -L /etc/letsencrypt/live/tarimimar.com.tr/fullchain.pem ssl/fullchain.pem 2>/dev/null || true
+    cp -L /etc/letsencrypt/live/tarimimar.com.tr/privkey.pem ssl/privkey.pem 2>/dev/null || true
+    echo "✅ SSL certificates copied"
+else
+    echo "⚠️  SSL certificates not found, creating self-signed..."
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout ssl/privkey.pem -out ssl/fullchain.pem \
+        -subj "/CN=localhost" 2>/dev/null
+fi
 
 # Stop existing containers
 docker compose -f docker-compose.prod.yml down --remove-orphans 2>/dev/null || true
@@ -239,31 +278,14 @@ if [ "$SKIP_VPS" = false ]; then
 
     echo -e "  ${GREEN}✅ VPS deployment complete${NC}"
 
-    # Update infrastructure nginx configuration
-    echo -e "  → Updating infrastructure nginx configuration..."
-    ssh "$VPS_HOST" "mkdir -p /home/akn/vps/infrastructure/nginx/conf.d"
-    INFRA_WEBIMAR_CONF_SRC="${REPO_ROOT}/infrastructure/nginx/conf.d/webimar.conf"
-    if [ -f "$INFRA_WEBIMAR_CONF_SRC" ]; then
-        scp "$INFRA_WEBIMAR_CONF_SRC" "$VPS_HOST:/home/akn/vps/infrastructure/nginx/conf.d/webimar.conf"
-    else
-        echo -e "  ${YELLOW}⚠️  Skipping infrastructure nginx conf upload (missing: ${INFRA_WEBIMAR_CONF_SRC})${NC}"
-    fi
-    ssh "$VPS_HOST" "docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload" || echo "Infrastructure nginx reload failed (might not be running)"
-    echo -e "  ${GREEN}✅ Infrastructure nginx updated${NC}"
-
         echo -e "\n${YELLOW}[3/5b] 🩺 Running VPS smoke checks...${NC}"
         ssh "$VPS_HOST" bash -s <<'SMOKE'
 set -euo pipefail
 
 base="http://127.0.0.1"
-host_header="tarimimar.com.tr"
-
-curl_common=("-sS" "-o" "/dev/null" "--max-time" "10" "-H" "Host: ${host_header}")
 
 get_code() {
-    # Loopback üzerinden infra nginx'e giderken Host header şart; aksi halde default server
-    # bağlantıyı kapatabilir (örn. 444) ve curl "000" görür.
-    curl "${curl_common[@]}" -w "%{http_code}" "$1" || echo "000"
+    curl -s -o /dev/null -w "%{http_code}" "$1" || echo "000"
 }
 
 wait_for_200() {
@@ -318,42 +340,19 @@ fi
 # Step 4: Push to GitHub
 if [ "$SKIP_GITHUB" = false ]; then
     echo -e "\n${YELLOW}[4/5] 📤 Pushing to GitHub...${NC}"
-
-    cd "$REPO_ROOT"
-
-    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-        echo -e "  ${YELLOW}→ Initializing git repo at: ${REPO_ROOT}${NC}"
-        git init
-        git checkout -b "$GIT_BRANCH" >/dev/null 2>&1 || git branch -M "$GIT_BRANCH"
-    fi
-
-    # Ensure git identity exists (local repo config)
-    if ! git config user.email >/dev/null 2>&1; then
-        git config user.email "deploy@localhost"
-    fi
-    if ! git config user.name >/dev/null 2>&1; then
-        git config user.name "Deploy Script"
-    fi
-
-    # Ensure remote points to the new repo
-    if git remote get-url "$GIT_REMOTE_NAME" >/dev/null 2>&1; then
-        git remote set-url "$GIT_REMOTE_NAME" "$GIT_REMOTE_URL"
-    else
-        git remote add "$GIT_REMOTE_NAME" "$GIT_REMOTE_URL"
-    fi
-
-    # Add changes (respects /home/akn/vps/.gitignore)
-    git add -A
+    
+    # Add only tracked files and specific new files, excluding ignored ones
+    git add .
     
     # Check if there are changes
     if git diff --staged --quiet; then
         echo -e "  ${BLUE}No changes to commit${NC}"
     else
         # Commit with timestamp
-        git commit -m "deploy: vps update ${TIMESTAMP}"
-
-        # Push
-        git push "$GIT_REMOTE_NAME" "$GIT_BRANCH"
+        git commit -m "deploy: production update ${TIMESTAMP}"
+        
+        # Push to origin
+        git push origin main
         
         echo -e "  ${GREEN}✅ GitHub push complete${NC}"
     fi

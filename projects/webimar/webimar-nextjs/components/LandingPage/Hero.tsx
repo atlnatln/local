@@ -16,14 +16,6 @@ const Hero: React.FC<HeroProps> = ({
   backgroundImage,
   ctaLink 
 }) => {
-  const ctaHref = ctaLink
-    ? ctaLink.startsWith('http://') || ctaLink.startsWith('https://')
-      ? ctaLink
-      : ctaLink.startsWith('/')
-        ? ctaLink
-        : `/${ctaLink}`
-    : undefined;
-
   return (
     <div 
       className={styles.hero}
@@ -33,8 +25,17 @@ const Hero: React.FC<HeroProps> = ({
         <div className={styles.heroIcon}>{icon}</div>
         <h1 className={styles.heroTitle}>{title}</h1>
         <p className={styles.heroSubtitle}>{subtitle}</p>
-        {ctaHref && (
-          <a href={ctaHref}>
+        {ctaLink && (
+          <a href={
+            // Önce development ortamı kontrolü (localhost içeriyorsa)
+            process.env.NEXT_PUBLIC_REACT_SPA_URL?.includes('localhost')
+              ? `${process.env.NEXT_PUBLIC_REACT_SPA_URL}${ctaLink.replace('/hesaplama', '')}`
+              // Sonra production için full URL kontrolü  
+              : process.env.NEXT_PUBLIC_REACT_SPA_URL?.startsWith('http')
+                ? `${process.env.NEXT_PUBLIC_REACT_SPA_URL}${ctaLink.replace('/hesaplama', '')}`
+                // Fallback: production domain + ctaLink
+                : `https://tarimimar.com.tr${ctaLink}`
+          }>
             <button className={styles.heroCta}>
               Hemen Hesapla
             </button>

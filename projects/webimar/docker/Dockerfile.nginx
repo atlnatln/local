@@ -7,6 +7,9 @@ FROM nginx:alpine
 # Copy nginx configuration INTO the image
 COPY docker/nginx/nginx.prod.conf /etc/nginx/nginx.conf
 
+# Copy static files (robots.txt)
+COPY docker/nginx/robots.txt /usr/share/nginx/html/robots.txt
+
 # Create required directories
 RUN mkdir -p /var/www/certbot /etc/nginx/ssl
 

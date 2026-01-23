@@ -13,6 +13,11 @@
   - `bash scripts/projects.sh` (keşfedilen projeler)
   - `bash scripts/up.sh` | `bash scripts/down.sh` | `bash scripts/status.sh`
   - `bash scripts/logs.sh` (tümü) veya `bash scripts/logs.sh webimar`
+- Infrastructure + iki projeyi docker’da tek komutla başlatma (önerilen):
+  - `./dev-docker.sh`
+- Native/local geliştirme (port çakışmaları nedeniyle tek tek):
+  - `./dev-local.sh webimar`
+  - `./dev-local.sh anka`
 - Proje içi çalışma (komutlar proje dizininden çalıştırılmalı):
   - Webimar: `./dev-local.sh` (native) | `./dev-docker.sh` (docker) | `./deploy.sh` (prod)
   - Anka: `./deploy.sh` ve compose dosyaları (`docker-compose.yml`, `docker-compose.prod.yml`).
@@ -27,7 +32,10 @@
   - `webimar-nextjs/` = Next.js 15 (App Router)
   - `webimar-react/` = ayrı React SPA (hesaplayıcılar)
 - Health endpoint’ler workflow’larda kullanılır:
-  - API: `/api/calculations/health/` (native: `http://localhost:8000/...`, docker: `http://localhost/api/...`)
+  - API: `/api/calculations/health/`
+    - native: `http://localhost:8000/api/calculations/health/`
+    - docker (doğrudan port): `http://localhost:8001/api/calculations/health/`
+    - docker (infra nginx üzerinden): `http://localhost/api/calculations/health/` (routing ayarlıysa)
 - API versiyonlama / backwards-compat:
   - Legacy endpoint’ler `webimar-api/calculations/views/tesisler.py` içinde; yeni modüler endpoint’ler `webimar-api/calculations/tarimsal_yapilar/*/views.py` altında.
   - Örnek desen: legacy wrapper `calculate_bag_evi` (tesisler.py) → modül implementasyonu `_calculate_bag_evi_view_impl` (bag_evi/views.py). Yeni endpoint `calculate_bag_evi_view` aynı implementasyonu paylaşır.

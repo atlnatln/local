@@ -447,14 +447,8 @@ export const getStaticProps: GetStaticProps<PlanDetayProps> = async ({ params })
     const dosyaYolu = path.join(process.cwd(), 'data', '100binlik', plan.dosya);
     icerik = fs.readFileSync(dosyaYolu, 'utf-8');
   } catch (error) {
-    // Fallback: parent directory'den oku (local development)
-    try {
-      const fallbackYolu = path.join(process.cwd(), '..', '100binlik', plan.dosya);
-      icerik = fs.readFileSync(fallbackYolu, 'utf-8');
-    } catch (fallbackError) {
-      console.error('Dosya okuma hatası:', error, fallbackError);
-      icerik = 'Plan içeriği yüklenemedi.';
-    }
+    console.error('Dosya okuma hatası:', error);
+    icerik = 'Plan içeriği yüklenemedi.';
   }
 
   return {

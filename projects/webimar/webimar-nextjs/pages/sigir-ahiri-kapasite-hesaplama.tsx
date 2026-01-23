@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import Head from 'next/head';
+import { useState } from 'react';
+import Link from 'next/link';
 import Layout from '../components/Layout';
 import Seo from '../components/Seo';
 import DebouncedInput from '../components/DebouncedInput';
@@ -21,14 +21,23 @@ interface CalculationResult {
           hayvanSayisi: number;
           hayvanBasinaAlan: number;
           toplamAlan: number;
+          aciklama?: string;
         };
       };
     };
   };
 }
 
+type YasGrupDetay = {
+  yuzde: number;
+  hayvanSayisi: number;
+  hayvanBasinaAlan: number;
+  toplamAlan: number;
+  aciklama?: string;
+};
+
 export default function KapasiteHesaplama() {
-  const { trackCalculationStart, trackCalculationComplete } = useGA4();
+  const { trackCalculationStart } = useGA4();
   
   // Hayvan tipi seçimi - sadece biri seçilebilir
   const [hayvanTipi, setHayvanTipi] = useState<'buyukbas' | 'kucukbas'>('buyukbas');
@@ -44,14 +53,7 @@ export default function KapasiteHesaplama() {
     acik: false
   });
   
-  // Her tesis tipi için alanlar
-  const [tesisAlanlari, setTesisAlanlari] = useState<{
-    [key: string]: { kapaliAlan?: number; golgelikAlan?: number };
-  }>({
-    kapali: { kapaliAlan: 0, golgelikAlan: 0 },
-    yariAcik: { kapaliAlan: 0, golgelikAlan: 0 },
-    acik: { kapaliAlan: 0, golgelikAlan: 0 }
-  });
+  // Not: Alanlar, kapasite hesabında yaş grubu bazında ayrı toplanır (serbest/gezinti/gölgelik).
   
   // Küçükbaş için tesis tipleri
   const [kucukbasTesisTipleri, setKucukbasTesisTipleri] = useState<{
@@ -116,18 +118,12 @@ export default function KapasiteHesaplama() {
     '19+': { minGen: 90, maxGen: 120, minUz: 145, maxUz: 240 }
   };
 
-  // Büyükbaş gölgelik alanı (m²/baş) - açık ve yarı açık tesisler için
-  const BUYUKBAS_GOLGELIK = 2;
-
   // Küçükbaş kapalı/yarı açık kapalı alan gereksinimleri (m²/baş)
   const KUCUKBAS_KAPALI_ALAN: Record<string, number> = {
     '0-6': 0.7,
     '7-12': 1.4,
     '13+': 2
   };
-
-  // Küçükbaş gölgelik alanı (m²/baş)
-  const KUCUKBAS_GOLGELIK = 0.8;
 
   const hesapla = () => {
     trackCalculationStart('kapasite-hesaplama');
@@ -141,7 +137,7 @@ export default function KapasiteHesaplama() {
       detaylar.push('=== BÜYÜKBAŞ HAYVAN KAPASİTE HESAPLAMASI ===');
       
       const secilenTesisTipleri = Object.entries(buyukbasTesisTipleri)
-        .filter(([_, secili]) => secili)
+        .filter(([, secili]) => secili)
         .map(([tip]) => tip);
 
       let kulubeEklendi = false;
@@ -153,7 +149,7 @@ export default function KapasiteHesaplama() {
         
         let tesisHayvanSayisi = 0;
         let tesisToplamAlan = 0;
-        const yasGrupDagilimi: any = {};
+        const yasGrupDagilimi: Record<string, YasGrupDetay> = {};
 
         // AÇIK TESİS veya YARI AÇIK EK GÖLGELİK HESABI
         if (tesisTipi === 'acik') {
@@ -183,7 +179,7 @@ export default function KapasiteHesaplama() {
               if (isBagliDurak) {
                 // Bağlı Durak (0-6 Ay)
                 const durakSayisi = bagliDurakSayilari[tesisTipi]?.[grup] || 0;
-                const serbestAlan = bagliSistemSerbestAlanlari[tesisTipi]?.[grup] || 0;
+                const padokAlani = bagliSistemSerbestAlanlari[tesisTipi]?.[grup] || 0;
                 
                 const durakOlculeri = BUYUKBAS_BAGLI_DURAK[grup];
                 const durakGen = durakOlculeri ? durakOlculeri.minGen / 100 : 0;
@@ -194,12 +190,13 @@ export default function KapasiteHesaplama() {
                 grupToplamAlan += durakSayisi * durakAlani;
                 detayText = `${durakSayisi} adet durak`;
 
-                if (serbestAlan > 0) {
-                  const hayvanBasinaSerbestAlan = BUYUKBAS_SERBEST_DURAK[grup]; // 1.8
-                  const serbestKapasite = Math.floor(serbestAlan / hayvanBasinaSerbestAlan);
-                  grupKapasite += serbestKapasite;
-                  grupToplamAlan += serbestAlan;
-                  detayText += ` + ${serbestKapasite} baş (Serbest Alan: ${serbestAlan}m²)`;
+                // Buzağılar için padok/padoğa benzer serbest alan kapasiteye dahil edilebilir (1.8 m²/buzağı)
+                if (padokAlani > 0) {
+                  const hayvanBasinaPadokAlan = BUYUKBAS_SERBEST_DURAK[grup]; // 1.8
+                  const padokKapasite = Math.floor(padokAlani / hayvanBasinaPadokAlan);
+                  grupKapasite += padokKapasite;
+                  grupToplamAlan += padokAlani;
+                  detayText += ` + ${padokKapasite} baş (Padok: ${padokAlani}m² / ${hayvanBasinaPadokAlan}m²/buzağı)`;
                 }
               } else {
                 // Serbest Sistem (Padok)
@@ -230,7 +227,10 @@ export default function KapasiteHesaplama() {
                 hayvanSayisi: grupKapasite,
                 // Karma senaryoda ortalama alanı hesaplayıp tabloya yansıtıyoruz
                 hayvanBasinaAlan: grupKapasite > 0 ? grupToplamAlan / grupKapasite : 0,
-                toplamAlan: grupToplamAlan
+                toplamAlan: grupToplamAlan,
+                aciklama: isBagliDurak
+                  ? `Buzağı kapasitesi: durak + padok + kulübe (padok varsa ${BUYUKBAS_SERBEST_DURAK[grup]} m²/buzağı)`
+                  : `Padok kapasitesi: alan / ${BUYUKBAS_SERBEST_DURAK[grup]} m²/buzağı`
               };
               
               tesisHayvanSayisi += grupKapasite;
@@ -241,36 +241,30 @@ export default function KapasiteHesaplama() {
             }
 
             if (isBagliDurak) {
-              // BAĞLI DURAK SİSTEMİ
+              // BAĞLI DURAK SİSTEMİ + Kapalı Alan (Serbest Duraklı)
               const durakSayisi = bagliDurakSayilari[tesisTipi]?.[grup] || 0;
-              const serbestAlan = bagliSistemSerbestAlanlari[tesisTipi]?.[grup] || 0;
-              
-              const durakOlculeri = BUYUKBAS_BAGLI_DURAK[grup];
-              const durakGen = durakOlculeri ? durakOlculeri.minGen / 100 : 0;
-              const durakUz = durakOlculeri ? durakOlculeri.minUz / 100 : 0;
-              const durakAlani = durakGen * durakUz;
-              
-              let grupKapasite = durakSayisi;
-              let grupToplamAlan = durakSayisi * durakAlani;
-              
-              let detayText = `${durakSayisi} adet durak`;
+              const kapaliAlanSerbestDurak = bagliSistemSerbestAlanlari[tesisTipi]?.[grup] || 0;
 
-              // Serbest alan katkısı
-              if (serbestAlan > 0) {
-                const hayvanBasinaSerbestAlan = BUYUKBAS_SERBEST_DURAK[grup];
-                if (hayvanBasinaSerbestAlan) {
-                  const serbestKapasite = Math.floor(serbestAlan / hayvanBasinaSerbestAlan);
-                  grupKapasite += serbestKapasite;
-                  grupToplamAlan += serbestAlan;
-                  detayText += ` + ${serbestKapasite} baş (Serbest Alan: ${serbestAlan}m²)`;
-                }
+              // Mevzuat: Bağlı duraklı sistemde kapasite = durak sayısı
+              let grupKapasite = durakSayisi;
+              let grupToplamAlan = 0;
+              let detayText = `${durakSayisi} adet durak ⇒ ${durakSayisi} baş`;
+
+              // Eğer aynı tesiste serbest duraklı kapalı alan da varsa (7 m²/baş ile kapasite hesaplanır)
+              if (kapaliAlanSerbestDurak > 0) {
+                const hayvanBasinaAlan = BUYUKBAS_SERBEST_DURAK[grup]; // 7 m²/baş (19+ için)
+                const serbestKapasite = Math.floor(kapaliAlanSerbestDurak / hayvanBasinaAlan);
+                grupKapasite += serbestKapasite;
+                grupToplamAlan += kapaliAlanSerbestDurak;
+                detayText += ` + ${serbestKapasite} baş (Serbest duraklı kapalı alan: ${kapaliAlanSerbestDurak}m² / ${hayvanBasinaAlan}m²/baş)`;
               }
 
               yasGrupDagilimi[grup] = {
                 yuzde: 0,
                 hayvanSayisi: grupKapasite,
-                hayvanBasinaAlan: durakAlani,
-                toplamAlan: grupToplamAlan
+                hayvanBasinaAlan: grupKapasite > 0 && grupToplamAlan > 0 ? grupToplamAlan / grupKapasite : 0,
+                toplamAlan: grupToplamAlan,
+                aciklama: detayText
               };
               
               tesisHayvanSayisi += grupKapasite;
@@ -318,6 +312,23 @@ export default function KapasiteHesaplama() {
           }
         }
 
+        // Büyükbaş sonuç tablosu için yüzde ve ortalama alanları normalize et
+        Object.entries(yasGrupDagilimi).forEach(([grupKey, grupDetay]) => {
+          const yuzde = tesisHayvanSayisi > 0
+            ? Math.round((grupDetay.hayvanSayisi / tesisHayvanSayisi) * 100)
+            : 0;
+
+          const hayvanBasinaAlan = grupDetay.hayvanBasinaAlan > 0
+            ? grupDetay.hayvanBasinaAlan
+            : (grupDetay.hayvanSayisi > 0 ? grupDetay.toplamAlan / grupDetay.hayvanSayisi : 0);
+
+          yasGrupDagilimi[grupKey] = {
+            ...grupDetay,
+            yuzde,
+            hayvanBasinaAlan,
+          };
+        });
+
         tesisDetaylari[tesisTipi] = {
           tip: tesisTipi,
           alan: tesisToplamAlan,
@@ -335,7 +346,7 @@ export default function KapasiteHesaplama() {
       detaylar.push('=== KÜÇÜKBAŞ HAYVAN KAPASİTE HESAPLAMASI ===');
       
       const secilenTesisTipleri = Object.entries(kucukbasTesisTipleri)
-        .filter(([_, secili]) => secili)
+        .filter(([, secili]) => secili)
         .map(([tip]) => tip);
 
       secilenTesisTipleri.forEach(tesisTipi => {
@@ -343,7 +354,7 @@ export default function KapasiteHesaplama() {
         
         let tesisHayvanSayisi = 0;
         let tesisToplamAlan = 0;
-        const yasGrupDagilimi: any = {};
+        const yasGrupDagilimi: Record<string, YasGrupDetay> = {};
 
         yasGruplari.forEach(grup => {
            const ayrilanAlan = serbestSistemAlanlari[tesisTipi]?.[grup] || 0;
@@ -384,7 +395,7 @@ export default function KapasiteHesaplama() {
         }
 
         // Yüzde ve ortalama alanları nihai tablo için normalize et
-        Object.entries(yasGrupDagilimi).forEach(([grupKey, grupDetay]: [string, any]) => {
+        Object.entries(yasGrupDagilimi).forEach(([grupKey, grupDetay]) => {
           const yuzde = tesisHayvanSayisi > 0
             ? Math.round((grupDetay.hayvanSayisi / tesisHayvanSayisi) * 100)
             : 0;
@@ -465,8 +476,8 @@ export default function KapasiteHesaplama() {
     
     // Alan kontrolü
     const secilenTesisler = hayvanTipi === 'buyukbas'
-      ? Object.entries(buyukbasTesisTipleri).filter(([_, v]) => v).map(([k]) => k)
-      : Object.entries(kucukbasTesisTipleri).filter(([_, v]) => v).map(([k]) => k);
+      ? Object.entries(buyukbasTesisTipleri).filter(([, v]) => v).map(([k]) => k)
+      : Object.entries(kucukbasTesisTipleri).filter(([, v]) => v).map(([k]) => k);
     
     for (const tesis of secilenTesisler) {
       const isBagliDurak = tesis !== 'acik' && hayvanTipi === 'buyukbas' && bagliDurak[tesis as keyof typeof bagliDurak];
@@ -482,7 +493,8 @@ export default function KapasiteHesaplama() {
         let hasData06 = false;
         if (isBagliDurak) {
           const durak = bagliDurakSayilari[tesis as keyof typeof bagliDurakSayilari]?.['0-6'] || 0;
-          if (durak > 0) hasData06 = true;
+          const padok = bagliSistemSerbestAlanlari[tesis as keyof typeof bagliSistemSerbestAlanlari]?.['0-6'] || 0;
+          if (durak > 0 || padok > 0) hasData06 = true;
         } else {
           const padok = serbestSistemAlanlari[tesis as keyof typeof serbestSistemAlanlari]?.['0-6'] || 0;
           if (padok > 0) hasData06 = true;
@@ -694,6 +706,16 @@ export default function KapasiteHesaplama() {
              (hayvanTipi === 'kucukbas' && Object.values(kucukbasTesisTipleri).some(v => v)) ? (
               <div className={styles.formSection}>
                 <h3>4. Tesis Alanları ve Kapasite Bilgileri</h3>
+
+                <div style={{marginTop: '0.75rem', marginBottom: '1rem', padding: '0.75rem 1rem', border: '1px solid #e0e0e0', borderRadius: '8px', background: '#fafafa'}}>
+                  <div style={{fontWeight: 700, marginBottom: '0.25rem'}}>Mevzuat Notu (Özet)</div>
+                  <div style={{fontSize: '0.9rem', color: '#555', lineHeight: 1.5}}>
+                    <strong>Bağlı duraklı sistem:</strong> Kapasite = durak sayısı. Aynı tesiste serbest duraklı kapalı alan da varsa o alan için ayrıca m²/baş üzerinden kapasite hesaplanır.<br/>
+                    <strong>Serbest duraklı/serbest dolaşımlı sistem:</strong> Kapasite, yaş grubuna göre gereken asgari alan (m²/baş) üzerinden hesaplanır.<br/>
+                    <strong>Açık/yarı açık işletmeler:</strong> Gölgelik alanı ayrıca dikkate alınır (asgari 2 m²/baş).<br/>
+                    <strong>Not:</strong> Depo/yem deposu gibi hayvanın fiilen bulunmadığı alanlar kapasite hesabına dahil edilmez.
+                  </div>
+                </div>
                 
                 {/* BÜYÜKBAŞ KAPALI */}
                 {hayvanTipi === 'buyukbas' && buyukbasTesisTipleri.kapali && (
@@ -744,7 +766,7 @@ export default function KapasiteHesaplama() {
                                       </small>
                                     </div>
                                     <div className={styles.inputGroup}>
-                                      <label>Serbest Gezinme Alanı (m²) [Opsiyonel]:</label>
+                                      <label>Padok Alanı (m²) [Opsiyonel]:</label>
                                       <DebouncedInput
                                         type="number"
                                         min="0"
@@ -754,6 +776,7 @@ export default function KapasiteHesaplama() {
                                           kapali: {...bagliSistemSerbestAlanlari.kapali, [grup]: parseFloat(val) || 0}
                                         })}
                                       />
+                                      <small>Padokta kapasite {BUYUKBAS_SERBEST_DURAK[grup]}m²/buzağı üzerinden hesaplanır.</small>
                                     </div>
                                   </>
                                 ) : (
@@ -813,7 +836,7 @@ export default function KapasiteHesaplama() {
                                     </small>
                                   </div>
                                   <div className={styles.inputGroup}>
-                                    <label>Serbest Gezinme Alanı (m²) [Opsiyonel]:</label>
+                                    <label>Serbest Duraklı Kapalı Alan (m²) [Opsiyonel]:</label>
                                     <DebouncedInput
                                       type="number"
                                       min="0"
@@ -823,6 +846,7 @@ export default function KapasiteHesaplama() {
                                         kapali: {...bagliSistemSerbestAlanlari.kapali, [grup]: parseFloat(val) || 0}
                                       })}
                                     />
+                                    <small>Bağlı durak dışında aynı tesiste serbest duraklı alan varsa kapasite {BUYUKBAS_SERBEST_DURAK[grup]}m²/baş üzerinden eklenir.</small>
                                   </div>
                                 </>
                               ) : (
@@ -902,7 +926,7 @@ export default function KapasiteHesaplama() {
                                       </small>
                                     </div>
                                     <div className={styles.inputGroup}>
-                                      <label>Serbest Gezinme Alanı (m²) [Opsiyonel]:</label>
+                                      <label>Padok Alanı (m²) [Opsiyonel]:</label>
                                       <DebouncedInput
                                         type="number"
                                         min="0"
@@ -912,6 +936,7 @@ export default function KapasiteHesaplama() {
                                           yariAcik: {...bagliSistemSerbestAlanlari.yariAcik, [grup]: parseFloat(val) || 0}
                                         })}
                                       />
+                                      <small>Padokta kapasite {BUYUKBAS_SERBEST_DURAK[grup]}m²/buzağı üzerinden hesaplanır.</small>
                                     </div>
                                   </>
                                 ) : (
@@ -967,7 +992,7 @@ export default function KapasiteHesaplama() {
                                     />
                                   </div>
                                   <div className={styles.inputGroup}>
-                                    <label>Serbest Gezinme Alanı (m²) [Opsiyonel]:</label>
+                                    <label>Serbest Duraklı Kapalı Alan (m²) [Opsiyonel]:</label>
                                     <DebouncedInput
                                       type="number"
                                       min="0"
@@ -977,6 +1002,7 @@ export default function KapasiteHesaplama() {
                                         yariAcik: {...bagliSistemSerbestAlanlari.yariAcik, [grup]: parseFloat(val) || 0}
                                       })}
                                     />
+                                    <small>Bağlı durak dışında aynı tesiste serbest duraklı alan varsa kapasite {BUYUKBAS_SERBEST_DURAK[grup]}m²/baş üzerinden eklenir.</small>
                                   </div>
                                 </>
                               ) : (
@@ -1145,10 +1171,12 @@ export default function KapasiteHesaplama() {
                     <span>Toplam Hayvan Sayısı:</span>
                     <strong style={{fontSize: '1.5rem', color: '#4caf50'}}>{sonuc.maksimumHayvanSayisi} baş</strong>
                   </div>
-                  <div className={styles.resultItem}>
-                    <span>Toplam Kullanılabilir Alan:</span>
-                    <strong>{sonuc.kullanilabilirAlanM2.toFixed(2)} m²</strong>
-                  </div>
+                    {sonuc.kullanilabilirAlanM2 > 0 ? (
+                      <div className={styles.resultItem}>
+                        <span>Toplam Hesaplamaya Esas Alan:</span>
+                        <strong>{sonuc.kullanilabilirAlanM2.toFixed(2)} m²</strong>
+                      </div>
+                    ) : null}
                 </div>
 
                 {sonuc.tesisDetaylari && Object.entries(sonuc.tesisDetaylari).map(([tesisTipi, detay]) => (
@@ -1164,10 +1192,12 @@ export default function KapasiteHesaplama() {
                       <span>Tesis Toplamı:</span>
                       <strong>{detay.hayvanSayisi} baş</strong>
                     </div>
-                    <div className={styles.resultItem}>
-                      <span>Toplam Alan:</span>
-                      <strong>{detay.alan.toFixed(2)} m²</strong>
-                    </div>
+                    {detay.alan > 0 ? (
+                      <div className={styles.resultItem}>
+                        <span>Hesaplamaya Esas Alan:</span>
+                        <strong>{detay.alan.toFixed(2)} m²</strong>
+                      </div>
+                    ) : null}
                     
                     {Object.entries(detay.yasGrupDagilimi).map(([grup, grupDetay]) => (
                       <div key={grup} style={{marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #e0e0e0'}}>
@@ -1175,7 +1205,9 @@ export default function KapasiteHesaplama() {
                           {yasGrupLabel(grup, hayvanTipi)} (%{grupDetay.yuzde})
                         </div>
                         <div style={{fontSize: '0.9rem', color: '#666'}}>
-                          {grupDetay.hayvanSayisi} baş × {grupDetay.hayvanBasinaAlan.toFixed(2)}m² = {grupDetay.toplamAlan.toFixed(2)}m²
+                          {grupDetay.aciklama
+                            ? grupDetay.aciklama
+                            : `${grupDetay.hayvanSayisi} baş × ${grupDetay.hayvanBasinaAlan.toFixed(2)}m² = ${grupDetay.toplamAlan.toFixed(2)}m²`}
                         </div>
                       </div>
                     ))}
@@ -1194,7 +1226,7 @@ export default function KapasiteHesaplama() {
         </div>
 
         <footer style={{textAlign: 'center', marginTop: '2rem', padding: '1rem', background: '#f8f9fa', borderTop: '1px solid #dee2e6'}}>
-          <a
+          <Link
             href="/"
             style={{
               display: 'inline-block',
@@ -1210,7 +1242,7 @@ export default function KapasiteHesaplama() {
             }}
           >
             Ana Sayfaya Dön
-          </a>
+          </Link>
         </footer>
       </Layout>
     </>

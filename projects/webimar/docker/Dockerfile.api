@@ -47,6 +47,11 @@ COPY webimar-api/ /app/
 # (KML helper bunları kullanarak il/ilçe tespiti yapıyor; API imajında webimar-nextjs/ yok.)
 COPY webimar-nextjs/public/turkey-provinces.geojson /app/static/kml/turkey-provinces.geojson
 COPY webimar-nextjs/public/turkey-districts.geojson /app/static/kml/turkey-districts.geojson
+
+# Büyük ova / YAS GeoJSON'larını da API imajına dahil et.
+# Repo'da tek kaynak: webimar-nextjs/public/kml/
+COPY webimar-nextjs/public/kml/turkey-ova-boundaries.geojson /app/static/kml/turkey-ova-boundaries.geojson
+COPY webimar-nextjs/public/kml/yas-kapali-alanlar.geojson /app/static/kml/yas-kapali-alanlar.geojson
     
 # Havza ürün deseni verisini API imajına dahil et (planlı üretim desteği için)
 COPY webimar-nextjs/public/havza_urun_desen.json /app/havza_urun_desen.json

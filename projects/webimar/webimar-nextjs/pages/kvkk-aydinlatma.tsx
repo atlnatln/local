@@ -1,7 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
 import Layout from '../components/Layout';
-import Footer from '../components/Footer';
 import styles from '../styles/LegalPage.module.css';
 
 const KVKKAydinlatma: React.FC = () => {
@@ -187,7 +186,6 @@ const KVKKAydinlatma: React.FC = () => {
             </section>
           </article>
         </div>
-        <Footer />
       </Layout>
     </>
   );

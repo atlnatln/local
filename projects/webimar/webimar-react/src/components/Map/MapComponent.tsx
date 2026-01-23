@@ -230,7 +230,7 @@ const MapComponent = forwardRef<MapRef, MapComponentProps>(({
 // Harita olaylarını yöneten bileşen
 const MapEventHandler: React.FC<{ 
   onMapClick: (e: L.LeafletMouseEvent) => void;
-  mapRef: React.RefObject<L.Map | null>;
+  mapRef: React.MutableRefObject<L.Map | null>;
 }> = ({ onMapClick, mapRef }) => {
   const map = useMap();
 

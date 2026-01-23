@@ -1,0 +1,184 @@
+[
+  {
+    "il": "İZMİR",
+    "ova_adi": "MENEMEN OVASI",
+    "coordinates": [
+      38.6024,
+      27.0719
+    ],
+    "normal_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "ova_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "sinirlanma_calisyor": false
+  },
+  {
+    "il": "ANKARA",
+    "ova_adi": "ANKARA OVASI",
+    "coordinates": [
+      39.9334,
+      32.8597
+    ],
+    "normal_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "ova_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "sinirlanma_calisyor": false
+  },
+  {
+    "il": "BURSA",
+    "ova_adi": "BURSA OVASI",
+    "coordinates": [
+      40.1885,
+      29.061
+    ],
+    "normal_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "ova_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "sinirlanma_calisyor": false
+  },
+  {
+    "il": "KONYA",
+    "ova_adi": "KONYA OVASI",
+    "coordinates": [
+      37.8667,
+      32.4833
+    ],
+    "normal_test": {
+      "success": false,
+      "error": "HTTP 400",
+      "hayvan_kapasitesi": 0,
+      "buyuk_ova_sinirlamasi": false
+    },
+    "ova_test": {
+      "success": false,
+      "error": "HTTP 400",
+      "hayvan_kapasitesi": 0,
+      "buyuk_ova_sinirlamasi": false
+    },
+    "sinirlanma_calisyor": false
+  },
+  {
+    "il": "ADANA",
+    "ova_adi": "ÇUKUROVA",
+    "coordinates": [
+      37.0,
+      35.3213
+    ],
+    "normal_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "ova_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "sinirlanma_calisyor": false
+  },
+  {
+    "il": "MUĞLA",
+    "ova_adi": "DALAMAN OVASI",
+    "coordinates": [
+      36.7667,
+      28.7833
+    ],
+    "normal_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "ova_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "sinirlanma_calisyor": false
+  },
+  {
+    "il": "ERZURUM",
+    "ova_adi": "ERZURUM OVASI",
+    "coordinates": [
+      39.9,
+      41.27
+    ],
+    "normal_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "ova_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "sinirlanma_calisyor": false
+  },
+  {
+    "il": "AFYON",
+    "ova_adi": "AFYON OVASI",
+    "coordinates": [
+      38.7507,
+      30.5567
+    ],
+    "normal_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "ova_test": {
+      "success": true,
+      "hayvan_kapasitesi": 0,
+      "sonuc_mesaji": "",
+      "buyuk_ova_sinirlamasi": false,
+      "response_data": {}
+    },
+    "sinirlanma_calisyor": false
+  }
+]

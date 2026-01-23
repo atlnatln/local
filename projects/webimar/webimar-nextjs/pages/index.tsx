@@ -3,7 +3,6 @@ import Seo from '../components/Seo';
 import { GetStaticProps } from 'next';
 import { Suspense, lazy } from 'react';
 import Layout from '../components/Layout';
-import Footer from '../components/Footer';
 import { useGA4 } from '../lib/useGA4';
 import styles from '../styles/HomePage.module.css';
 
@@ -531,7 +530,6 @@ export default function HomePage({ yapiTurleri, pageTitle, pageDescription }: Ho
             <ContactForm />
           </Suspense>
         </div>
-        <Footer />
       </Layout>
     </>
   );

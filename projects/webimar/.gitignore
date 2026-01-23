@@ -11,6 +11,11 @@ package-lock.json
 # Environment files
 .env
 *.env
+.env.*
+*.env.*
+
+# Track example env templates
+!.env.production.example
 
 # Database files
 *.sqlite3
@@ -24,11 +29,22 @@ webimar-api/webimar_api.log
 webimar-api/logs/
 */logs/
 
+# Runtime output files
+nohup.out
+*/nohup.out
+
 # Cache directories
 .cache/
 */__pycache__/
 *.pyc
 __pycache__/
+
+# Local dev artifacts
+.dev-local.pids
+.dev-local.pids.*
+_trash/
+test-results/
+*/test-results/
 
 # Build directories
 build/
@@ -68,7 +84,6 @@ jest.config.js
 # Development files
 *.md
 !README.md
-!docs/**/*.md
 !webimar-api/static/kml/README.md
 !.github/agents/**/*.md
 
@@ -87,6 +102,7 @@ webimar-react/build/
 venv/
 */venv/
 .env.local
+webimar-api/.venv/
 
 # Temporary files
 *.tmp

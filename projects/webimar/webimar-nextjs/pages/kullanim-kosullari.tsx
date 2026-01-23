@@ -1,7 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
 import Layout from '../components/Layout';
-import Footer from '../components/Footer';
 import styles from '../styles/LegalPage.module.css';
 
 const KullanimKosullari: React.FC = () => {
@@ -193,7 +192,6 @@ const KullanimKosullari: React.FC = () => {
             </section>
           </article>
         </div>
-        <Footer />
       </Layout>
     </>
   );

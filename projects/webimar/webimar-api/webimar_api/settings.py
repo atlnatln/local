@@ -80,7 +80,6 @@ for _required_host in ('webimar-api', 'localhost', '127.0.0.1'):
 # Application definition
 
 INSTALLED_APPS = [
-    'django_prometheus',  # Must be first for metrics
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -453,22 +452,6 @@ if not DEBUG:  # Production only
 logs_dir = BASE_DIR / 'logs'
 if not os.path.exists(logs_dir):
     os.makedirs(logs_dir)
-
-# SSL and Security Settings for Production
-if not DEBUG:
-    # SSL/HTTPS Security Settings
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    # Reverse proxy trusted headers
-    USE_X_FORWARDED_HOST = True
-    USE_X_FORWARDED_PORT = True
 
 # EMAIL CONFIGURATION - Amazon SES SMTP
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')

@@ -31,6 +31,41 @@ function normalizeName(name: string): string {
     .trim();
 }
 
+// Ürün adlarını havza veri setiyle eşleştirmek için normalize et
+function normalizeProductKey(name: string): string {
+  if (!name) return '';
+  return name
+    .toLocaleLowerCase('tr-TR')
+    .replace(/\s+/g, ' ')
+    .replace(/\([^)]*\)/g, '')
+    .trim();
+}
+
+function hasProductMatch(selected: string[], supported: string[]): boolean {
+  if (!selected.length || !supported.length) return false;
+  const supportedKeys = new Set(supported.map(normalizeProductKey));
+  return selected.some((p) => supportedKeys.has(normalizeProductKey(p)));
+}
+
+// Gevşek eşleştirme (TUNCELİ vs TUNCELI, BİNGÖL vs BINGÖL gibi GeoJSON farklılıkları için)
+function areNamesLooseMatch(name1: string, name2: string): boolean {
+  if (!name1 || !name2) return false;
+  const n1 = normalizeName(name1);
+  const n2 = normalizeName(name2);
+  if (n1 === n2) return true;
+  
+  // Latinize et ve karşılaştır
+  const latinize = (s: string) => s
+    .replace(/İ/g, 'I')
+    .replace(/Ö/g, 'O')
+    .replace(/Ü/g, 'U')
+    .replace(/Ç/g, 'C')
+    .replace(/Ş/g, 'S')
+    .replace(/Ğ/g, 'G');
+    
+  return latinize(n1) === latinize(n2);
+}
+
 // Feature'dan ilçe ve il ismini çıkar
 function getFeatureInfo(feature: any) {
   const props = feature.properties;
@@ -81,7 +116,12 @@ function MapUpdater({ selectedLocation, geoData }: { selectedLocation: { il: str
       const { il, ilce } = getFeatureInfo(feature);
       
       // İlçe eşleşmesi
-      if (targetIlce && ilce === targetIlce) {
+      // Not: Bazı GeoJSON kayıtlarında merkez ilçe adı il adı ile aynıdır (örn: AĞRI - AĞRI)
+      // Bu durumda kullanıcı "MERKEZ" seçtiyse ve kayıt il=ilçe şklindeyse eşleştirme yap.
+      const isDirectMatch = targetIlce && ilce === targetIlce;
+      const isMerkezMatch = targetIlce === 'MERKEZ' && areNamesLooseMatch(ilce, il);
+
+      if (isDirectMatch || isMerkezMatch) {
         // İllerin de tutması lazım ama bazen veri setindeki il adı (özellikle merkez ilçelerde) farklı olabilir.
         // Genelde ilçeler uniqdir veya ile göre bakılır.
         if (!targetIl || il === targetIl) {
@@ -197,7 +237,7 @@ function SupportedDistrictsBoundsFitter({
       'Sorgum-Sudan Otu Melezi'
     ];
 
-    const expandedProducts = selectedProducts.flatMap(product => {
+    const expandedProducts = selectedProducts.flatMap((product: string) => {
       if (yemBitkileriBirinci.includes(product) || yemBitkileriIkinci.includes(product)) {
         return [product, 'Yem Bitkileri'];
       }
@@ -219,15 +259,26 @@ function SupportedDistrictsBoundsFitter({
 
       // Seçili bölgeyi (yeşil) her zaman kadraja dahil et
       if (targetIlce) {
-        if (ilce === targetIlce && (!targetIl || il === targetIl)) include = true;
+        const isDirectMatch = ilce === targetIlce;
+        const isMerkezMatch = targetIlce === 'MERKEZ' && areNamesLooseMatch(ilce, il);
+        
+        if ((isDirectMatch || isMerkezMatch) && (!targetIl || il === targetIl)) {
+            include = true;
+        }
       } else if (targetIl) {
         if (il === targetIl) include = true;
       }
 
       // Desteklenen diğer ilçeler (turuncu/mor vb.)
       const ilData = normalizedHavzaData[il];
-      const supportedProducts = ilData?.[ilce];
-      if (supportedProducts && expandedProducts.some(p => supportedProducts.includes(p))) {
+      let supportedProducts = ilData?.[ilce];
+      
+      // Merkez ilçe fix: GeoJSON'da il=ilçe ise veritabanında 'MERKEZ' olarak ara
+      if (!supportedProducts && areNamesLooseMatch(ilce, il)) {
+        supportedProducts = ilData?.['MERKEZ'];
+      }
+
+      if (supportedProducts && hasProductMatch(expandedProducts, supportedProducts)) {
         include = true;
       }
 
@@ -315,7 +366,7 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
       'Sorgum-Sudan Otu Melezi'
     ];
 
-    const expandedProducts = selectedProducts.flatMap(product => {
+    const expandedProducts = selectedProducts.flatMap((product: string) => {
       if (yemBitkileriBirinci.includes(product) || yemBitkileriIkinci.includes(product)) {
         return [product, 'Yem Bitkileri'];
       }
@@ -331,7 +382,7 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
       for (const ilceKey of Object.keys(ilData)) {
         const supportedProducts = ilData[ilceKey];
         if (!supportedProducts) continue;
-        if (expandedProducts.some(p => supportedProducts.includes(p))) return true;
+        if (hasProductMatch(expandedProducts, supportedProducts)) return true;
       }
     }
     return false;
@@ -356,7 +407,10 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
     // 1. Seçim Kontrolü
     let isSelected = false;
     if (targetIlce) {
-        if (ilce === targetIlce && (!targetIl || il === targetIl)) {
+        const isDirectMatch = ilce === targetIlce;
+        const isMerkezMatch = targetIlce === 'MERKEZ' && areNamesLooseMatch(ilce, il);
+
+        if ((isDirectMatch || isMerkezMatch) && (!targetIl || il === targetIl)) {
             isSelected = true;
         }
     } else if (targetIl) {
@@ -375,10 +429,16 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
         // Hızlı lookup (normalize edilmiş veri üzerinden)
         const ilData = normalizedHavzaData[il];
         if (ilData) {
-            const supportedProducts = ilData[ilce];
+            let supportedProducts = ilData[ilce];
+
+            // Merkez ilçe fix: GeoJSON'da il=ilçe ise veritabanında 'MERKEZ' olarak ara
+            if (!supportedProducts && areNamesLooseMatch(ilce, il)) {
+              supportedProducts = ilData['MERKEZ'];
+            }
+
             if (supportedProducts) {
                 // Yem bitkileri kategorisi özel kontrolü
-                const expandedProducts = selectedProducts.flatMap(product => {
+                const expandedProducts = selectedProducts.flatMap((product: string) => {
                   // Eğer kullanıcı birinci/ikinci kategori yem bitkisi seçmişse, "Yem Bitkileri" olarak eşleştir
                   const yemBitkileriBirinci = [
                     'Fiğ',
@@ -418,7 +478,7 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
                   return [product]; // Normal ürün, sadece kendisi
                 });
                 
-                isPlanned = expandedProducts.some(p => supportedProducts.includes(p));
+                isPlanned = hasProductMatch(expandedProducts, supportedProducts);
                 
                 // Çoklu ürün renklendirmesi - hangi ürünün eşleştiğini bulup rengini belirle
                 if (isPlanned && selectedProducts.length > 1) {
@@ -462,7 +522,7 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
                       ? [product, 'Yem Bitkileri'] 
                       : (product === 'Diğer Ürünler' ? ['Diğer Ürünler'] : [product]);
                       
-                    if (expanded.some(p => supportedProducts.includes(p))) {
+                    if (hasProductMatch(expanded, supportedProducts)) {
                       supportedCount++;
                       if (firstMatchIndex === -1) firstMatchIndex = i;
                     }
@@ -485,7 +545,7 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
                     supportedProducts,
                     isPlanned,
                     plannedColor,
-                    hasMatch: expandedProducts.some(p => supportedProducts.includes(p))
+                    hasMatch: expandedProducts.some((p: string) => supportedProducts.includes(p))
                   });
                 }
             } else if (feature === geoData?.features?.[0]) {
@@ -542,22 +602,47 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
     
     // Popup içeriğini zenginleştir
     let popupContent = `<strong>${il} - ${ilce}</strong>`;
+
+    if (normalizedHavzaData) {
+      const ilData = normalizedHavzaData[il];
+      if (ilData) {
+        let supportedProducts = ilData[ilce];
+
+        // Merkez ilçe fix: GeoJSON'da il=ilçe ise veritabanında 'MERKEZ' olarak ara
+        if (!supportedProducts && areNamesLooseMatch(ilce, il)) {
+          supportedProducts = ilData['MERKEZ'];
+        }
+
+        if (supportedProducts && supportedProducts.length > 0) {
+          const urunListesi = supportedProducts.map((u: string) => `<li style="margin-bottom:3px;">${u}</li>`).join('');
+          popupContent += `<br/><div style="margin-top:6px; font-size:11px; color:#374151;"><strong>Ürün Deseni:</strong><ul style="margin:4px 0 0 0; padding-left:16px; list-style-type:disc; line-height:1.4;">${urunListesi}</ul></div>`;
+        } else {
+          popupContent += `<br/><div style="margin-top:6px; font-size:11px; color:#9ca3af;">Ürün deseni bulunamadı.</div>`;
+        }
+      }
+    }
     
     // Eğer ürünler seçiliyse ve bu ilçede destekleniyorsa belirt
     if (selectedProducts && selectedProducts.length > 0 && normalizedHavzaData) {
-        const ilData = normalizedHavzaData[il];
-        if (ilData) {
-            const supportedProducts = ilData[ilce];
-            if (supportedProducts) {
-                const matchingProducts = selectedProducts.filter(p => supportedProducts.includes(p));
-                
-                if (matchingProducts.length > 0) {
-                     popupContent += `<br/><br/><span style="color:#D97706">✅ Desteklenen: ${matchingProducts.join(', ')}</span>`;
-                } else {
-                     popupContent += `<br/><br/><span style="color:#9ca3af">❌ Seçili ürünler bu havzada desteklenmiyor.</span>`;
-                }
-            }
+      const ilData = normalizedHavzaData[il];
+      if (ilData) {
+        let supportedProducts = ilData[ilce];
+
+        // Merkez ilçe fix: GeoJSON'da il=ilçe ise veritabanında 'MERKEZ' olarak ara
+        if (!supportedProducts && areNamesLooseMatch(ilce, il)) {
+          supportedProducts = ilData['MERKEZ'];
         }
+
+        if (supportedProducts) {
+          const matchingProducts = selectedProducts.filter(p => supportedProducts.includes(p));
+                
+          if (matchingProducts.length > 0) {
+             popupContent += `<br/><br/><span style="color:#D97706">✅ Desteklenen: ${matchingProducts.join(', ')}</span>`;
+          } else {
+             popupContent += `<br/><br/><span style="color:#9ca3af">❌ Seçili ürünler bu havzada desteklenmiyor.</span>`;
+          }
+        }
+      }
     }
     
     if (ilce || il) {
@@ -636,7 +721,7 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
             <div style={{ width: '12px', height: '12px', backgroundColor: '#6D28D9', marginRight: '8px', borderRadius: '2px', opacity: 1 }}></div>
             <span><b>Birden Çok Ürün Destekleyen</b></span>
           </div>
-          {selectedProducts.map((product, index) => {
+          {selectedProducts.map((product: string, index: number) => {
             const productColors = ['#F59E0B', '#EF4444', '#10B981', '#8B5CF6', '#F97316', '#06B6D4', '#84CC16'];
             const color = productColors[index % productColors.length];
             return (

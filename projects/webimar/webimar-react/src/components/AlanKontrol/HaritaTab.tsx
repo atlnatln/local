@@ -234,8 +234,9 @@ const HaritaTab: React.FC<HaritaTabProps> = ({
       {/* Harita */}
       <MapWrapper>
         <MapContainer
-          center={initialCoordinate ? [initialCoordinate.lat, initialCoordinate.lng] : [38.4237, 27.1428]}
-          zoom={initialZoom || 13}
+          // Varsayılan olarak Türkiye merkezi (39.0, 35.5) ve zoom 6 (tüm ülke)
+          center={initialCoordinate ? [initialCoordinate.lat, initialCoordinate.lng] : [39.0, 35.5]}
+          zoom={initialZoom || (window.innerWidth < 768 ? 5 : 6)}
           style={{ height: '100%', width: '100%' }}
         >
           <TileLayer

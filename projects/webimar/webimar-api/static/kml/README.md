@@ -5,9 +5,11 @@ Bu dizin, Webimar hesaplama sayfasında kullanılan KML dosyalarını içerir.
 ## ⚡ Performans Optimizasyonu
 
 **GeoJSON Formatı:** Hızlı yükleme için KML dosyaları GeoJSON formatına çevrilmiştir:
-- Konum: `/webimar-nextjs/public/kml/`
+- Konum: `webimar-api/static/kml/` (backend için) ve `webimar-nextjs/public/kml/` (frontend için)
 - `turkey-ova-boundaries.geojson` - Büyük Ova Sınırları (961,972 nokta, 23 MB)
 - `yas-kapali-alanlar.geojson` - YAS Kapalı Alanlar (503,536 nokta, 18 MB)
+- `turkey-provinces.geojson` - Türkiye il sınırları (backend polygon kontrolü için)
+- `turkey-districts.geojson` - Türkiye ilçe sınırları (backend polygon kontrolü için)
 
 **Avantajları:**
 - JSON parse hızı XML'den **5-10x daha hızlı**

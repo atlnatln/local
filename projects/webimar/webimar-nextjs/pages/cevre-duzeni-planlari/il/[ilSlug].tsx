@@ -29,20 +29,24 @@ interface IlData {
   komsuIller: string[];
 }
 
-// İl adından slug oluştur
-function createSlug(ilAdi: string): string {
-  return ilAdi
+// Slug normalize (Unicode birleşik karakterleri ve Türkçe harfleri sadeleştir)
+function normalizeSlugValue(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ı/g, 'i')
     .replace(/İ/g, 'i')
     .replace(/I/g, 'i')
     .toLowerCase()
-    .replace(/ş/g, 's')
-    .replace(/ğ/g, 'g')
-    .replace(/ü/g, 'u')
-    .replace(/ö/g, 'o')
-    .replace(/ç/g, 'c')
-    .replace(/ı/g, 'i')
+    .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
-    .trim();
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+// İl adından slug oluştur
+function createSlug(ilAdi: string): string {
+  return normalizeSlugValue(ilAdi);
 }
 
 // Tüm illeri ve planlarını eşleştir
@@ -461,18 +465,28 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false
+    fallback: 'blocking'
   };
 };
 
-export const getStaticProps: GetStaticProps<IlSayfasiProps> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<IlSayfasiProps> = async ({ params }: { params?: { ilSlug?: string } }) => {
   const ilSlug = params?.ilSlug as string;
+  const normalizedSlug = normalizeSlugValue(ilSlug);
   const tumIller = getTumIller();
   
-  const ilData = tumIller.find(il => il.ilSlug === ilSlug);
+  const ilData = tumIller.find(il => il.ilSlug === normalizedSlug);
 
   if (!ilData) {
     return { notFound: true };
+  }
+
+  if (ilData.ilSlug !== ilSlug) {
+    return {
+      redirect: {
+        destination: `/cevre-duzeni-planlari/il/${ilData.ilSlug}`,
+        permanent: true
+      }
+    };
   }
 
   return {
