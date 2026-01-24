@@ -783,6 +783,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
     const loadHavzaData = async () => {
       try {
         const response = await fetch('/havza_urun_desen.json');
+        if (!response.ok) throw new Error(`Havza verisi yüklenemedi (HTTP ${response.status})`);
         const data = await response.json();
         setHavzaData(data);
       } catch (error) {

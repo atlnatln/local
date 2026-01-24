@@ -22,13 +22,113 @@ interface HavzaHaritasiProps {
   showSupportedDistricts?: boolean;
 }
 
-// Türkçe karakter normalizasyonu
-function normalizeName(name: string): string {
+const YEM_BITKILERI_BIRINCI = [
+  'Fiğ',
+  'Burçak',
+  'Mürdümük',
+  'Hayvan Pancarı',
+  'Yem Şalgamı',
+  'Yem Bezelyesi',
+  'Yem Baklası',
+  'Üçgül',
+  'İtalyan Çimi',
+  'Yulaf',
+  'Yulaf (yem)',
+  'Çavdar',
+  'Çavdar (yem)',
+  'Tritikale',
+  'Tritikale (yem)'
+];
+
+const YEM_BITKILERI_IKINCI = [
+  'Yonca',
+  'Korunga',
+  'Yapay Çayır Mera',
+  'Silajlık Mısır',
+  'Silajlık Soya',
+  'Sorgum Otu',
+  'Sudan Otu',
+  'Sorgum-Sudan Otu Melezi'
+];
+
+const PRODUCT_COLORS = ['#F59E0B', '#EF4444', '#10B981', '#8B5CF6', '#F97316', '#06B6D4', '#84CC16'];
+
+// Türkçe karakter normalizasyonu (eşleştirme anahtarı için)
+function normalizeKey(name: string): string {
   if (!name) return '';
   return name
     .toLocaleUpperCase('tr-TR')
     .replace(/\s+/g, '')
+    .replace(/İ/g, 'I')
+    .replace(/Ö/g, 'O')
+    .replace(/Ü/g, 'U')
+    .replace(/Ç/g, 'C')
+    .replace(/Ş/g, 'S')
+    .replace(/Ğ/g, 'G')
+    .replace(/Â/g, 'A')
+    .replace(/Î/g, 'I')
+    .replace(/Û/g, 'U')
+    .replace(/[^A-Z0-9]/g, '')
     .trim();
+}
+
+// Türkçe karakter normalizasyonu
+function normalizeName(name: string): string {
+  return normalizeKey(name);
+}
+
+// İsim eşleştirmesi için fuzzy matching
+function areNamesLooseMatch(name1: string, name2: string): boolean {
+  if (!name1 || !name2) return false;
+  const norm1 = normalizeName(name1);
+  const norm2 = normalizeName(name2);
+  return norm1 === norm2;
+}
+
+// İlçe ismindeki yaygın farklılıkları normalize et
+function normalizeDistrictName(name: string): string {
+  if (!name) return '';
+  
+  return normalizeKey(name)
+    // Yaygın farklılıkları düzelt
+    .replace(/MERKEZ$/g, '') // MERKEZ sonekini kaldır
+    .replace(/^MERKEZ$/g, '') // Sadece MERKEZ olan ilçeleri boş string yap
+    .replace(/IL$/g, '') // İL sonekini kaldır (normalize edilmiş)
+    .replace(/BELEDIYESI$/g, '') // BELEDİYESİ sonekini kaldır (normalize edilmiş)
+    .trim();
+}
+
+// Gelişmiş ilçe eşleştirme fonksiyonu
+function findDistrictMatch(ilceGeo: string, ilcelerHavza: string[]): string | null {
+  if (!ilceGeo || !ilcelerHavza) return null;
+  
+  const normalizedGeo = normalizeDistrictName(ilceGeo);
+  
+  // 1. Tam eşleşme
+  for (const ilce of ilcelerHavza) {
+    if (normalizeDistrictName(ilce) === normalizedGeo) {
+      return ilce;
+    }
+  }
+  
+  // 2. GeoJSON'da il adı ile ilçe adı aynıysa, MERKEZ olarak ara
+  if (normalizedGeo && normalizedGeo.length > 0) {
+    for (const ilce of ilcelerHavza) {
+      if (normalizeDistrictName(ilce) === 'MERKEZ' || ilce === 'MERKEZ') {
+        return ilce;
+      }
+    }
+  }
+  
+  // 3. Kısmi eşleşme (substring)
+  for (const ilce of ilcelerHavza) {
+    const normalizedHavza = normalizeDistrictName(ilce);
+    if (normalizedGeo.includes(normalizedHavza) || normalizedHavza.includes(normalizedGeo)) {
+      return ilce;
+    }
+  }
+  
+  return null;
 }
 
 // Ürün adlarını havza veri setiyle eşleştirmek için normalize et
@@ -47,23 +147,23 @@ function hasProductMatch(selected: string[], supported: string[]): boolean {
   return selected.some((p) => supportedKeys.has(normalizeProductKey(p)));
 }
 
-// Gevşek eşleştirme (TUNCELİ vs TUNCELI, BİNGÖL vs BINGÖL gibi GeoJSON farklılıkları için)
-function areNamesLooseMatch(name1: string, name2: string): boolean {
-  if (!name1 || !name2) return false;
-  const n1 = normalizeName(name1);
-  const n2 = normalizeName(name2);
-  if (n1 === n2) return true;
-  
-  // Latinize et ve karşılaştır
-  const latinize = (s: string) => s
-    .replace(/İ/g, 'I')
-    .replace(/Ö/g, 'O')
-    .replace(/Ü/g, 'U')
-    .replace(/Ç/g, 'C')
-    .replace(/Ş/g, 'S')
-    .replace(/Ğ/g, 'G');
-    
-  return latinize(n1) === latinize(n2);
+function isYemBitkisiDetay(product: string): boolean {
+  return YEM_BITKILERI_BIRINCI.includes(product) || YEM_BITKILERI_IKINCI.includes(product);
+}
+
+function expandSelectedProducts(selectedProducts?: string[]): string[] {
+  if (!selectedProducts || selectedProducts.length === 0) return [];
+  return selectedProducts.flatMap((product) => {
+    if (isYemBitkisiDetay(product)) return [product, 'Yem Bitkileri'];
+    if (product === 'Diğer Ürünler') return ['Diğer Ürünler'];
+    return [product];
+  });
+}
+
+function expandedVariantsForSingleProduct(product: string): string[] {
+  if (isYemBitkisiDetay(product)) return [product, 'Yem Bitkileri'];
+  if (product === 'Diğer Ürünler') return ['Diğer Ürünler'];
+  return [product];
 }
 
 // Feature'dan ilçe ve il ismini çıkar
@@ -178,13 +278,15 @@ function SupportedDistrictsBoundsFitter({
   selectedLocation,
   selectedProducts,
   normalizedHavzaData,
-  showSupportedDistricts
+  showSupportedDistricts,
+  plannedFillByKey
 }: {
   geoData: any;
   selectedLocation: { il: string; ilce: string };
   selectedProducts?: string[];
   normalizedHavzaData: Record<string, Record<string, string[]>>;
   showSupportedDistricts: boolean;
+  plannedFillByKey: Map<string, string>;
 }) {
   const map = useMap();
   const prevShowRef = useRef(false);
@@ -206,46 +308,6 @@ function SupportedDistrictsBoundsFitter({
     prevShowRef.current = true;
     lastProductsSigRef.current = productsSig;
     if (!shouldFit) return;
-
-    // MD tanımı: 1. grup yem bitkileri (fiğ... üçgül/italyan çimi/yulaf/çavdar/tritikale dahil)
-    const yemBitkileriBirinci = [
-      'Fiğ',
-      'Burçak',
-      'Mürdümük',
-      'Hayvan Pancarı',
-      'Yem Şalgamı',
-      'Yem Bezelyesi',
-      'Yem Baklası',
-      'Üçgül',
-      'İtalyan Çimi',
-      'Yulaf',
-      'Yulaf (yem)',
-      'Çavdar',
-      'Çavdar (yem)',
-      'Tritikale',
-      'Tritikale (yem)'
-    ];
-    // MD tanımı: 2. grup yem bitkileri
-    const yemBitkileriIkinci = [
-      'Yonca',
-      'Korunga',
-      'Yapay Çayır Mera',
-      'Silajlık Mısır',
-      'Silajlık Soya',
-      'Sorgum Otu',
-      'Sudan Otu',
-      'Sorgum-Sudan Otu Melezi'
-    ];
-
-    const expandedProducts = selectedProducts.flatMap((product: string) => {
-      if (yemBitkileriBirinci.includes(product) || yemBitkileriIkinci.includes(product)) {
-        return [product, 'Yem Bitkileri'];
-      }
-      if (product === 'Diğer Ürünler') {
-        return ['Diğer Ürünler'];
-      }
-      return [product];
-    });
 
     const targetIl = normalizeName(selectedLocation.il);
     const targetIlce = normalizeName(selectedLocation.ilce || '');
@@ -269,18 +331,8 @@ function SupportedDistrictsBoundsFitter({
         if (il === targetIl) include = true;
       }
 
-      // Desteklenen diğer ilçeler (turuncu/mor vb.)
-      const ilData = normalizedHavzaData[il];
-      let supportedProducts = ilData?.[ilce];
-      
-      // Merkez ilçe fix: GeoJSON'da il=ilçe ise veritabanında 'MERKEZ' olarak ara
-      if (!supportedProducts && areNamesLooseMatch(ilce, il)) {
-        supportedProducts = ilData?.['MERKEZ'];
-      }
-
-      if (supportedProducts && hasProductMatch(expandedProducts, supportedProducts)) {
-        include = true;
-      }
+        // Desteklenen diğer ilçeler (turuncu/mor vb.)
+        if (plannedFillByKey.has(`${il}|${ilce}`)) include = true;
 
       if (!include) continue;
 
@@ -297,13 +349,15 @@ function SupportedDistrictsBoundsFitter({
       // maxZoom ile aşırı yaklaşmayı engelliyoruz.
       map.fitBounds(bounds, { padding: [20, 20], maxZoom: 7 });
     }
-  }, [geoData, map, normalizedHavzaData, selectedLocation, selectedProducts, showSupportedDistricts]);
+  }, [geoData, map, normalizedHavzaData, plannedFillByKey, selectedLocation, selectedProducts, showSupportedDistricts]);
 
   return null;
 }
 
 function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupportedDistricts = false }: HavzaHaritasiProps) {
   const [geoData, setGeoData] = useState<any>(null);
+
+  const expandedSelectedProducts = useMemo(() => expandSelectedProducts(selectedProducts), [selectedProducts]);
 
   // Veri normalizasyonu cache
   const normalizedHavzaData = useMemo(() => {
@@ -332,61 +386,58 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
       .catch(err => console.error('GeoJSON yüklenemedi:', err));
   }, []);
 
-  const hasAnyPlannedMatch = useMemo(() => {
-    if (!showSupportedDistricts || !selectedProducts || selectedProducts.length === 0) return false;
-    if (!normalizedHavzaData) return false;
+  const plannedFillByKey = useMemo(() => {
+    const map = new Map<string, string>();
+    if (!showSupportedDistricts) return map;
+    if (!geoData || !geoData.features) return map;
+    if (!expandedSelectedProducts || expandedSelectedProducts.length === 0) return map;
+    if (!normalizedHavzaData) return map;
 
-    // MD tanımı: 1. grup yem bitkileri (fiğ... üçgül/italyan çimi/yulaf/çavdar/tritikale dahil)
-    const yemBitkileriBirinci = [
-      'Fiğ',
-      'Burçak',
-      'Mürdümük',
-      'Hayvan Pancarı',
-      'Yem Şalgamı',
-      'Yem Bezelyesi',
-      'Yem Baklası',
-      'Üçgül',
-      'İtalyan Çimi',
-      'Yulaf',
-      'Yulaf (yem)',
-      'Çavdar',
-      'Çavdar (yem)',
-      'Tritikale',
-      'Tritikale (yem)'
-    ];
-    // MD tanımı: 2. grup yem bitkileri
-    const yemBitkileriIkinci = [
-      'Yonca',
-      'Korunga',
-      'Yapay Çayır Mera',
-      'Silajlık Mısır',
-      'Silajlık Soya',
-      'Sorgum Otu',
-      'Sudan Otu',
-      'Sorgum-Sudan Otu Melezi'
-    ];
+    for (const feature of geoData.features || []) {
+      const { il, ilce } = getFeatureInfo(feature);
+      if (!il || !ilce) continue;
 
-    const expandedProducts = selectedProducts.flatMap((product: string) => {
-      if (yemBitkileriBirinci.includes(product) || yemBitkileriIkinci.includes(product)) {
-        return [product, 'Yem Bitkileri'];
-      }
-      if (product === 'Diğer Ürünler') {
-        return ['Diğer Ürünler'];
-      }
-      return [product];
-    });
-
-    for (const ilKey of Object.keys(normalizedHavzaData)) {
-      const ilData = normalizedHavzaData[ilKey];
+      const ilData = normalizedHavzaData[il];
       if (!ilData) continue;
-      for (const ilceKey of Object.keys(ilData)) {
-        const supportedProducts = ilData[ilceKey];
-        if (!supportedProducts) continue;
-        if (hasProductMatch(expandedProducts, supportedProducts)) return true;
+
+      const ilcelerHavza = Object.keys(ilData);
+      const matchedIlce = findDistrictMatch(ilce, ilcelerHavza);
+      const supportedProducts = matchedIlce ? ilData[matchedIlce] : undefined;
+      if (!supportedProducts) continue;
+
+      if (!hasProductMatch(expandedSelectedProducts, supportedProducts)) continue;
+
+      let plannedColor = '#F59E0B';
+
+      if (selectedProducts && selectedProducts.length > 1) {
+        let supportedCount = 0;
+        let firstMatchIndex = -1;
+
+        for (let i = 0; i < selectedProducts.length; i++) {
+          const product = selectedProducts[i];
+          const expanded = expandedVariantsForSingleProduct(product);
+          if (hasProductMatch(expanded, supportedProducts)) {
+            supportedCount++;
+            if (firstMatchIndex === -1) firstMatchIndex = i;
+          }
+        }
+
+        if (supportedCount > 1) {
+          plannedColor = '#6D28D9';
+        } else if (firstMatchIndex !== -1) {
+          plannedColor = PRODUCT_COLORS[firstMatchIndex % PRODUCT_COLORS.length];
+        }
       }
+
+      map.set(`${il}|${ilce}`, plannedColor);
     }
-    return false;
-  }, [showSupportedDistricts, selectedProducts, normalizedHavzaData]);
+
+    return map;
+  }, [expandedSelectedProducts, geoData, normalizedHavzaData, selectedProducts, showSupportedDistricts]);
+
+  const hasAnyPlannedMatch = useMemo(() => {
+    return plannedFillByKey.size > 0;
+  }, [plannedFillByKey]);
 
   const style = (feature: any) => {
     const { il, ilce } = getFeatureInfo(feature);
@@ -394,8 +445,8 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
     const targetIl = normalizeName(selectedLocation.il);
     const targetIlce = normalizeName(selectedLocation.ilce || '');
 
-    // Debug: İlk render'da kontrol et
-    if (feature === geoData?.features?.[0]) {
+    // Debug: sadece development'ta ilk polygon için
+    if (process.env.NODE_ENV !== 'production' && feature === geoData?.features?.[0]) {
       console.log('🔍 Harita Debug:', {
         showSupportedDistricts,
         selectedProducts: selectedProducts?.length || 0,
@@ -420,141 +471,8 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
     }
 
     // 2. Ürün Filtresi Kontrolü (Planned Production)
-    let isPlanned = false;
-    let plannedColor = '#F59E0B'; // Varsayılan turuncu
-    
-    // Sadece özellik aktifse (butona basıldıysa) hesapla
-    if (showSupportedDistricts && selectedProducts && selectedProducts.length > 0 && il && ilce && normalizedHavzaData) {
-        
-        // Hızlı lookup (normalize edilmiş veri üzerinden)
-        const ilData = normalizedHavzaData[il];
-        if (ilData) {
-            let supportedProducts = ilData[ilce];
-
-            // Merkez ilçe fix: GeoJSON'da il=ilçe ise veritabanında 'MERKEZ' olarak ara
-            if (!supportedProducts && areNamesLooseMatch(ilce, il)) {
-              supportedProducts = ilData['MERKEZ'];
-            }
-
-            if (supportedProducts) {
-                // Yem bitkileri kategorisi özel kontrolü
-                const expandedProducts = selectedProducts.flatMap((product: string) => {
-                  // Eğer kullanıcı birinci/ikinci kategori yem bitkisi seçmişse, "Yem Bitkileri" olarak eşleştir
-                  const yemBitkileriBirinci = [
-                    'Fiğ',
-                    'Burçak',
-                    'Mürdümük',
-                    'Hayvan Pancarı',
-                    'Yem Şalgamı',
-                    'Yem Bezelyesi',
-                    'Yem Baklası',
-                    'Üçgül',
-                    'İtalyan Çimi',
-                    'Yulaf',
-                    'Yulaf (yem)',
-                    'Çavdar',
-                    'Çavdar (yem)',
-                    'Tritikale',
-                    'Tritikale (yem)'
-                  ];
-                  const yemBitkileriIkinci = [
-                    'Yonca',
-                    'Korunga',
-                    'Yapay Çayır Mera',
-                    'Silajlık Mısır',
-                    'Silajlık Soya',
-                    'Sorgum Otu',
-                    'Sudan Otu',
-                    'Sorgum-Sudan Otu Melezi'
-                  ];
-                  
-                  if (yemBitkileriBirinci.includes(product) || yemBitkileriIkinci.includes(product)) {
-                    return [product, 'Yem Bitkileri']; // Hem kendisi hem de "Yem Bitkileri" kategorisi
-                  }
-                  // "Diğer Ürünler" seçeneği de kontrol et
-                  if (product === 'Diğer Ürünler') {
-                    return ['Diğer Ürünler']; // Genel kategori
-                  }
-                  return [product]; // Normal ürün, sadece kendisi
-                });
-                
-                isPlanned = hasProductMatch(expandedProducts, supportedProducts);
-                
-                // Çoklu ürün renklendirmesi - hangi ürünün eşleştiğini bulup rengini belirle
-                if (isPlanned && selectedProducts.length > 1) {
-                  const productColors = ['#F59E0B', '#EF4444', '#10B981', '#8B5CF6', '#F97316', '#06B6D4', '#84CC16'];
-                  
-                  // Kaç tane ürünün desteklendiğini bul
-                  let supportedCount = 0;
-                  let firstMatchIndex = -1;
-                  
-                  for (let i = 0; i < selectedProducts.length; i++) {
-                    const product = selectedProducts[i];
-                    const yemBitkileriBirinci = [
-                      'Fiğ',
-                      'Burçak',
-                      'Mürdümük',
-                      'Hayvan Pancarı',
-                      'Yem Şalgamı',
-                      'Yem Bezelyesi',
-                      'Yem Baklası',
-                      'Üçgül',
-                      'İtalyan Çimi',
-                      'Yulaf',
-                      'Yulaf (yem)',
-                      'Çavdar',
-                      'Çavdar (yem)',
-                      'Tritikale',
-                      'Tritikale (yem)'
-                    ];
-                    const yemBitkileriIkinci = [
-                      'Yonca',
-                      'Korunga',
-                      'Yapay Çayır Mera',
-                      'Silajlık Mısır',
-                      'Silajlık Soya',
-                      'Sorgum Otu',
-                      'Sudan Otu',
-                      'Sorgum-Sudan Otu Melezi'
-                    ];
-                    
-                    const expanded = yemBitkileriBirinci.includes(product) || yemBitkileriIkinci.includes(product) 
-                      ? [product, 'Yem Bitkileri'] 
-                      : (product === 'Diğer Ürünler' ? ['Diğer Ürünler'] : [product]);
-                      
-                    if (hasProductMatch(expanded, supportedProducts)) {
-                      supportedCount++;
-                      if (firstMatchIndex === -1) firstMatchIndex = i;
-                    }
-                  }
-
-                  if (supportedCount > 1) {
-                    // Birden fazla ürün destekleniyorsa özel renk (Koyu Mor)
-                    plannedColor = '#6D28D9'; 
-                  } else if (firstMatchIndex !== -1) {
-                    // Tek ürün destekleniyorsa o ürünün rengi
-                    plannedColor = productColors[firstMatchIndex % productColors.length];
-                  }
-                }
-                
-                // Debug: İlk birkaç polygon için detaylı log
-                if (feature === geoData?.features?.[0] || feature === geoData?.features?.[1]) {
-                  console.log('🎯 Detailed Debug:', {
-                    il, ilce,
-                    selectedProducts,
-                    supportedProducts,
-                    isPlanned,
-                    plannedColor,
-                    hasMatch: expandedProducts.some((p: string) => supportedProducts.includes(p))
-                  });
-                }
-            } else if (feature === geoData?.features?.[0]) {
-                console.log('❌ No supported products found for:', il, ilce);
-            }
-        } else if (feature === geoData?.features?.[0]) {
-            console.log('❌ No il data found for:', il);
-        }
-    }
+    const plannedColor = (showSupportedDistricts && il && ilce) ? plannedFillByKey.get(`${il}|${ilce}`) : undefined;
+    const isPlanned = !!plannedColor;
 
     // Stil Önceliği: Seçili > Planlı > Varsayılan
     if (isSelected) {
@@ -606,11 +524,14 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
     if (normalizedHavzaData) {
       const ilData = normalizedHavzaData[il];
       if (ilData) {
-        let supportedProducts = ilData[ilce];
-
-        // Merkez ilçe fix: GeoJSON'da il=ilçe ise veritabanında 'MERKEZ' olarak ara
-        if (!supportedProducts && areNamesLooseMatch(ilce, il)) {
-          supportedProducts = ilData['MERKEZ'];
+        // Gelişmiş ilçe eşleştirme kullan
+        const ilcelerHavza = Object.keys(ilData);
+        const matchedIlce = findDistrictMatch(ilce, ilcelerHavza);
+        
+        let supportedProducts: string[] | undefined;
+        
+        if (matchedIlce) {
+          supportedProducts = ilData[matchedIlce];
         }
 
         if (supportedProducts && supportedProducts.length > 0) {
@@ -626,11 +547,14 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
     if (selectedProducts && selectedProducts.length > 0 && normalizedHavzaData) {
       const ilData = normalizedHavzaData[il];
       if (ilData) {
-        let supportedProducts = ilData[ilce];
-
-        // Merkez ilçe fix: GeoJSON'da il=ilçe ise veritabanında 'MERKEZ' olarak ara
-        if (!supportedProducts && areNamesLooseMatch(ilce, il)) {
-          supportedProducts = ilData['MERKEZ'];
+        // Gelişmiş ilçe eşleştirme kullan
+        const ilcelerHavza = Object.keys(ilData);
+        const matchedIlce = findDistrictMatch(ilce, ilcelerHavza);
+        
+        let supportedProducts: string[] | undefined;
+        
+        if (matchedIlce) {
+          supportedProducts = ilData[matchedIlce];
         }
 
         if (supportedProducts) {
@@ -680,6 +604,7 @@ function HavzaHaritasi({ selectedLocation, selectedProducts, havzaData, showSupp
           selectedProducts={selectedProducts}
           normalizedHavzaData={normalizedHavzaData}
           showSupportedDistricts={showSupportedDistricts}
+          plannedFillByKey={plannedFillByKey}
         />
       </MapContainer>
     </MapContainer_Styled>
