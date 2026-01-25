@@ -34,6 +34,42 @@ def parse_kml_coordinates(coordinates_text):
         return Polygon(coordinates)
     return None
 
+
+def _extract_extended_data(placemark: ET.Element, ns: Dict[str, str]) -> Dict[str, str]:
+    """Placemark içindeki ExtendedData/SchemaData alanlarını okur."""
+    data: Dict[str, str] = {}
+
+    for data_elem in placemark.findall('.//kml:Data', ns):
+        key = data_elem.get('name')
+        value_elem = data_elem.find('kml:value', ns)
+        value = value_elem.text.strip() if value_elem is not None and value_elem.text else None
+        if key and value:
+            data[key] = value
+
+    for simple_elem in placemark.findall('.//kml:SimpleData', ns):
+        key = simple_elem.get('name')
+        value = simple_elem.text.strip() if simple_elem is not None and simple_elem.text else None
+        if key and value:
+            data.setdefault(key, value)
+
+    return data
+
+
+def _resolve_placemark_name(placemark: ET.Element, ns: Dict[str, str]) -> str:
+    """Placemark adı için name tag veya ExtendedData fallback uygular."""
+    name_elem = placemark.find('.//kml:name', ns)
+    name = name_elem.text.strip() if name_elem is not None and name_elem.text else None
+    if name:
+        return name
+
+    data = _extract_extended_data(placemark, ns)
+    for key in ('Ad', 'Adı', 'Adi', 'ad', 'adi', 'NAME', 'Name', 'name'):
+        value = data.get(key)
+        if value:
+            return value
+
+    return "Unnamed"
+
 def _read_kml_content(file_path: str) -> Optional[str]:
     """Supports plain KML and KMZ (zip) containers and returns KML xml text."""
     if not os.path.exists(file_path):
@@ -84,8 +120,7 @@ def load_kml_file(file_path):
 
         # Tüm Placemark'ları bul
         for placemark in root.findall('.//kml:Placemark', ns):
-            name_elem = placemark.find('.//kml:name', ns)
-            name = name_elem.text if name_elem is not None else "Unnamed"
+            name = _resolve_placemark_name(placemark, ns)
 
             # Polygon koordinatlarını bul
             coordinates_elem = placemark.find('.//kml:coordinates', ns)
@@ -242,7 +277,9 @@ class KMLDataManager:
             if os.path.exists(path):
                 # GeoJSON mi KML mi kontrol et
                 if path.endswith('.geojson'):
-                    self.polygons, self.polygon_names = load_geojson_polygons(path, ('name',))
+                    self.polygons, self.polygon_names = load_geojson_polygons(
+                        path, ('name', 'Ad', 'Adı', 'Adi', 'ad', 'adi', 'NAME', 'Name')
+                    )
                 else:
                     self.polygons, self.polygon_names = load_kml_file(path)
                 print(f"Büyük Ovalar yüklendi: {path}")
@@ -253,7 +290,9 @@ class KMLDataManager:
             if os.path.exists(path):
                 # GeoJSON mi KML mi kontrol et
                 if path.endswith('.geojson'):
-                    self.yas_kapali_polygons, self.yas_kapali_names = load_geojson_polygons(path, ('name',))
+                    self.yas_kapali_polygons, self.yas_kapali_names = load_geojson_polygons(
+                        path, ('name', 'Ad', 'Adı', 'Adi', 'ad', 'adi', 'NAME', 'Name')
+                    )
                 else:
                     self.yas_kapali_polygons, self.yas_kapali_names = load_kml_file(path)
                 print(f"YAS Kapalı Alanlar yüklendi: {path}")

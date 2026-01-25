@@ -8,7 +8,7 @@ import sys
 import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, Optional
 
 # Django ayarlarını yükle
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -78,6 +78,44 @@ def read_kml_content(file_path: str) -> str:
     return content
 
 
+def _extract_extended_data(placemark: ET.Element) -> Dict[str, str]:
+    """KML placemark içindeki ExtendedData ve SchemaData alanlarını okur."""
+    data: Dict[str, str] = {}
+    ns = '{http://www.opengis.net/kml/2.2}'
+
+    for data_elem in placemark.findall(f'.//{ns}Data'):
+        key = data_elem.get('name')
+        value_elem = data_elem.find(f'{ns}value')
+        value = value_elem.text.strip() if value_elem is not None and value_elem.text else None
+        if key and value:
+            data[key] = value
+
+    for simple_elem in placemark.findall(f'.//{ns}SimpleData'):
+        key = simple_elem.get('name')
+        value = simple_elem.text.strip() if simple_elem is not None and simple_elem.text else None
+        if key and value:
+            data.setdefault(key, value)
+
+    return data
+
+
+def _resolve_placemark_name(placemark: ET.Element) -> str:
+    """Placemark adı için name tag veya ExtendedData fallback uygular."""
+    ns = '{http://www.opengis.net/kml/2.2}'
+    name_elem = placemark.find(f'{ns}name')
+    name = name_elem.text.strip() if name_elem is not None and name_elem.text else None
+    if name:
+        return name
+
+    data = _extract_extended_data(placemark)
+    for key in ('Ad', 'Adı', 'Adi', 'ad', 'adi', 'NAME', 'Name', 'name'):
+        value = data.get(key)
+        if value:
+            return value
+
+    return "Unnamed"
+
+
 def kml_to_geojson(kml_file: str, preserve_all_points: bool = True) -> Dict[str, Any]:
     """
     KML dosyasını GeoJSON'a çevir - VERİ KAYBI OLMADAN
@@ -111,8 +149,7 @@ def kml_to_geojson(kml_file: str, preserve_all_points: bool = True) -> Dict[str,
     
     # Tüm Placemark'ları işle
     for placemark in root.findall('.//{http://www.opengis.net/kml/2.2}Placemark'):
-        name_elem = placemark.find('{http://www.opengis.net/kml/2.2}name')
-        name = name_elem.text if name_elem is not None else "Unnamed"
+        name = _resolve_placemark_name(placemark)
         
         # Koordinatları bul
         coordinates_elem = placemark.find('.//{http://www.opengis.net/kml/2.2}coordinates')

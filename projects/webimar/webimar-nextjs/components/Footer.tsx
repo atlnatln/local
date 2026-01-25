@@ -38,6 +38,9 @@ const Footer: React.FC = () => {
 
         <div className={styles.footerSection}>
           <h4 className={styles.sectionTitle}>İletişim</h4>
+          <nav className={styles.footerNav}>
+            <Link href="/iletisim">İletişim Formu</Link>
+          </nav>
           <div className={styles.contactInfo}>
             <a href="mailto:info@tarimimar.com.tr">📧 info@tarimimar.com.tr</a>
           </div>

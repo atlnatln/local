@@ -112,7 +112,24 @@ def format_buyuk_ova_message(location_status: Dict[str, any]) -> Optional[str]:
     
     if location_status['buyuk_ova_icinde']:
         ova_adi = location_status['buyuk_ova_adi']
-        return f"📍 Bu konum {ova_adi} büyük ovası içerisinde bulunmaktadır."
+        if not ova_adi or str(ova_adi).strip().lower() in ("unnamed", "unknown", "isimsiz"):
+            return "Harita üzerinden seçtiğiniz konum büyük ova sınırları içerisinde bulunmaktadır."
+
+        ova_adi_str = str(ova_adi).strip()
+        if ova_adi_str.lower().endswith(" ovası"):
+            base = ova_adi_str[:-6].strip()
+            if not base.lower().endswith(" büyük"):
+                ova_adi_str = f"{base} Büyük Ovası"
+            else:
+                ova_adi_str = f"{base} Ovası"
+        elif ova_adi_str.lower().endswith(" ovasi"):
+            base = ova_adi_str[:-6].strip()
+            if not base.lower().endswith(" büyük"):
+                ova_adi_str = f"{base} Büyük Ovasi"
+            else:
+                ova_adi_str = f"{base} Ovasi"
+
+        return f"Harita üzerinden seçtiğiniz konum {ova_adi_str} içerisinde bulunmaktadır."
     
     return None
 

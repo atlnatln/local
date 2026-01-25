@@ -58,6 +58,51 @@ def turkish_upper(s):
     return s.replace('i', 'İ').upper()
 
 
+def normalize_plant_name(s: str) -> str:
+    """Bitki adını karşılaştırma için normalize et"""
+    if not s:
+        return ""
+    return " ".join(s.strip().lower().split())
+
+
+def normalize_district_name(s: str) -> str:
+    """İlçe adını karşılaştırma için normalize et"""
+    if not s:
+        return ""
+    # Türkçe karakterleri ASCII'ye çevir
+    normalized = s.strip()
+    normalized = normalized.replace('İ', 'I').replace('ı', 'I').replace('i', 'I')
+    normalized = normalized.replace('Ğ', 'G').replace('ğ', 'G')
+    normalized = normalized.replace('Ü', 'U').replace('ü', 'U')
+    normalized = normalized.replace('Ş', 'S').replace('ş', 'S')
+    normalized = normalized.replace('Ç', 'C').replace('ç', 'C')
+    normalized = normalized.replace('Ö', 'O').replace('ö', 'O')
+    return " ".join(normalized.upper().split())
+
+
+def normalize_province_name(s: str) -> str:
+    """İl adını karşılaştırma için normalize et (GeoJSON/veri seti farklarını da kapsar)"""
+    if not s:
+        return ""
+    normalized = s.strip()
+    normalized = normalized.replace('İ', 'I').replace('ı', 'I').replace('i', 'I')
+    normalized = normalized.replace('Ğ', 'G').replace('ğ', 'G')
+    normalized = normalized.replace('Ü', 'U').replace('ü', 'U')
+    normalized = normalized.replace('Ş', 'S').replace('ş', 'S')
+    normalized = normalized.replace('Ç', 'C').replace('ç', 'C')
+    normalized = normalized.replace('Ö', 'O').replace('ö', 'O')
+    normalized = normalized.replace('Â', 'A').replace('â', 'A')
+    normalized = normalized.replace('Î', 'I').replace('î', 'I')
+    normalized = normalized.replace('Û', 'U').replace('û', 'U')
+
+    normalized = "".join(normalized.upper().split())
+
+    # Veri seti ile GeoJSON arasında isim farklılıkları
+    if normalized == 'AFYONKARAHISAR':
+        return 'AFYON'
+    return normalized
+
+
 def get_honey_power(province: str, honey_type: str) -> int:
     """Bir ilin belirli bal türü için güç değerini döndür (0-100)"""
     honey_data = load_honey_power_data()
@@ -252,12 +297,12 @@ class PlantDistrictsView(APIView):
 
         data = load_flowering_data()
         result = []
-        plant_lower = plant_name.lower()
+        plant_normalized = normalize_plant_name(plant_name)
 
         for province, districts in data.items():
             for district, plants in districts.items():
                 for plant_info in plants:
-                    if plant_lower in plant_info['plant'].lower():
+                    if normalize_plant_name(plant_info.get('plant', '')) == plant_normalized:
                         result.append({
                             'province': province,
                             'district': district,
@@ -291,6 +336,7 @@ class DistrictPlantsView(APIView):
     
     def get(self, request):
         district_param = request.query_params.get('district', '').strip()
+        province_param = request.query_params.get('province', '').strip()
         
         if not district_param:
             return Response({
@@ -298,11 +344,37 @@ class DistrictPlantsView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         data = load_flowering_data()
-        district_lower = district_param.lower()
+        district_normalized = normalize_district_name(district_param)
+        province_normalized = normalize_province_name(province_param) if province_param else None
+
+        # İl parametresi varsa doğrudan il -> ilçe eşleştir
+        if province_normalized:
+            for province, districts in data.items():
+                if normalize_province_name(province) != province_normalized:
+                    continue
+                for district, plants in districts.items():
+                    if normalize_district_name(district) == district_normalized:
+                        result = [{
+                            'plant': p['plant'],
+                            'start': p['start'],
+                            'end': p['end']
+                        } for p in plants]
+
+                        result = turkish_sort(result, key_func=lambda x: x['plant'])
+                        return Response({
+                            'district': district,
+                            'province': province,
+                            'plants': result
+                        })
+
+            return Response({
+                'error': 'İlçe bulunamadı',
+                'plants': []
+            })
 
         for province, districts in data.items():
             for district, plants in districts.items():
-                if district.lower() == district_lower:
+                if normalize_district_name(district) == district_normalized:
                     result = [{
                         'plant': p['plant'],
                         'start': p['start'],
