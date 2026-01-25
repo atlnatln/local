@@ -24,7 +24,28 @@ const nextConfig = {
     // Disable optimizeCss to avoid potential hydration issues
     // optimizeCss: true,
     scrollRestoration: true
-  }
+  },
+
+  async rewrites() {
+    if (process.env.NODE_ENV !== 'development') {
+      return []
+    }
+
+    return [
+      {
+        source: '/api',
+        destination: 'http://localhost:8000/api/',
+      },
+      {
+        source: '/api/',
+        destination: 'http://localhost:8000/api/',
+      },
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:8000/api/:path*/',
+      },
+    ]
+  },
   // Removed custom webpack config that was causing hydration issues
   // by overriding Next.js default chunk splitting strategy
 }

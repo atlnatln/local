@@ -27,7 +27,7 @@ const MapController = dynamic(
 ) as any;
 
 // API Base URL
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
 // Türkiye ay isimleri
 const MONTHS = [
@@ -79,6 +79,19 @@ function normalizeDistrictName(name: string): string {
     .trim();
 }
 
+function normalizeProvinceName(name: string): string {
+  const normalized = normalizeDistrictName(name);
+  // Veri seti ile GeoJSON arasında isim farkı olan iller
+  if (normalized === 'AFYONKARAHISAR') return 'AFYON';
+  return normalized;
+}
+
+function makeDistrictKey(province: string | null | undefined, district: string | null | undefined): string {
+  const p = province ? normalizeProvinceName(province) : '';
+  const d = district ? normalizeDistrictName(district) : '';
+  return `${p}|${d}`;
+}
+
 // Feature'dan isim çıkar - önce ilçe (ADM2), sonra il (ADM1)
 function getFeatureName(feature: any): string | null {
   const props = feature?.properties;
@@ -97,6 +110,41 @@ function getFeatureName(feature: any): string | null {
     }
   }
   return null;
+}
+
+// Feature'dan il adını çıkar
+function getFeatureProvince(feature: any): string | null {
+  const props = feature?.properties;
+  if (!props) return null;
+  const candidates = ['ADM1_TR', 'ADM1_EN', 'il', 'IL', 'province', 'Province'];
+  for (const key of candidates) {
+    const value = props[key];
+    if (typeof value === 'string' && value.trim() && value !== 'Türkiye' && !value.startsWith('TUR')) {
+      return value;
+    }
+  }
+  return null;
+}
+
+// Çiçeklenme API için normalizasyon fonksiyonları
+function normalizeForFloweringAPI(text: string): string {
+  if (!text) return '';
+  // Türkçe karakterleri API formatına çevir (İ -> I, ı -> I vb)
+  return text.trim()
+    .replace(/İ/g, 'I')  // Büyük İ -> I 
+    .replace(/ı/g, 'I')  // Küçük ı -> I
+    .replace(/i/g, 'I')  // Küçük i -> I
+    .replace(/ğ/g, 'G')  // ğ -> G
+    .replace(/Ğ/g, 'G')  // Ğ -> G
+    .replace(/ü/g, 'U')  // ü -> U
+    .replace(/Ü/g, 'U')  // Ü -> U
+    .replace(/ş/g, 'S')  // ş -> S
+    .replace(/Ş/g, 'S')  // Ş -> S
+    .replace(/ç/g, 'C')  // ç -> C
+    .replace(/Ç/g, 'C')  // Ç -> C
+    .replace(/ö/g, 'O')  // ö -> O
+    .replace(/Ö/g, 'O')  // Ö -> O
+    .toUpperCase();
 }
 
 interface PlantInfo {
@@ -198,13 +246,34 @@ export default function CiceklenmeTakvimi() {
 
   // İlk yüklemede tüm bitki listesini ve istatistikleri çek
   useEffect(() => {
-    fetch(`${API_BASE}/flowering/plants/`)
-      .then(res => res.json())
-      .then(data => {
+    const controller = new AbortController();
+
+    (async () => {
+      try {
+        const url = `${API_BASE}/flowering/plants/`;
+        const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        }
+        const data = await res.json();
+        if (!Array.isArray(data)) {
+          throw new Error('Beklenmeyen cevap formatı');
+        }
         setAllPlants(data);
-        setStats(prev => ({ ...prev, totalPlants: data.length, totalDistricts: prev?.totalDistricts || 973, avgDiversity: prev?.avgDiversity || 0 }));
-      })
-      .catch(err => console.error('Bitki listesi yüklenemedi:', err));
+        setStats(prev => ({
+          ...prev,
+          totalPlants: data.length,
+          totalDistricts: prev?.totalDistricts || 973,
+          avgDiversity: prev?.avgDiversity || 0
+        }));
+      } catch (err) {
+        // fetch() ağ hatası/CORS durumunda TypeError fırlatabilir; UI'ı kırmayalım
+        console.error('Bitki listesi yüklenemedi:', err);
+        setError(prev => prev || 'Bitki listesi yüklenemedi. Backend (Django) ayakta mı ve /api erişilebilir mi?');
+      }
+    })();
+
+    return () => controller.abort();
   }, []);
 
   // Mevsim preset uygula
@@ -248,11 +317,11 @@ export default function CiceklenmeTakvimi() {
     setResultSummary('');
     try {
       const url = `${API_BASE}/flowering/flowering-districts/?start_month=${startMonth}&start_day=${startDay}&end_month=${endMonth}&end_day=${endDay}`;
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: 'no-store' });
       const data = await res.json();
       
-      const districtNames = new Set<string>(data.districts.map((d: any) => normalizeDistrictName(d.district)));
-      setHighlightedDistricts(districtNames);
+      const districtKeys = new Set<string>(data.districts.map((d: any) => makeDistrictKey(d.province, d.district)));
+      setHighlightedDistricts(districtKeys);
       setDiversityData(null);
       setResultSummary(`${formatDate(startDay, startMonth)} - ${formatDate(endDay, endMonth)} arasında ${data.count} ilçede çiçeklenme var.`);
       
@@ -279,11 +348,11 @@ export default function CiceklenmeTakvimi() {
     setResultSummary('');
     try {
       const url = `${API_BASE}/flowering/plant-districts/?plant=${encodeURIComponent(plantSearch)}`;
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: 'no-store' });
       const data = await res.json();
       
-      const districtNames = new Set<string>(data.districts.map((d: any) => normalizeDistrictName(d.district)));
-      setHighlightedDistricts(districtNames);
+      const districtKeys = new Set<string>(data.districts.map((d: any) => makeDistrictKey(d.province, d.district)));
+      setHighlightedDistricts(districtKeys);
       setDiversityData(null);
       setResultSummary(`"${plantSearch}" bitkisi ${data.count} ilçede yetişiyor.`);
       
@@ -305,7 +374,7 @@ export default function CiceklenmeTakvimi() {
     setResultSummary('');
     try {
       const url = `${API_BASE}/flowering/district-diversity/`;
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: 'no-store' });
       const data = await res.json();
       
       setDiversityData(data);
@@ -331,17 +400,25 @@ export default function CiceklenmeTakvimi() {
   // İlçeye tıklama
   const onDistrictClick = useCallback(async (feature: any) => {
     const districtName = getFeatureName(feature);
+    const provinceName = getFeatureProvince(feature);
     if (!districtName) return;
     
     try {
+      // Çiçeklenme API için normalize et
+      const normalizedDistrict = normalizeForFloweringAPI(districtName);
+      const normalizedProvince = provinceName ? normalizeForFloweringAPI(provinceName) : null;
+      
       // Tarih filtresi modundaysak, tarih parametrelerini de gönder
-      let url = `${API_BASE}/flowering/district-plants/?district=${encodeURIComponent(districtName)}`;
+      let url = `${API_BASE}/flowering/district-plants/?district=${encodeURIComponent(normalizedDistrict)}`;
+      if (normalizedProvince) {
+        url += `&province=${encodeURIComponent(normalizedProvince)}`;
+      }
       
       if (filterMode === 'date') {
         url += `&start_month=${startMonth}&start_day=${startDay}&end_month=${endMonth}&end_day=${endDay}`;
       }
       
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: 'no-store' });
       const data = await res.json();
       
       if (data && data.plants) {
@@ -384,14 +461,13 @@ export default function CiceklenmeTakvimi() {
 
   // GeoJSON stil fonksiyonu
   const getStyle = useCallback((feature: any) => {
-    const name = getFeatureName(feature);
-    const nameNormalized = name ? normalizeDistrictName(name) : '';
+    const district = getFeatureName(feature);
+    const province = getFeatureProvince(feature);
+    const featureKey = makeDistrictKey(province, district);
     
     // Çeşitlilik haritası modu
     if (diversityData) {
-      const districtData = diversityData.districts.find(
-        d => normalizeDistrictName(d.district) === nameNormalized
-      );
+      const districtData = diversityData.districts.find((d: any) => makeDistrictKey(d.province, d.district) === featureKey);
       
       if (!districtData || districtData.diversity === 0) {
         return {
@@ -428,7 +504,7 @@ export default function CiceklenmeTakvimi() {
     }
     
     // Vurgulu ilçeler
-    if (highlightedDistricts.has(nameNormalized)) {
+    if (highlightedDistricts.has(featureKey)) {
       return {
         fillColor: '#ffeb3b',
         fillOpacity: 0.6,
