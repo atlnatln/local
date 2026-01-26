@@ -10,4 +10,5 @@ django-redis
 django-cors-headers
 requests
 python-dotenv
+dj-database-url
 gunicorn

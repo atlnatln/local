@@ -2,21 +2,31 @@
 Test-specific settings for Anka Backend.
 """
 
+import os
 from .base import *
 
 DEBUG = True
 
-# Use SQLite for tests (faster)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+# Database configuration - support both SQLite (default) and PostgreSQL (via DATABASE_URL)
+DB_URL = os.environ.get('DATABASE_URL')
+if DB_URL:
+    # PostgreSQL (for CI/advanced testing)
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DB_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
-
-# Disable password validation for tests
-AUTH_PASSWORD_VALIDATORS = []
-
+else:
+    # SQLite (for local testing)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
 # Use in-memory cache for tests
 CACHES = {
     'default': {

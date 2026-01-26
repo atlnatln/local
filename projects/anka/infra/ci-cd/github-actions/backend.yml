@@ -1,0 +1,60 @@
+name: Backend
+
+on:
+  push:
+    paths:
+      - "services/backend/**"
+      - "infra/ci-cd/github-actions/backend.yml"
+      - ".github/workflows/backend.yml"
+  pull_request:
+    paths:
+      - "services/backend/**"
+      - "infra/ci-cd/github-actions/backend.yml"
+      - ".github/workflows/backend.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            services/backend/requirements-base.txt
+            services/backend/requirements.txt
+            services/backend/pyproject.toml
+
+      - name: Install dependencies
+        working-directory: services/backend
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-base.txt -r requirements.txt
+          pip install pytest-django pytest-cov isort
+
+      - name: Lint (black)
+        working-directory: services/backend
+        run: black --check .
+
+      - name: Lint (isort)
+        working-directory: services/backend
+        run: isort --check-only .
+
+      - name: Lint (flake8)
+        working-directory: services/backend
+        run: flake8 .
+
+      - name: Tests (pytest)
+        working-directory: services/backend
+        env:
+          DJANGO_SETTINGS_MODULE: project.settings.test
+        run: pytest
+

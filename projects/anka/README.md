@@ -5,10 +5,10 @@
 ## 📋 Project Overview
 
 **Technology Stack:**
-- **Backend:** Django 6.0 + Django REST Framework (DRF)
-- **Frontend:** Next.js 15.1 with App Router + TypeScript
+- **Backend:** Django 5.2 + Django REST Framework 3.16
+- **Frontend:** Next.js 15.5.9 with App Router + TypeScript
 - **Database:** PostgreSQL 14 (ACID transactions)
-- **Cache & Queue:** Redis 7 + Celery 5.3.6
+- **Cache & Queue:** Redis 7 + Celery 5.6.2
 - **File Storage:** S3/MinIO (signed URLs)
 - **Payment:** Stripe + Iyzico (integration-ready)
 - **Container:** Docker & docker-compose

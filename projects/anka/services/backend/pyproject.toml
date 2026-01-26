@@ -45,7 +45,7 @@ skip_glob = ["*/migrations/*"]
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "project.settings.test"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
-addopts = "--cov=apps --cov-report=html --cov-report=term-missing"
+addopts = "--cov=apps --cov-report=html --cov-report=term-missing --import-mode=importlib"
 testpaths = ["apps"]
 
 [tool.coverage.run]

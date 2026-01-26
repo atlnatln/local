@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     
     # Third-party
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_spectacular',
     'corsheaders',
     'django_extensions',
@@ -115,6 +116,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -129,6 +131,33 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+# JWT Configuration
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JTI_CLAIM': 'jti',
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+    'JTI_CLAIM': 'jti',
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+}
+
+
 # drf-spectacular
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Anka Platform API',
@@ -136,6 +165,15 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticated'],
     'SCHEMA_PATH_PREFIX': '/api/',
+    'ENUM_NAME_OVERRIDES': {
+        'BatchStatusEnum': 'apps.batches.models.Batch.STATUS_CHOICES',
+        'ExportStatusEnum': 'apps.exports.models.Export.STATUS_CHOICES',
+        'DisputeStatusEnum': 'apps.disputes.models.Dispute.STATUS_CHOICES',
+        'PaymentIntentStatusEnum': 'apps.payments.models.PaymentIntent.STATUS_CHOICES',
+        'PaymentTransactionStatusEnum': 'apps.payments.models.PaymentTransaction.STATUS_CHOICES',
+        'LedgerEntryStatusEnum': 'apps.ledger.models.LedgerEntry.STATUS_CHOICES',
+        'RecurringChargeStatusEnum': 'apps.ledger.models.RecurringCharge.STATUS_CHOICES',
+    },
 }
 
 # CORS
@@ -224,6 +262,9 @@ STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY', '')
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 IYZICO_API_KEY = os.environ.get('IYZICO_API_KEY', '')
 IYZICO_SECRET_KEY = os.environ.get('IYZICO_SECRET_KEY', '')
+IYZICO_BASE_URL = os.environ.get('IYZICO_BASE_URL', 'https://sandbox-api.iyzipay.com')
+IYZICO_CALLBACK_URL = os.environ.get('IYZICO_CALLBACK_URL', 'http://localhost:3100/checkout/confirm')
+ENABLE_IYZICO = os.environ.get('ENABLE_IYZICO', 'True') == 'True'
 
 # Storage (S3/MinIO)
 USE_S3 = os.environ.get('USE_S3', 'False') == 'True'

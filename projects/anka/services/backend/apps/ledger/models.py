@@ -4,6 +4,7 @@ KRİTİK: 1 row per batch event, NOT N rows for N records
 """
 
 from django.db import models
+from django.db.models import UniqueConstraint, Q
 from decimal import Decimal
 import uuid
 from apps.accounts.models import Organization
@@ -100,6 +101,13 @@ class LedgerEntry(models.Model):
             models.Index(fields=['organization', '-created_at']),
             models.Index(fields=['transaction_type']),
             models.Index(fields=['reference_id']),
+        ]
+        constraints = [
+            UniqueConstraint(
+                fields=['reference_type', 'reference_id'],
+                name='ledger_unique_reference',
+                violation_error_message='Bu reference için zaten bir ledger kaydı mevcut.'
+            ),
         ]
     
     def __str__(self):

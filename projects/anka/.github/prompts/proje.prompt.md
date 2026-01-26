@@ -665,3 +665,323 @@ Redis:
 - [Django REST Framework](https://www.django-rest-framework.org/)
 - [drf-spectacular](https://drf-spectacular.readthedocs.io/)
 - [Celery Documentation](https://docs.celeryproject.org/)
+
+---
+
+## 🔨 Phase-1: API & Test Implementation (MVP-0 → MVP-1)
+
+### Overview
+MVP-0 scaffold tamamlandı. Phase-1'de **DRF API**, **Unit/Integration/Contract testleri** ve **GitHub Actions CI/CD** tamamlanacak. Sonuç: Deployment-ready API ve test coverage >80%.
+
+**Süre:** 2-3 hafta | **Team:** 1-2 dev | **Priority:** High
+
+---
+
+### Phase-1 İş Paketi
+
+#### Sprint-1: DRF Serializers & ViewSets (1 hafta)
+
+**Hedef:** 5 ana app için RESTful endpoints oluşturmak.
+
+**Priority Sırası:**
+
+| # | App | Endpoints | Notes |
+|---|-----|-----------|-------|
+| 1 | **batches** | `GET/POST /batches/`, `GET /batches/{id}/`, `GET /batches/{id}/items/` | Deterministik hash, query_hash auto-calc |
+| 2 | **ledger** | `GET /ledger/entries/`, `GET /credits/balance/` | Read-only (sistem tarafından yazılan) |
+| 3 | **credits** | `GET /credits/balance/`, `POST /credits/purchase/` | Pre-paid credit flow |
+| 4 | **exports** | `GET/POST /exports/`, `GET /exports/{id}/` | S3 signed URL return |
+| 5 | **disputes** | `GET/POST /disputes/`, `PATCH /disputes/{id}/` | Auto-decision logic, rule engine |
+
+**Deliverables:**
+
+```
+services/backend/apps/
+
+├─ batches/
+│  ├─ serializers.py        (BatchSerializer, BatchItemSerializer)
+│  ├─ views.py              (BatchViewSet with get_queryset filters)
+│  ├─ filters.py            (city, sector, status filters)
+│  ├─ permissions.py        (IsOwnerOrganization)
+│  └─ tests/
+│     ├─ __init__.py
+│     └─ test_models.py     (calculate_query_hash unit tests)
+
+├─ ledger/
+│  ├─ serializers.py        (LedgerEntrySerializer, CreditPackageSerializer)
+│  ├─ views.py              (LedgerEntryViewSet (read-only), CreditBalanceView)
+│  └─ tests/
+│     └─ test_models.py     (balance update logic)
+
+├─ credits/
+│  ├─ serializers.py        (CreditPurchaseSerializer)
+│  ├─ views.py              (CreditPurchaseView → payment webhook)
+│  └─ tests/
+│     └─ test_views.py      (purchase flow, balance update)
+
+├─ exports/
+│  ├─ serializers.py        (ExportSerializer, ExportCreateSerializer)
+│  ├─ views.py              (ExportViewSet, signed URL generation)
+│  ├─ tasks.py              (Celery: generate_export_file)
+│  └─ tests/
+│     └─ test_views.py      (signed URL format, permission checks)
+
+└─ disputes/
+   ├─ serializers.py        (DisputeSerializer, DisputeCreateSerializer)
+   ├─ views.py              (DisputeViewSet)
+   ├─ rule_engine.py        (DecisionEngine class)
+   ├─ tasks.py              (Celery: auto_resolve_dispute)
+   └─ tests/
+      ├─ test_models.py     (dispute creation)
+      ├─ test_rule_engine.py (decision logic: ACCEPT vs REJECT)
+      └─ test_views.py      (dispute filing, auto-decision)
+```
+
+**Key Implementation Details:**
+
+1. **Batch.calculate_query_hash()** - Kaydetme öncesi auto-run
+2. **LedgerEntry** - ORM üzerinden immutable (update:False, delete:False)
+3. **CreditPackage.balance** - Atomic update (F() expressions)
+4. **Export** - Celery task (async file generation)
+5. **Dispute Decision** - Rule engine (konfigüre edilebilir karar ağacı)
+
+---
+
+#### Sprint-2: Unit & Integration Tests (1 hafta)
+
+**Hedef:** >80% code coverage, her app için en az 3 test tipi.
+
+**Test Stratejisi:**
+
+```python
+tests/
+├─ unit/
+│  ├─ test_batch_models.py
+│  │  ├─ test_batch_query_hash_deterministic()
+│  │  ├─ test_batch_query_hash_different_inputs()
+│  │  └─ test_batch_item_firm_id_immutable()
+│  │
+│  ├─ test_ledger_models.py
+│  │  ├─ test_ledger_entry_balance_snapshot()
+│  │  └─ test_credit_package_balance_calculation()
+│  │
+│  ├─ test_disputes_rule_engine.py
+│  │  ├─ test_email_bounce_accept()
+│  │  ├─ test_wrong_org_accept()
+│  │  ├─ test_contacted_not_interested_reject()
+│  │  └─ test_default_reject()
+│  │
+│  └─ test_exports_models.py
+│     └─ test_export_s3_key_generation()
+│
+└─ integration/
+   ├─ test_batch_workflow.py
+   │  ├─ test_batch_create_decrements_credits()
+   │  ├─ test_batch_list_with_filters()
+   │  └─ test_batch_export_flow()
+   │
+   ├─ test_dispute_workflow.py
+   │  ├─ test_dispute_file_triggers_auto_decision()
+   │  └─ test_dispute_accept_creates_refund_ledger()
+   │
+   └─ test_credit_purchase_workflow.py
+      ├─ test_stripe_webhook_updates_credits()
+      └─ test_insufficient_credits_batch_prevent()
+```
+
+**Fixtures (conftest.py güncelle):**
+
+```python
+@pytest.fixture
+def org_with_credits():
+    org = Organization.objects.create(name="TestOrg")
+    CreditPackage.objects.create(organization=org, balance=1000)
+    return org
+
+@pytest.fixture
+def batch_with_items(org_with_credits):
+    batch = Batch.objects.create(
+        organization=org_with_credits,
+        city="Istanbul",
+        sector="IT",
+        filters={"size": "large"},
+    )
+    for i in range(10):
+        BatchItem.objects.create(batch=batch, firm_id=f"firm_{i}")
+    return batch
+
+@pytest.fixture
+def api_client_authenticated(api_client, django_user_model):
+    user = django_user_model.objects.create_user(
+        username="testuser", password="pass123"
+    )
+    api_client.force_authenticate(user=user)
+    return api_client
+```
+
+**Coverage Target:**
+- `apps/batches/`: >85%
+- `apps/ledger/`: >80%
+- `apps/disputes/`: >85%
+- `apps/exports/`: >75%
+- `apps/credits/`: >80%
+
+---
+
+#### Sprint-3: Contract & E2E Tests + CI/CD (1 hafta)
+
+**A) Contract Testing (OpenAPI)**
+
+```
+tests/contracts/openapi/
+├─ validate.spec.ts         # Playwright + OpenAPI 3.0
+├─ tests/
+│  ├─ batches.contract.ts   (GET /batches, POST /batches, ...)
+│  ├─ ledger.contract.ts    (GET /ledger/entries, GET /credits/balance)
+│  ├─ disputes.contract.ts  (POST /disputes, auto-decision verification)
+│  └─ exports.contract.ts   (GET /exports, signed URL format)
+│
+└─ fixtures/
+   └─ openapi-schema.yaml   (auto-generated: drf-spectacular)
+```
+
+**Validation Rules:**
+- Request/response schema match OpenAPI spec
+- Status code correct (200, 201, 400, 401, 404)
+- Date formats (ISO 8601)
+- UUID format validation
+
+**B) GitHub Actions CI/CD**
+
+```yaml
+infra/ci-cd/github-actions/
+
+├─ backend.yml
+│  ├─ Lint (black, isort, flake8)
+│  ├─ Type Check (mypy)
+│  ├─ Unit tests (pytest)
+│  ├─ Coverage report
+│  └─ Security scan (bandit)
+│
+├─ frontend.yml
+│  ├─ Lint (eslint, prettier)
+│  ├─ Type check (tsc --noEmit)
+│  ├─ Build (next build)
+│  └─ Bundle analyze
+│
+├─ contract.yml
+│  ├─ Start services (docker-compose)
+│  ├─ OpenAPI schema validation
+│  └─ Contract tests (Playwright)
+│
+└─ e2e.yml
+   ├─ Build all services
+   ├─ Run Playwright tests
+   ├─ Upload artifacts
+   └─ Slack notification
+```
+
+**Pipeline Specifics:**
+
+```yaml
+# backend.yml
+name: Backend CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: anka_test
+          POSTGRES_PASSWORD: test
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install -r services/backend/requirements.txt
+      - run: cd services/backend && black --check .
+      - run: cd services/backend && isort --check-only .
+      - run: cd services/backend && flake8 apps/ --max-line-length=100
+      - run: cd services/backend && pytest --cov=apps --cov-report=xml
+      - uses: codecov/codecov-action@v3
+```
+
+---
+
+### Branching Strategy
+
+```
+main (production)
+  ↑
+release/* (staging)
+  ↑
+develop (integration branch)
+  ↑
+feature/* (feature branches)
+  ├─ feature/batch-api
+  ├─ feature/ledger-api
+  ├─ feature/dispute-engine
+  └─ feature/tests-phase1
+```
+
+**Workflow:**
+1. Feature branch açınız: `git checkout -b feature/batch-api`
+2. PR açınız `develop`'e
+3. CI pass olduktan sonra merge
+4. Release hazırlanırken: `release/v0.2.0` açınız
+5. Test geçtikten sonra: `main`'e merge + tag
+
+---
+
+### Definition of Done (DoD)
+
+Her feature için:
+- ✅ Unit tests yazılmış (>80% coverage)
+- ✅ Integration tests yazılmış
+- ✅ Code review geçmiş (minimum 1 reviewer)
+- ✅ Lint & format pass (black, isort, eslint)
+- ✅ Type check pass (mypy, tsc)
+- ✅ API docs (drf-spectacular, OpenAPI)
+- ✅ README/docstring updated
+- ✅ No hardcoded secrets/credentials
+- ✅ CI pipeline pass (all checks)
+
+---
+
+### Risk Mitigation
+
+| Risk | Mitigation |
+|------|-----------|
+| Query hash collision | Unittest for determinism + SHA256 collision theory improbable |
+| Ledger race conditions | Atomic database transactions + F() expressions for balance updates |
+| Export timeout (large files) | Celery with long timeout (300s) + progress tracking |
+| Dispute decision false positives | Whitebox testing + decision matrix review + human QA |
+| CI flakiness | Retry logic for network tests + seed database state |
+
+---
+
+### Success Metrics
+
+- ✅ API endpoints: 15+ endpoints live
+- ✅ Test coverage: >80% (aim for 85%)
+- ✅ CI pipeline: <5 min execution time
+- ✅ E2E tests: smoke + critical path (batch → export → dispute)
+- ✅ Documentation: OpenAPI schema + README.md
+- ✅ Zero production issues (staging deployment)
+
+---
+
+### Next Phase (Phase-2)
+
+After Phase-1 complete:
+- **Frontend Integration:** React components + API calls
+- **Payment Integration:** Stripe/Iyzico webhooks
+- **Async Tasks:** Celery workers for exports + batch processing
+- **Monitoring:** Sentry + DataDog dashboards
+
+---

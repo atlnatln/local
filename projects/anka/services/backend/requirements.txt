@@ -1,46 +1,53 @@
 # Django & Core
-Django>=4.2,<6.0
-djangorestframework>=3.14
-drf-spectacular>=0.27
+# Docker imajında fiilen kullanılan sürümler (Django 5.2.x / DRF 3.16.x) ile uyumlu aralıklar.
+Django>=5.2,<6.0
+djangorestframework>=3.16,<4.0
+drf-spectacular>=0.29,<1.0
+
+# JWT Authentication
+djangorestframework-simplejwt>=5.5,<6.0
 
 # Database
-psycopg2-binary>=2.9
+psycopg2-binary>=2.9,<3.0
+dj-database-url>=2.2,<3.0
 
-# Async & Tasks  
-celery>=5.3
-redis>=5.0
-django-celery-beat>=2.5
-django-celery-results>=2.5
+# Async & Tasks
+celery>=5.6,<6.0
+redis>=7.0,<8.0
+django-celery-beat>=2.8,<3.0
+django-celery-results>=2.6,<3.0
 
 # Caching
-django-redis>=5.4
+django-redis>=6.0,<7.0
 
 # Security & Auth
-django-cors-headers>=4.3
+django-cors-headers>=4.9,<5.0
+iyzipay>=1.0.45
 
 # Serialization
-pydantic>=2.5
+pydantic>=2.12,<3.0
 
 # Payment
-stripe>=7.8
+stripe>=14.2,<15.0
 
 # Storage
-boto3>=1.34
-django-storages>=1.14
+boto3>=1.42,<2.0
+django-storages>=1.14,<2.0
 
 # Utils
-requests>=2.31
-python-dotenv>=1.0
-django-extensions>=3.2
+requests>=2.32,<3.0
+python-dotenv>=1.2,<2.0
+django-extensions>=4.1,<5.0
 
 # Static files
-whitenoise>=6.6
+whitenoise>=6.11,<7.0
 
 # Production
-gunicorn>=21.2
+gunicorn>=24.0,<25.0
 
 # Development
-pytest>=7.4
-pytest-django>=4.7
-black>=23.12
-flake8>=6.1
+pytest>=9.0,<10.0
+pytest-django>=4.11,<5.0
+pytest-cov>=7.0,<8.0
+black>=26.1,<27.0
+flake8>=7.3,<8.0

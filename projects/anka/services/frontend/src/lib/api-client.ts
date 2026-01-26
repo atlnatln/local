@@ -1,6 +1,6 @@
 /**
  * API client for Anka Platform
- * Handles authentication, requests, and error handling
+ * Handles JWT authentication, requests, and error handling
  */
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -8,37 +8,67 @@ const API_BASE = `${API_URL}/api`;
 
 export interface FetchOptions extends RequestInit {
   headers?: Record<string, string>;
+  skipAuth?: boolean;
 }
 
 /**
- * Fetch wrapper with automatic cookie inclusion and error handling
+ * Get Authorization header with JWT token
+ */
+function getAuthorizationHeader(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+  
+  const token = localStorage.getItem('anka_access_token');
+  if (!token) return {};
+  
+  return {
+    'Authorization': `Bearer ${token}`,
+  };
+}
+
+/**
+ * Handle 401 responses - refresh token or redirect to login
+ */
+async function handle401(): Promise<void> {
+  // Clear tokens and redirect to login
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('anka_access_token');
+    localStorage.removeItem('anka_refresh_token');
+    localStorage.removeItem('anka_token_expires');
+    window.location.href = '/login';
+  }
+}
+
+/**
+ * Fetch wrapper with JWT token and error handling
  */
 export async function fetchAPI<T = any>(
   endpoint: string,
   options: FetchOptions = {}
 ): Promise<T> {
+  const { skipAuth = false, ...fetchOptions } = options;
   const url = `${API_BASE}${endpoint}`;
   
   const defaultOptions: FetchOptions = {
-    credentials: 'include', // Include cookies for session auth
     headers: {
       'Content-Type': 'application/json',
-      ...options.headers,
+      'Accept': 'application/json',
+      ...(!skipAuth && getAuthorizationHeader()),
+      ...fetchOptions.headers,
     },
-    ...options,
+    ...fetchOptions,
   };
 
   const response = await fetch(url, defaultOptions);
 
   // Handle 401 - redirect to login
   if (response.status === 401) {
-    window.location.href = '/login';
+    await handle401();
     throw new Error('Unauthorized');
   }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `API Error: ${response.statusText}`);
+    throw new Error(errorData.detail || errorData.error || `API Error: ${response.statusText}`);
   }
 
   if (response.status === 204) {
@@ -51,8 +81,11 @@ export async function fetchAPI<T = any>(
 /**
  * GET request
  */
-export async function get<T = any>(endpoint: string): Promise<T> {
-  return fetchAPI<T>(endpoint, { method: 'GET' });
+export async function get<T = any>(
+  endpoint: string,
+  skipAuth: boolean = false
+): Promise<T> {
+  return fetchAPI<T>(endpoint, { method: 'GET', skipAuth });
 }
 
 /**
@@ -60,11 +93,13 @@ export async function get<T = any>(endpoint: string): Promise<T> {
  */
 export async function post<T = any>(
   endpoint: string,
-  data: any
+  data: any,
+  skipAuth: boolean = false
 ): Promise<T> {
   return fetchAPI<T>(endpoint, {
     method: 'POST',
     body: JSON.stringify(data),
+    skipAuth,
   });
 }
 
@@ -73,11 +108,13 @@ export async function post<T = any>(
  */
 export async function put<T = any>(
   endpoint: string,
-  data: any
+  data: any,
+  skipAuth: boolean = false
 ): Promise<T> {
   return fetchAPI<T>(endpoint, {
     method: 'PUT',
     body: JSON.stringify(data),
+    skipAuth,
   });
 }
 
@@ -86,17 +123,22 @@ export async function put<T = any>(
  */
 export async function patch<T = any>(
   endpoint: string,
-  data: any
+  data: any,
+  skipAuth: boolean = false
 ): Promise<T> {
   return fetchAPI<T>(endpoint, {
     method: 'PATCH',
     body: JSON.stringify(data),
+    skipAuth,
   });
 }
 
 /**
  * DELETE request
  */
-export async function del<T = any>(endpoint: string): Promise<T> {
-  return fetchAPI<T>(endpoint, { method: 'DELETE' });
+export async function del<T = any>(
+  endpoint: string,
+  skipAuth: boolean = false
+): Promise<T> {
+  return fetchAPI<T>(endpoint, { method: 'DELETE', skipAuth });
 }

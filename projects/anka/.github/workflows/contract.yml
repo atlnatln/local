@@ -1,0 +1,51 @@
+name: Contract (OpenAPI)
+
+on:
+  push:
+    paths:
+      - "services/backend/**"
+      - "docs/API/openapi.yaml"
+      - ".github/workflows/contract.yml"
+  pull_request:
+    paths:
+      - "services/backend/**"
+      - "docs/API/openapi.yaml"
+      - ".github/workflows/contract.yml"
+
+jobs:
+  openapi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            services/backend/requirements-base.txt
+            services/backend/requirements.txt
+            services/backend/pyproject.toml
+
+      - name: Install dependencies
+        working-directory: services/backend
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-base.txt -r requirements.txt
+
+      - name: Generate OpenAPI (validate)
+        working-directory: services/backend
+        env:
+          DJANGO_SETTINGS_MODULE: project.settings.test
+        run: |
+          mkdir -p ../../artifacts
+          python manage.py spectacular --file ../../artifacts/openapi.generated.yaml --validate
+
+      - name: Ensure docs/API/openapi.yaml is up-to-date
+        run: diff -u docs/API/openapi.yaml artifacts/openapi.generated.yaml
