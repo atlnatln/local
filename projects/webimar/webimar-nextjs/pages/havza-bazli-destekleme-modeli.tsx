@@ -379,13 +379,25 @@ const URUN_DROPDOWN_GRUPLARI: UrunDropdownGrup[] = [
 
 const GUBRE_DESTEK_BIRIM_TL = 99.2;
 
-const ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN = {
+type OrganikIyiTarimUrunGrubu = 'birinci_kategori' | 'ikinci_kategori' | 'ucuncu_kategori';
+
+// Kaynak: webimar-nextjs/data/organik-iyi-tarim-urun-deseni.md
+// Not: UI tarafında mevcut key'lerle uyum için (1/2/3) grupları "birinci/ikinci/ucuncu_kategori" olarak tutuluyor.
+const ORGANIK_TARIM_GRUP_URUN_METIN: Record<OrganikIyiTarimUrunGrubu, string> = {
   birinci_kategori:
-    'Acur, Ahududu, Alıç, Altınçilek, Altıntop, Armut, Avokado, Ayva, Badem, Bakla, Balkabağı, Bamya, Barbunya Fasulye, Barbunya Fasulye (kuru), Bergamot, Biber, Böğürtlen, Brokoli, Ceviz, Çay, Çilek, Dereotu, Domates, Dut, Elma, Enginar, Erik, Fasulye (kuru), Fasulye, Fındık, Gilaburu, Hıyar, Ispanak, İğde, İncir, Kabak, Kuşüzümü, Karnabahar, Karpuz, Kavun, Kayısı, Kereviz, Kestane, Kızılcık, Kiraz, Kivi, Kuşkonmaz, Kuzukulağı, Lahana, Limon, Mandalina, Mantar, Marul, Maydanoz, Meyve Fidanı, Sebze Fideleri, Muşmula, Muz, Nane, Nar, Nektarin, Örtü Altı Fidecilik, Palamut, Patlıcan, Pazı, Pepino, Pırasa, Portakal, Roka, Sarımsak, Semizotu, Soğan, Şalgam, Şeftali, Tere, Trabzon Hurması, Turp, Turunç, Üvez, Üzüm, Üzüm Kurutmalık, Üzüm Sofralık, Vişne, Yenidünya, Yerelması, Zerdali.',
+    'Ahududu, Altıntop, Armut, Bakla, Bamya, Barbunya, Bezelye, Biber, Böğürten, Börülce, Brokoli, Çilek, Dereotu, Domates, Dut, Elma, Enginar, Erik, Fasulye (taze), Fındık, Havuç, Hıyar, Ispanak, İncir, Kabak, Karnabahar, Kayısı, Kereviz, Kiraz, Kişniş, Kivi, Kuşkonmaz, Lahana, Limon, Mandalina, Marul, Maydanoz, Nane, Nar, Nektarin, Patlıcan, Pazi, Pırasa, Portakal, Roka, Sarımsak, Semizotu, Şalgam, Şeftali, Tere, Trabzon Hurması, Turp, Üzüm (Kurutmalık/Sofralık), Vişne, Yaban Mersini (Maviyemiş), Yaş Çay',
   ikinci_kategori:
-    'Adaçayı, Anason, Antep Fıstığı, Biberiye, Civanperçemi, Çemen, Çörekotu, Defne, Ebegümeci, Fesleğen (reyhan), Hünnap, Kekik, Isırganotu, Kantaron, Kimyon, Kişniş, Kuşburnu, Melissa, Mercanköşk, Rezene, Safran, Şerbetçiotu, Tarçın, Zahter, Zencefil, Zeytin.',
+    'Adaçayı, Aronya, Ayva, Badem, Balkabağı, Biberiye, Ceviz, Çemen, Çörek Otu, Defne, Ekinezya, Fesleğen (Reyhan), Fasulye, Gül, Ihlamur, Kantaron, Kekik, Kırmızı Pancar, Kızılcık, Kuşburnu, Patates, Safran, Soğan, Sumak, Susam, Zencefil, Zeytin',
   ucuncu_kategori:
-    'Ayçiçeği, Bakla (kuru), Bezelye, Börülce, Çeltik, Gül, Kenevir Lif, Keten Lif, Mercimek, Mürdümük, Nohut, Pamuk, Sarımsak (kuru), Soğan (kuru), Soya, Susam, Tütün, Yerfıstığı.'
+    'Antep fıstığı, Arpa (Yemlik), Aspir, Avokado, Ayçiçeği, Buğday, Çavdar, Çeltik, Fiğ, İtalyan Çimi, Karpuz, Kavun, Kenevir Lif, Kestane, Keten Lif, Kolza (Kanola), Korunga, Macar Fiği, Mercimek, Mısır (Dane/Silajlık), Mürdümük, Nohut, Pamuk, Sorgum-Sudan Otu Melezi, Soya, Şeker Pancarı, Tritikale, Üçgül, Yem Bezelyesi, Yer Fıstığı, Yem Şalgamı, Yulaf, Yonca'
+} as const;
+
+const IYI_TARIM_GRUP_URUN_METIN: Record<OrganikIyiTarimUrunGrubu, string> = {
+  birinci_kategori:
+    'Acur, Altıntop, Armut, Ayva, Bakla, Bamya, Bezelye, Biber, Brokoli, Çilek, Dereotu, Domates, Elma, Enginar, Erik, Fasulye (taze), Havuç, Hıyar, Ispanak, İncir, Kabak, Karnabahar, Kayısı, Kereviz, Kiraz, Kişniş, Kivi, Kuşkonmaz, Lahana, Limon, Mandalina, Marul, Maydanoz, Nane, Nar, Nektarin, Patlıcan, Pırasa, Portakal, Roka, Şeftali, Tere, Trabzon Hurması, Turp, Üzüm (Kurutmalık / Sofralık), Vişne, Yenidünya',
+  ikinci_kategori:
+    'Badem, Balkabağı, Biberiye, Ceviz, Fındık, Kekik, Kestane, Patates (tohumluk hariç), Sarımsak, Zeytin',
+  ucuncu_kategori: 'Antep fıstığı, Çeltik, Karpuz, Kavun, Pamuk (tohumluk hariç), Soğan'
 } as const;
 
 const parseKategoriUrunleri = (metin: string): string[] =>
@@ -403,17 +415,78 @@ const normalizeUrunKey = (urun: string): string =>
     .replace(/\.+$/, '')
     .replace(/\s+/g, ' ');
 
-const ORGANIK_IYI_TARIM_KATEGORI_URUN_SET = {
-  birinci_kategori: new Set(parseKategoriUrunleri(ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.birinci_kategori).map(normalizeUrunKey)),
-  ikinci_kategori: new Set(parseKategoriUrunleri(ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.ikinci_kategori).map(normalizeUrunKey)),
-  ucuncu_kategori: new Set(parseKategoriUrunleri(ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.ucuncu_kategori).map(normalizeUrunKey))
+type OrganikIyiTarimDestekAdi = 'Organik Tarım' | 'İyi Tarım';
+
+const ORGANIK_IYI_TARIM_URUN_ALIAS: Record<OrganikIyiTarimDestekAdi, Record<string, string[]>> = {
+  'Organik Tarım': {
+    [normalizeUrunKey('Pamuk (kütlü)')]: [normalizeUrunKey('Pamuk')],
+    [normalizeUrunKey('Soğan (kuru)')]: [normalizeUrunKey('Soğan')],
+    [normalizeUrunKey('Ayçiçeği (yağlık)')]: [normalizeUrunKey('Ayçiçeği')],
+    [normalizeUrunKey('Arpa')]: [normalizeUrunKey('Arpa (Yemlik)')],
+    [normalizeUrunKey('Yulaf (yem)')]: [normalizeUrunKey('Yulaf')],
+    [normalizeUrunKey('Çavdar (yem)')]: [normalizeUrunKey('Çavdar')],
+    [normalizeUrunKey('Tritikale (yem)')]: [normalizeUrunKey('Tritikale')],
+    [normalizeUrunKey('Mısır (dane)')]: [normalizeUrunKey('Mısır (Dane/Silajlık)')],
+    [normalizeUrunKey('Silajlık Mısır')]: [normalizeUrunKey('Mısır (Dane/Silajlık)')]
+  },
+  'İyi Tarım': {
+    [normalizeUrunKey('Pamuk (kütlü)')]: [normalizeUrunKey('Pamuk (tohumluk hariç)')],
+    [normalizeUrunKey('Patates')]: [normalizeUrunKey('Patates (tohumluk hariç)')],
+    [normalizeUrunKey('Soğan (kuru)')]: [normalizeUrunKey('Soğan')]
+  }
 } as const;
 
-const ORGANIK_IYI_TARIM_TUM_URUN_SET: Set<string> = (() => {
+const getUrunKeyAdaylari = (urunAdi: string, destekAdi?: OrganikIyiTarimDestekAdi): string[] => {
+  const base = normalizeUrunKey(urunAdi);
+  const candidates = new Set<string>();
+
+  if (base) candidates.add(base);
+
+  // Parantez içlerini kaldır: "Pamuk (kütlü)" -> "Pamuk" gibi.
+  const noParen = base.replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  if (noParen) candidates.add(noParen);
+
+  // Destek bazlı alias'lar
+  if (destekAdi) {
+    const aliases = ORGANIK_IYI_TARIM_URUN_ALIAS[destekAdi]?.[base] || [];
+    aliases.forEach((a) => candidates.add(a));
+    const aliasesNoParen = ORGANIK_IYI_TARIM_URUN_ALIAS[destekAdi]?.[noParen] || [];
+    aliasesNoParen.forEach((a) => candidates.add(a));
+  }
+
+  return Array.from(candidates);
+};
+
+const setHasUrun = (izinliSet: Set<string>, urunAdi: string, destekAdi?: OrganikIyiTarimDestekAdi): boolean => {
+  const keys = getUrunKeyAdaylari(urunAdi, destekAdi);
+  return keys.some((k) => izinliSet.has(k));
+};
+
+const ORGANIK_TARIM_GRUP_URUN_SET: Record<OrganikIyiTarimUrunGrubu, Set<string>> = {
+  birinci_kategori: new Set(parseKategoriUrunleri(ORGANIK_TARIM_GRUP_URUN_METIN.birinci_kategori).map(normalizeUrunKey)),
+  ikinci_kategori: new Set(parseKategoriUrunleri(ORGANIK_TARIM_GRUP_URUN_METIN.ikinci_kategori).map(normalizeUrunKey)),
+  ucuncu_kategori: new Set(parseKategoriUrunleri(ORGANIK_TARIM_GRUP_URUN_METIN.ucuncu_kategori).map(normalizeUrunKey))
+} as const;
+
+const IYI_TARIM_GRUP_URUN_SET: Record<OrganikIyiTarimUrunGrubu, Set<string>> = {
+  birinci_kategori: new Set(parseKategoriUrunleri(IYI_TARIM_GRUP_URUN_METIN.birinci_kategori).map(normalizeUrunKey)),
+  ikinci_kategori: new Set(parseKategoriUrunleri(IYI_TARIM_GRUP_URUN_METIN.ikinci_kategori).map(normalizeUrunKey)),
+  ucuncu_kategori: new Set(parseKategoriUrunleri(IYI_TARIM_GRUP_URUN_METIN.ucuncu_kategori).map(normalizeUrunKey))
+} as const;
+
+const ORGANIK_TARIM_TUM_URUN_SET: Set<string> = (() => {
   const s = new Set<string>();
-  ORGANIK_IYI_TARIM_KATEGORI_URUN_SET.birinci_kategori.forEach((v) => s.add(v));
-  ORGANIK_IYI_TARIM_KATEGORI_URUN_SET.ikinci_kategori.forEach((v) => s.add(v));
-  ORGANIK_IYI_TARIM_KATEGORI_URUN_SET.ucuncu_kategori.forEach((v) => s.add(v));
+  ORGANIK_TARIM_GRUP_URUN_SET.birinci_kategori.forEach((v) => s.add(v));
+  ORGANIK_TARIM_GRUP_URUN_SET.ikinci_kategori.forEach((v) => s.add(v));
+  ORGANIK_TARIM_GRUP_URUN_SET.ucuncu_kategori.forEach((v) => s.add(v));
+  return s;
+})();
+
+const IYI_TARIM_TUM_URUN_SET: Set<string> = (() => {
+  const s = new Set<string>();
+  IYI_TARIM_GRUP_URUN_SET.birinci_kategori.forEach((v) => s.add(v));
+  IYI_TARIM_GRUP_URUN_SET.ikinci_kategori.forEach((v) => s.add(v));
+  IYI_TARIM_GRUP_URUN_SET.ucuncu_kategori.forEach((v) => s.add(v));
   return s;
 })();
 
@@ -621,6 +694,8 @@ export default function HavzaBazliDesteklemeModeliPage() {
   const [organikModalKategori, setOrganikModalKategori] = useState('');
   const [iyiTarimModalGoster, setIyiTarimModalGoster] = useState(false);
   const [iyiTarimModalKategori, setIyiTarimModalKategori] = useState('');
+  const [organikListeModalGoster, setOrganikListeModalGoster] = useState(false);
+  const [iyiTarimListeModalGoster, setIyiTarimListeModalGoster] = useState(false);
   const [uyariModalGoster, setUyariModalGoster] = useState(false);
   const [uyariModalBaslik, setUyariModalBaslik] = useState('');
   const [uyariModalMetin, setUyariModalMetin] = useState('');
@@ -688,15 +763,22 @@ export default function HavzaBazliDesteklemeModeliPage() {
     return key === 'diğer ürünler' || key === 'diger urunler';
   };
 
+  const getOrganikIyiTarimIzinliSet = (
+    destekAdi: 'Organik Tarım' | 'İyi Tarım',
+    kategori: OrganikIyiTarimUrunGrubu
+  ): Set<string> => {
+    return destekAdi === 'Organik Tarım' ? ORGANIK_TARIM_GRUP_URUN_SET[kategori] : IYI_TARIM_GRUP_URUN_SET[kategori];
+  };
+
   const kategoriUrunUyumluMu = (
     urunAdi: string,
-    kategori: 'birinci_kategori' | 'ikinci_kategori' | 'ucuncu_kategori',
+    kategori: OrganikIyiTarimUrunGrubu,
     destekAdi: 'Organik Tarım' | 'İyi Tarım'
   ): boolean => {
     if (!urunAdi || urunDigerMi(urunAdi)) return true;
 
-    const izinliSet = ORGANIK_IYI_TARIM_KATEGORI_URUN_SET[kategori];
-    const uyumluMu = izinliSet.has(normalizeUrunKey(urunAdi));
+    const izinliSet = getOrganikIyiTarimIzinliSet(destekAdi, kategori);
+    const uyumluMu = setHasUrun(izinliSet, urunAdi, destekAdi);
     if (uyumluMu) return true;
 
     const kategoriEtiketi =
@@ -717,14 +799,35 @@ export default function HavzaBazliDesteklemeModeliPage() {
     if (!urunAdi) return false;
     if (urunDigerMi(urunAdi)) return true;
 
-    const urunKey = normalizeUrunKey(urunAdi);
-    if (ORGANIK_IYI_TARIM_TUM_URUN_SET.has(urunKey)) return true;
+    const tumSet = destekAdi === 'Organik Tarım' ? ORGANIK_TARIM_TUM_URUN_SET : IYI_TARIM_TUM_URUN_SET;
+    if (setHasUrun(tumSet, urunAdi, destekAdi)) return true;
 
     gosterUyariModal(
       'Uygun ürün seçiniz',
       `${destekAdi} desteği için seçtiğiniz ürün destek listesinde yer almıyor:\n\n- ${urunAdi}\n\nLütfen Organik/İyi Tarım desteği hesaplamak istediğiniz ürünü destek kapsamındaki ürünlerden seçiniz.\nNot: "Diğer Ürünler" seçiliyse bu kontrol yapılmaz.`
     );
     return false;
+  };
+
+  const renderDestekUrunGruplari = (metin: Record<OrganikIyiTarimUrunGrubu, string>) => {
+    const entries: Array<{ key: OrganikIyiTarimUrunGrubu; label: string }> = [
+      { key: 'birinci_kategori', label: '1. Grup Ürünler' },
+      { key: 'ikinci_kategori', label: '2. Grup Ürünler' },
+      { key: 'ucuncu_kategori', label: '3. Grup Ürünler' }
+    ];
+
+    return (
+      <div style={{ display: 'grid', gap: '14px' }}>
+        {entries.map(({ key, label }) => (
+          <div key={key} style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
+            <div style={{ padding: '10px 12px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+              <div style={{ fontWeight: 700, color: '#0f172a' }}>{label}</div>
+            </div>
+            <div style={{ padding: '12px', fontSize: '14px', lineHeight: '1.6', color: '#334155' }}>{metin[key]}</div>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   const tohumUrunUyumluMu = (
@@ -1182,6 +1285,32 @@ export default function HavzaBazliDesteklemeModeliPage() {
                       }
                     />
                     Organik
+                    <button
+                      type="button"
+                      aria-label="Organik tarım desteklenen ürün listesi"
+                      title="Organik tarım desteklenen ürün listesi"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOrganikListeModalGoster(true);
+                      }}
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '999px',
+                        border: '1px solid #cbd5e1',
+                        background: '#ffffff',
+                        color: '#0f172a',
+                        fontSize: '12px',
+                        lineHeight: '16px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      ?
+                    </button>
                   </label>
                   <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px', whiteSpace: 'nowrap' }}>
                     <input
@@ -1192,6 +1321,32 @@ export default function HavzaBazliDesteklemeModeliPage() {
                       }
                     />
                     İyi Tarım
+                    <button
+                      type="button"
+                      aria-label="İyi tarım uygulamaları desteklenen ürün listesi"
+                      title="İyi tarım uygulamaları desteklenen ürün listesi"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIyiTarimListeModalGoster(true);
+                      }}
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '999px',
+                        border: '1px solid #cbd5e1',
+                        background: '#ffffff',
+                        color: '#0f172a',
+                        fontSize: '12px',
+                        lineHeight: '16px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      ?
+                    </button>
                   </label>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', width: '100%' }}>
                     <label style={{ display: 'flex', alignItems: 'center', fontSize: '11px', gap: '4px', whiteSpace: 'nowrap' }}>
@@ -1875,15 +2030,80 @@ export default function HavzaBazliDesteklemeModeliPage() {
                 <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
                   <div style={{ padding: '16px', fontSize: '14px', lineHeight: '1.6', color: '#374151' }}>
                     {organikModalKategori === 'birinci_kategori' && 
-                      ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.birinci_kategori
+                      ORGANIK_TARIM_GRUP_URUN_METIN.birinci_kategori
                     }
                     {organikModalKategori === 'ikinci_kategori' && 
-                      ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.ikinci_kategori
+                      ORGANIK_TARIM_GRUP_URUN_METIN.ikinci_kategori
                     }
                     {organikModalKategori === 'ucuncu_kategori' && 
-                      ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.ucuncu_kategori
+                      ORGANIK_TARIM_GRUP_URUN_METIN.ucuncu_kategori
                     }
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Organik Tarım Ürün Grupları (Hızlı Liste) */}
+          {organikListeModalGoster && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                zIndex: 9999,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                backdropFilter: 'blur(4px)'
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '16px',
+                  padding: '24px',
+                  maxWidth: '900px',
+                  width: '100%',
+                  maxHeight: '85vh',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '20px',
+                    borderBottom: '1px solid #e2e8f0',
+                    paddingBottom: '16px'
+                  }}
+                >
+                  <div>
+                    <h3 style={{ margin: 0, color: '#1e293b', fontSize: '1.25rem', fontWeight: '600' }}>
+                      Organik Tarım Desteği — Ürün Grupları
+                    </h3>
+                    <span style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                      Destek kapsamındaki ürünleri 1/2/3 gruba göre inceleyin
+                    </span>
+                  </div>
+                  <Button
+                    className="secondary"
+                    onClick={() => setOrganikListeModalGoster(false)}
+                    style={{ minWidth: '40px', padding: '8px' }}
+                  >
+                    ✕
+                  </Button>
+                </div>
+                <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
+                  <div style={{ padding: '4px 4px 16px' }}>{renderDestekUrunGruplari(ORGANIK_TARIM_GRUP_URUN_METIN)}</div>
                 </div>
               </div>
             </div>
@@ -2006,15 +2226,80 @@ export default function HavzaBazliDesteklemeModeliPage() {
                 <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
                   <div style={{ padding: '16px', fontSize: '14px', lineHeight: '1.6', color: '#374151' }}>
                     {iyiTarimModalKategori === 'birinci_kategori' && 
-                      ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.birinci_kategori
+                      IYI_TARIM_GRUP_URUN_METIN.birinci_kategori
                     }
                     {iyiTarimModalKategori === 'ikinci_kategori' && 
-                      ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.ikinci_kategori
+                      IYI_TARIM_GRUP_URUN_METIN.ikinci_kategori
                     }
                     {iyiTarimModalKategori === 'ucuncu_kategori' && 
-                      ORGANIK_IYI_TARIM_KATEGORI_URUN_METIN.ucuncu_kategori
+                      IYI_TARIM_GRUP_URUN_METIN.ucuncu_kategori
                     }
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* İyi Tarım Ürün Grupları (Hızlı Liste) */}
+          {iyiTarimListeModalGoster && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                zIndex: 9999,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                backdropFilter: 'blur(4px)'
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '16px',
+                  padding: '24px',
+                  maxWidth: '900px',
+                  width: '100%',
+                  maxHeight: '85vh',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '20px',
+                    borderBottom: '1px solid #e2e8f0',
+                    paddingBottom: '16px'
+                  }}
+                >
+                  <div>
+                    <h3 style={{ margin: 0, color: '#1e293b', fontSize: '1.25rem', fontWeight: '600' }}>
+                      İyi Tarım Uygulamaları Desteği — Ürün Grupları
+                    </h3>
+                    <span style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                      Destek kapsamındaki ürünleri 1/2/3 gruba göre inceleyin
+                    </span>
+                  </div>
+                  <Button
+                    className="secondary"
+                    onClick={() => setIyiTarimListeModalGoster(false)}
+                    style={{ minWidth: '40px', padding: '8px' }}
+                  >
+                    ✕
+                  </Button>
+                </div>
+                <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
+                  <div style={{ padding: '4px 4px 16px' }}>{renderDestekUrunGruplari(IYI_TARIM_GRUP_URUN_METIN)}</div>
                 </div>
               </div>
             </div>

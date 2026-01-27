@@ -203,7 +203,7 @@ fi
 
 # Next.js'i geliştirme modunda başlat
 echo -e "${YELLOW}  🚀 Next.js dev server başlatılıyor...${NC}"
-PORT=3000 npm run dev &
+HOST=0.0.0.0 PORT=3000 npm run dev &
 NEXTJS_PID=$!
 
 # Next.js sağlık kontrolü
