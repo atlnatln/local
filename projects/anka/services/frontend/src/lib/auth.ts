@@ -15,13 +15,12 @@ export interface TokenPair {
   refresh: string;
 }
 
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
 export interface LoginResponse extends TokenPair {
   user: User;
+}
+
+export interface GoogleLoginRequest {
+  id_token: string;
 }
 
 export interface User {
@@ -46,9 +45,14 @@ export interface User {
 }
 
 /**
- * Save JWT tokens to localStorage
+ * Save JWT tokens to localStorage and cookies
  */
 export function saveTokens(tokens: TokenPair): void {
+  // Set cookies for server-side access
+  if (typeof document !== 'undefined') {
+    document.cookie = `anka_access_token=${tokens.access}; path=/; max-age=86400`
+    document.cookie = `anka_refresh_token=${tokens.refresh}; path=/; max-age=604800`
+  }
   const now = new Date();
   const expiresAt = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
 
@@ -93,14 +97,14 @@ export function clearTokens(): void {
   
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
-  localStorage.removeItem(TOKEN_EXPIRES_KEY);
+  localStorage.removeItem(TOKEN_EXPIRES_KEY);  
 }
 
 /**
- * Login user with username and password
+ * Login user with Google ID token (Google-only MVP)
  */
-export async function login(credentials: LoginRequest): Promise<LoginResponse> {
-  const response = await post<LoginResponse>('/auth/login/', credentials);
+export async function loginWithGoogleIdToken(idToken: string): Promise<LoginResponse> {
+  const response = await post<LoginResponse>('/auth/google/', { id_token: idToken } satisfies GoogleLoginRequest);
   saveTokens({
     access: response.access,
     refresh: response.refresh,
@@ -131,17 +135,17 @@ export async function refreshAccessToken(): Promise<string> {
 /**
  * Logout user
  */
-export async function logout(): Promise<void> {
-  try {
-    const refreshToken = getRefreshToken();
-    if (refreshToken) {
-      await post('/auth/logout/', { refresh: refreshToken });
-    }
-  } catch (error) {
-    // Silently fail - clear tokens anyway
-    console.error('Logout request failed:', error);
-  } finally {
-    clearTokens();
+export function logout(): void {
+  if (typeof window === 'undefined') return;
+  
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
+  localStorage.removeItem(TOKEN_EXPIRES_KEY);
+  
+  // Clear cookies
+  if (typeof document !== 'undefined') {
+    document.cookie = 'anka_access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    document.cookie = 'anka_refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
   }
 }
 
@@ -158,25 +162,6 @@ export async function getCurrentUser(): Promise<User> {
 export function isAuthenticated(): boolean {
   const token = getAccessToken();
   return !!token && !isTokenExpired();
-}
-
-/**
- * Register new user
- */
-export async function register(userData: {
-  username: string;
-  email: string;
-  password: string;
-  password2?: string;
-  first_name?: string;
-  last_name?: string;
-}): Promise<User> {
-  // Ensure password2 is set (API expects both password and password2)
-  const registerData = {
-    ...userData,
-    password2: userData.password2 || userData.password,
-  };
-  return post<User>('/auth/register/', registerData);
 }
 
 /**

@@ -23,6 +23,7 @@ django-redis>=6.0,<7.0
 # Security & Auth
 django-cors-headers>=4.9,<5.0
 iyzipay>=1.0.45
+google-auth>=2.0,<3.0
 
 # Serialization
 pydantic>=2.12,<3.0

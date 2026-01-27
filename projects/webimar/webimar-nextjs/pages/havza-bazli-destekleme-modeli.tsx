@@ -455,6 +455,13 @@ const YENI_DESTEK_KAYNAK_PDF_URL =
 const DESTEKLEME_TEBLIGI_PDF_URL =
   'https://www.tarimorman.gov.tr/BUGEM/Belgeler/Tar%C4%B1m%20Havzalar%C4%B1/2024-39%20Bitkisel%20%C3%9Cretime%20Y%C3%B6nelik%20Desteklemeler%20ile%20Di%C4%9Fer%20Baz%C4%B1%20Tar%C4%B1msal%20Desteklemelere%20%C3%96deme%20Yap%C4%B1lmas%C4%B1na%20Dair%20Tebli%C4%9F%20(Tebli%C4%9F%20No%202024-39).pdf';
 
+// Ek kaynaklar
+const HAVZA_2026_URUN_DESENI_PDF_URL =
+  'https://www.tarimorman.gov.tr/BUGEM/Belgeler/Tar%C4%B1m%20Havzalar%C4%B1/2025%20Y%C4%B1l%C4%B1%20Planlamaya%20Konu%20Havza%20%C3%9Cr%C3%BCn%20Deseni%20Listesi.pdf';
+
+const URETIM_2026_DESTEK_BIRIM_FIATLARI_PDF_URL =
+  'https://www.tarimorman.gov.tr/BUGEM/Belgeler/Tar%C4%B1m%20Havzalar%C4%B1/2026%20Y%C4%B1l%C4%B1%20Destekleme%20Birim%20Fiyatlar%C4%B1.pdf';
+
 const parseOrgutListesiMarkdown = (md: string): TarimsalOrgut[] => {
   const lines = md.split(/\r?\n/).map((l) => l.trim());
   const rows: TarimsalOrgut[] = [];
@@ -2017,11 +2024,38 @@ export default function HavzaBazliDesteklemeModeliPage() {
           <FormSection>
             <SectionTitle>❓ Sorularla Yeni Destek Modeli (2026)</SectionTitle>
             <div style={{ fontSize: '14px', color: '#374151', lineHeight: '1.6' }}>
-              Kaynak:
-              {' '}
-              <a href={YENI_DESTEK_KAYNAK_PDF_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', fontWeight: 600 }}>
-                Sorularla Yeni Destek Modeli - 2026 (PDF)
-              </a>
+              <strong>Kaynaklar:</strong>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '8px' }}>
+                <a
+                  href={YENI_DESTEK_KAYNAK_PDF_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Sorularla Yeni Destek Modeli - 2026 (PDF)"
+                  style={{ color: '#2563eb', fontWeight: 600, flex: '1 1 220px', minWidth: 0 }}
+                >
+                  Sorularla Yeni Destek Modeli - 2026 (PDF)
+                </a>
+
+                <a
+                  href={HAVZA_2026_URUN_DESENI_PDF_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="2026 bitkisel üretim planlanması havza ürün deseni listesi (PDF)"
+                  style={{ color: '#2563eb', fontWeight: 600, flex: '1 1 220px', minWidth: 0 }}
+                >
+                  2026 bitkisel üretim planlanması havza ürün deseni listesi (PDF)
+                </a>
+
+                <a
+                  href={URETIM_2026_DESTEK_BIRIM_FIATLARI_PDF_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="2026 üretim yılı bitkisel üretim destekleme birim fiyatları (PDF)"
+                  style={{ color: '#2563eb', fontWeight: 600, flex: '1 1 220px', minWidth: 0 }}
+                >
+                  2026 üretim yılı bitkisel üretim destekleme birim fiyatları (PDF)
+                </a>
+              </div>
             </div>
 
             <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>

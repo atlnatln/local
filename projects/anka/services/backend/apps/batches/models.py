@@ -16,10 +16,17 @@ class Batch(models.Model):
     """
     
     STATUS_CHOICES = (
+        ('CREATED', 'Created'),
+        ('COLLECTING_IDS', 'Collecting IDs'),
+        ('FILTERING', 'Filtering'),
+        ('ENRICHING_CONTACTS', 'Enriching Contacts'),
+        ('READY', 'Ready'),
+        ('PARTIAL', 'Partial'),
+        ('FAILED', 'Failed'),
+        # Legacy/Fallback
         ('pending', 'Pending'),
         ('processing', 'Processing'),
         ('completed', 'Completed'),
-        ('failed', 'Failed'),
         ('cancelled', 'Cancelled'),
     )
     
@@ -54,12 +61,19 @@ class Batch(models.Model):
     processed_records = models.PositiveIntegerField(default=0)
     error_records = models.PositiveIntegerField(default=0)
     
+    # Audit Metrics
+    ids_collected = models.PositiveIntegerField(default=0)
+    ids_verified = models.PositiveIntegerField(default=0)
+    contacts_enriched = models.PositiveIntegerField(default=0)
+    skipped_404 = models.PositiveIntegerField(default=0)
+    aborted_reason = models.CharField(max_length=255, blank=True)
+
     # Pricing & Credits
     record_count_estimate = models.PositiveIntegerField(default=0)
     estimated_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
     # Status & Timeline
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='CREATED', db_index=True)
     
     # File References
     csv_url = models.URLField(blank=True, null=True)

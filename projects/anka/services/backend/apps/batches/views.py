@@ -19,6 +19,7 @@ from apps.accounts.models import OrganizationMember
 from apps.batches.models import Batch, BatchItem
 from apps.batches.permissions import IsOrganizationMember
 from apps.batches.serializers import BatchItemSerializer, BatchSerializer
+from apps.batches.tasks import process_batch_task
 from apps.ledger.models import CreditPackage, LedgerEntry
 
 logger = logging.getLogger(__name__)
@@ -102,6 +103,9 @@ class BatchViewSet(viewsets.ModelViewSet):
                     raise ValidationError(
                         {"detail": "Ledger kaydı oluşturulurken constraint violation (bu batch zaten işlenmiş olabilir)."}
                     )
+        
+        # Trigger processing task
+        transaction.on_commit(lambda: process_batch_task.delay(batch.id))
 
     @action(detail=True, methods=["get"], url_path="items")
     def items(self, request, pk=None):

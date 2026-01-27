@@ -7,8 +7,21 @@ django.setup()
 
 User = get_user_model()
 username = 'testuser'
-password = 'testpass123'
 email = 'test@example.com'
+
+# Secure password generation
+import secrets
+import string
+def generate_strong_password(length=32):
+    alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
+    return ''.join(secrets.choice(alphabet) for i in range(length))
+
+password = os.environ.get('TEST_USER_PASSWORD')
+if not password:
+    password = generate_strong_password()
+    print(f"INFO: Generated random secure password for {username}: {password}")
+else:
+    print(f"INFO: Using provided TEST_USER_PASSWORD for {username}")
 
 if not User.objects.filter(username=username).exists():
     user = User.objects.create_user(username=username, email=email, password=password)

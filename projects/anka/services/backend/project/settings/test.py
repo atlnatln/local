@@ -7,6 +7,12 @@ from .base import *
 
 DEBUG = True
 
+# Allow test-only login helper endpoint (Playwright/e2e)
+ANKA_ALLOW_TEST_LOGIN = True
+
+# Dummy Google client id for unit tests (verification is mocked)
+GOOGLE_OIDC_CLIENT_ID = os.environ.get('GOOGLE_OIDC_CLIENT_ID', 'test-google-client-id')
+
 # Database configuration - support both SQLite (default) and PostgreSQL (via DATABASE_URL)
 DB_URL = os.environ.get('DATABASE_URL')
 if DB_URL:

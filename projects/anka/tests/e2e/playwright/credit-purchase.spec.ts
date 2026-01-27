@@ -1,12 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { seedJwtAuth } from './helpers/auth';
 
 test.describe('Credit Purchase', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('input[name="username"]', 'testuser');
-    await page.fill('input[name="password"]', 'testpass123');
-    await page.click('button[type="submit"]');
-    await expect(page).toHaveURL(/\/dashboard/);
+    await seedJwtAuth(page);
   });
 
   test('should navigate to checkout page', async ({ page }) => {

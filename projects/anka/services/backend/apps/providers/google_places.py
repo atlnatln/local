@@ -1,0 +1,108 @@
+import requests
+from django.conf import settings
+import logging
+import time
+from requests.exceptions import HTTPError, RequestException
+
+logger = logging.getLogger(__name__)
+
+class GooglePlacesClient:
+    BASE_URL = "https://places.googleapis.com/v1"
+
+    def __init__(self, api_key=None):
+        self.api_key = api_key or getattr(settings, 'GOOGLE_MAPS_API_KEY', '')
+        if not self.api_key:
+            logger.warning("GOOGLE_MAPS_API_KEY is not set.")
+
+    def _get_headers(self, field_mask: str):
+        return {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": self.api_key,
+            "X-Goog-FieldMask": field_mask
+        }
+
+    def _make_request(self, method, url, headers, json=None, retry_count=3):
+        """
+        Robust request with retry for 429 (Rate Limit) and 5xx (Server Error).
+        """
+        for attempt in range(retry_count):
+            try:
+                if method == 'POST':
+                    response = requests.post(url, headers=headers, json=json, timeout=10)
+                else:
+                    response = requests.get(url, headers=headers, timeout=10)
+                
+                # Check for 429 specifically
+                if response.status_code == 429:
+                    wait_time = (2 ** attempt) + 0.5 # Exponential backoff
+                    logger.warning(f"Rate limited (429). Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                    continue
+                    
+                response.raise_for_status()
+                return response.json()
+                
+            except HTTPError as e:
+                # 404 is "Business Logic" failure (Place gone), not system failure.
+                if e.response.status_code == 404:
+                    logger.info(f"Place not found (404): {url}")
+                    return None
+                    
+                # 403/400 are likely config/quota errors -> Don't retry, fail fast
+                if e.response.status_code in (400, 403):
+                    logger.error(f"Config Error {e.response.status_code}: {e.response.text}")
+                    raise e
+                
+                # 5xx -> Retry
+                if 500 <= e.response.status_code < 600:
+                    wait_time = (2 ** attempt) + 0.5
+                    logger.warning(f"Server Error {e.response.status_code}. Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                    continue
+                    
+                raise e
+            except RequestException as e:
+                # Network errors -> Retry
+                logger.warning(f"Network Error: {e}. Retrying...")
+                time.sleep(1)
+                continue
+                
+        # If we get here, retries exhausted
+        raise Exception(f"Max retries exceeded for {url}")
+
+    def text_search_ids_only(self, query: str, page_token: str = None):
+        """
+        Stage 1: Text Search (Free/Low Cost)
+        Returns: places.id, places.name
+        """
+        url = f"{self.BASE_URL}/places:searchText"
+        payload = {
+            "textQuery": query
+        }
+        if page_token:
+            payload["pageToken"] = page_token
+            
+        # Field mask for generic IDs and basic name
+        field_mask = "places.id,places.name,nextPageToken"
+        
+        return self._make_request('POST', url, self._get_headers(field_mask), json=payload)
+
+    def get_place_details_pro(self, place_id: str):
+        """
+        Stage 2: Place Details Pro
+        Returns: displayName, formattedAddress
+        """
+        url = f"{self.BASE_URL}/places/{place_id}"
+        field_mask = "displayName,formattedAddress"
+        
+        return self._make_request('GET', url, self._get_headers(field_mask))
+
+    def get_place_details_enterprise(self, place_id: str):
+        """
+        Stage 3: Place Details Enterprise (Contact Data)
+        Returns: websiteUri, nationalPhoneNumber
+        """
+        url = f"{self.BASE_URL}/places/{place_id}"
+        field_mask = "websiteUri,nationalPhoneNumber"
+        
+        return self._make_request('GET', url, self._get_headers(field_mask))

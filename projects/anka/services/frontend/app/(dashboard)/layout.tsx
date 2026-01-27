@@ -68,7 +68,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <NavLink href="/dashboard" label="Gösterge Paneli" />
           <NavLink href="/batch/new" label="Yeni Batch" />
           <NavLink href="/exports" label="İndirilmişler" />
-          <NavLink href="/disputes" label="İtirazlar" />
           <NavLink href="/checkout" label="Kredi Satın Al" />
         </nav>
 
@@ -92,21 +91,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
             {showUserMenu && (
               <div className="absolute bottom-full left-0 right-0 mb-2 rounded-lg border border-gray-200 bg-white shadow-lg z-10">
-                <Link
-                  href="/profile"
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg transition-colors"
-                >
-                  Profil
-                </Link>
-                <Link
-                  href="/settings"
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  Ayarlar
-                </Link>
                 <button
                   onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-lg transition-colors border-t border-gray-200"
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 >
                   Çıkış Yap
                 </button>

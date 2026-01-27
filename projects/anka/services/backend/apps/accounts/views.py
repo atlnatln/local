@@ -3,6 +3,9 @@ Views for authentication and user management.
 """
 
 import logging
+import uuid
+from django.conf import settings
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.db import transaction
 from rest_framework import status, viewsets
@@ -28,6 +31,203 @@ from .serializers import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+class GoogleLoginView(APIView):
+    """Google-only login endpoint (MVP) - POST /api/auth/google/
+
+    Request:
+        {"id_token": "<google_id_token>"}
+
+    Response:
+        Same shape as /login/: {access, refresh, user}
+    """
+
+    permission_classes = (AllowAny,)
+
+    @extend_schema(
+        request=inline_serializer(
+            name='GoogleLoginRequest',
+            fields={'id_token': serializers.CharField(required=True)},
+        ),
+        responses={
+            200: inline_serializer(
+                name='GoogleLoginResponse',
+                fields={
+                    'access': serializers.CharField(),
+                    'refresh': serializers.CharField(),
+                    'user': UserDetailSerializer(),
+                },
+            ),
+            401: inline_serializer(
+                name='GoogleLoginUnauthorized',
+                fields={'error': serializers.CharField()},
+            ),
+            500: inline_serializer(
+                name='GoogleLoginNotConfigured',
+                fields={'error': serializers.CharField()},
+            ),
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        google_client_id = getattr(settings, 'GOOGLE_OIDC_CLIENT_ID', None)
+        if not google_client_id:
+            return Response(
+                {'error': 'Google login yapılandırılmamış.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        raw_id_token = request.data.get('id_token')
+        if not raw_id_token:
+            return Response(
+                {'error': 'id_token gereklidir.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            from google.oauth2 import id_token as google_id_token
+            from google.auth.transport import requests as google_requests
+
+            payload = google_id_token.verify_oauth2_token(
+                raw_id_token,
+                google_requests.Request(),
+                google_client_id,
+            )
+        except Exception as e:
+            logger.warning(f"Google token verification failed: {str(e)}")
+            return Response(
+                {'error': 'Geçersiz Google oturum anahtarı.'},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        email = payload.get('email')
+        email_verified = payload.get('email_verified')
+
+        if not email or email_verified is False:
+            return Response(
+                {'error': 'Doğrulanmış email bulunamadı.'},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        first_name = payload.get('given_name') or ''
+        last_name = payload.get('family_name') or ''
+
+        user, created = User.objects.get_or_create(
+            username=email,
+            defaults={
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+            },
+        )
+
+        # Ensure email stays in sync
+        if user.email != email:
+            user.email = email
+
+        # Fill names if missing
+        if not user.first_name and first_name:
+            user.first_name = first_name
+        if not user.last_name and last_name:
+            user.last_name = last_name
+
+        if created or user.has_usable_password():
+            # Google-only MVP: make sure password auth isn't accidentally used
+            user.set_unusable_password()
+
+        user.save()
+
+        # Ensure profile exists
+        UserProfile.objects.get_or_create(user=user)
+
+        # -------------------------------------------------------------
+        # Security & Organization Auto-Provisioning
+        # -------------------------------------------------------------
+        
+        # 1. Promote specific admin users
+        if email == 'akinatalan@gmail.com':
+            if not user.is_superuser or not user.is_staff:
+                user.is_superuser = True
+                user.is_staff = True
+                user.save()
+                logger.info(f"User {email} promoted to superuser/staff.")
+
+        # 2. Auto-create personal organization IF user has no memberships
+        if not OrganizationMember.objects.filter(user=user).exists():
+            with transaction.atomic():
+                org_name = f"{first_name} {last_name} Org".strip() or f"{email.split('@')[0]} Org"
+                
+                # Ensure unique name
+                base_name = org_name
+                counter = 1
+                while Organization.objects.filter(name=org_name).exists():
+                    org_name = f"{base_name} {counter}"
+                    counter += 1
+
+                # Generate unique slug
+                base_slug = slugify(org_name)
+                candidate_slug = base_slug
+                while Organization.objects.filter(slug=candidate_slug).exists():
+                    candidate_slug = f"{base_slug}-{uuid.uuid4().hex[:8]}"
+                
+                # Create Org
+                org = Organization.objects.create(
+                    name=org_name,
+                    email=email,
+                    slug=candidate_slug,
+                    description=f"Personal organization for {email}"
+                )
+
+                # Add Member as Owner
+                OrganizationMember.objects.create(
+                    organization=org,
+                    user=user,
+                    role='owner',
+                    can_create_batches=True,
+                    can_download_exports=True,
+                    can_manage_disputes=True,
+                    can_manage_team=True
+                )
+                logger.info(f"Auto-created organization '{org_name}' for user {email}")
+
+        refresh = RefreshToken.for_user(user)
+        return Response(
+            {
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+                'user': UserDetailSerializer(user).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class TestLoginView(APIView):
+    """Test-only helper: mint JWT for a known user (disabled by default)."""
+
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        if not getattr(settings, 'ANKA_ALLOW_TEST_LOGIN', False):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        username = request.data.get('username', 'testuser')
+        email = request.data.get('email', 'testuser@example.com')
+
+        user, _ = User.objects.get_or_create(
+            username=username,
+            defaults={'email': email, 'first_name': 'Test', 'last_name': 'User'},
+        )
+        UserProfile.objects.get_or_create(user=user)
+
+        refresh = RefreshToken.for_user(user)
+        return Response(
+            {
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+                'user': UserDetailSerializer(user).data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class LoginView(TokenObtainPairView):

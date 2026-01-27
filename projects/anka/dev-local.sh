@@ -60,6 +60,12 @@ else
     cp .env.example .env 2>/dev/null || echo -e "${YELLOW}⚠️  .env created (defaults)${NC}"
 fi
 
+# Load Environment Variables into shell
+set -a
+source .env
+set +a
+echo -e "${GREEN}✓ Environment variables loaded from .env${NC}"
+
 # Port temizliği
 echo -e "\n${YELLOW}🔍 Port temizliği (8000, 3000, 3001, 5555)...${NC}"
 for port in 8000 3000 3001 5555; do
@@ -130,7 +136,11 @@ fi
 
 echo -e "${YELLOW}  🚀 Next.js dev server başlatılıyor (port 3000)...${NC}"
 cd "$FRONTEND_DIR"
-PORT=3000 npm run dev > "${PROJECT_DIR}/nextjs.log" 2>&1 &
+PORT=3000 \
+NEXT_PUBLIC_GOOGLE_CLIENT_ID="${NEXT_PUBLIC_GOOGLE_CLIENT_ID}" \
+NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL}" \
+NEXT_PUBLIC_API_BASE_URL="${NEXT_PUBLIC_API_BASE_URL}" \
+npm run dev > "${PROJECT_DIR}/nextjs.log" 2>&1 &
 NEXTJS_PID=$!
 
 sleep 5

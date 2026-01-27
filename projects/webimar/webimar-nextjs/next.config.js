@@ -20,6 +20,9 @@ const nextConfig = {
   generateEtags: false,
   poweredByHeader: false,
   compress: true,
+  compiler: {
+    styledComponents: true,
+  },
   experimental: {
     // Disable optimizeCss to avoid potential hydration issues
     // optimizeCss: true,

@@ -23,8 +23,41 @@ interface Batch {
   created_at: string;
 }
 
+
+const getBatchStatusText = (status: string) => {
+  switch (status) {
+    case 'CREATED': return 'Oluşturuldu';
+    case 'COLLECTING_IDS': return 'Havuz oluşturuluyor...';
+    case 'FILTERING': return 'Sonuçlar doğrulanıyor...';
+    case 'ENRICHING_CONTACTS': return 'İletişim bilgileri ekleniyor...';
+    case 'READY': return 'Hazır';
+    case 'PARTIAL': return 'Kısmen Tamamlandı';
+    case 'FAILED': return 'Hata';
+    case 'completed': return 'Tamamlandı'; // Legacy
+    case 'processing': return 'İşleniyor'; // Legacy
+    default: return status;
+  }
+};
+
+const getBatchStatusColor = (status: string) => {
+  switch (status) {
+    case 'READY':
+    case 'completed':
+      return 'bg-green-100 text-green-800';
+    case 'PARTIAL':
+      return 'bg-amber-100 text-amber-800';
+    case 'FAILED':
+      return 'bg-red-100 text-red-800';
+    case 'CREATED':
+      return 'bg-gray-100 text-gray-800';
+    default:
+      return 'bg-blue-100 text-blue-800';
+  }
+};
+
 export default function DashboardPage() {
   const [credits, setCredits] = useState<CreditPackage[]>([]);
+
   const [batches, setBatches] = useState<Batch[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -115,21 +148,19 @@ export default function DashboardPage() {
              ) : (
                 <div className="space-y-4">
                   {batches.slice(0, 5).map(batch => (
-                    <div key={batch.id} className="flex items-center justify-between border-b pb-2">
-                       <div>
-                          <p className="font-medium">{batch.city} - {batch.sector}</p>
-                          <p className="text-sm text-gray-500">{new Date(batch.created_at).toLocaleDateString('tr-TR')}</p>
-                       </div>
-                       <div className="flex items-center gap-4">
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            batch.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            batch.status === 'failed' ? 'bg-red-100 text-red-800' :
-                            'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {batch.status}
-                          </span>
-                       </div>
-                    </div>
+                    <Link key={batch.id} href={`/batch/${batch.id}`} className="block hover:bg-slate-50 transition-colors rounded p-2 -mx-2">
+                        <div className="flex items-center justify-between border-b border-transparent pb-1">
+                        <div>
+                            <p className="font-medium">{batch.city} - {batch.sector}</p>
+                            <p className="text-sm text-gray-500">{new Date(batch.created_at).toLocaleDateString('tr-TR')}</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <span className={`px-2 py-1 rounded text-xs ${getBatchStatusColor(batch.status)}`}>
+                                {getBatchStatusText(batch.status)}
+                            </span>
+                        </div>
+                        </div>
+                    </Link>
                   ))}
                 </div>
              )}

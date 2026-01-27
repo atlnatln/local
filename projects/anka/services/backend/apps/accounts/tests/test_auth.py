@@ -3,9 +3,11 @@ Tests for authentication and account management.
 """
 
 import pytest
+from unittest.mock import patch
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.models import Organization, OrganizationMember, UserProfile
 
@@ -53,111 +55,48 @@ def organization(db, user_with_profile):
     return org
 
 
-class TestLogin:
-    """Test login functionality"""
-    
-    def test_login_success(self, client, user_with_profile):
-        """Test successful login"""
-        response = client.post('/api/auth/login/', {
-            'username': 'testuser',
-            'password': 'TestPass123!'
-        })
-        
+class TestGoogleLogin:
+    """Test Google-only login functionality"""
+
+    @patch('google.oauth2.id_token.verify_oauth2_token')
+    def test_google_login_creates_user(self, mock_verify, client, db):
+        mock_verify.return_value = {
+            'email': 'newuser@example.com',
+            'email_verified': True,
+            'given_name': 'New',
+            'family_name': 'User',
+            'sub': 'google-sub-123',
+        }
+
+        response = client.post('/api/auth/google/', {'id_token': 'dummy'})
         assert response.status_code == status.HTTP_200_OK
         assert 'access' in response.data
         assert 'refresh' in response.data
         assert 'user' in response.data
-        assert response.data['user']['username'] == 'testuser'
-        assert response.data['user']['email'] == 'test@example.com'
-    
-    def test_login_invalid_credentials(self, client, user_with_profile):
-        """Test login with invalid credentials"""
-        response = client.post('/api/auth/login/', {
-            'username': 'testuser',
-            'password': 'wrongpassword'
-        })
-        
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    
-    def test_login_nonexistent_user(self, client):
-        """Test login with nonexistent user"""
-        response = client.post('/api/auth/login/', {
-            'username': 'nonexistent',
-            'password': 'TestPass123!'
-        })
-        
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    
-    def test_login_missing_password(self, client, user_with_profile):
-        """Test login without password"""
-        response = client.post('/api/auth/login/', {
-            'username': 'testuser',
-        })
-        
-        # Missing password returns 401 (invalid credentials) not 400
-        assert response.status_code in [status.HTTP_400_BAD_REQUEST, status.HTTP_401_UNAUTHORIZED]
+        assert response.data['user']['email'] == 'newuser@example.com'
 
-
-class TestRegister:
-    """Test user registration"""
-    
-    def test_register_success(self, client):
-        """Test successful registration"""
-        response = client.post('/api/auth/register/', {
-            'username': 'newuser',
-            'email': 'newuser@example.com',
-            'password': 'SecurePass123!',
-            'password2': 'SecurePass123!',
-            'first_name': 'John',
-            'last_name': 'Doe',
-        })
-        
-        assert response.status_code == status.HTTP_201_CREATED
-        assert response.data['username'] == 'newuser'
-        assert response.data['email'] == 'newuser@example.com'
-        assert response.data['first_name'] == 'John'
-        
-        # Verify user was created in DB
-        user = User.objects.get(username='newuser')
-        assert user.email == 'newuser@example.com'
-        
-        # Verify profile was created
+        user = User.objects.get(username='newuser@example.com')
+        assert user.has_usable_password() is False
         assert hasattr(user, 'profile')
-    
-    def test_register_password_mismatch(self, client):
-        """Test registration with mismatched passwords"""
-        response = client.post('/api/auth/register/', {
-            'username': 'newuser',
-            'email': 'newuser@example.com',
-            'password': 'SecurePass123!',
-            'password2': 'DifferentPass123!',
-        })
-        
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert 'password' in response.data
-    
-    def test_register_duplicate_email(self, client, user_with_profile):
-        """Test registration with duplicate email"""
-        response = client.post('/api/auth/register/', {
-            'username': 'newuser',
-            'email': 'test@example.com',  # Existing email
-            'password': 'SecurePass123!',
-            'password2': 'SecurePass123!',
-        })
-        
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert 'email' in response.data
-    
-    def test_register_weak_password(self, client):
-        """Test registration with weak password"""
-        response = client.post('/api/auth/register/', {
-            'username': 'newuser',
-            'email': 'newuser@example.com',
-            'password': '123',  # Too weak
-            'password2': '123',
-        })
-        
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    @patch('google.oauth2.id_token.verify_oauth2_token')
+    def test_google_login_invalid_token(self, mock_verify, client, db):
+        mock_verify.side_effect = ValueError('bad token')
+
+        response = client.post('/api/auth/google/', {'id_token': 'bad'})
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+class TestPasswordAuthRemoved:
+    """Ensure password-based auth endpoints are not exposed"""
+
+    def test_login_endpoint_removed(self, client):
+        response = client.post('/api/auth/login/', {'username': 'x', 'password': 'y'})
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_register_endpoint_removed(self, client):
+        response = client.post('/api/auth/register/', {'username': 'x'})
+        assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 class TestCurrentUser:
@@ -250,13 +189,7 @@ class TestRefreshToken:
     
     def test_refresh_token_success(self, client, user_with_profile):
         """Test successful token refresh"""
-        # First login to get tokens
-        login_response = client.post('/api/auth/login/', {
-            'username': 'testuser',
-            'password': 'TestPass123!'
-        })
-        
-        refresh_token = login_response.data['refresh']
+        refresh_token = str(RefreshToken.for_user(user_with_profile))
         
         # Now refresh
         response = client.post('/api/auth/refresh/', {
@@ -281,13 +214,8 @@ class TestLogout:
     def test_logout_success(self, client, user_with_profile):
         """Test successful logout"""
         client.force_authenticate(user=user_with_profile)
-        
-        login_response = client.post('/api/auth/login/', {
-            'username': 'testuser',
-            'password': 'TestPass123!'
-        })
-        
-        refresh_token = login_response.data['refresh']
+
+        refresh_token = str(RefreshToken.for_user(user_with_profile))
         
         response = client.post('/api/auth/logout/', {
             'refresh': refresh_token

@@ -1,20 +1,39 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export function middleware() {
-  // Since we use localStorage, auth checks happen on the client side
-  // via isAuthenticated() function in lib/auth.ts
-  // Middleware cannot access localStorage, so we allow all requests
-  // and let client-side logic handle authentication
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Public routes that don't require authentication
+  const publicRoutes = ['/login', '/', '/api']
+  const isPublicRoute = publicRoutes.some(route => 
+    pathname === route || pathname.startsWith(route + '/')
+  )
+
+  // Static and API routes
+  if (pathname.startsWith('/_next/') || 
+      pathname.startsWith('/api/') || 
+      pathname === '/favicon.ico') {
+    return NextResponse.next()
+  }
+
+  // For protected routes, redirect to login if not authenticated
+  if (!isPublicRoute) {
+    // Check for the token cookie
+    const accessToken = request.cookies.get('anka_access_token')
+    
+    if (!accessToken) {
+      const loginUrl = new URL('/login', request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+  }
+
   return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    // Match all paths except:
-    // - api routes
-    // - _next/static
-    // - _next/image
-    // - favicon.ico
-    '/((?!_next/static|_next/image|favicon.ico|api/).*)',
+    // Match all paths except static files and API routes
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }

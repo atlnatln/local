@@ -1,13 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { seedJwtAuth } from './helpers/auth';
 
 test.describe('Batch Creation Flow', () => {
   test.beforeEach(async ({ page }) => {
-    // Login before each test
-    await page.goto('/login');
-    await page.fill('input[name="username"]', 'testuser');
-    await page.fill('input[name="password"]', 'testpass123');
-    await page.click('button[type="submit"]');
-    await expect(page).toHaveURL(/\/dashboard/);
+    await seedJwtAuth(page);
   });
 
   test('should create a new batch with criteria', async ({ page }) => {

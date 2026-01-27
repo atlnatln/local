@@ -76,6 +76,7 @@ services:
       DJANGO_SETTINGS_MODULE: project.settings.dev
       DEBUG: "True"
       SECRET_KEY: ${SECRET_KEY:-dev-secret-key}
+      GOOGLE_OIDC_CLIENT_ID: ${GOOGLE_OIDC_CLIENT_ID}
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: ${DB_NAME:-anka}
@@ -171,6 +172,7 @@ services:
       NEXT_PUBLIC_API_URL: http://localhost:8100
       NEXT_PUBLIC_API_BASE_URL: http://localhost:8100/api
       NEXT_PUBLIC_ENVIRONMENT: development
+      NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
     ports:
       - "3100:3000"
     volumes:

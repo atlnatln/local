@@ -12,6 +12,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-change-in-pro
 
 DEBUG = False
 
+# Auth (MVP): Google-only login
+GOOGLE_OIDC_CLIENT_ID = os.environ.get('GOOGLE_OIDC_CLIENT_ID')
+
+# Test helpers (disabled by default; enabled in settings/test.py)
+ANKA_ALLOW_TEST_LOGIN = os.environ.get('ANKA_ALLOW_TEST_LOGIN', '0') == '1'
+
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [

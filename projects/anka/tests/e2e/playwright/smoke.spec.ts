@@ -1,22 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { seedJwtAuth } from './helpers/auth';
 
 test.describe('Smoke Tests', () => {
-  test('should load landing page', async ({ page }) => {
+  test('should redirect to login when unauthenticated', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/Anka/);
+    await expect(page).toHaveURL(/\/login/);
+    await expect(page.getByText('Giriş Yap')).toBeVisible();
   });
 
-  test('should allow login', async ({ page }) => {
-    await page.goto('/login');
-    
-    // Fill login form
-    await page.fill('input[name="username"]', 'testuser');
-    await page.fill('input[name="password"]', 'testpass123');
-    
-    // Submit
-    await page.click('button[type="submit"]');
-    
-    // Expect dashboard
+  test('should allow accessing dashboard with seeded JWT', async ({ page }) => {
+    await seedJwtAuth(page);
+    await page.goto('/dashboard');
     await expect(page).toHaveURL(/\/dashboard/);
     await expect(page.getByText('Dashboard')).toBeVisible();
   });

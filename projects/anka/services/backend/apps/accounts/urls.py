@@ -1,18 +1,17 @@
-"""
-URL configuration for accounts app.
-"""
+"""URL configuration for accounts app."""
 
+from django.conf import settings
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    LoginView,
-    RegisterView,
     LogoutView,
     CurrentUserView,
     ChangePasswordView,
     OrganizationViewSet,
     RefreshTokenView,
+    GoogleLoginView,
+    TestLoginView,
 )
 
 router = DefaultRouter()
@@ -20,8 +19,7 @@ router.register(r'organizations', OrganizationViewSet, basename='organizations')
 
 urlpatterns = [
     # Authentication endpoints
-    path('login/', LoginView.as_view(), name='login'),
-    path('register/', RegisterView.as_view(), name='register'),
+    path('google/', GoogleLoginView.as_view(), name='google-login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('refresh/', RefreshTokenView.as_view(), name='refresh'),
     path('me/', CurrentUserView.as_view(), name='current-user'),
@@ -30,3 +28,6 @@ urlpatterns = [
     # Organization routes
     path('', include(router.urls)),
 ]
+
+if getattr(settings, 'ANKA_ALLOW_TEST_LOGIN', False):
+    urlpatterns.insert(0, path('test-login/', TestLoginView.as_view(), name='test-login'))
