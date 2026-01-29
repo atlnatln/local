@@ -33,3 +33,11 @@
 # Test / tooling outputs
 **/test-results/**
 **/.playwright-mcp/**
+
+# Virtual environments created by tests or CI (do not commit)
+**/test_env/**
+**/*/test_env/**
+
+# Python virtualenvs
+**/venv/**
+**/.venv/**
