@@ -63,12 +63,18 @@ export default class MyDocument extends Document {
           <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
 
           {/* Fonts - Optimized */}
+          {/* Performance optimized Google Fonts */}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet"
+          <link 
+            rel="preload" 
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" 
+            as="style"
+            onLoad="this.onload=null;this.rel='stylesheet'"
           />
+          <noscript>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+          </noscript>
 
           {/* Performance optimizations */}
           <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -76,26 +82,44 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content="#D2691E" />
           <meta name="msapplication-TileColor" content="#8B4513" />
 
-          {/* Google Analytics 4 */}
+          {/* Google Analytics 4 - Performance Optimized */}
           {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
             <>
-              <script
-                async
-                src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
-              />
               <script
                 dangerouslySetInnerHTML={{
                   __html: `
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}
                     gtag('js', new Date());
-                    gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
-                      page_title: document.title,
-                      page_location: window.location.href,
-                      send_page_view: true,
-                      cookie_domain: 'tarimimar.com.tr',
-                      cookie_flags: 'SameSite=None;Secure'
+                    
+                    // Lazy load GTM script after page interaction
+                    function loadGTMScript() {
+                      if (window.gtmLoaded) return;
+                      window.gtmLoaded = true;
+                      
+                      const script = document.createElement('script');
+                      script.async = true;
+                      script.src = 'https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}';
+                      document.head.appendChild(script);
+                      
+                      script.onload = function() {
+                        gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
+                          page_title: document.title,
+                          page_location: window.location.href,
+                          send_page_view: true,
+                          cookie_domain: 'tarimimar.com.tr',
+                          cookie_flags: 'SameSite=None;Secure'
+                        });
+                      };
+                    }
+                    
+                    // Load GTM on first user interaction
+                    ['mousedown', 'touchstart', 'scroll'].forEach(event => {
+                      document.addEventListener(event, loadGTMScript, { once: true, passive: true });
                     });
+                    
+                    // Fallback: load after 3 seconds if no interaction
+                    setTimeout(loadGTMScript, 3000);
                   `,
                 }}
               />
@@ -142,8 +166,9 @@ export default class MyDocument extends Document {
           <link rel="preconnect" href="https://www.google-analytics.com" />
           <link rel="preconnect" href="https://www.googletagmanager.com" />
           
-          {/* Leaflet CSS - Global */}
-          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+          {/* Leaflet CSS - Local (Performance Optimized) */}
+          <link rel="preload" href="/leaflet.css" as="style" />
+          <link rel="stylesheet" href="/leaflet.css" />
         </Head>
         <body>
           <Main />

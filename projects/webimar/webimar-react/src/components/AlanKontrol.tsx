@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import 'leaflet/dist/leaflet.css';
+// Use local Leaflet CSS instead of CDN for better performance
+// import 'leaflet/dist/leaflet.css'; // Replaced with local CSS in index.html
 
 // Sub-components
 import ManuelTab from './AlanKontrol/ManuelTab';

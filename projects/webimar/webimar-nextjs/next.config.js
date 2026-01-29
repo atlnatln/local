@@ -20,13 +20,28 @@ const nextConfig = {
   generateEtags: false,
   poweredByHeader: false,
   compress: true,
+  
+  // Performance optimizations
+  swcMinify: true, // Use SWC instead of Terser for faster builds
+  modularizeImports: {
+    // Tree shake large libraries
+    'react-bootstrap': {
+      transform: 'react-bootstrap/{{member}}',
+    },
+    lodash: {
+      transform: 'lodash/{{member}}',
+    },
+  },
+  
   compiler: {
     styledComponents: true,
   },
   experimental: {
     // Disable optimizeCss to avoid potential hydration issues
     // optimizeCss: true,
-    scrollRestoration: true
+    scrollRestoration: true,
+    optimizeCss: true, // Enable CSS optimization
+    esmExternals: true,
   },
 
   async rewrites() {

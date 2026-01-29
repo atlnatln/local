@@ -523,7 +523,13 @@ def havza_bazli_destekleme_modeli(request):
             havzada_urun_deseni_var = True
             havza_eslesme_tipi: str | None = None
 
-            if havza_urun_listesi is not None and desteklenen_urunler_norm is not None:
+            # Nadas: havza ürün deseni kısıtına tabi değildir.
+            # Not: Temel destek katsayısı zaten URUN_KATEGORILERI içinde 0.3 olarak tanımlı.
+            if urun_norm == 'nadas':
+                havzada_urun_deseni_var = True
+                havza_eslesme_tipi = 'nadas_bypass'
+
+            if havza_eslesme_tipi != 'nadas_bypass' and havza_urun_listesi is not None and desteklenen_urunler_norm is not None:
                 if yem_bitkisi_mi(urun):
                     havzada_urun_deseni_var = any(
                         normalize_name(u) == normalize_name('Yem Bitkileri') for u in havza_urun_listesi
@@ -532,18 +538,28 @@ def havza_bazli_destekleme_modeli(request):
                 else:
                     havzada_urun_deseni_var = normalize_urun_name(urun) in desteklenen_urunler_norm
                     havza_eslesme_tipi = 'dogrudan_urun_adi' if havzada_urun_deseni_var else 'eslesme_yok'
-            else:
+            elif havza_eslesme_tipi != 'nadas_bypass':
                 havza_eslesme_tipi = 'il_ilce_bulunamadi' if havza_data else 'havza_verisi_yok'
 
-            if havza_urun_listesi is not None and not havzada_urun_deseni_var:
+            if havza_eslesme_tipi != 'nadas_bypass' and havza_urun_listesi is not None and not havzada_urun_deseni_var:
                 if urun not in desteklenmeyen_urunler:
                     desteklenmeyen_urunler.append(urun)
                 continue
             
             # Su kısıtı yasağı kontrolü
-            if su_kisiti_bolgesi and urun_norm in ['misir', 'patates']:
+            if su_kisiti_bolgesi and urun_norm == 'patates':
                 mesajlar.append(f"⚠️ {urun} su kısıtı bölgelerinde desteklenmiyor.")
                 continue
+
+            # Dane mısır: su kısıtı bölgesinde hesaplanır, ancak kullanıcıya uyarı notu gösterilir.
+            # Not: Damla sulama istisnasını sistemde teknik olarak doğrulayamadığımız için sadece bilgilendirme yapılır.
+            if su_kisiti_bolgesi and urun_norm == 'misir':
+                su_kisiti_misir_notu = (
+                    "⚠️ Tarımsal yeraltı sularının yetersiz seviyede ve su kısıtı olduğu belirlenen seçtiğiniz ilçede "
+                    "damla sulama ile sulanan alanlar hariç dane mısıra destekleme ödemesi yapılmaz."
+                )
+                if su_kisiti_misir_notu not in mesajlar:
+                    mesajlar.append(su_kisiti_misir_notu)
             
             # Ürün kategorisi ve katsayısı (normalize edilmiş isimle)
             katsayi = URUN_KATEGORILERI.get(urun, 1)  # Önce orijinal isimle dene

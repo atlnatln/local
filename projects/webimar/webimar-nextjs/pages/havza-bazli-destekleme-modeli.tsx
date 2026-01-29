@@ -353,7 +353,7 @@ const URUN_DROPDOWN_GRUPLARI: UrunDropdownGrup[] = [
   },
   {
     label: '1. Kategori',
-    urunler: ['Aspir', 'Mercimek', 'Nohut', 'Patates', 'Soğan (kuru)']
+    urunler: ['Aspir', 'Mercimek', 'Nohut', 'Patates', 'Soğan (kuru)', 'Diğer Ürünler']
   },
   {
     label: '2. Kategori',
@@ -370,10 +370,6 @@ const URUN_DROPDOWN_GRUPLARI: UrunDropdownGrup[] = [
   {
     label: 'Nadas',
     urunler: ['Nadas']
-  },
-  {
-    label: 'Diğer',
-    urunler: ['Diğer Ürünler']
   }
 ];
 

@@ -10,9 +10,10 @@ class GooglePlacesClient:
     BASE_URL = "https://places.googleapis.com/v1"
 
     def __init__(self, api_key=None):
-        self.api_key = api_key or getattr(settings, 'GOOGLE_MAPS_API_KEY', '')
+        # Try both possible env var names for flexibility
+        self.api_key = api_key or getattr(settings, 'GOOGLE_PLACES_API_KEY', '') or getattr(settings, 'GOOGLE_MAPS_API_KEY', '')
         if not self.api_key:
-            logger.warning("GOOGLE_MAPS_API_KEY is not set.")
+            logger.warning("GOOGLE_PLACES_API_KEY or GOOGLE_MAPS_API_KEY is not set.")
 
     def _get_headers(self, field_mask: str):
         return {
@@ -70,30 +71,58 @@ class GooglePlacesClient:
         # If we get here, retries exhausted
         raise Exception(f"Max retries exceeded for {url}")
 
-    def text_search_ids_only(self, query: str, page_token: str = None):
+    def text_search_ids_only(self, query: str, page_token: str = None, location_restriction: dict = None, language_code: str = 'tr'):
         """
         Stage 1: Text Search (Free/Low Cost)
         Returns: places.id, places.name
+        
+        Args:
+            query: The text query (e.g. "İzmir'de şehir plancısı")
+            page_token: For pagination
+            location_restriction: Optional viewport/rect restriction
+            language_code: Defaults to 'tr' for better matching in Turkey
         """
+        import unicodedata
+        
+        # Normalize query to NFC to ensure Turkish characters (İ, ı, ş, ğ) are handled correctly
+        query = unicodedata.normalize('NFC', query)
+        
         url = f"{self.BASE_URL}/places:searchText"
         payload = {
-            "textQuery": query
+            "textQuery": query,
+            "languageCode": language_code, # Explicit localization
+            "pageSize": 20, # Explicit page size
         }
+        
         if page_token:
             payload["pageToken"] = page_token
+            
+        if location_restriction:
+            payload["locationRestriction"] = location_restriction
+            # Note: When locationRestriction is used, textQuery should ideally be categorical 
+            # (e.g. "City Planner") rather than including location (e.g. "City Planner in Izmir"),
+            # but the API is generally smart enough to handle both.
             
         # Field mask for generic IDs and basic name
         field_mask = "places.id,places.name,nextPageToken"
         
-        return self._make_request('POST', url, self._get_headers(field_mask), json=payload)
+        # Add Accept-Language header as an extra hint
+        headers = self._get_headers(field_mask)
+        headers["Accept-Language"] = language_code
+        
+        return self._make_request('POST', url, headers, json=payload)
 
     def get_place_details_pro(self, place_id: str):
         """
-        Stage 2: Place Details Pro
-        Returns: displayName, formattedAddress
+        Stage 2: Place Details Pro (Verification)
+        Returns: id, displayName, formattedAddress, types, businessStatus
+        
+        Pricing: Pro tier (mid-cost)
+        Purpose: Verify business is OPERATIONAL and in correct category
         """
         url = f"{self.BASE_URL}/places/{place_id}"
-        field_mask = "displayName,formattedAddress"
+        # Stage 2 field mask - verification fields
+        field_mask = "id,displayName,formattedAddress,types,businessStatus"
         
         return self._make_request('GET', url, self._get_headers(field_mask))
 

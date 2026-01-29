@@ -16,10 +16,22 @@
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
-    <!-- Google Fonts for Rustic Style -->
+    <!-- Performance optimized Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <link 
+      rel="preload" 
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" 
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    </noscript>
+    
+    <!-- Leaflet CSS - Local (Performance Optimized) -->
+    <link rel="preload" href="%PUBLIC_URL%/leaflet.css" as="style" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/leaflet.css" />
     
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
@@ -84,6 +96,19 @@
       }
       
       console.log('Environment variables set:', window._webimar_env);
+      
+      // Register Service Worker for performance caching
+      if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
     </script>
   </head>
   <body>

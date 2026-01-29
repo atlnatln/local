@@ -15,8 +15,9 @@ DEBUG = False
 # Auth (MVP): Google-only login
 GOOGLE_OIDC_CLIENT_ID = os.environ.get('GOOGLE_OIDC_CLIENT_ID')
 
-# Test helpers (disabled by default; enabled in settings/test.py)
-ANKA_ALLOW_TEST_LOGIN = os.environ.get('ANKA_ALLOW_TEST_LOGIN', '0') == '1'
+# Google Places API
+GOOGLE_PLACES_API_KEY = os.environ.get('GOOGLE_PLACES_API_KEY')
+GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_PLACES_API_KEY')  # Alias for compatibility
 
 ALLOWED_HOSTS = ['*']
 

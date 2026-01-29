@@ -33,7 +33,7 @@
     "workbox-window": "^7.3.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.5.2",
+    "@next/bundle-analyzer": "^15.5.11",
     "@types/node": "^24.1.0",
     "@types/react": "19.1.9",
     "@types/react-dom": "19.1.7",
