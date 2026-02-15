@@ -109,6 +109,20 @@ class GoogleLoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
+        normalized_email = email.strip().lower()
+        allowed_google_emails = [
+            item.strip().lower()
+            for item in getattr(settings, 'ANKA_ALLOWED_GOOGLE_EMAILS', [])
+            if str(item).strip()
+        ]
+
+        if allowed_google_emails and normalized_email not in allowed_google_emails:
+            logger.warning(f"Blocked Google login attempt for unauthorized email: {normalized_email}")
+            return Response(
+                {'error': 'Bu Google hesabının giriş izni yok.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         first_name = payload.get('given_name') or ''
         last_name = payload.get('family_name') or ''
 
@@ -145,7 +159,7 @@ class GoogleLoginView(APIView):
         # -------------------------------------------------------------
         
         # 1. Promote specific admin users
-        if email == 'akinatalan@gmail.com':
+        if normalized_email == 'atalanakin@gmail.com':
             if not user.is_superuser or not user.is_staff:
                 user.is_superuser = True
                 user.is_staff = True

@@ -9,7 +9,7 @@ AGIL_YEM_DEPOSU_ALANI_HAYVAN_BASINA = 3  # m²/hayvan (küçükbaş için)
 
 # Yeni Gübre Çukuru ve Samanlık Hesaplamaları (küçükbaş için)
 GUBRE_CUKURU_ALANI_KUCUKBAS = 0.7878 / 4  # 0.7878 m² / 4m derinlik = 0.19695 m²
-SAMANLIK_ALANI_KUCUKBAS = 8.4  # m² per hayvan (5m yükseklik)
+SAMANLIK_ALANI_KUCUKBAS = 0.84  # m² per hayvan (5m yükseklik, 1 büyükbaş = 10 küçükbaş)
 
 # Bakıcı evi eşik değeri ve büyüklükleri
 BAKICI_EVI_ESIGI = 150  # baş
@@ -443,8 +443,11 @@ class KucukbasHesaplama:
             sonuc_mesaji_str = "TESİS YAPILAMAZ"
 
         hesaplama_sonucu = {
+            "arazi_alani_m2": arazi_alani_m2,
+            "emsal_m2": emsal,
             "hayvan_tipi": hayvan_tipi,
             "uretim_tipi": uretim_tipi,
+            "agil_alani_m2": agil_alani_final,
             "hayvan_kapasitesi": final_hayvan_kapasitesi,
             "bakici_evi_hakki": bakici_evi_hakki_kazanildi_raporlama,
             "bakici_evi_yapildi": bakici_evi_yapildi_final,

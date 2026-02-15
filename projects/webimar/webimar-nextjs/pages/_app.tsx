@@ -2,9 +2,23 @@ import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { Inter, Playfair_Display } from 'next/font/google';
 import '../styles/globals.css';
 import '../lib/sw-register';
 import { createPageId, sendAnalyticsEvent } from '../lib/webimarAnalytics';
+import GoogleAdsense from '../components/GoogleAdsense';
+
+const inter = Inter({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-display',
+});
 
 // CookieBanner'ı client-side only olarak yükle
 const CookieBanner = dynamic(() => import('../components/CookieBanner'), {
@@ -87,8 +101,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Component {...pageProps} />
-      <CookieBanner />
+      <GoogleAdsense />
+      <div className={`${inter.variable} ${playfairDisplay.variable}`}>
+        <Component {...pageProps} />
+        <CookieBanner />
+      </div>
     </>
   );
 }

@@ -27,6 +27,19 @@ Maliyetleri optimize etmek ve veri kalitesini maksimize etmek için backend tara
 
 ---
 
+## 🧩 Core Mode (Non-Destructive)
+
+Bu repo, çekirdek kullanımda Google Maps + Gemini enrichment hattına odaklanabilir; ancak MVP+ ve canlıya hazırlık için gerekli domain uygulamaları (payments, ledger, credits, disputes, exports vb.) **kod tabanından kaldırılmaz**.
+
+Özet kural:
+- Çekirdekleştirme = çalışma profilini sadeleştirme
+- Çekirdekleştirme ≠ uygulama/migration silme
+
+Detay denetim raporu:
+- `docs/RUNBOOKS/core-structure-audit-2026-02-15.md`
+
+---
+
 ## 🚀 Kurulum (Quick Start)
 
 Bu proje Docker üzerinde çalışacak şekilde tasarlanmıştır.

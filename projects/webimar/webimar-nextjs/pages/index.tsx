@@ -3,6 +3,9 @@ import Seo from '../components/Seo';
 import { GetStaticProps } from 'next';
 import { Suspense, lazy } from 'react';
 import Layout from '../components/Layout';
+import MethodologySection from '../components/LandingPage/MethodologySection';
+import FAQSection from '../components/LandingPage/FAQSection';
+import DisclaimerSection from '../components/LandingPage/DisclaimerSection';
 import { useGA4 } from '../lib/useGA4';
 import styles from '../styles/HomePage.module.css';
 
@@ -181,9 +184,10 @@ export default function HomePage({ yapiTurleri, pageTitle, pageDescription }: Ho
         <div className={styles.mainContainer}>
           {/* Hero Section */}
           <div className={styles.hero}>
-            <h1>Arazilerde Yapılaşma Mevzuatı ve Hesaplama Sistemi</h1>
+            <h1>Tarım ve İmar Mevzuatında Güvenilir Dijital Çözüm Ortağınız</h1>
             <p>
-              Tarımsal arazilerde yapılaşma süreçlerinde güncel mevzuata ve bilimsel esaslara uygun, güvenilir ve hızlı hesaplama çözümleri. Yasal sınırlar, teknik gereklilikler ve modern teknolojinin birleştiği noktada, doğru ve şeffaf analiz ile karar desteği sunuyoruz.
+              Tarımsal arazilerde yapılaşma süreçlerinde <strong>5403 Sayılı Kanun</strong> ve güncel yönetmeliklere tam uyumlu, 
+              mühendislik esaslı ve şeffaf hesaplama araçları. Yatırımlarınızı mevzuat güvencesiyle planlayın.
             </p>
             <button 
               className={styles.contactButton}
@@ -193,11 +197,15 @@ export default function HomePage({ yapiTurleri, pageTitle, pageDescription }: Ho
                 });
               }}
             >
-              Bize Ulaşın
+              Uzman Desteği Alın
             </button>
           </div>
+
+          <MethodologySection />
           
           <div className={styles.content}>
+            <DisclaimerSection />
+
             {/* Barınma */}
             <div className={styles.section}>
               <h2>🏡 Barınma</h2>
@@ -524,6 +532,8 @@ export default function HomePage({ yapiTurleri, pageTitle, pageDescription }: Ho
               </div>
             </div>
           </div>
+
+          <FAQSection />
           
           {/* Contact Form */}
           <Suspense fallback={<div>Yükleniyor...</div>}>

@@ -80,6 +80,94 @@
   width: 100%;
 }
 
+.accordionContainer {
+  display: grid;
+  gap: 16px;
+}
+
+.accordionItem {
+  border: 2px solid #e9ecef;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  overflow: hidden;
+}
+
+.accordionButton {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  text-align: left;
+}
+
+.accordionButton:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.accordionButtonMain {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.accordionIcon {
+  font-size: 1.8rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.accordionTitle {
+  display: block;
+  color: #2c3e50;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.accordionDescription {
+  display: block;
+  color: #6c757d;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.accordionChevron {
+  color: #8b4513;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.accordionPanel {
+  border-top: 1px solid #e9ecef;
+  padding: 16px 20px 20px;
+  transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
+  max-height: 5000px;
+  opacity: 1;
+}
+
+.accordionPanelOpen {
+  max-height: 5000px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.accordionPanelClosed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 /* Hesaplama Türleri Grid */
 .calculationGrid {
   display: grid;
@@ -144,6 +232,269 @@
   text-align: center;
   margin: 0;
   font-weight: 500;
+}
+
+.calculationCardWithChildren {
+  display: flex;
+  flex-direction: column;
+}
+
+.calculationCardMainLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.nestedDetails {
+  margin-top: 12px;
+  border-top: 1px solid #e9ecef;
+  padding-top: 10px;
+}
+
+.nestedSummary {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #2c3e50;
+  cursor: pointer;
+  list-style: none;
+}
+
+.nestedSummary::-webkit-details-marker {
+  display: none;
+}
+
+.provinceLinks {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.provinceLink {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #dfe3e6;
+  text-decoration: none;
+  color: #2c3e50;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  background: #ffffff;
+}
+
+.provinceLink:hover {
+  border-color: #8b4513;
+  color: #8b4513;
+}
+
+.botSitemap {
+  position: absolute;
+  left: -99999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.insightsSection {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 28px;
+  margin-bottom: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.insightsHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.insightsTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.insightsMeta {
+  font-size: 0.88rem;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.insightsSubtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.insightsMetaBar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.insightsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.insightCard {
+  border: 2px solid #e9ecef;
+  border-radius: 14px;
+  padding: 14px;
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  text-align: center;
+}
+
+.insightIcon {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.insightCard h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #2c3e50;
+}
+
+.insightCount {
+  margin: 8px 0 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #8b4513;
+}
+
+.insightToggleButton {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+}
+
+.insightHint {
+  display: block;
+  margin-top: 8px;
+  color: #6c757d;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.insightsStatus {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.92rem;
+}
+
+.provinceBreakdown {
+  margin-top: 16px;
+  border-top: 1px solid #e9ecef;
+  padding-top: 14px;
+}
+
+.provinceBreakdownTitle {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+.provinceBreakdownSubtitle {
+  margin: -8px 0 16px;
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.provinceBreakdownGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.provinceItemWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.provinceBreakdownItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.provinceBreakdownItem:hover {
+  border-color: #8b4513;
+}
+
+.provinceBreakdownItemActive {
+  border-color: #8b4513;
+  background: #fffaf5;
+}
+
+.provinceName {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.provinceValue {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #8b4513;
+}
+
+.provincePeriodStats {
+  margin-top: 0;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+}
+
+.provincePeriodTitle {
+  margin: 0 0 8px;
+  color: #2c3e50;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.provincePeriodGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.provincePeriodItem {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.provincePeriodItem strong {
+  color: #8b4513;
+  font-size: 0.9rem;
 }
 
 /* Mevzuat Grid */
@@ -366,6 +717,104 @@
     padding-bottom: 12px;
   }
 
+  .accordionItem {
+    border-radius: 12px;
+  }
+
+  .accordionButton {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .accordionButtonMain {
+    gap: 10px;
+  }
+
+  .accordionIcon {
+    font-size: 1.5rem;
+  }
+
+  .accordionTitle {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+
+  .accordionDescription {
+    font-size: 0.82rem;
+  }
+
+  .accordionChevron {
+    font-size: 1.5rem;
+  }
+
+  .accordionPanel {
+    padding: 12px 12px 14px;
+  }
+
+  .insightsSection {
+    padding: 16px 14px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+
+  .insightsHeaderRow {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .insightsTitle {
+    font-size: 1.15rem;
+  }
+
+  .insightsMeta {
+    font-size: 0.8rem;
+  }
+
+  .insightsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .insightCard {
+    padding: 10px;
+  }
+
+  .insightCard h3 {
+    font-size: 0.8rem;
+  }
+
+  .insightCount {
+    font-size: 1.25rem;
+  }
+
+  .provinceBreakdownGrid {
+    gap: 6px;
+  }
+
+  .provincePeriodGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .provinceName,
+  .provinceValue {
+    font-size: 0.74rem;
+  }
+
+  .nestedSummary {
+    font-size: 0.82rem;
+  }
+
+  .provinceLinks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .provinceLink {
+    font-size: 0.68rem;
+    padding: 5px 6px;
+  }
+
   .calculationGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
@@ -483,6 +932,74 @@
     padding-bottom: 8px;
   }
 
+  .accordionButton {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+
+  .accordionTitle {
+    font-size: 0.9rem;
+  }
+
+  .accordionDescription {
+    font-size: 0.75rem;
+  }
+
+  .accordionChevron {
+    font-size: 1.25rem;
+  }
+
+  .accordionPanel {
+    padding: 10px 8px 12px;
+  }
+
+  .insightsSection {
+    padding: 12px 10px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .insightsTitle {
+    font-size: 1rem;
+  }
+
+  .insightsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .insightCard h3 {
+    font-size: 0.85rem;
+  }
+
+  .insightCount {
+    font-size: 1.2rem;
+  }
+
+  .insightHint {
+    font-size: 0.72rem;
+  }
+
+  .provinceBreakdownGrid {
+    gap: 6px;
+  }
+
+  .provincePeriodGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .nestedSummary {
+    font-size: 0.76rem;
+  }
+
+  .provinceLinks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .provinceLink {
+    font-size: 0.63rem;
+  }
+
   .calculationGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
@@ -569,4 +1086,287 @@
   .statLabel {
     font-size: 0.8rem;
   }
+}
+/* AdSense Strategy & Trust Content Styles */
+
+.sectionTitle {
+  text-align: center;
+  font-size: 2.2rem;
+  color: #2c3e50;
+  margin-bottom: 40px;
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Methodology Section */
+.methodologySection {
+  padding: 60px 0;
+  background-color: #ffffff;
+  margin-bottom: 40px;
+}
+
+.methodologyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.methodologyCard {
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid #e9ecef;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.methodologyCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.methodologyCard h3 {
+  color: #27ae60;
+  margin-bottom: 15px;
+  font-size: 1.25rem;
+}
+
+.methodologyCard p {
+  color: #5d6165;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* FAQ Section */
+.faqSection {
+  padding: 60px 0;
+  background-color: #f1f3f5;
+  margin-top: 40px;
+}
+
+.faqList {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faqItem {
+  background: white;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.faqQuestion {
+  width: 100%;
+  text-align: left;
+  padding: 20px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.faqQuestion:hover {
+  background-color: #f8f9fa;
+}
+
+.faqAnswer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.faqAnswerText {
+  padding: 0 20px 20px 20px;
+  color: #5d6165;
+  line-height: 1.6;
+}
+
+.faqIcon {
+  font-size: 1.5rem;
+  color: #3498db;
+  font-weight: 300;
+}
+
+/* Disclaimer */
+.disclaimerBox {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 1000px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Site Map Section */
+.siteMapSection {
+  padding: 60px 0;
+  background-color: #f8f9fa;
+  margin-top: 40px;
+}
+
+.siteMapIntro {
+  text-align: center;
+  color: #5d6165;
+  font-size: 1.05rem;
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+  line-height: 1.6;
+}
+
+.siteMapGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.siteMapCategory {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.siteMapCategory:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.siteMapCategoryTitle {
+  font-size: 1.25rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.siteMapIcon {
+  font-size: 1.5rem;
+}
+
+.siteMapLinkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.siteMapLinkItem {
+  margin-bottom: 12px;
+}
+
+.siteMapLink {
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.siteMapLink:hover {
+  background-color: #f1f3f5;
+}
+
+.siteMapLinkTitle {
+  display: block;
+  color: #3498db;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 3px;
+}
+
+.siteMapLinkDesc {
+  display: block;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .siteMapGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .siteMapCategory {
+    padding: 20px;
+  }
+}
+
+/* Decision Support Directory Styles */
+.directorySection {
+  padding: 60px 0;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+}
+
+.directoryHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.directoryHeader h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.directoryHeader p {
+  color: #bdc3c7;
+  font-size: 1.1rem;
+}
+
+.directoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.directoryCategory h3 {
+  color: #3498db;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #34495e;
+  padding-bottom: 10px;
+}
+
+.directoryCategory ul {
+  list-style: none;
+  padding: 0;
+}
+
+.directoryCategory li {
+  margin-bottom: 12px;
+}
+
+.directoryCategory a {
+  color: #ecf0f1;
+  text-decoration: none;
+  transition: color 0.3s, padding-left 0.3s;
+  display: block;
+}
+
+.directoryCategory a:hover {
+  color: #3498db;
+  padding-left: 5px;
 }

@@ -12,3 +12,8 @@ node_modules/
 create_test_user.py
 .env
 .env.*
+test_env/
+artifacts/
+db.sqlite3
+celerybeat-schedule
+*.log

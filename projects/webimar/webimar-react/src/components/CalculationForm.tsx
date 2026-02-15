@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DetailedCalculationInput, CalculationResult, StructureType } from '../types';
-import { calculateBagEvi, calculateSera, calculateHayvancilik, calculateDepoAmbar, calculateStructure } from '../services/api';
+import { calculateBagEvi, calculateSera, calculateHayvancilik, calculateDepoAmbar, calculateStructure, trackPublicCalculation } from '../services/api';
 import { useStructureTypes } from '../contexts/StructureTypesContext';
 import { useLocationValidation } from '../contexts/LocationValidationContext';
 import { toast } from 'react-toastify';
@@ -302,6 +302,27 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
     }
 
     return null;
+  };
+
+  const trackCompletedCalculation = async (calculationPayload: Record<string, unknown>, apiResult: any) => {
+    const latitude = selectedCoordinate?.lat ?? (calculationPayload.latitude as number | undefined);
+    const longitude = selectedCoordinate?.lng ?? (calculationPayload.longitude as number | undefined);
+
+    try {
+      await trackPublicCalculation({
+        event_type: 'calculation',
+        calculation_type: calculationType,
+        calculation_data: calculationPayload,
+        result_data: (apiResult && typeof apiResult === 'object') ? apiResult : {},
+        location_data: {
+          latitude,
+          longitude,
+          il: (calculationPayload.il as string | undefined) || (calculationPayload.province as string | undefined) || ''
+        }
+      });
+    } catch (trackingError) {
+      console.error('Calculation tracking failed (non-blocking):', trackingError);
+    }
   };
 
   const handleInputChange = (
@@ -765,6 +786,7 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
       
       const apiResult = await calculationFunction(pendingFormData);
       console.log('🎯 API Result after İzmir warning:', apiResult);
+      await trackCompletedCalculation(pendingFormData, apiResult);
       
       // Ana handleSubmit ile aynı response processing mantığı
       // UX-optimized format'ı kontrol et
@@ -1124,6 +1146,7 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
       }
       const apiResult = await calculationFunction(finalFormData);
       console.log('🎯 API Result:', apiResult);
+      await trackCompletedCalculation(finalFormData as Record<string, unknown>, apiResult);
       
       // Debug: Hara ve İpek Böcekçiliği response'larını log'la
       if (calculationType === 'hara' || calculationType === 'ipek-bocekciligi') {

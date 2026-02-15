@@ -44,6 +44,72 @@ const nextConfig = {
     esmExternals: true,
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/sitemap.xml.broken',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
+      {
+        source: '/sitemap.xml.backup',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
+      {
+        source: '/tr',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/tr/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
+      {
+        source: '/hesaplama/:slug',
+        destination: '/:slug/',
+        permanent: true,
+      },
+      {
+        source: '/hesaplama/:slug/',
+        destination: '/:slug/',
+        permanent: true,
+      },
+      {
+        source: '/cevre-duzeni-planlari/[planId]',
+        destination: '/cevre-duzeni-planlari/',
+        permanent: true,
+      },
+      {
+        source: '/cevre-duzeni-planlari/%5BplanId%5D',
+        destination: '/cevre-duzeni-planlari/',
+        permanent: true,
+      },
+      {
+        source: '/cevre-duzeni-planlari/il/[ilSlug]',
+        destination: '/cevre-duzeni-planlari/',
+        permanent: true,
+      },
+      {
+        source: '/cevre-duzeni-planlari/il/%5BilSlug%5D',
+        destination: '/cevre-duzeni-planlari/',
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.tarimimar.com.tr',
+          },
+        ],
+        destination: 'https://tarimimar.com.tr/:path*',
+        permanent: true,
+      },
+    ]
+  },
+
   async rewrites() {
     if (process.env.NODE_ENV !== 'development') {
       return []

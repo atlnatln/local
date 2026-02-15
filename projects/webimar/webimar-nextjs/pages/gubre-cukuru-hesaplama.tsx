@@ -174,6 +174,27 @@ export default function GubreCukuruHesaplamaPage() {
   const [uyariMesaji, setUyariMesaji] = useState<string>('');
   const [acikDetaylar, setAcikDetaylar] = useState<Record<string, boolean>>({});
 
+  const trackPublicCalculation = () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+
+    fetch(`${apiBaseUrl}/calculations/public-track/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        event_type: 'calculation',
+        calculation_type: 'gubre_cukuru',
+        calculation_data: {
+          total_hayvan_sayisi: Object.values(hayvanAdedleri).reduce((total, count) => total + (count || 0), 0),
+          aktif_depo_sayisi: Object.values(depoAktiflik).filter(Boolean).length,
+        },
+      }),
+    }).catch(() => {
+      // İstatistik logu başarısızsa hesaplama akışı etkilenmesin
+    });
+  };
+
   // Sadece bulamaç hesaplanan hayvan türleri
   const sadeceBulamacHayvanlari = ['keci', 'koyun', 'kuzu', 'kumes_etci', 'kumes_yumurta'];
 
@@ -306,6 +327,9 @@ export default function GubreCukuruHesaplamaPage() {
     // GA4: Hesaplama tamamlama event'i
     const duration = Date.now() - startTime;
     ga4.trackCalculationComplete('gubre_cukuru', true, duration);
+
+    // Ana sayfa istatistik bileşeni için event kaydı
+    trackPublicCalculation();
   };
 
   const renderDepoGorseli = () => {

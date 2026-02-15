@@ -48,6 +48,14 @@
     <priority>0.9</priority>
   </url>
 
+  <!-- Buzağı Destekleme Hesaplama -->
+  <url>
+    <loc>https://tarimimar.com.tr/buzagi-destegi-hesaplama/</loc>
+    <lastmod>2026-02-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Havza Bazlı Destekleme Modeli -->
   <url>
     <loc>https://tarimimar.com.tr/havza-bazli-destekleme-modeli/</loc>

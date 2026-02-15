@@ -15,12 +15,14 @@ class GooglePlacesClient:
         if not self.api_key:
             logger.warning("GOOGLE_PLACES_API_KEY or GOOGLE_MAPS_API_KEY is not set.")
 
-    def _get_headers(self, field_mask: str):
-        return {
+    def _get_headers(self, field_mask: str, search_text=False):
+        headers = {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": self.api_key,
+            "Accept-Language": "tr",  # MD formatına uygun Türkçe lokalizasyon
             "X-Goog-FieldMask": field_mask
         }
+        return headers
 
     def _make_request(self, method, url, headers, json=None, retry_count=3):
         """

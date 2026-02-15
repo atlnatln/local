@@ -14,6 +14,11 @@ DEBUG = False
 
 # Auth (MVP): Google-only login
 GOOGLE_OIDC_CLIENT_ID = os.environ.get('GOOGLE_OIDC_CLIENT_ID')
+ANKA_ALLOWED_GOOGLE_EMAILS = [
+    email.strip().lower()
+    for email in os.environ.get('ANKA_ALLOWED_GOOGLE_EMAILS', '').split(',')
+    if email.strip()
+]
 
 # Google Places API
 GOOGLE_PLACES_API_KEY = os.environ.get('GOOGLE_PLACES_API_KEY')

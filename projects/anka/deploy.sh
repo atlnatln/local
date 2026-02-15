@@ -18,6 +18,7 @@ NC='\033[0m'
 PROJECT_NAME="anka"
 DOMAIN="ankadata.com.tr"
 SERVER_IP="89.252.152.222"
+VPS_HOST="akn@89.252.152.222"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # GitHub (monorepo: /home/akn/vps)
@@ -213,13 +214,13 @@ log_success "Production containers started"
 
 # Update infrastructure nginx configuration
 log_info "Updating infrastructure nginx configuration..."
-if [ -f "../../../infrastructure/nginx/conf.d/anka.conf" ]; then
-    ssh "akn@${SERVER_IP}" "mkdir -p /home/akn/vps/infrastructure/nginx/conf.d"
-    scp "../../../infrastructure/nginx/conf.d/anka.conf" "akn@${SERVER_IP}:/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
-    ssh "akn@${SERVER_IP}" "docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload" 2>/dev/null || log_warning "Infrastructure nginx reload failed (might not be running)"
+if [ -f "../../infrastructure/nginx/conf.d/anka.conf" ]; then
+    ssh "$VPS_HOST" "mkdir -p /home/akn/vps/infrastructure/nginx/conf.d"
+    scp "../../infrastructure/nginx/conf.d/anka.conf" "$VPS_HOST:/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
+    ssh "$VPS_HOST" "docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload" 2>/dev/null || log_warning "Infrastructure nginx reload failed (might not be running)"
     log_success "Infrastructure nginx updated"
 else
-    log_warning "Infrastructure nginx config not found at ../../../infrastructure/nginx/conf.d/anka.conf"
+    log_warning "Infrastructure nginx config not found at ../../infrastructure/nginx/conf.d/anka.conf"
 fi
 
 # Wait for services to be healthy

@@ -1,22 +1,100 @@
 """
 Ortak ve genel API endpoint'leri
 """
-from django.shortcuts import render
 from django.core.cache import cache
-from django.db.models import Prefetch
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from datetime import timedelta
 import logging
+import re
+import unicodedata
 
-from ..models import CalculationHistory
+from ..models import CalculationHistory, CalculationLog
 from ..serializers import CalculationHistorySerializer, CalculationHistoryCreateSerializer
 from ..tarimsal_yapilar import constants
 from accounts.utils import log_calculation, log_map_interaction
 from accounts.logging_utils import safe_log_request_data
 
 logger = logging.getLogger('calculations')
+
+
+def _normalize_text(value: str) -> str:
+    normalized = unicodedata.normalize('NFD', str(value or ''))
+    normalized = ''.join(char for char in normalized if unicodedata.category(char) != 'Mn')
+    return normalized.lower().strip()
+
+
+def _normalize_key(key: str) -> str:
+    return re.sub(r'[^a-z0-9]', '', _normalize_text(key))
+
+
+PROVINCE_KEYS = {
+    'il',
+    'sehir',
+    'province',
+    'city',
+    'iladi',
+    'selectedil',
+    'selectedprovince',
+    'provincevalue',
+}
+
+
+def _extract_province_from_payload(payload) -> str | None:
+    if isinstance(payload, dict):
+        for raw_key, raw_value in payload.items():
+            key = _normalize_key(raw_key)
+            if key in PROVINCE_KEYS and isinstance(raw_value, str) and raw_value.strip():
+                return raw_value.strip().upper()
+
+            nested_value = _extract_province_from_payload(raw_value)
+            if nested_value:
+                return nested_value
+
+    if isinstance(payload, list):
+        for item in payload:
+            nested_value = _extract_province_from_payload(item)
+            if nested_value:
+                return nested_value
+
+    return None
+
+
+def _normalize_province_group_key(province: str) -> str:
+    return _normalize_key(province)
+
+
+TARIMSAL_YAPI_TYPES = {
+    'bag-evi', 'bag_evi',
+    'solucan-tesisi', 'solucan_tesisi',
+    'mantar-tesisi', 'mantar_tesisi',
+    'sera',
+    'aricilik',
+    'hububat-silo', 'hububat_silo',
+    'tarimsal-depo', 'tarimsal_depo', 'tarimsal-amacli-depo', 'tarimsal_amacli_depo',
+    'lisansli-depo', 'lisansli_depo',
+    'yikama-tesisi', 'yikama_tesisi',
+    'kurutma-tesisi', 'kurutma_tesisi',
+    'meyve-sebze-kurutma', 'meyve_sebze_kurutma',
+    'zeytinyagi-fabrikasi', 'zeytinyagi_fabrikasi',
+    'soguk-hava-deposu', 'soguk_hava_deposu',
+    'su-depolama', 'su_depolama',
+    'su-kuyulari', 'su_kuyulari',
+    'sut-sigirciligi', 'sut_sigirciligi',
+    'agil-kucukbas', 'agil_kucukbas',
+    'kumes-yumurtaci', 'kumes_yumurtaci',
+    'kumes-etci', 'kumes_etci',
+    'kumes-gezen', 'kumes_gezen',
+    'kumes-hindi', 'kumes_hindi',
+    'kaz-ordek', 'kaz_ordek',
+    'hara',
+    'ipek-bocekciligi', 'ipek_bocekciligi',
+    'evcil-hayvan', 'evcil_hayvan',
+    'besi-sigirciligi', 'besi_sigirciligi',
+}
 
 @api_view(['GET'])
 def health_check(request):
@@ -26,6 +104,148 @@ def health_check(request):
         'app': 'calculations',
         'detail': 'Calculations app is running successfully'
     })
+
+
+@api_view(['POST'])
+def track_public_calculation_event(request):
+    """Public sayfalardan hesaplama event kaydı alır (gübre/havza vb.)."""
+    try:
+        event_type = str(request.data.get('event_type') or '').strip()
+        calculation_type = str(request.data.get('calculation_type') or '').strip()
+
+        if event_type != 'calculation' or not calculation_type:
+            return Response({
+                'success': False,
+                'detail': 'Geçersiz event verisi'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
+        if ip_address:
+            ip_address = ip_address.split(',')[0].strip()
+        else:
+            ip_address = request.META.get('REMOTE_ADDR') or '127.0.0.1'
+
+        CalculationLog.log_calculation(
+            user=request.user if hasattr(request, 'user') and request.user.is_authenticated else None,
+            ip_address=ip_address,
+            calculation_type=calculation_type,
+            calculation_data=request.data.get('calculation_data') or {},
+            result_data=request.data.get('result_data') or {},
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            device_fingerprint=request.data.get('device_fingerprint'),
+            location_data=request.data.get('location_data') or {},
+            is_successful=True,
+        )
+
+        return Response({
+            'success': True,
+            'detail': 'Event kaydedildi'
+        })
+    except Exception as e:
+        logger.error(f"Public event tracking error: {e}")
+        return Response({
+            'success': False,
+            'detail': 'Event kaydedilemedi'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+def public_homepage_calculation_insights(request):
+    """Ana sayfa için kamuya açık hesaplama istatistikleri."""
+    try:
+        cache_key = 'homepage_calculation_insights_v2'
+        cached = cache.get(cache_key)
+        if cached:
+            response = Response(cached)
+            response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            response['Pragma'] = 'no-cache'
+            response['Expires'] = '0'
+            return response
+
+        successful_logs = CalculationLog.objects.filter(is_successful=True)
+
+        gubre_count = successful_logs.filter(calculation_type='gubre_cukuru').count()
+        havza_count = successful_logs.filter(calculation_type__in=['havza-bazli-destekleme-modeli', 'havza_bazli_destekleme_modeli']).count()
+
+        tarimsal_yapi_logs = successful_logs.filter(calculation_type__in=TARIMSAL_YAPI_TYPES)
+        tarimsal_yapi_count = tarimsal_yapi_logs.count()
+
+        now = timezone.now()
+        seven_days_ago = now - timedelta(days=7)
+        twenty_eight_days_ago = now - timedelta(days=28)
+
+        province_counts = {}
+        for log in tarimsal_yapi_logs.iterator():
+            payload_candidates = [
+                log.calculation_data,
+                log.location_data,
+                log.result_data,
+            ]
+
+            province = None
+            for payload in payload_candidates:
+                province = _extract_province_from_payload(payload)
+                if province:
+                    break
+
+            if province:
+                province_key = _normalize_province_group_key(province)
+                if not province_key:
+                    continue
+
+                stats = province_counts.setdefault(province_key, {
+                    'province': province.strip().upper(),
+                    'count': 0,
+                    'count_7d': 0,
+                    'count_28d': 0,
+                })
+                stats['count'] += 1
+
+                if log.created_at >= twenty_eight_days_ago:
+                    stats['count_28d'] += 1
+                if log.created_at >= seven_days_ago:
+                    stats['count_7d'] += 1
+
+        tarimsal_yapi_by_province = [
+            {
+                'province': stats['province'],
+                'count': stats['count'],
+                'count_7d': stats['count_7d'],
+                'count_28d': stats['count_28d'],
+            }
+            for _, stats in sorted(province_counts.items(), key=lambda item: item[1]['count'], reverse=True)
+        ]
+
+        response_data = {
+            'success': True,
+            'data': {
+                'totals': {
+                    'gubre_cukuru': gubre_count,
+                    'havza_bazli_destekleme': havza_count,
+                    'tarimsal_yapi': tarimsal_yapi_count,
+                },
+                'tarimsal_yapi_by_province': tarimsal_yapi_by_province,
+                'province_count': len(tarimsal_yapi_by_province),
+            },
+            'detail': 'Ana sayfa hesaplama istatistikleri başarıyla getirildi'
+        }
+
+        cache.set(cache_key, response_data, timeout=300)
+        response = Response(response_data)
+        response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        return response
+    except Exception as e:
+        logger.error(f"Homepage insights error: {e}")
+        response = Response({
+            'success': False,
+            'detail': 'İstatistikler getirilirken hata oluştu'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        return response
 
 # Static dosya servisleri
 @api_view(['GET'])

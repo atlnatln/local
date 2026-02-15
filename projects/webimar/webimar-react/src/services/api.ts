@@ -156,6 +156,22 @@ export const calculateStructure = async (structureType: StructureType, data: any
   }
 };
 
+export const trackPublicCalculation = async (data: {
+  event_type: 'calculation';
+  calculation_type: string;
+  calculation_data: Record<string, unknown>;
+  result_data: Record<string, unknown>;
+  location_data: Record<string, unknown>;
+}) => {
+  try {
+    const response = await api.post('/calculations/public-track/', data);
+    return response.data;
+  } catch (error) {
+    console.error('Public calculation tracking failed:', error);
+    throw error;
+  }
+};
+
 // History management
 export const saveCalculationHistory = async (data: any) => {
   try {

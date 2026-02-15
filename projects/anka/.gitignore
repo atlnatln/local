@@ -1,0 +1,12 @@
+.playwright-mcp/
+playwright-report/
+test-results/
+artifacts/test-logs/
+artifacts/playwright/
+
+django.log
+nextjs.log
+
+services/backend/artifacts/usage/*.jsonl
+services/backend/htmlcov/
+services/backend/.pytest_cache/

@@ -28,7 +28,8 @@ from calculations.havza_bazli_destekleme_modeli import havza_bazli_destekleme_mo
 from calculations.views.common import (
     health_check, get_arazi_tipleri, get_yapi_turleri, get_structure_categories, 
     get_seo_meta, get_yonetmelikler, get_kml_files, calculation_history, 
-    save_calculation, calculation_detail
+    save_calculation, calculation_detail, track_public_calculation_event,
+    public_homepage_calculation_insights
 )
 
 urlpatterns = [
@@ -37,6 +38,8 @@ urlpatterns = [
     
     # Havza Bazlı Destekleme Modeli
     path('havza-bazli-destekleme-modeli/', havza_bazli_destekleme_modeli, name='havza_bazli_destekleme_modeli'),
+    path('public-track/', track_public_calculation_event, name='track_public_calculation_event'),
+    path('homepage-insights/', public_homepage_calculation_insights, name='public_homepage_calculation_insights'),
     
     # Constants endpoints
     path('arazi-tipleri/', get_arazi_tipleri, name='get_arazi_tipleri'),

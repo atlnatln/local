@@ -1120,6 +1120,23 @@ export default function HavzaBazliDesteklemeModeliPage() {
   // KOBÜKS kaydı: bu hesaplayıcıda örtü altı seçildiyse otomatik varsayılır
   const kobuksKayitli = ortualtiSeciliMi;
 
+  const trackPublicCalculation = async () => {
+    try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+      await axios.post(`${apiBaseUrl}/calculations/public-track/`, {
+        event_type: 'calculation',
+        calculation_type: 'havza_bazli_destekleme_modeli',
+        calculation_data: {
+          il,
+          ilce,
+          urun_sayisi: urunler.filter((item) => item.urun && item.dekar > 0).length,
+        },
+      });
+    } catch {
+      // İstatistik logu başarısız olsa da hesaplama akışı devam etsin
+    }
+  };
+
   // Hesaplama işlemi
   const hesapla = async () => {
     if (!validateForm()) return;
@@ -1143,6 +1160,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
       });
       
       setSonuc(response.data);
+      await trackPublicCalculation();
     } catch (error: any) {
       setHata(error.response?.data?.mesaj || 'Hesaplama sırasında hata oluştu.');
     } finally {

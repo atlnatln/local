@@ -12,6 +12,8 @@ Bu strateji, üç aşamalı bir "huni" (funnel) mimarisine dayanır:
 
 Bu metodoloji, gereksiz API maliyetlerini %80'e varan oranlarda düşürürken, veri kalitesini %95'in üzerine çıkarır.
 
+> Not: Places API hunisinin ardından website alanı boş kayıtlar için Gemini Search Grounding tabanlı ek zenginleştirme kullanılır. Operasyonel adımlar için bkz. `docs/RUNBOOKS/gemini-search-grounding-enrichment.md`.
+
 ---
 
 ## 2. Yeni Nesil API Mimarisi ve Field Masking
@@ -98,6 +100,24 @@ Grid Search algoritmaları oluşturulurken, tarama alanlarının sınırlarını
 *   **Karakter Kodlama:** Sorgular UTF-8 olmalıdır. Türkçe'deki "İ/ı" ve "I/ı" harfleri arama motorunda farklı eşleşmelere neden olabilir, bu yüzden `languageCode: "tr"` parametresi kritiktir.
 *   **Header:** `Accept-Language: tr` eklenmelidir.
 *   **Python Normalizasyon (Öneri):** Gönderilen `textQuery` değerlerinin Unicode NFC (Normalization Form C) formatında olması eşleşme oranlarını artırır. Örn: `import unicodedata\ntext = unicodedata.normalize('NFC', text)`.
+
+---
+
+## 6.1 Aşama 4 (Yeni): Gemini Search Grounding ile Website Tamamlama
+
+Places API (Aşama 3) sonrası `website` alanı boş kalan doğrulanmış işletmeler için aşağıdaki prensip uygulanır:
+
+*   **Model:** `gemini-2.0-flash`
+*   **Araç:** Google Search Grounding (`google_search`)
+*   **Hedef Çıktı:** Sadece resmi website URL'si veya `NONE`
+*   **Filtreleme:** Sosyal medya/dizin domainleri kabul edilmez
+*   **Maliyet Koruma:** kısa prompt + `max_output_tokens=64` + günlük request/token limitleri
+
+Uygulama scripti: `services/backend/enrich_websites_with_gemini.py`
+
+Kullanım, loglama ve limit uyarı detayları için runbook:
+
+*   `docs/RUNBOOKS/gemini-search-grounding-enrichment.md`
 
 ---
 

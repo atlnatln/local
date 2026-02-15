@@ -303,7 +303,7 @@ class CalculationLog(models.Model):
         if not is_successful:
             log_type = 'error'
             
-        return cls.objects.create(
+        log_entry = cls.objects.create(
             user=user,
             ip_address=ip_address,
             user_agent=user_agent,
@@ -319,6 +319,14 @@ class CalculationLog(models.Model):
             current_limit=current_limit,
             location_data=location_data or {}
         )
+
+        if is_successful:
+            cache.delete_many([
+                'homepage_calculation_insights_v1',
+                'homepage_calculation_insights_v2',
+            ])
+
+        return log_entry
     
     def __str__(self):
         user_info = self.user.username if self.user else f"IP:{self.ip_address}"

@@ -5,6 +5,7 @@ Tests for authentication and account management.
 import pytest
 from unittest.mock import patch
 from django.contrib.auth.models import User
+from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -58,6 +59,7 @@ def organization(db, user_with_profile):
 class TestGoogleLogin:
     """Test Google-only login functionality"""
 
+    @override_settings(ANKA_ALLOWED_GOOGLE_EMAILS=['newuser@example.com'])
     @patch('google.oauth2.id_token.verify_oauth2_token')
     def test_google_login_creates_user(self, mock_verify, client, db):
         mock_verify.return_value = {
@@ -85,6 +87,21 @@ class TestGoogleLogin:
 
         response = client.post('/api/auth/google/', {'id_token': 'bad'})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    @override_settings(ANKA_ALLOWED_GOOGLE_EMAILS=['atalanakin@gmail.com'])
+    @patch('google.oauth2.id_token.verify_oauth2_token')
+    def test_google_login_rejects_unauthorized_email(self, mock_verify, client, db):
+        mock_verify.return_value = {
+            'email': 'newuser@example.com',
+            'email_verified': True,
+            'given_name': 'New',
+            'family_name': 'User',
+            'sub': 'google-sub-unauthorized',
+        }
+
+        response = client.post('/api/auth/google/', {'id_token': 'dummy'})
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.data['error'] == 'Bu Google hesabının giriş izni yok.'
 
 
 class TestPasswordAuthRemoved:
