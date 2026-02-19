@@ -13,9 +13,6 @@ services:
       dockerfile: docker/Dockerfile.nginx
     image: webimar-nginx:latest
     container_name: webimar-nginx
-    ports:
-      - "80:80"
-      - "443:443"
     volumes:
       # Only SSL certs are mounted, nginx.conf is baked into image
       - ./ssl:/etc/nginx/ssl:ro
@@ -26,6 +23,7 @@ services:
       - webimar-nextjs
     networks:
       - webimar-network
+      - vps-network
     restart: unless-stopped
     deploy:
       resources:
@@ -209,6 +207,9 @@ services:
 networks:
   webimar-network:
     driver: bridge
+  vps-network:
+    external: true
+    name: vps_infrastructure_network
 
 volumes:
   api_staticfiles:

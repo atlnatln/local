@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'corsheaders',
     'django_extensions',
+    'django_celery_beat',
+    'django_celery_results',
     
     # Apps
     'apps.accounts',

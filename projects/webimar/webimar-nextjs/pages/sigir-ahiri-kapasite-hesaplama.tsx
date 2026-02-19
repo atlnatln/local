@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Layout from '../components/Layout';
 import Seo from '../components/Seo';
 import DebouncedInput from '../components/DebouncedInput';
+import CalculationFeedbackAccordion from '../components/CalculationFeedbackAccordion';
 import { useGA4 } from '../lib/useGA4';
 import styles from '../styles/CalculationPage.module.css';
 
@@ -555,6 +556,8 @@ export default function KapasiteHesaplama() {
             <h1>🐄 Hayvancılık İşletmeleri Kapasite Hesaplama</h1>
             <p>Büyükbaş ve küçükbaş hayvancılık işletmeleriniz için mevzuata uygun kapasite hesaplaması yapın.</p>
           </div>
+
+          <CalculationFeedbackAccordion calculationType="kapasite-hesaplama" />
 
           <div className={styles.calculationForm}>
             {/* Hayvan Tipi Seçimi */}

@@ -4,7 +4,13 @@
  */
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-const API_BASE = `${API_URL}/api`;
+
+function normalizeApiBase(rawUrl: string): string {
+  const trimmed = rawUrl.replace(/\/+$/, '');
+  return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+}
+
+const API_BASE = normalizeApiBase(API_URL);
 
 export interface FetchOptions extends RequestInit {
   headers?: Record<string, string>;

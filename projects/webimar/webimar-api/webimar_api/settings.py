@@ -211,6 +211,7 @@ throttle_rates_config = {
     'register': '1000/min' if TESTING else '5/min',
     'password_reset': '1000/min' if TESTING else '5/min',  
     'email_verification': '1000/min' if TESTING else '10/min',
+    'calculation_feedback': '1000/min' if TESTING else '1/min',
     'anon': '10000/hour' if TESTING else '100/hour',
     'user': '10000/hour' if TESTING else '1000/hour'
 } if not TESTING else {}

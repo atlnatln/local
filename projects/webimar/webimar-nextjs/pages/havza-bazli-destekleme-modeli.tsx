@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Seo from '../components/Seo';
 import Layout from '../components/Layout';
+import CalculationFeedbackAccordion from '../components/CalculationFeedbackAccordion';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -296,6 +297,25 @@ const ErrorMessage = styled.div`
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 20px;
+`;
+
+const BilgilendirmeUyarisi = styled.div`
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #78350f;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+
+  strong {
+    color: #92400e;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
 `;
 
 const LoadingSpinner = styled.div`
@@ -1214,6 +1234,16 @@ export default function HavzaBazliDesteklemeModeliPage() {
       <PageOuter>
         <Container>
           <Title>Havza Bazlı Destekleme Modeli</Title>
+
+          <BilgilendirmeUyarisi>
+            <strong>Önemli Bilgilendirme:</strong> Bu ekrandaki temel destek tutarı, <strong>2026 üretim yılı</strong> için geçerli
+            birim değere göre hesaplanır ve ödeme <strong>2027 yılında</strong> yapılır (temel destek: <strong>310 TL</strong>).
+            <br />
+            Bu yıl alınacak, <strong>2025 üretim yılına</strong> ait temel destek ödemelerinde ise birim tutar
+            <strong> 244 TL</strong> olarak uygulanır.
+          </BilgilendirmeUyarisi>
+
+          <CalculationFeedbackAccordion calculationType="havza_bazli_destekleme_modeli" />
           
           {/* Ürün Seçimi */}
           <FormSection>

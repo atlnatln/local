@@ -29,6 +29,7 @@ from calculations.views.common import (
     health_check, get_arazi_tipleri, get_yapi_turleri, get_structure_categories, 
     get_seo_meta, get_yonetmelikler, get_kml_files, calculation_history, 
     save_calculation, calculation_detail, track_public_calculation_event,
+    submit_calculation_feedback,
     public_homepage_calculation_insights
 )
 
@@ -39,6 +40,7 @@ urlpatterns = [
     # Havza Bazlı Destekleme Modeli
     path('havza-bazli-destekleme-modeli/', havza_bazli_destekleme_modeli, name='havza_bazli_destekleme_modeli'),
     path('public-track/', track_public_calculation_event, name='track_public_calculation_event'),
+    path('feedback/', submit_calculation_feedback, name='submit_calculation_feedback'),
     path('homepage-insights/', public_homepage_calculation_insights, name='public_homepage_calculation_insights'),
     
     # Constants endpoints

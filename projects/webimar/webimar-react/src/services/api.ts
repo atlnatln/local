@@ -172,6 +172,16 @@ export const trackPublicCalculation = async (data: {
   }
 };
 
+export const submitCalculationFeedback = async (data: {
+  message: string;
+  calculation_type: string;
+  source_app: 'react-spa' | 'nextjs-pages';
+  page_path: string;
+}) => {
+  const response = await api.post('/calculations/feedback/', data);
+  return response.data;
+};
+
 // History management
 export const saveCalculationHistory = async (data: any) => {
   try {

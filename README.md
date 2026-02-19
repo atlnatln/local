@@ -54,3 +54,4 @@ Local modda iki projeyi aynı anda çalıştırmak port çakışmaları nedeniyl
 
 Notlar/ipuçları: [docs/LOCAL_COMPOSE_NOTLARI.md](docs/LOCAL_COMPOSE_NOTLARI.md)
 Durum notları: [docs/TAKIP.md](docs/TAKIP.md)
+Çoklu proje/edge mimarisi: [docs/MULTI_WEB_PROJECT_SYSTEM.md](docs/MULTI_WEB_PROJECT_SYSTEM.md)

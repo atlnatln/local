@@ -5,6 +5,8 @@ services:
   postgres:
     image: postgres:14-alpine
     container_name: anka_postgres_prod
+    env_file:
+      - .env.production
     environment:
       POSTGRES_DB: ${DB_NAME:-anka_prod}
       POSTGRES_USER: ${DB_USER:-anka_user}
@@ -15,7 +17,7 @@ services:
       - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-anka_user}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-anka_user} -d ${DB_NAME:-anka_prod}"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -54,8 +56,10 @@ services:
   # MinIO (S3-compatible storage - Production)
   # =========================================================================
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2022-12-12T19-27-27Z
     container_name: anka_minio_prod
+    env_file:
+      - .env.production
     environment:
       MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-change-this-s3-access-key}
       MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY:-change-this-s3-secret-key}
@@ -81,12 +85,12 @@ services:
   # =========================================================================
   backend:
     build:
-      context: .
-      dockerfile: infra/docker/backend.Dockerfile
-      target: production
+      context: ./services/backend
+      dockerfile: ../../infra/docker/backend.Dockerfile
     container_name: anka_backend_prod
     environment:
       - DJANGO_SETTINGS_MODULE=project.settings.prod
+      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
     env_file:
       - .env.production
     volumes:
@@ -100,7 +104,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/"]
+      test: ["CMD-SHELL", "python -c \"import socket; s=socket.create_connection(('127.0.0.1',8000),5); s.close()\""]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -118,13 +122,13 @@ services:
   # =========================================================================
   celery_worker:
     build:
-      context: .
-      dockerfile: infra/docker/backend.Dockerfile
-      target: production
+      context: ./services/backend
+      dockerfile: ../../infra/docker/backend.Dockerfile
     container_name: anka_celery_worker_prod
     command: celery -A celery_app worker --loglevel=INFO --concurrency=2
     environment:
       - DJANGO_SETTINGS_MODULE=project.settings.prod
+      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
     env_file:
       - .env.production
     volumes:
@@ -154,18 +158,18 @@ services:
   # =========================================================================
   celery_beat:
     build:
-      context: .
-      dockerfile: infra/docker/backend.Dockerfile
-      target: production
+      context: ./services/backend
+      dockerfile: ../../infra/docker/backend.Dockerfile
     container_name: anka_celery_beat_prod
     command: celery -A celery_app beat --loglevel=INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     environment:
       - DJANGO_SETTINGS_MODULE=project.settings.prod
+      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
     env_file:
       - .env.production
     volumes:
       - ./logs:/app/logs
-      - celerybeat_schedule:/app
+      - celerybeat_schedule:/app/celerybeat
     restart: unless-stopped
     depends_on:
       postgres:
@@ -187,17 +191,22 @@ services:
     build:
       context: ./services/frontend
       dockerfile: ../../infra/docker/frontend.Dockerfile
-      target: production
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://ankadata.com.tr}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://ankadata.com.tr}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
+        NEXT_PUBLIC_ENVIRONMENT: ${NEXT_PUBLIC_ENVIRONMENT:-production}
     container_name: anka_frontend_prod
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=https://ankadata.com.tr/api
+      - NEXT_PUBLIC_API_URL=https://ankadata.com.tr
       - NEXT_PUBLIC_SITE_URL=https://ankadata.com.tr
+      - NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
     restart: unless-stopped
     depends_on:
       - backend
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/', (res) => process.exit(res.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))\""]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -234,6 +243,7 @@ services:
       retries: 3
     networks:
       - anka_network
+      - vps_network
     logging:
       driver: "json-file"
       options:
@@ -247,6 +257,9 @@ networks:
   anka_network:
     driver: bridge
     name: anka_production_network
+  vps_network:
+    external: true
+    name: vps_infrastructure_network
 
 # =========================================================================
 # Volumes (Production data persistence)

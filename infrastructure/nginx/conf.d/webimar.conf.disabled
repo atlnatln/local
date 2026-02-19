@@ -4,6 +4,13 @@
 # Backend: webimar project containers
 # ============================================================================
 
+# Upstream for Webimar project (Docker DNS üzerinden)
+# Not: webimar-nginx servisi, vps_infrastructure_network ağına bağlı olmalı.
+upstream webimar_project {
+    server webimar-nginx:80 resolve max_fails=3 fail_timeout=30s;
+    keepalive 32;
+}
+
 # HTTP server for Webimar
 server {
     listen 80;
@@ -63,12 +70,7 @@ server {
     
     # Proxy all requests to Webimar project
     location / {
-        # Runtime upstream target (Docker DNS)
-        # Not: webimar-nginx servisi çalışmıyorsa istekler geçici olarak 502 döner,
-        # fakat nginx startup aşamasında çökmez.
-        set $webimar_upstream webimar-nginx:443;
-        proxy_pass https://$webimar_upstream;
-        proxy_ssl_verify off;
+        proxy_pass http://webimar_project;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

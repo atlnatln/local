@@ -2,6 +2,7 @@
 Ortak ve genel API endpoint'leri
 """
 from django.core.cache import cache
+from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,14 +12,24 @@ from datetime import timedelta
 import logging
 import re
 import unicodedata
+import requests
 
 from ..models import CalculationHistory, CalculationLog
 from ..serializers import CalculationHistorySerializer, CalculationHistoryCreateSerializer
 from ..tarimsal_yapilar import constants
 from accounts.utils import log_calculation, log_map_interaction
 from accounts.logging_utils import safe_log_request_data
+from ..throttles import CalculationFeedbackRateThrottle
+from rest_framework.decorators import throttle_classes
 
 logger = logging.getLogger('calculations')
+
+
+def _get_client_ip(request) -> str:
+    ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
+    if ip_address:
+        return ip_address.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR') or '127.0.0.1'
 
 
 def _normalize_text(value: str) -> str:
@@ -119,11 +130,7 @@ def track_public_calculation_event(request):
                 'detail': 'Geçersiz event verisi'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
-        if ip_address:
-            ip_address = ip_address.split(',')[0].strip()
-        else:
-            ip_address = request.META.get('REMOTE_ADDR') or '127.0.0.1'
+        ip_address = _get_client_ip(request)
 
         CalculationLog.log_calculation(
             user=request.user if hasattr(request, 'user') and request.user.is_authenticated else None,
@@ -146,6 +153,93 @@ def track_public_calculation_event(request):
         return Response({
             'success': False,
             'detail': 'Event kaydedilemedi'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@throttle_classes([CalculationFeedbackRateThrottle])
+def submit_calculation_feedback(request):
+    """Hesaplama sayfalarından gelen geri bildirimleri Telegram'a iletir."""
+    try:
+        message = str(request.data.get('message') or '').strip()
+        calculation_type = str(request.data.get('calculation_type') or '').strip()
+        source_app = str(request.data.get('source_app') or '').strip() or 'unknown'
+        page_path = str(request.data.get('page_path') or '').strip() or '-'
+
+        if not message:
+            return Response({
+                'success': False,
+                'detail': 'Mesaj alanı zorunludur.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(message) < 5:
+            return Response({
+                'success': False,
+                'detail': 'Mesaj en az 5 karakter olmalıdır.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(message) > 2000:
+            return Response({
+                'success': False,
+                'detail': 'Mesaj en fazla 2000 karakter olabilir.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if not calculation_type:
+            return Response({
+                'success': False,
+                'detail': 'Hangi hesaplamadan gönderildiği bilgisi eksik.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        telegram_token = getattr(settings, 'TELEGRAM_BOT_TOKEN', '')
+        telegram_chat_id = getattr(settings, 'TELEGRAM_CHAT_ID', '')
+
+        if not telegram_token or not telegram_chat_id:
+            logger.error('Calculation feedback Telegram ayarları eksik')
+            return Response({
+                'success': False,
+                'detail': 'Geri bildirim servisi şu anda kullanılamıyor.'
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        ip_address = _get_client_ip(request)
+        user_agent = request.META.get('HTTP_USER_AGENT', '-')
+
+        telegram_message = (
+            '🛠️ Yeni Hesaplama Geri Bildirimi\n\n'
+            f'📌 Hesaplama: {calculation_type}\n'
+            f'🧩 Kaynak: {source_app}\n'
+            f'🔗 Sayfa: {page_path}\n'
+            f'🌐 IP: {ip_address}\n'
+            f'🕒 Tarih: {timezone.now().strftime("%Y-%m-%d %H:%M:%S")}\n'
+            f'🧭 User-Agent: {user_agent[:220]}\n\n'
+            f'💬 Mesaj:\n{message}'
+        )
+
+        telegram_url = f'https://api.telegram.org/bot{telegram_token}/sendMessage'
+        telegram_response = requests.post(
+            telegram_url,
+            data={
+                'chat_id': telegram_chat_id,
+                'text': telegram_message,
+            },
+            timeout=8,
+        )
+        telegram_response.raise_for_status()
+
+        return Response({
+            'success': True,
+            'detail': 'Geri bildiriminiz gönderildi. Teşekkür ederiz.'
+        })
+    except requests.RequestException as telegram_error:
+        logger.error(f'Calculation feedback Telegram gönderim hatası: {telegram_error}')
+        return Response({
+            'success': False,
+            'detail': 'Geri bildirim gönderilemedi. Lütfen daha sonra tekrar deneyin.'
+        }, status=status.HTTP_502_BAD_GATEWAY)
+    except Exception as e:
+        logger.error(f'Calculation feedback endpoint hatası: {e}')
+        return Response({
+            'success': False,
+            'detail': 'Beklenmeyen bir hata oluştu.'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

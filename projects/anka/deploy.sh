@@ -17,9 +17,11 @@ NC='\033[0m'
 # Project configuration
 PROJECT_NAME="anka"
 DOMAIN="ankadata.com.tr"
-SERVER_IP="89.252.152.222"
-VPS_HOST="akn@89.252.152.222"
+SERVER_IP="${SERVER_IP:-89.252.152.222}"
+VPS_HOST="${VPS_HOST:-akn@${SERVER_IP}}"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VPS_USER="${VPS_HOST%@*}"
+VPS_HOSTNAME="${VPS_HOST#*@}"
 
 # GitHub (monorepo: /home/akn/vps)
 REPO_ROOT="$(cd "$PROJECT_DIR/../.." && pwd)"
@@ -48,6 +50,81 @@ log_warning() {
 
 log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
+}
+
+run_edge_smoke_checks() {
+    local runner_cmd
+    local smoke_script
+
+    read -r -d '' smoke_script <<'SMOKE' || true
+set -euo pipefail
+
+docker exec vps_nginx_main nginx -t >/dev/null
+
+check_domain() {
+    local domain="$1"
+    local result code effective
+    result="$(curl -L --max-redirs 5 --max-time 20 -o /dev/null -s -w "%{http_code} %{url_effective}" "https://${domain}/")"
+    code="${result%% *}"
+    effective="${result#* }"
+
+    echo "${domain} -> ${code} (${effective})"
+
+    if [ "$code" -lt 200 ] || [ "$code" -ge 400 ]; then
+        return 1
+    fi
+}
+
+check_domain "ankadata.com.tr"
+check_domain "tarimimar.com.tr"
+SMOKE
+
+    if [ "$RUNNING_ON_TARGET_VPS" = true ]; then
+        runner_cmd=(bash -lc "$smoke_script")
+    else
+        runner_cmd=(ssh "$VPS_HOST" "bash -lc $(printf '%q' "$smoke_script")")
+    fi
+
+    log_info "Running post-deploy edge smoke checks (nginx -t + domain curls)..."
+    if "${runner_cmd[@]}"; then
+        log_success "Post-deploy edge smoke checks passed"
+    else
+        log_error "Post-deploy edge smoke checks failed"
+        return 1
+    fi
+}
+
+is_running_on_target_vps() {
+    local current_user current_ips
+    current_user="$(whoami 2>/dev/null || true)"
+    current_ips="$(hostname -I 2>/dev/null || true)"
+
+    if [ "$current_user" != "$VPS_USER" ]; then
+        return 1
+    fi
+
+    case " $current_ips " in
+        *" $VPS_HOSTNAME "*) return 0 ;;
+        *" $SERVER_IP "*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+cert_has_domain_san() {
+    local cert_file="$1"
+    local domain="$2"
+    openssl x509 -in "$cert_file" -noout -ext subjectAltName 2>/dev/null | grep -Eq "DNS:${domain}(,|$)"
+}
+
+create_self_signed_with_san() {
+    local cert_file="$1"
+    local key_file="$2"
+    local domain="$3"
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout "$key_file" \
+        -out "$cert_file" \
+        -subj "/CN=${domain}" \
+        -addext "subjectAltName=DNS:${domain},DNS:www.${domain}" >/dev/null 2>&1
 }
 
 # Check if we're in the right directory
@@ -117,6 +194,14 @@ if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/
     exit 1
 fi
 
+if command -v docker-compose &> /dev/null; then
+    COMPOSE_CMD=(docker-compose)
+else
+    COMPOSE_CMD=(docker compose)
+fi
+
+COMPOSE_PROD_CMD=("${COMPOSE_CMD[@]}" --env-file .env.production -f docker-compose.prod.yml)
+
 # Check if Docker daemon is running
 if ! docker info &> /dev/null; then
     log_error "Docker daemon is not running"
@@ -124,6 +209,18 @@ if ! docker info &> /dev/null; then
 fi
 
 log_success "Pre-deployment checks passed"
+
+# Ensure shared edge network exists (for infrastructure nginx <-> project nginx routing)
+if ! docker network inspect vps_infrastructure_network >/dev/null 2>&1; then
+    log_info "Creating shared network: vps_infrastructure_network"
+    docker network create vps_infrastructure_network >/dev/null
+fi
+
+RUNNING_ON_TARGET_VPS=false
+if is_running_on_target_vps; then
+    RUNNING_ON_TARGET_VPS=true
+    log_info "Running on target VPS directly; remote SSH steps will run locally"
+fi
 
 # Create necessary directories
 log_info "Creating necessary directories..."
@@ -142,6 +239,18 @@ log_success "Directories created"
 # SSL Certificate setup (if not skipping)
 if [ "$SKIP_SSL" = false ]; then
     log_info "Setting up SSL certificates..."
+    INFRA_CERT_DIR="$REPO_ROOT/infrastructure/ssl/$DOMAIN"
+    PROJECT_CERT_DIR="ssl/$DOMAIN"
+
+    if [ -f "$INFRA_CERT_DIR/fullchain.pem" ] && [ -f "$INFRA_CERT_DIR/privkey.pem" ]; then
+        log_info "Copying SSL certificates from infrastructure/ssl..."
+        cp "$INFRA_CERT_DIR/fullchain.pem" "$PROJECT_CERT_DIR/fullchain.pem"
+        cp "$INFRA_CERT_DIR/privkey.pem" "$PROJECT_CERT_DIR/privkey.pem"
+        if ! cert_has_domain_san "$PROJECT_CERT_DIR/fullchain.pem" "$DOMAIN"; then
+            log_warning "Infrastructure certificate SAN does not include ${DOMAIN}; generating local SAN self-signed cert"
+            create_self_signed_with_san "$PROJECT_CERT_DIR/fullchain.pem" "$PROJECT_CERT_DIR/privkey.pem" "$DOMAIN"
+        fi
+    fi
     
     if [ ! -f "ssl/ankadata.com.tr/fullchain.pem" ] || [ ! -f "ssl/ankadata.com.tr/privkey.pem" ]; then
         log_warning "SSL certificates not found. Please generate them manually:"
@@ -161,6 +270,27 @@ if [ "$SKIP_SSL" = false ]; then
         exit 1
     else
         log_success "SSL certificates found"
+    fi
+fi
+
+if [ "$SKIP_SSL" = true ]; then
+    CERT_DIR="ssl/ankadata.com.tr"
+    CERT_FILE="$CERT_DIR/fullchain.pem"
+    KEY_FILE="$CERT_DIR/privkey.pem"
+    INFRA_CERT_DIR="$REPO_ROOT/infrastructure/ssl/$DOMAIN"
+    mkdir -p "$CERT_DIR"
+
+    if [ -f "$INFRA_CERT_DIR/fullchain.pem" ] && [ -f "$INFRA_CERT_DIR/privkey.pem" ]; then
+        log_info "SSL skipped: reusing certificates from infrastructure/ssl"
+        cp "$INFRA_CERT_DIR/fullchain.pem" "$CERT_FILE"
+        cp "$INFRA_CERT_DIR/privkey.pem" "$KEY_FILE"
+        if ! cert_has_domain_san "$CERT_FILE" "$DOMAIN"; then
+            log_warning "Infrastructure certificate SAN does not include ${DOMAIN}; generating local SAN self-signed cert"
+            create_self_signed_with_san "$CERT_FILE" "$KEY_FILE" "$DOMAIN"
+        fi
+    elif [ ! -f "$CERT_FILE" ] || [ ! -f "$KEY_FILE" ]; then
+        log_warning "SSL skipped: generating self-signed certificate for nginx startup"
+        create_self_signed_with_san "$CERT_FILE" "$KEY_FILE" "$DOMAIN"
     fi
 fi
 
@@ -189,13 +319,13 @@ fi
 
 # Stop existing containers
 log_info "Stopping existing containers..."
-docker-compose -f docker-compose.prod.yml down --remove-orphans || true
+"${COMPOSE_PROD_CMD[@]}" down --remove-orphans || true
 log_success "Existing containers stopped"
 
 # Build images (if not skipping)
 if [ "$SKIP_BUILD" = false ]; then
     log_info "Building Docker images..."
-    docker-compose -f docker-compose.prod.yml build --no-cache
+    "${COMPOSE_PROD_CMD[@]}" build --no-cache
     log_success "Docker images built"
 else
     log_info "Skipping Docker image build"
@@ -205,9 +335,9 @@ fi
 log_info "Starting production containers..."
 
 if [ "$FORCE_RECREATE" = true ]; then
-    docker-compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans
+    "${COMPOSE_PROD_CMD[@]}" up -d --force-recreate --remove-orphans
 else
-    docker-compose -f docker-compose.prod.yml up -d --remove-orphans
+    "${COMPOSE_PROD_CMD[@]}" up -d --remove-orphans
 fi
 
 log_success "Production containers started"
@@ -215,9 +345,17 @@ log_success "Production containers started"
 # Update infrastructure nginx configuration
 log_info "Updating infrastructure nginx configuration..."
 if [ -f "../../infrastructure/nginx/conf.d/anka.conf" ]; then
-    ssh "$VPS_HOST" "mkdir -p /home/akn/vps/infrastructure/nginx/conf.d"
-    scp "../../infrastructure/nginx/conf.d/anka.conf" "$VPS_HOST:/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
-    ssh "$VPS_HOST" "docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload" 2>/dev/null || log_warning "Infrastructure nginx reload failed (might not be running)"
+    if [ "$RUNNING_ON_TARGET_VPS" = true ]; then
+        mkdir -p /home/akn/vps/infrastructure/nginx/conf.d
+        cp "../../infrastructure/nginx/conf.d/anka.conf" "/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
+        docker compose -f /home/akn/vps/infrastructure/docker-compose.yml up -d nginx_proxy >/dev/null 2>&1 || true
+        docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload 2>/dev/null || log_warning "Infrastructure nginx reload failed"
+    else
+        ssh "$VPS_HOST" "mkdir -p /home/akn/vps/infrastructure/nginx/conf.d"
+        scp "../../infrastructure/nginx/conf.d/anka.conf" "$VPS_HOST:/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
+        ssh "$VPS_HOST" "docker network inspect vps_infrastructure_network >/dev/null 2>&1 || docker network create vps_infrastructure_network >/dev/null"
+        ssh "$VPS_HOST" "docker compose -f /home/akn/vps/infrastructure/docker-compose.yml up -d nginx_proxy >/dev/null 2>&1 || true; docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload" 2>/dev/null || log_warning "Infrastructure nginx reload failed"
+    fi
     log_success "Infrastructure nginx updated"
 else
     log_warning "Infrastructure nginx config not found at ../../infrastructure/nginx/conf.d/anka.conf"
@@ -260,25 +398,30 @@ fi
 
 # Run database migrations
 log_info "Running database migrations..."
-docker-compose -f docker-compose.prod.yml exec -T backend python manage.py migrate --noinput
+"${COMPOSE_PROD_CMD[@]}" exec -T backend python manage.py migrate --noinput
 log_success "Database migrations completed"
 
 # Collect static files
 log_info "Collecting static files..."
-docker-compose -f docker-compose.prod.yml exec -T backend python manage.py collectstatic --noinput --clear
+"${COMPOSE_PROD_CMD[@]}" exec -T --user root backend sh -c "mkdir -p /app/staticfiles /app/media && chown -R anka:anka /app/staticfiles /app/media" || true
+"${COMPOSE_PROD_CMD[@]}" exec -T backend python manage.py collectstatic --noinput --clear
 log_success "Static files collected"
 
 # Create superuser (if it doesn't exist)
 log_info "Setting up admin user..."
-docker-compose -f docker-compose.prod.yml exec -T backend python manage.py shell -c "
+"${COMPOSE_PROD_CMD[@]}" exec -T backend python manage.py shell -c "
+import os
 from django.contrib.auth import get_user_model
 User = get_user_model()
+admin_password = os.environ.get('ADMIN_INITIAL_PASSWORD', 'change-this-admin-password')
 if not User.objects.filter(is_superuser=True).exists():
-    User.objects.create_superuser('admin', 'admin@ankadata.com.tr', 'change-this-admin-password')
+    User.objects.create_superuser('admin', 'admin@ankadata.com.tr', admin_password)
     print('Admin user created')
 else:
     print('Admin user already exists')
 " 2>/dev/null || log_warning "Could not create admin user automatically"
+
+run_edge_smoke_checks
 
 # Show final status
 echo ""
@@ -294,9 +437,9 @@ if [ "$SKIP_SSL" = false ]; then
     echo -e "   Admin Panel:   https://ankadata.com.tr/admin/"
     echo -e "   API:           https://ankadata.com.tr/api/"
 else
-    echo -e "   Main Site:     http://89.252.152.222:8081"
-    echo -e "   Admin Panel:   http://89.252.152.222:8081/admin/"
-    echo -e "   API:           http://89.252.152.222:8081/api/"
+    echo -e "   Main Site:     http://${SERVER_IP}:8081"
+    echo -e "   Admin Panel:   http://${SERVER_IP}:8081/admin/"
+    echo -e "   API:           http://${SERVER_IP}:8081/api/"
 fi
 echo ""
 echo -e "${GREEN}🔧 Management:${NC}"
@@ -306,7 +449,7 @@ echo -e "   Stop:          docker-compose -f docker-compose.prod.yml down"
 echo ""
 echo -e "${GREEN}👤 Default Admin:${NC}"
 echo -e "   Username:      admin"
-echo -e "   Password:      change-this-admin-password"
+echo -e "   Password:      ADMIN_INITIAL_PASSWORD (from .env.production)"
 echo -e "   Email:         admin@ankadata.com.tr"
 echo ""
 echo -e "${YELLOW}⚠️  Security Notes:${NC}"
@@ -317,7 +460,7 @@ echo -e "   4. Set up regular database backups"
 echo -e "   5. Monitor logs regularly"
 echo ""
 echo -e "${GREEN}✅ Next Steps:${NC}"
-echo -e "   1. Configure DNS A record: ankadata.com.tr → 89.252.152.222"
+echo -e "   1. Configure DNS A record: ankadata.com.tr → ${SERVER_IP}"
 echo -e "   2. Test the application thoroughly"
 echo -e "   3. Set up monitoring and alerting"
 echo -e "   4. Configure regular backups"

@@ -3,6 +3,7 @@ import Seo from '../components/Seo';
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import DebouncedInput from '../components/DebouncedInput';
+import CalculationFeedbackAccordion from '../components/CalculationFeedbackAccordion';
 import { useGA4 } from '../lib/useGA4';
 import styles from '../styles/GubreCukuru.module.css';
 
@@ -535,6 +536,8 @@ export default function GubreCukuruHesaplamaPage() {
             <h1>🐄 Gübre Çukuru Kapasite Hesaplama</h1>
             <p>Tarım Bakanlığı Mevzuatına Uygun Hesaplama Sistemi</p>
           </div>
+
+          <CalculationFeedbackAccordion calculationType="gubre_cukuru" />
 
           <div className={styles.content}>
             {/* Hayvan Adetleri Girişi */}

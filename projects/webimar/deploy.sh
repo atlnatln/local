@@ -27,12 +27,14 @@ SKIP_VPS=false
 SKIP_GITHUB=false
 RUN_VPS_CLEANUP=true
 DEPLOY_MODE="package"  # package (default) | git
+AUTO_STAGE_GITHUB=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --skip-build) SKIP_BUILD=true; shift ;;
         --skip-vps) SKIP_VPS=true; shift ;;
         --skip-github) SKIP_GITHUB=true; shift ;;
+        --auto-stage-github) AUTO_STAGE_GITHUB=true; shift ;;
         --no-vps-cleanup) RUN_VPS_CLEANUP=false; shift ;;
         --mode)
             DEPLOY_MODE="${2:-}"
@@ -44,6 +46,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --skip-build    Skip container build step"
             echo "  --skip-vps      Skip VPS deployment"
             echo "  --skip-github   Skip GitHub push"
+            echo "  --auto-stage-github   GitHub push öncesi otomatik stage yap (DİKKAT)"
             echo "  --no-vps-cleanup   Skip deploy sonrası güvenli VPS disk temizliği"
             echo "  --mode <package|git>  Deploy mode:"
             echo "       package: build+export images and scp to VPS (default)"
@@ -269,6 +272,9 @@ docker compose -f docker-compose.prod.yml down --remove-orphans 2>/dev/null || t
 # Eski stack varsa (docker-compose.yml), onu da kapat (volume silme yok).
 docker compose -f docker-compose.yml down --remove-orphans 2>/dev/null || true
 
+# Shared edge network (infrastructure nginx erişimi için)
+docker network inspect vps_infrastructure_network >/dev/null 2>&1 || docker network create vps_infrastructure_network >/dev/null
+
 # Start main services
 docker compose -f docker-compose.prod.yml up -d
 
@@ -300,6 +306,7 @@ if [ "$SKIP_VPS" = false ]; then
     if [[ "$DEPLOY_MODE" == "package" ]]; then
         # Create remote directory
         ssh "$VPS_HOST" "mkdir -p $VPS_PATH"
+        ssh "$VPS_HOST" "docker network inspect vps_infrastructure_network >/dev/null 2>&1 || docker network create vps_infrastructure_network >/dev/null"
 
         # Upload package
         echo -e "  → Uploading package to VPS..."
@@ -313,6 +320,7 @@ if [ "$SKIP_VPS" = false ]; then
         echo -e "  → Running git pull + docker compose on VPS..."
         ssh "$VPS_HOST" "set -euo pipefail; cd $VPS_PATH; \
             if [ ! -d .git ]; then echo '❌ VPS_PATH is not a git repo. Clone the repo to VPS_PATH or use --mode package.'; exit 1; fi; \
+            docker network inspect vps_infrastructure_network >/dev/null 2>&1 || docker network create vps_infrastructure_network >/dev/null; \
             if [ ! -f .env ]; then echo '❌ .env missing on VPS. Deploy iptal edildi (DB kalıcılığı koruması).'; exit 1; fi; \
             if ! grep -Eq '^DATABASE_URL=postgres(ql)?://' .env; then echo '❌ .env DATABASE_URL PostgreSQL değil/eksik. Deploy iptal edildi (DB kalıcılığı koruması).'; exit 1; fi; \
             if docker ps --format '{{.Names}}' | grep -qx webimar-postgres; then \
@@ -352,49 +360,40 @@ if [ "$SKIP_VPS" = false ]; then
         ssh "$VPS_HOST" bash -s <<'SMOKE'
 set -euo pipefail
 
-base="http://127.0.0.1"
-
-get_code() {
-    curl -s -o /dev/null -w "%{http_code}" "$1" || echo "000"
-}
-
-wait_for_200() {
-    url="$1"
-    label="$2"
-    timeout_seconds="${3:-120}"
-    interval_seconds=3
-
-    start_ts="$(date +%s)"
-    while true; do
-        code="$(get_code "$url")"
-        # Nginx http→https redirect (301/302) is acceptable for smoke checks.
-        if [ "$code" = "200" ] || [ "$code" = "301" ] || [ "$code" = "302" ]; then
-            echo "$label -> $code"
-            return 0
-        fi
-
-        now_ts="$(date +%s)"
-        elapsed=$((now_ts - start_ts))
-        if [ "$elapsed" -ge "$timeout_seconds" ]; then
-            echo "$label -> $code (timeout ${timeout_seconds}s)"
-            return 1
-        fi
-        sleep "$interval_seconds"
-    done
-}
-
 ok=1
 
-# API health check - gerçek endpoint kullan
-wait_for_200 "$base/api/calculations/yapi-turleri/" "/api/calculations/yapi-turleri/" 120 || ok=0
+check_container() {
+    local name="$1"
 
-code_admin="$(get_code "$base/admin/")"
-code_root="$(get_code "$base/")"
-echo "/admin/ -> $code_admin"
-echo "/ -> $code_root"
+    if ! docker ps --format '{{.Names}}' | grep -qx "$name"; then
+        echo "$name -> missing"
+        ok=0
+        return
+    fi
 
-case "$code_admin" in 200|301|302) : ;; *) ok=0 ;; esac
-case "$code_root" in 200|301|302) : ;; *) ok=0 ;; esac
+    local status
+    status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$name" 2>/dev/null || echo unknown)"
+    echo "$name -> $status"
+
+    case "$status" in
+        healthy|running) : ;;
+        *) ok=0 ;;
+    esac
+}
+
+check_container "webimar-nginx"
+check_container "webimar-api"
+check_container "webimar-nextjs"
+check_container "webimar-react"
+check_container "webimar-postgres"
+check_container "webimar-redis"
+
+if docker exec webimar-api python manage.py check >/dev/null 2>&1; then
+    echo "django-check -> ok"
+else
+    echo "django-check -> fail"
+    ok=0
+fi
 
 if [ "$ok" -ne 1 ]; then
     echo "❌ Smoke check failed"
@@ -414,12 +413,8 @@ SMOKE
             cd $VPS_PATH; \
             rm -f webimar-deploy.tar.gz; \
             rm -f images/*.tar 2>/dev/null || true; \
-            docker container prune -f >/tmp/webimar_prune_containers.log; \
-            docker image prune -a -f >/tmp/webimar_prune_images.log; \
-            docker volume prune -f >/tmp/webimar_prune_volumes.log; \
-            echo '--- container prune ---'; cat /tmp/webimar_prune_containers.log; \
+            docker image prune -f >/tmp/webimar_prune_images.log; \
             echo '--- image prune ---'; cat /tmp/webimar_prune_images.log; \
-            echo '--- volume prune ---'; cat /tmp/webimar_prune_volumes.log; \
             echo '--- Disk after ---'; \
             df -h / /home; \
             echo '--- Docker after ---'; \
@@ -428,6 +423,31 @@ SMOKE
     else
         echo -e "\n${YELLOW}[3/5c] ⏭️  Skipping VPS cleanup (--no-vps-cleanup)${NC}"
     fi
+
+    echo -e "\n${YELLOW}[3/5d] 🩺 Running edge smoke checks (nginx -t + domains)...${NC}"
+    ssh "$VPS_HOST" bash -s <<'EDGE_SMOKE'
+set -euo pipefail
+
+docker exec vps_nginx_main nginx -t >/dev/null
+
+check_domain() {
+    local domain="$1"
+    local result code effective
+    result="$(curl -L --max-redirs 5 --max-time 20 -o /dev/null -s -w "%{http_code} %{url_effective}" "https://${domain}/")"
+    code="${result%% *}"
+    effective="${result#* }"
+    echo "${domain} -> ${code} (${effective})"
+
+    if [ "$code" -lt 200 ] || [ "$code" -ge 400 ]; then
+        return 1
+    fi
+}
+
+check_domain "ankadata.com.tr"
+check_domain "tarimimar.com.tr"
+EDGE_SMOKE
+
+    echo -e "  ${GREEN}✅ Edge smoke checks passed${NC}"
 else
     echo -e "\n${YELLOW}[3/5] ⏭️  Skipping VPS deployment (--skip-vps)${NC}"
 fi
@@ -435,9 +455,14 @@ fi
 # Step 4: Push to GitHub
 if [ "$SKIP_GITHUB" = false ]; then
     echo -e "\n${YELLOW}[4/5] 📤 Pushing to GitHub...${NC}"
-    
-    # Add only tracked files and specific new files, excluding ignored ones
-    git add .
+
+    if [ "$AUTO_STAGE_GITHUB" = true ]; then
+        echo -e "  ${YELLOW}⚠️  Auto-stage açık: git add -A çalıştırılıyor${NC}"
+        git add -A
+    else
+        echo -e "  ${BLUE}Auto-stage kapalı: yalnızca önceden stage edilmiş değişiklikler push edilecek${NC}"
+        echo -e "  ${BLUE}Gerekirse --auto-stage-github ile tekrar çalıştırabilirsiniz${NC}"
+    fi
     
     # Check if there are changes
     if git diff --staged --quiet; then

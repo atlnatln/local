@@ -6,6 +6,7 @@ import ResultDisplay from '../components/ResultDisplay';
 import MapComponent, { MapRef } from '../components/Map/MapComponent';
 import LocationAutocomplete from '../components/LocationAutocomplete';
 import WaterPermitWarning from '../components/WaterPermitWarning';
+import CalculationFeedbackAccordion from '../components/CalculationFeedbackAccordion';
 import { LocationValidationProvider, useLocationValidation } from '../contexts/LocationValidationContext';
 import { CalculationResult, StructureType } from '../types';
 import { KMLParser } from '../utils/kmlParser';
@@ -611,6 +612,8 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
           <PageTitle>{title}</PageTitle>
           <PageDescription>{description}</PageDescription>
         </PageHeader>
+
+      <CalculationFeedbackAccordion calculationType={calculationType} />
       
       {/* Su Tahsis Belgesi Uyarısı */}
       {shouldShowWaterPermitWarning() && <WaterPermitWarning />}

@@ -3,6 +3,7 @@ import Head from 'next/head';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import Seo from '../components/Seo';
+import CalculationFeedbackAccordion from '../components/CalculationFeedbackAccordion';
 import { BUZAGI_DESTEGI_CONFIG, PLANLI_URETIM_ILLERI } from '../data/buzagiDestegiConfig';
 
 type SoyKutuguSinifi = 'ab' | 'c' | null;
@@ -754,6 +755,8 @@ export default function BuzagiDestegiHesaplamaPage() {
               TÜRKVET + VETBİS kayıtlarının tamamlanmış olması gerekir.
             </MetaRow>
           </Card>
+
+          <CalculationFeedbackAccordion calculationType="buzagi_destegi_hesaplama" />
 
           <Card>
             <Grid>
