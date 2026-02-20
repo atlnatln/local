@@ -139,6 +139,24 @@ if [ ! -f ".env.production" ]; then
     exit 1
 fi
 
+get_env_value() {
+    local key="$1"
+    local value
+    value="$(grep -E "^${key}=" .env.production | tail -n 1 | cut -d'=' -f2- || true)"
+    value="${value%\"}"
+    value="${value#\"}"
+    echo "$value"
+}
+
+GOOGLE_OIDC_CLIENT_ID_VALUE="$(get_env_value "GOOGLE_OIDC_CLIENT_ID")"
+NEXT_PUBLIC_GOOGLE_CLIENT_ID_VALUE="$(get_env_value "NEXT_PUBLIC_GOOGLE_CLIENT_ID")"
+
+if [ -z "$GOOGLE_OIDC_CLIENT_ID_VALUE" ] || [ -z "$NEXT_PUBLIC_GOOGLE_CLIENT_ID_VALUE" ]; then
+    log_error "Missing Google OAuth env vars in .env.production"
+    log_error "Required: GOOGLE_OIDC_CLIENT_ID and NEXT_PUBLIC_GOOGLE_CLIENT_ID"
+    exit 1
+fi
+
 # Parse command line arguments
 SKIP_BUILD=false
 SKIP_SSL=false
