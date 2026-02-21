@@ -150,11 +150,21 @@ get_env_value() {
 
 GOOGLE_OIDC_CLIENT_ID_VALUE="$(get_env_value "GOOGLE_OIDC_CLIENT_ID")"
 NEXT_PUBLIC_GOOGLE_CLIENT_ID_VALUE="$(get_env_value "NEXT_PUBLIC_GOOGLE_CLIENT_ID")"
+ENABLE_IYZICO_VALUE="$(get_env_value "ENABLE_IYZICO")"
+IYZICO_WEBHOOK_SECRET_VALUE="$(get_env_value "IYZICO_WEBHOOK_SECRET")"
 
 if [ -z "$GOOGLE_OIDC_CLIENT_ID_VALUE" ] || [ -z "$NEXT_PUBLIC_GOOGLE_CLIENT_ID_VALUE" ]; then
     log_error "Missing Google OAuth env vars in .env.production"
     log_error "Required: GOOGLE_OIDC_CLIENT_ID and NEXT_PUBLIC_GOOGLE_CLIENT_ID"
     exit 1
+fi
+
+if [ -z "$ENABLE_IYZICO_VALUE" ] || [ "$ENABLE_IYZICO_VALUE" = "True" ] || [ "$ENABLE_IYZICO_VALUE" = "true" ]; then
+    if [ -z "$IYZICO_WEBHOOK_SECRET_VALUE" ]; then
+        log_error "Missing Iyzico webhook secret in .env.production"
+        log_error "Required when ENABLE_IYZICO is true: IYZICO_WEBHOOK_SECRET"
+        exit 1
+    fi
 fi
 
 # Parse command line arguments
@@ -360,12 +370,28 @@ fi
 
 log_success "Production containers started"
 
+# Ensure correct Django production settings in all backend containers
+# (guards against stale image builds where prod.py lacked SECURE_PROXY_SSL_HEADER / USE_X_FORWARDED_HOST)
+log_info "Syncing Django production settings into running containers..."
+SETTINGS_SRC="services/backend/project/settings/prod.py"
+for _container in anka_backend_prod anka_celery_worker_prod anka_celery_beat_prod; do
+    if docker ps --format '{{.Names}}' | grep -q "^${_container}$"; then
+        docker cp "${SETTINGS_SRC}" "${_container}:/app/project/settings/prod.py" 2>/dev/null && \
+            log_info "  ✓ ${_container}" || \
+            log_warning "  Could not sync settings to ${_container}"
+    fi
+done
+unset _container
+log_success "Django production settings synced"
+
 # Update infrastructure nginx configuration
 log_info "Updating infrastructure nginx configuration..."
 if [ -f "../../infrastructure/nginx/conf.d/anka.conf" ]; then
     if [ "$RUNNING_ON_TARGET_VPS" = true ]; then
         mkdir -p /home/akn/vps/infrastructure/nginx/conf.d
-        cp "../../infrastructure/nginx/conf.d/anka.conf" "/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
+        if [ "$(realpath "../../infrastructure/nginx/conf.d/anka.conf")" != "$(realpath "/home/akn/vps/infrastructure/nginx/conf.d/anka.conf" 2>/dev/null || echo "")" ]; then
+            cp "../../infrastructure/nginx/conf.d/anka.conf" "/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
+        fi
         docker compose -f /home/akn/vps/infrastructure/docker-compose.yml up -d nginx_proxy >/dev/null 2>&1 || true
         docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload 2>/dev/null || log_warning "Infrastructure nginx reload failed"
     else
