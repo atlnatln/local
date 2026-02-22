@@ -38,20 +38,20 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@anka.co')
 # Logging for production
 LOGGING['root']['level'] = 'INFO'
 
-# Sentry (optional)
+# Sentry (optional) — only init when DSN is a real HTTPS URL
 try:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 
-    SENTRY_DSN = os.environ.get('SENTRY_DSN')
-    if SENTRY_DSN:
+    SENTRY_DSN = os.environ.get('SENTRY_DSN', '').strip()
+    if SENTRY_DSN and SENTRY_DSN.startswith('https://'):
         sentry_sdk.init(
             dsn=SENTRY_DSN,
             integrations=[DjangoIntegration()],
             traces_sample_rate=0.1,
             send_default_pii=False
         )
-except ImportError:
+except Exception:  # noqa: BLE001
     pass
 
 # CORS (restricted)

@@ -22,6 +22,15 @@ VPS_HOST="${VPS_HOST:-akn@${SERVER_IP}}"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VPS_USER="${VPS_HOST%@*}"
 VPS_HOSTNAME="${VPS_HOST#*@}"
+SSH_CONNECT_TIMEOUT="${SSH_CONNECT_TIMEOUT:-10}"
+SSH_OPTS=(
+    -o BatchMode=yes
+    -o IdentitiesOnly=yes
+    -o StrictHostKeyChecking=accept-new
+    -o ConnectTimeout="${SSH_CONNECT_TIMEOUT}"
+    -o ServerAliveInterval=30
+    -o ServerAliveCountMax=3
+)
 
 # GitHub (monorepo: /home/akn/vps)
 REPO_ROOT="$(cd "$PROJECT_DIR/../.." && pwd)"
@@ -50,6 +59,68 @@ log_warning() {
 
 log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
+}
+
+verify_frontend_runtime_bundle() {
+    log_info "Verifying frontend runtime bundle (no localhost API fallback)..."
+
+    if ! docker ps --format '{{.Names}}' | grep -q '^anka_frontend_prod$'; then
+        log_error "Frontend container is not running (anka_frontend_prod)"
+        return 1
+    fi
+
+    local localhost_hits
+    localhost_hits="$(docker exec anka_frontend_prod sh -lc "grep -R \"localhost:8000\" /app/.next/static/chunks >/tmp/anka_frontend_localhost_hits.txt 2>/dev/null; cat /tmp/anka_frontend_localhost_hits.txt | wc -l")"
+
+    if [ "${localhost_hits:-0}" -gt 0 ]; then
+        log_error "Detected localhost:8000 in frontend production bundle (${localhost_hits} hit)."
+        log_error "NEXT_PUBLIC_API_URL is likely misconfigured during build."
+        docker exec anka_frontend_prod sh -lc "head -n 3 /tmp/anka_frontend_localhost_hits.txt" 2>/dev/null || true
+        return 1
+    fi
+
+    log_success "Frontend runtime bundle check passed"
+}
+
+run_application_smoke_checks() {
+    local base_url origin preflight_status post_status health_status
+
+    if [ "$SKIP_SSL" = true ]; then
+        base_url="http://${SERVER_IP}:8081"
+        origin="http://${SERVER_IP}:8081"
+    else
+        base_url="https://${DOMAIN}"
+        origin="https://${DOMAIN}"
+    fi
+
+    log_info "Running application smoke checks (health + auth preflight + auth validation)..."
+
+    health_status="$(curl -s -o /dev/null -w "%{http_code}" "${base_url}/api/health/")"
+    if [ "$health_status" != "200" ]; then
+        log_error "Health check failed: ${base_url}/api/health/ -> ${health_status}"
+        return 1
+    fi
+
+    preflight_status="$(curl -s -o /dev/null -w "%{http_code}" \
+        -X OPTIONS "${base_url}/api/auth/google/" \
+        -H "Origin: ${origin}" \
+        -H "Access-Control-Request-Method: POST" \
+        -H "Access-Control-Request-Headers: content-type")"
+    if [ "$preflight_status" -lt 200 ] || [ "$preflight_status" -ge 300 ]; then
+        log_error "Google auth preflight failed: ${base_url}/api/auth/google/ -> ${preflight_status}"
+        return 1
+    fi
+
+    post_status="$(curl -s -o /dev/null -w "%{http_code}" \
+        -X POST "${base_url}/api/auth/google/" \
+        -H "Content-Type: application/json" \
+        -d '{}')"
+    if [ "$post_status" != "400" ]; then
+        log_error "Google auth validation check failed (expected 400 for empty payload): got ${post_status}"
+        return 1
+    fi
+
+    log_success "Application smoke checks passed"
 }
 
 run_edge_smoke_checks() {
@@ -82,7 +153,7 @@ SMOKE
     if [ "$RUNNING_ON_TARGET_VPS" = true ]; then
         runner_cmd=(bash -lc "$smoke_script")
     else
-        runner_cmd=(ssh "$VPS_HOST" "bash -lc $(printf '%q' "$smoke_script")")
+        runner_cmd=(ssh "${SSH_OPTS[@]}" "$VPS_HOST" "bash -lc $(printf '%q' "$smoke_script")")
     fi
 
     log_info "Running post-deploy edge smoke checks (nginx -t + domain curls)..."
@@ -150,6 +221,9 @@ get_env_value() {
 
 GOOGLE_OIDC_CLIENT_ID_VALUE="$(get_env_value "GOOGLE_OIDC_CLIENT_ID")"
 NEXT_PUBLIC_GOOGLE_CLIENT_ID_VALUE="$(get_env_value "NEXT_PUBLIC_GOOGLE_CLIENT_ID")"
+NEXT_PUBLIC_API_URL_VALUE="$(get_env_value "NEXT_PUBLIC_API_URL")"
+NEXT_PUBLIC_SITE_URL_VALUE="$(get_env_value "NEXT_PUBLIC_SITE_URL")"
+CORS_ALLOWED_ORIGINS_VALUE="$(get_env_value "CORS_ALLOWED_ORIGINS")"
 ENABLE_IYZICO_VALUE="$(get_env_value "ENABLE_IYZICO")"
 IYZICO_WEBHOOK_SECRET_VALUE="$(get_env_value "IYZICO_WEBHOOK_SECRET")"
 
@@ -157,6 +231,30 @@ if [ -z "$GOOGLE_OIDC_CLIENT_ID_VALUE" ] || [ -z "$NEXT_PUBLIC_GOOGLE_CLIENT_ID_
     log_error "Missing Google OAuth env vars in .env.production"
     log_error "Required: GOOGLE_OIDC_CLIENT_ID and NEXT_PUBLIC_GOOGLE_CLIENT_ID"
     exit 1
+fi
+
+if [ -z "$NEXT_PUBLIC_API_URL_VALUE" ]; then
+    log_error "Missing NEXT_PUBLIC_API_URL in .env.production"
+    exit 1
+fi
+
+if [ -z "$NEXT_PUBLIC_SITE_URL_VALUE" ]; then
+    log_error "Missing NEXT_PUBLIC_SITE_URL in .env.production"
+    exit 1
+fi
+
+if [[ "$NEXT_PUBLIC_API_URL_VALUE" == *"localhost"* ]] || [[ "$NEXT_PUBLIC_API_URL_VALUE" == *"127.0.0.1"* ]]; then
+    log_error "NEXT_PUBLIC_API_URL cannot point to localhost/127.0.0.1 in production"
+    exit 1
+fi
+
+if [[ "$NEXT_PUBLIC_SITE_URL_VALUE" == *"localhost"* ]] || [[ "$NEXT_PUBLIC_SITE_URL_VALUE" == *"127.0.0.1"* ]]; then
+    log_error "NEXT_PUBLIC_SITE_URL cannot point to localhost/127.0.0.1 in production"
+    exit 1
+fi
+
+if [ -n "$CORS_ALLOWED_ORIGINS_VALUE" ] && [[ "$CORS_ALLOWED_ORIGINS_VALUE" != *"https://${DOMAIN}"* ]]; then
+    log_warning "CORS_ALLOWED_ORIGINS does not include https://${DOMAIN}"
 fi
 
 if [ -z "$ENABLE_IYZICO_VALUE" ] || [ "$ENABLE_IYZICO_VALUE" = "True" ] || [ "$ENABLE_IYZICO_VALUE" = "true" ]; then
@@ -395,10 +493,10 @@ if [ -f "../../infrastructure/nginx/conf.d/anka.conf" ]; then
         docker compose -f /home/akn/vps/infrastructure/docker-compose.yml up -d nginx_proxy >/dev/null 2>&1 || true
         docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload 2>/dev/null || log_warning "Infrastructure nginx reload failed"
     else
-        ssh "$VPS_HOST" "mkdir -p /home/akn/vps/infrastructure/nginx/conf.d"
-        scp "../../infrastructure/nginx/conf.d/anka.conf" "$VPS_HOST:/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
-        ssh "$VPS_HOST" "docker network inspect vps_infrastructure_network >/dev/null 2>&1 || docker network create vps_infrastructure_network >/dev/null"
-        ssh "$VPS_HOST" "docker compose -f /home/akn/vps/infrastructure/docker-compose.yml up -d nginx_proxy >/dev/null 2>&1 || true; docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload" 2>/dev/null || log_warning "Infrastructure nginx reload failed"
+        ssh "${SSH_OPTS[@]}" "$VPS_HOST" "mkdir -p /home/akn/vps/infrastructure/nginx/conf.d"
+        scp "${SSH_OPTS[@]}" "../../infrastructure/nginx/conf.d/anka.conf" "$VPS_HOST:/home/akn/vps/infrastructure/nginx/conf.d/anka.conf"
+        ssh "${SSH_OPTS[@]}" "$VPS_HOST" "docker network inspect vps_infrastructure_network >/dev/null 2>&1 || docker network create vps_infrastructure_network >/dev/null"
+        ssh "${SSH_OPTS[@]}" "$VPS_HOST" "docker compose -f /home/akn/vps/infrastructure/docker-compose.yml up -d nginx_proxy >/dev/null 2>&1 || true; docker exec vps_nginx_main nginx -t && docker exec vps_nginx_main nginx -s reload" 2>/dev/null || log_warning "Infrastructure nginx reload failed"
     fi
     log_success "Infrastructure nginx updated"
 else
@@ -440,6 +538,8 @@ else
     log_success "All services are healthy"
 fi
 
+verify_frontend_runtime_bundle
+
 # Run database migrations
 log_info "Running database migrations..."
 "${COMPOSE_PROD_CMD[@]}" exec -T backend python manage.py migrate --noinput
@@ -466,6 +566,7 @@ else:
 " 2>/dev/null || log_warning "Could not create admin user automatically"
 
 run_edge_smoke_checks
+run_application_smoke_checks
 
 # Show final status
 echo ""

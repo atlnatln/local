@@ -5,7 +5,9 @@ from apps.accounts.models import Organization, OrganizationMember
 from apps.batches.models import Batch
 
 
-def test_dispute_create_view(db):
+def test_dispute_create_view(db, settings):
+    settings.SECURE_SSL_REDIRECT = False
+
     user_model = get_user_model()
     user = user_model.objects.create_user(username="disputer", password="pass123")
     org = Organization.objects.create(name="Dispute Org", slug="dispute-org", email="dispute@example.com")

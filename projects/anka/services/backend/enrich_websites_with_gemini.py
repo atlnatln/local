@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Google Maps'ten çekilen CSV verilerinde website alanı boş olan işletmeler için
-Gemini 2.0 Flash + Google Search Grounding kullanarak resmi web sitesi bulur.
+Gemini Flash + Google Search Grounding kullanarak resmi web sitesi bulur.
 
 Amaç: Sadece web sitesi URL'sini doldurmak (site içi scraping yok).
 """
@@ -39,7 +39,20 @@ EXCLUDED_DOMAINS = {
 }
 
 
+def _env_int(name: str, default: int) -> int:
+    raw = os.getenv(name)
+    if raw is None or raw == "":
+        return default
+    try:
+        return max(0, int(raw))
+    except ValueError:
+        return default
+
+
 def parse_args() -> argparse.Namespace:
+    default_grounding_limit = _env_int("ANKA_GROUNDING_DAILY_REQUEST_LIMIT", 500)
+    default_token_limit = _env_int("ANKA_GEMINI_DAILY_TOKEN_LIMIT", 50000)
+
     parser = argparse.ArgumentParser(
         description="CSV içindeki boş website alanlarını Gemini Search Grounding ile doldurur."
     )
@@ -50,7 +63,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--model",
-        default="gemini-2.0-flash",
+        default="gemini-2.5-flash",
         help="Kullanılacak model adı.",
     )
     parser.add_argument(
@@ -82,14 +95,16 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--daily-request-limit",
+        "--grounding-daily-limit",
+        dest="daily_request_limit",
         type=int,
-        default=1500,
-        help="Günlük request limiti. Bu sayıya ulaşınca işlem durur.",
+        default=default_grounding_limit,
+        help="Günlük grounding request limiti. Bu sayıya ulaşınca işlem durur.",
     )
     parser.add_argument(
         "--daily-token-limit",
         type=int,
-        default=0,
+        default=default_token_limit,
         help="Günlük token limiti (0 = kapalı).",
     )
     parser.add_argument(

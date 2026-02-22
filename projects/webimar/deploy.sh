@@ -372,7 +372,17 @@ check_container() {
     fi
 
     local status
+    local attempts=18
+    local sleep_seconds=5
+    local i=1
+
     status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$name" 2>/dev/null || echo unknown)"
+    while [ "$i" -lt "$attempts" ] && [ "$status" = "starting" ]; do
+        sleep "$sleep_seconds"
+        i=$((i + 1))
+        status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$name" 2>/dev/null || echo unknown)"
+    done
+
     echo "$name -> $status"
 
     case "$status" in

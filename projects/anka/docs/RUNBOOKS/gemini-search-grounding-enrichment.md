@@ -6,7 +6,7 @@
 
 ## 2) Kullanılan Bileşenler
 - Script: `services/backend/enrich_websites_with_gemini.py`
-- Model: Varsayılan `gemini-2.0-flash`
+- Model: Varsayılan `gemini-2.5-flash`
 - Grounding aracı: `google_search`
 - Girdi: Google Maps çıktı CSV'si (`results.csv`)
 - Çıktı: Aynı CSV içinde `website` alanı güncellemesi + JSONL kullanım logu
@@ -21,6 +21,8 @@
 ## 4) Ortam Değişkenleri
 - `.env` içinde:
   - `GEMINI_API_KEY=...`
+  - `ANKA_GROUNDING_DAILY_REQUEST_LIMIT=500` (grounding request güvenlik limiti)
+  - `ANKA_GEMINI_DAILY_TOKEN_LIMIT=50000` (token güvenlik limiti)
 
 ## 5) Komutlar
 
@@ -44,11 +46,15 @@ cd services/backend
 ```bash
 cd services/backend
 ./venv/bin/python enrich_websites_with_gemini.py \
-  --daily-request-limit 1500 \
-  --daily-token-limit 200000 \
+  --grounding-daily-limit 500 \
+  --daily-token-limit 50000 \
   --warn-threshold 0.8 \
   --usage-log artifacts/usage/gemini_grounding_usage.jsonl
 ```
+
+Not:
+- `--daily-request-limit` argümanı geriye dönük uyumluluk için korunur.
+- Yeni isimlendirme: `--grounding-daily-limit`.
 
 ## 6) Kullanım Logu
 - Varsayılan log dosyası:
@@ -60,11 +66,11 @@ cd services/backend
 
 Örnek satır:
 ```json
-{"timestamp":"2026-02-15T14:30:00+00:00","model":"gemini-2.0-flash","business_name":"Örnek Ltd","status":"success","website":"https://ornek.com","request_index":12,"prompt_tokens":158,"output_tokens":14,"total_tokens":172}
+{"timestamp":"2026-02-15T14:30:00+00:00","model":"gemini-2.5-flash","business_name":"Örnek Ltd","status":"success","website":"https://ornek.com","request_index":12,"prompt_tokens":158,"output_tokens":14,"total_tokens":172}
 ```
 
 ## 7) Limit ve Uyarı Kuralları
-- `--daily-request-limit` dolarsa script güvenli şekilde durur.
+- `--grounding-daily-limit` (veya `--daily-request-limit`) dolarsa script güvenli şekilde durur.
 - `--daily-token-limit` dolarsa script güvenli şekilde durur.
 - `--warn-threshold` (varsayılan `%80`) aşılırsa terminalde uyarı basılır.
 
@@ -79,3 +85,4 @@ cd services/backend
 - Önce `--dry-run`, sonra gerçek yazma önerilir.
 - Bulunamayan kayıtlar için ayrı fallback stratejisi uygulanabilir (isim sadeleştirme, ilçe bazlı ikinci deneme).
 - Bu akış yalnızca web sitesi URL'sini hedefler; site içi scraping bu runbook kapsamı dışındadır.
+- `gemini-2.0-flash` yeni kullanıcılar/projeler için erişim dışı olabilir. 404 `NOT_FOUND` alınırsa `gemini-2.5-flash` ile devam edilmelidir.

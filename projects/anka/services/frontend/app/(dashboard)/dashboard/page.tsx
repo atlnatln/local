@@ -109,15 +109,13 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-      
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Toplam Kredi</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalBalance.toFixed(2)}</div>
+            <div className="text-2xl font-bold">{Math.round(totalBalance).toLocaleString('tr-TR')}</div>
             <p className="text-xs text-muted-foreground">
               Mevcut Bakiye
             </p>
@@ -131,7 +129,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">{batches.length}</div>
             <p className="text-xs text-muted-foreground mr-2">
-               İşlemde: {batches.filter(b => b.status === 'processing').length}
+               İşlemde: {batches.filter(b => ['CREATED', 'COLLECTING_IDS', 'FILTERING', 'ENRICHING_CONTACTS', 'processing'].includes(b.status)).length}
             </p>
           </CardContent>
         </Card>

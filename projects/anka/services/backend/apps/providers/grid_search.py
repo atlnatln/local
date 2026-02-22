@@ -56,36 +56,35 @@ class Rectangle:
 
 class GridSearch:
     def __init__(self, geojson_path: str = None):
-        if geojson_path is None:
-            # Resolve relative to this file to be robust regardless of CWD
-            base_path = os.path.dirname(os.path.abspath(__file__))
-            # Go up levels: apps/providers -> apps -> backend -> services -> ROOT
-            # actually structure is: services/backend/apps/providers/grid_search.py
-            # we need: docs/turkey-districts.geojson
-            # ../../../../docs/turkey-districts.geojson
-            
-            # Helper to find project root approx
-            root = base_path
-            for _ in range(4): # providers, apps, backend, services
-                root = os.path.dirname(root)
-            
-            geojson_path = os.path.join(root, 'docs', 'turkey-districts.geojson')
-            
-        # Fallback if calculated path doesn't exist (maybe dev env difference)
-        if not os.path.exists(geojson_path):
-             # Try simple relative if running from backend root
-             candidate = os.path.join('..', '..', 'docs', 'turkey-districts.geojson')
-             if os.path.exists(candidate):
-                 geojson_path = candidate
+        default_filename = os.path.join('docs', 'turkey-districts.geojson')
+        candidates = []
 
-        self.geojson_path = geojson_path
+        if geojson_path:
+            candidates.append(geojson_path)
+
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        backend_root = os.path.dirname(os.path.dirname(current_dir))
+        repo_like_root = os.path.dirname(os.path.dirname(backend_root))
+
+        candidates.extend([
+            os.path.join(backend_root, default_filename),
+            os.path.join(repo_like_root, default_filename),
+            os.path.join(os.getcwd(), default_filename),
+            os.path.join(os.getcwd(), '..', '..', default_filename),
+        ])
+
+        resolved_path = None
+        for candidate in candidates:
+            absolute_candidate = os.path.abspath(candidate)
+            if os.path.exists(absolute_candidate):
+                resolved_path = absolute_candidate
+                break
+
+        self.geojson_path = resolved_path or os.path.abspath(candidates[0])
         self._feature_collection = None
         
         if not os.path.exists(self.geojson_path):
             logger.warning(f"GeoJSON file not found at {self.geojson_path}. Grid Search will not work.")
-        # Adjust path as needed relative to where this code runs
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
-        self.geojson_path = os.path.join(base_dir, geojson_path)
         self.features = []
         self._load_data()
 

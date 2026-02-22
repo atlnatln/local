@@ -1,0 +1,16 @@
+{
+  "summary": {
+    "files_scanned": 27,
+    "broken_markdown_links": 2
+  },
+  "issues": [
+    {
+      "file": "README.md",
+      "target": "docs/TESTING.md"
+    },
+    {
+      "file": "docs/google-maps-bilgiler.md",
+      "target": "docs/turkey-districts.geojson"
+    }
+  ]
+}

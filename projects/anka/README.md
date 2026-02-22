@@ -87,7 +87,7 @@ Bu proje Docker üzerinde çalışacak şekilde tasarlanmıştır.
 ## 📊 Güvenlik ve Limitler
 
 *   **Rate Limiting:** Google API çağrılarında `Exponential Backoff` stratejisi uygulanır (429 hatalarına karşı).
-*   **Hard Limits:** Tek bir batch işleminde maksimum 300 kayıt işlenebilir (Maliyet koruması).
+*   **Hard Limits:** Varsayılan koruma limitleri env ile yönetilir (`ANKA_BATCH_MAX_RECORDS=50`, stage API call cap'leri aktif).
 *   **Circuit Breaker:** Doğrulama aşamasında %50'den fazla hata alınırsa işlem otomatik durdurulur (`PARTIAL` status).
 
 ---
@@ -96,7 +96,9 @@ Bu proje Docker üzerinde çalışacak şekilde tasarlanmıştır.
 
 Mimari kararlar ve operasyonel rehberler `docs/` klasöründe yer almaktadır:
 *   [ADR-0006: 3-Stage Verification Pipeline](docs/ADR/0006-three-stage-verification-pipeline.md)
-*   [Test Stratejileri](docs/TESTING.md)
+*   [Runbook: Maps Sorgu Mantığı](docs/RUNBOOKS/maps-query-logic-pipeline.md)
+*   [Runbook: Gemini Search Grounding Enrichment](docs/RUNBOOKS/gemini-search-grounding-enrichment.md)
+*   [Test Stratejileri](tests/kurallar.md)
 *   [Veritabanı Modelleri](services/backend/apps/batches/models.py)
 
 ---

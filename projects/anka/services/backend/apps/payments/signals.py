@@ -104,7 +104,7 @@ def revoke_credits_on_payment_failure(sender, instance, created, update_fields, 
         return
     
     # Only process failed payments that were previously completed
-    if instance.status != 'FAILED':
+    if instance.status != PaymentIntent.FAILED and instance.status != 'failed':
         return
     
     try:
@@ -121,7 +121,8 @@ def revoke_credits_on_payment_failure(sender, instance, created, update_fields, 
         
         # Get organization
         user = instance.user
-        organization = Organization.objects.filter(users=user).first()
+        member = OrganizationMember.objects.filter(user=user).first()
+        organization = member.organization if member else None
         if not organization:
             return
         
@@ -138,17 +139,26 @@ def revoke_credits_on_payment_failure(sender, instance, created, update_fields, 
         credit_package.balance = new_balance
         credit_package.save()
         
-        # Create refund ledger entry
-        LedgerEntry.objects.create(
-            organization=organization,
-            transaction_type='refund',
-            amount=credits_to_revoke,
-            status='completed',
-            reference_type='payment',
-            reference_id=str(instance.id),
-            description=f"Credit refund - {instance.credits} credits (payment failed)",
-            balance_before=old_balance,
-            balance_after=new_balance,
+        existing_entry.transaction_type = 'refund'
+        existing_entry.status = 'refunded'
+        existing_entry.description = f"Credit refund - {instance.credits} credits (payment failed)"
+        existing_entry.balance_before = old_balance
+        existing_entry.balance_after = new_balance
+        existing_entry.metadata = {
+            **(existing_entry.metadata or {}),
+            'refund_reason': 'payment_failed',
+            'refunded_credits': str(credits_to_revoke),
+        }
+        existing_entry.save(
+            update_fields=[
+                'transaction_type',
+                'status',
+                'description',
+                'balance_before',
+                'balance_after',
+                'metadata',
+                'updated_at',
+            ]
         )
         
         logger.info(

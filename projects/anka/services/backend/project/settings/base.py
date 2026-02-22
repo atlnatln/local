@@ -228,12 +228,19 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BEAT_SCHEDULE = {
+    'monitor-stuck-exports': {
+        'task': 'apps.exports.tasks.monitor_stuck_exports_task',
+        'schedule': timedelta(minutes=2),
+    },
+}
 
 # Logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
+        # Standard verbose formatter for all logs
         'verbose': {
             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
             'style': '{',
@@ -245,11 +252,26 @@ LOGGING = {
             'formatter': 'verbose',
         },
     },
+    # anka.alarms logs are JSON strings emitted by alerts.py.
+    # They go through the root handler like all other logs; the JSON payload
+    # (which contains {"alarm": true, "code": ...}) makes them filterable in
+    # Docker/log-aggregator tools without requiring a separate handler or sink.
     'root': {
         'handlers': ['console'],
         'level': 'INFO',
     },
 }
+
+# Alarm notification recipients (set ANKA_ALARM_EMAIL_ENABLED=True in env to activate)
+# Format: comma-separated "Name <email>" pairs
+_raw_admins = os.environ.get('DJANGO_ADMINS', '')
+ADMINS = [
+    (parts[0].strip(), parts[1].strip('<> '))
+    for raw in _raw_admins.split(',')
+    if ',' not in raw and raw.strip()
+    for parts in [raw.rsplit(' ', 1)]
+    if len(parts) == 2
+]
 
 # Security (override in prod settings)
 SECURE_SSL_REDIRECT = False
@@ -278,6 +300,7 @@ IYZICO_API_KEY = os.environ.get('IYZICO_API_KEY', '')
 IYZICO_SECRET_KEY = os.environ.get('IYZICO_SECRET_KEY', '')
 IYZICO_BASE_URL = os.environ.get('IYZICO_BASE_URL', 'https://sandbox-api.iyzipay.com')
 IYZICO_CALLBACK_URL = os.environ.get('IYZICO_CALLBACK_URL', 'http://localhost:3100/checkout/confirm')
+IYZICO_WEBHOOK_SECRET = os.environ.get('IYZICO_WEBHOOK_SECRET', '')
 ENABLE_IYZICO = os.environ.get('ENABLE_IYZICO', 'True') == 'True'
 
 # Storage (S3/MinIO)

@@ -4,11 +4,13 @@ ViewSets for exports app.
 
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 
 from apps.accounts.models import OrganizationMember
 from apps.exports.models import Export
 from apps.exports.serializers import ExportCreateSerializer, ExportSerializer
+from apps.exports.tasks import generate_export_file
 
 
 class ExportViewSet(viewsets.ModelViewSet):
@@ -41,4 +43,11 @@ class ExportViewSet(viewsets.ModelViewSet):
         if not is_member:
             raise PermissionDenied("Organization erişimi yok.")
 
-        serializer.save(organization=batch.organization)
+        if batch.status not in {"READY", "PARTIAL"}:
+            raise ValidationError({"detail": "Batch henüz export için hazır değil."})
+
+        if (batch.contacts_enriched or 0) <= 0:
+            raise ValidationError({"detail": "Export için teslim edilebilir kayıt bulunamadı."})
+
+        export = serializer.save(organization=batch.organization)
+        generate_export_file.delay(str(export.id))

@@ -49,53 +49,53 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChangePasswordError'
           description: ''
-  /api/auth/login/:
+  /api/auth/google/:
     post:
-      operationId: auth_login_create
+      operationId: auth_google_create
       description: |-
-        Login endpoint - POST /api/auth/login/
+        Google-only login endpoint (MVP) - POST /api/auth/google/
 
         Request:
-            {
-                "username": "user@example.com",
-                "password": "password123"
-            }
+            {"id_token": "<google_id_token>"}
 
         Response:
-            {
-                "access": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-                "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-                "user": {
-                    "id": 1,
-                    "username": "user@example.com",
-                    "email": "user@example.com",
-                    "first_name": "John",
-                    "last_name": "Doe",
-                    "organizations": [...]
-                }
-            }
+            Same shape as /login/: {access, refresh, user}
       tags:
       - auth
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/GoogleLoginRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/GoogleLoginRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/GoogleLoginRequest'
         required: true
       security:
+      - jwtAuth: []
+      - cookieAuth: []
       - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Login'
+                $ref: '#/components/schemas/GoogleLoginResponse'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleLoginUnauthorized'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleLoginNotConfigured'
           description: ''
   /api/auth/logout/:
     post:
@@ -515,57 +515,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenRefresh'
           description: ''
-  /api/auth/register/:
-    post:
-      operationId: auth_register_create
-      description: |-
-        Register endpoint - POST /api/auth/register/
-
-        Request:
-            {
-                "username": "newuser",
-                "email": "user@example.com",
-                "password": "SecurePass123!",
-                "password2": "SecurePass123!",
-                "first_name": "John",
-                "last_name": "Doe"
-            }
-
-        Response:
-            {
-                "id": 1,
-                "username": "newuser",
-                "email": "user@example.com",
-                "first_name": "John",
-                "last_name": "Doe",
-                "profile": {...},
-                "organizations": []
-            }
-      tags:
-      - auth
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Register'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Register'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Register'
-        required: true
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Register'
-          description: ''
   /api/batches/:
     get:
       operationId: batches_list
@@ -757,6 +706,516 @@ paths:
               schema:
                 $ref: '#/components/schemas/Batch'
           description: ''
+  /api/catalog/cities/:
+    get:
+      operationId: catalog_cities_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Sonuçların sıralanmasında kullanılacak alan.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Sayfalanmış sonuç kümesinde bir sayfa numarası.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Bir arama terimi.
+        schema:
+          type: string
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCityList'
+          description: ''
+    post:
+      operationId: catalog_cities_create
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/City'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/City'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/City'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+  /api/catalog/cities/{id}/:
+    get:
+      operationId: catalog_cities_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir city öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+    put:
+      operationId: catalog_cities_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir city öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/City'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/City'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/City'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+    patch:
+      operationId: catalog_cities_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir city öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCity'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCity'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCity'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+    delete:
+      operationId: catalog_cities_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir city öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/catalog/filters/:
+    get:
+      operationId: catalog_filters_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Sonuçların sıralanmasında kullanılacak alan.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Sayfalanmış sonuç kümesinde bir sayfa numarası.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Bir arama terimi.
+        schema:
+          type: string
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFilterDefinitionList'
+          description: ''
+    post:
+      operationId: catalog_filters_create
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterDefinition'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FilterDefinition'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FilterDefinition'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilterDefinition'
+          description: ''
+  /api/catalog/filters/{id}/:
+    get:
+      operationId: catalog_filters_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir filter definition öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilterDefinition'
+          description: ''
+    put:
+      operationId: catalog_filters_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir filter definition öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterDefinition'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FilterDefinition'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FilterDefinition'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilterDefinition'
+          description: ''
+    patch:
+      operationId: catalog_filters_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir filter definition öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFilterDefinition'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFilterDefinition'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFilterDefinition'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilterDefinition'
+          description: ''
+    delete:
+      operationId: catalog_filters_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir filter definition öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/catalog/sectors/:
+    get:
+      operationId: catalog_sectors_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Sonuçların sıralanmasında kullanılacak alan.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Sayfalanmış sonuç kümesinde bir sayfa numarası.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Bir arama terimi.
+        schema:
+          type: string
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSectorList'
+          description: ''
+    post:
+      operationId: catalog_sectors_create
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sector'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Sector'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Sector'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sector'
+          description: ''
+  /api/catalog/sectors/{id}/:
+    get:
+      operationId: catalog_sectors_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir sector öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sector'
+          description: ''
+    put:
+      operationId: catalog_sectors_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir sector öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sector'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Sector'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Sector'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sector'
+          description: ''
+    patch:
+      operationId: catalog_sectors_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir sector öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSector'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSector'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSector'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sector'
+          description: ''
+    delete:
+      operationId: catalog_sectors_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir sector öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - catalog
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/credits/balance/:
     get:
       operationId: credits_balance_list
@@ -1560,6 +2019,120 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaymentIntent'
           description: ''
+  /api/records/:
+    get:
+      operationId: records_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Sonuçların sıralanmasında kullanılacak alan.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Sayfalanmış sonuç kümesinde bir sayfa numarası.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Bir arama terimi.
+        schema:
+          type: string
+      tags:
+      - records
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRecordList'
+          description: ''
+  /api/records/{id}/:
+    get:
+      operationId: records_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir record öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - records
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Record'
+          description: ''
+  /api/records/fields/:
+    get:
+      operationId: records_fields_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Sonuçların sıralanmasında kullanılacak alan.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: Sayfalanmış sonuç kümesinde bir sayfa numarası.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: Bir arama terimi.
+        schema:
+          type: string
+      tags:
+      - records
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRecordFieldList'
+          description: ''
+  /api/records/fields/{id}/:
+    get:
+      operationId: records_fields_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Bir record field öğesini tanımlayan UUID metni.
+        required: true
+      tags:
+      - records
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordField'
+          description: ''
   /api/schema/:
     get:
       operationId: schema_retrieve
@@ -1729,9 +2302,8 @@ components:
         filters: {}
         sort_rule_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         query_hash:
           type: string
           readOnly: true
@@ -1747,11 +2319,25 @@ components:
         error_records:
           type: integer
           readOnly: true
+        ids_collected:
+          type: integer
+          readOnly: true
+        ids_verified:
+          type: integer
+          readOnly: true
+        contacts_enriched:
+          type: integer
+          readOnly: true
+        skipped_404:
+          type: integer
+          readOnly: true
+        aborted_reason:
+          type: string
+          readOnly: true
         record_count_estimate:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         estimated_cost:
           type: string
           format: decimal
@@ -1797,14 +2383,18 @@ components:
             $ref: '#/components/schemas/BatchItem'
           readOnly: true
       required:
+      - aborted_reason
       - city
       - completed_at
+      - contacts_enriched
       - created_at
       - created_by
       - csv_url
       - error_records
       - estimated_cost
       - id
+      - ids_collected
+      - ids_verified
       - input_snapshot
       - items
       - metadata
@@ -1812,6 +2402,7 @@ components:
       - processed_records
       - query_hash
       - sector
+      - skipped_404
       - started_at
       - status
       - total_records
@@ -1857,17 +2448,29 @@ components:
       - updated_at
     BatchStatusEnum:
       enum:
+      - CREATED
+      - COLLECTING_IDS
+      - FILTERING
+      - ENRICHING_CONTACTS
+      - READY
+      - PARTIAL
+      - FAILED
       - pending
       - processing
       - completed
-      - failed
       - cancelled
       type: string
       description: |-
+        * `CREATED` - Created
+        * `COLLECTING_IDS` - Collecting IDs
+        * `FILTERING` - Filtering
+        * `ENRICHING_CONTACTS` - Enriching Contacts
+        * `READY` - Ready
+        * `PARTIAL` - Partial
+        * `FAILED` - Failed
         * `pending` - Pending
         * `processing` - Processing
         * `completed` - Completed
-        * `failed` - Failed
         * `cancelled` - Cancelled
     ChangePassword:
       type: object
@@ -1898,6 +2501,38 @@ components:
           type: string
       required:
       - detail
+    City:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        code:
+          type: string
+          maxLength: 10
+        country:
+          type: string
+          maxLength: 100
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
     CreateOrganization:
       type: object
       description: Create organization serializer
@@ -2015,6 +2650,20 @@ components:
       - balance
       - organization
       - total_purchased
+    DataTypeEnum:
+      enum:
+      - string
+      - number
+      - date
+      - boolean
+      - enum
+      type: string
+      description: |-
+        * `string` - String
+        * `number` - Number
+        * `date` - Date
+        * `boolean` - Boolean
+        * `enum` - Enum
     DecisionEnum:
       enum:
       - accept
@@ -2308,6 +2957,36 @@ components:
         * `processing` - Processing
         * `completed` - Completed
         * `failed` - Failed
+    FilterDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        data_type:
+          $ref: '#/components/schemas/DataTypeEnum'
+        enum_values: {}
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - updated_at
     FormatEnum:
       enum:
       - csv
@@ -2318,6 +2997,40 @@ components:
         * `csv` - CSV
         * `xlsx` - Excel
         * `json` - JSON
+    GoogleLoginNotConfigured:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+      - error
+    GoogleLoginRequest:
+      type: object
+      properties:
+        id_token:
+          type: string
+      required:
+      - id_token
+    GoogleLoginResponse:
+      type: object
+      properties:
+        access:
+          type: string
+        refresh:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserDetail'
+      required:
+      - access
+      - refresh
+      - user
+    GoogleLoginUnauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+      - error
     LedgerEntry:
       type: object
       properties:
@@ -2399,19 +3112,6 @@ components:
         * `completed` - Completed
         * `failed` - Failed
         * `refunded` - Refunded
-    Login:
-      type: object
-      description: Custom login serializer to return user data with token
-      properties:
-        username:
-          type: string
-          writeOnly: true
-        password:
-          type: string
-          writeOnly: true
-      required:
-      - password
-      - username
     LogoutError:
       type: object
       properties:
@@ -2604,6 +3304,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Batch'
+    PaginatedCityList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/City'
     PaginatedCreditPackageList:
       type: object
       required:
@@ -2673,6 +3396,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Export'
+    PaginatedFilterDefinitionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterDefinition'
     PaginatedLedgerEntryList:
       type: object
       required:
@@ -2742,6 +3488,75 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentList'
+    PaginatedRecordFieldList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordField'
+    PaginatedRecordList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Record'
+    PaginatedSectorList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sector'
     PatchedBatch:
       type: object
       properties:
@@ -2764,9 +3579,8 @@ components:
         filters: {}
         sort_rule_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         query_hash:
           type: string
           readOnly: true
@@ -2782,11 +3596,25 @@ components:
         error_records:
           type: integer
           readOnly: true
+        ids_collected:
+          type: integer
+          readOnly: true
+        ids_verified:
+          type: integer
+          readOnly: true
+        contacts_enriched:
+          type: integer
+          readOnly: true
+        skipped_404:
+          type: integer
+          readOnly: true
+        aborted_reason:
+          type: string
+          readOnly: true
         record_count_estimate:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         estimated_cost:
           type: string
           format: decimal
@@ -2830,6 +3658,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BatchItem'
+          readOnly: true
+    PatchedCity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        code:
+          type: string
+          maxLength: 10
+        country:
+          type: string
+          maxLength: 100
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
           readOnly: true
     PatchedCurrentUserUpdateRequest:
       type: object
@@ -2960,6 +3814,31 @@ components:
           type: string
           format: date-time
           readOnly: true
+    PatchedFilterDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        data_type:
+          $ref: '#/components/schemas/DataTypeEnum'
+        enum_values: {}
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
     PatchedOrganization:
       type: object
       description: Organization basic serializer
@@ -3013,9 +3892,8 @@ components:
           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
         credits:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2147483647
+          minimum: -2147483648
         conversation_id:
           type: string
           readOnly: true
@@ -3048,6 +3926,31 @@ components:
           type: string
           readOnly: true
           nullable: true
+    PatchedSector:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        code:
+          type: string
+          maxLength: 20
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
     PaymentIntent:
       type: object
       description: Serializer for PaymentIntent model.
@@ -3065,9 +3968,8 @@ components:
           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
         credits:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2147483647
+          minimum: -2147483648
         conversation_id:
           type: string
           readOnly: true
@@ -3175,9 +4077,8 @@ components:
           pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
         credits:
           type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
+          maximum: 2147483647
+          minimum: -2147483648
         status:
           $ref: '#/components/schemas/PaymentIntentStatusEnum'
         created_at:
@@ -3193,6 +4094,79 @@ components:
       - created_at
       - credits
       - id
+    Record:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        batch:
+          type: string
+          format: uuid
+          nullable: true
+        firm_id:
+          type: string
+          maxLength: 255
+        firm_name:
+          type: string
+          maxLength: 255
+        data: {}
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordField'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - fields
+      - firm_id
+      - firm_name
+      - id
+      - updated_at
+    RecordField:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        field_name:
+          type: string
+          maxLength: 255
+        value:
+          type: string
+        verified:
+          type: boolean
+        source:
+          $ref: '#/components/schemas/SourceEnum'
+        confidence:
+          type: number
+          format: double
+        source_provider:
+          type: string
+          maxLength: 255
+        observed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - field_name
+      - id
+      - value
     ReferenceTypeEnum:
       enum:
       - batch
@@ -3203,35 +4177,6 @@ components:
         * `batch` - Batch
         * `payment` - Payment
         * `dispute` - Dispute
-    Register:
-      type: object
-      description: User registration serializer
-      properties:
-        username:
-          type: string
-          title: Kullanıcı adı
-          description: Zorunlu. 150 karakter ya da daha az olmalı. Sadece harfler,
-            rakamlar ve @/./+/-/_ karakterleri kullanılabilir.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        email:
-          type: string
-          format: email
-        password:
-          type: string
-          writeOnly: true
-        password2:
-          type: string
-          writeOnly: true
-        first_name:
-          type: string
-        last_name:
-          type: string
-      required:
-      - email
-      - password
-      - password2
-      - username
     RoleEnum:
       enum:
       - owner
@@ -3244,6 +4189,49 @@ components:
         * `admin` - Admin
         * `user` - User
         * `viewer` - Viewer
+    Sector:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        code:
+          type: string
+          maxLength: 20
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
+    SourceEnum:
+      enum:
+      - direct
+      - aggregated
+      - inferred
+      - user_provided
+      type: string
+      description: |-
+        * `direct` - Direct
+        * `aggregated` - Aggregated
+        * `inferred` - Inferred
+        * `user_provided` - User Provided
     TokenRefresh:
       type: object
       properties:

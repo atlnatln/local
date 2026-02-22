@@ -97,6 +97,7 @@ services:
       - static_files:/app/staticfiles
       - media_files:/app/media
       - ./logs:/app/logs
+      - ./docs:/app/docs:ro
     restart: unless-stopped
     depends_on:
       postgres:
@@ -134,6 +135,7 @@ services:
     volumes:
       - media_files:/app/media
       - ./logs:/app/logs
+      - ./docs:/app/docs:ro
     restart: unless-stopped
     depends_on:
       postgres:

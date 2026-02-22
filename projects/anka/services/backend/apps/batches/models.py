@@ -20,6 +20,7 @@ class Batch(models.Model):
         ('COLLECTING_IDS', 'Collecting IDs'),
         ('FILTERING', 'Filtering'),
         ('ENRICHING_CONTACTS', 'Enriching Contacts'),
+        ('ENRICHING_EMAILS', 'Enriching Emails'),
         ('READY', 'Ready'),
         ('PARTIAL', 'Partial'),
         ('FAILED', 'Failed'),
@@ -65,6 +66,7 @@ class Batch(models.Model):
     ids_collected = models.PositiveIntegerField(default=0)
     ids_verified = models.PositiveIntegerField(default=0)
     contacts_enriched = models.PositiveIntegerField(default=0)
+    emails_enriched = models.PositiveIntegerField(default=0)
     skipped_404 = models.PositiveIntegerField(default=0)
     aborted_reason = models.CharField(max_length=255, blank=True)
 

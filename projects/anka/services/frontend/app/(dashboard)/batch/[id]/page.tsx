@@ -37,6 +37,28 @@ interface BatchDetail {
   // Files
   csv_url?: string
   xlsx_url?: string
+
+    // Items
+    items: BatchItem[]
+}
+
+interface BatchItem {
+    id: string
+    firm_id: string
+    firm_name: string
+    is_verified: boolean
+    has_error: boolean
+    data: {
+        phone?: string
+        phone_number?: string
+        nationalPhoneNumber?: string
+        website?: string
+        website_uri?: string
+        websiteUri?: string
+        address?: string
+        formatted_address?: string
+        formattedAddress?: string
+    }
 }
 
 export default function BatchDetailPage() {
@@ -44,6 +66,37 @@ export default function BatchDetailPage() {
   const [batch, setBatch] = useState<BatchDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+    const downloadItemsCsv = () => {
+        if (!batch || !batch.items || batch.items.length === 0) return
+
+        const headers = ['Firma', 'Telefon', 'Website', 'Adres', 'Doğrulandı']
+        const rows = batch.items.map((item) => {
+            const phone = item.data?.phone || item.data?.phone_number || item.data?.nationalPhoneNumber || ''
+            const website = item.data?.website || item.data?.website_uri || item.data?.websiteUri || ''
+            const address = item.data?.address || item.data?.formatted_address || item.data?.formattedAddress || ''
+            return [
+                item.firm_name,
+                phone,
+                website,
+                address,
+                item.is_verified ? 'Evet' : 'Hayır',
+            ]
+        })
+
+        const escapeCell = (value: string) => `"${String(value).replace(/"/g, '""')}"`
+        const csv = [headers, ...rows].map((row) => row.map(escapeCell).join(',')).join('\n')
+        const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' })
+        const url = URL.createObjectURL(blob)
+
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', `${batch.city}_${batch.sector}_${batch.id}.csv`)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+    }
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout
@@ -242,19 +295,34 @@ export default function BatchDetailPage() {
                     <CardTitle className="text-base">Dosyalar</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                    <Button 
-                        disabled={!batch.csv_url} 
-                        className="w-full justify-start" 
-                        variant="outline"
-                        onClick={() => batch.csv_url && window.open(batch.csv_url, '_blank')}
-                    >
+                                        <Button
+                                                disabled={!batch.csv_url && batch.items.length === 0}
+                                                className="w-full justify-start"
+                                                variant="outline"
+                                                onClick={() => {
+                                                    if (batch.csv_url) {
+                                                        window.open(batch.csv_url, '_blank')
+                                                        return
+                                                    }
+                                                    downloadItemsCsv()
+                                                }}
+                                        >
                         <FileDown className="mr-2 h-4 w-4" />
-                        CSV İndir
+                                                {batch.csv_url ? 'CSV İndir' : 'CSV İndir (Tarayıcı)'}
                     </Button>
                     <Button 
                         disabled={!batch.xlsx_url} 
                         className="w-full justify-start" 
                         variant="outline"
+                        onClick={() => {
+                            if (!batch.xlsx_url) return
+                            const link = document.createElement('a')
+                            link.href = batch.xlsx_url
+                            link.setAttribute('download', `${batch.city}-${batch.sector}-${batch.id}.xlsx`)
+                            document.body.appendChild(link)
+                            link.click()
+                            document.body.removeChild(link)
+                        }}
                     >
                         <FileDown className="mr-2 h-4 w-4" />
                         Excel (XLSX) İndir
@@ -287,6 +355,55 @@ export default function BatchDetailPage() {
         </div>
 
       </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Sonuçlar</CardTitle>
+                    <CardDescription>Doğrulanan ve zenginleştirilen kayıtlar</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {batch.items.length === 0 ? (
+                        <p className="text-sm text-slate-500">Henüz gösterilecek kayıt yok.</p>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b text-left text-slate-500">
+                                        <th className="py-2 pr-3">Firma</th>
+                                        <th className="py-2 pr-3">Telefon</th>
+                                        <th className="py-2 pr-3">Website</th>
+                                        <th className="py-2 pr-3">Adres</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {batch.items.map((item) => {
+                                        const phone = item.data?.phone || item.data?.phone_number || item.data?.nationalPhoneNumber || '-'
+                                        const website = item.data?.website || item.data?.website_uri || item.data?.websiteUri || ''
+                                        const address = item.data?.address || item.data?.formatted_address || item.data?.formattedAddress || '-'
+
+                                        return (
+                                            <tr key={item.id} className="border-b align-top">
+                                                <td className="py-2 pr-3 font-medium text-slate-900">{item.firm_name}</td>
+                                                <td className="py-2 pr-3 text-slate-700">{phone}</td>
+                                                <td className="py-2 pr-3 text-slate-700">
+                                                    {website ? (
+                                                        <a href={website} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline break-all">
+                                                            {website}
+                                                        </a>
+                                                    ) : (
+                                                        '-'
+                                                    )}
+                                                </td>
+                                                <td className="py-2 pr-3 text-slate-700">{address}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
     </div>
   )
 }

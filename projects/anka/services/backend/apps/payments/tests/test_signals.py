@@ -69,3 +69,38 @@ class PaymentSignalsTest(TestCase):
             self.assertEqual(package_qs.first().balance, 0)
         else:
             self.assertTrue(True) # Package not created is also fine
+
+    def test_revoke_credits_on_failed_status(self):
+        intent = PaymentIntent.objects.create(
+            user=self.user,
+            amount=Decimal('50.00'),
+            credits=200,
+            conversation_id='sig-revoke',
+            status='pending'
+        )
+
+        package = CreditPackage.objects.create(
+            organization=self.org,
+            balance=Decimal('500'),
+            total_purchased=Decimal('500')
+        )
+        LedgerEntry.objects.create(
+            organization=self.org,
+            transaction_type='purchase',
+            amount=Decimal('200'),
+            status='completed',
+            reference_type='payment',
+            reference_id=str(intent.id),
+            balance_before=Decimal('300'),
+            balance_after=Decimal('500'),
+            description='Purchase entry'
+        )
+
+        intent.status = 'failed'
+        intent.save(update_fields=['status'])
+
+        package.refresh_from_db()
+        self.assertEqual(package.balance, Decimal('300'))
+        mutated_entry = LedgerEntry.objects.get(reference_id=str(intent.id))
+        self.assertEqual(mutated_entry.transaction_type, 'refund')
+        self.assertEqual(mutated_entry.status, 'refunded')

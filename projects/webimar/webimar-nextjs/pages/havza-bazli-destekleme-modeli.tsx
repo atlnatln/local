@@ -98,6 +98,12 @@ const SectionTitle = styled.h2`
   font-size: 18px;
   color: #374151;
   font-weight: 600;
+
+  small {
+    font-size: 0.75em;
+    color: #6b7280;
+    font-weight: normal;
+  }
 `;
 
 const UrunRow = styled.div`
@@ -1247,7 +1253,7 @@ export default function HavzaBazliDesteklemeModeliPage() {
           
           {/* Ürün Seçimi */}
           <FormSection>
-            <SectionTitle>🌾 Ürün Seçimi</SectionTitle>
+            <SectionTitle>🌾 Ürün Seçimi <small>Hesaplama yapmak istediğiniz ürün listede yoksa "Diğer Ürünler" seçilmelidir</small></SectionTitle>
             {urunler.map((urun, index) => (
               <React.Fragment key={index}>
               <UrunRow>

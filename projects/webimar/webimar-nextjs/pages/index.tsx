@@ -1,62 +1,17 @@
-import Head from 'next/head';
 import Seo from '../components/Seo';
 import { GetStaticProps } from 'next';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, MouseEvent, useState } from 'react';
 import Layout from '../components/Layout';
 import MethodologySection from '../components/LandingPage/MethodologySection';
 import FAQSection from '../components/LandingPage/FAQSection';
 import DisclaimerSection from '../components/LandingPage/DisclaimerSection';
+import CalculationInsights from '../components/CalculationInsights';
 import { useGA4 } from '../lib/useGA4';
 import styles from '../styles/HomePage.module.css';
+import planData from '../data/cevre-duzeni-planlari.json';
 
 // Lazy load ContactForm for better performance
 const ContactForm = lazy(() => import('../components/ContactForm'));
-
-// Environment-based URL helper function
-const getCalculationUrl = (structureType: string): string => {
-  // Use environment variable for React SPA URL
-  const reactSpaUrl = process.env.NEXT_PUBLIC_REACT_SPA_URL;
-  
-  // If REACT_SPA_URL starts with http, it's a full URL (dev-local.sh mode)
-  // Otherwise, it's a path (docker mode with nginx)
-  if (reactSpaUrl && reactSpaUrl.startsWith('http')) {
-    // Full URL mode: http://localhost:3001/mantar-tesisi
-    return `${reactSpaUrl}/${structureType}`;
-  } else {
-    // Path mode: /hesaplama/mantar-tesisi
-    return `/hesaplama/${structureType}`;
-  }
-};
-
-// Yapı türü ikonları eşlemesi
-const structureTypeIcons: Record<string, string> = {
-  'hububat-silo': '🌾',
-  'tarimsal-depo': '🏪',
-  'lisansli-depo': '📦',
-  'yikama-tesisi': '🚿',
-  'kurutma-tesisi': '🌞',
-  'meyve-sebze-kurutma': '🍑',
-  'zeytinyagi-fabrikasi': '🫒',
-  'su-depolama': '💧',
-  'su-kuyulari': '⛲',
-  'bag-evi': '🏡',
-  'soguk-hava-deposu': '❄️',
-  'solucan-tesisi': '🪱',
-  'mantar-tesisi': '🍄',
-  'sera': '🌱',
-  'aricilik': '🐝',
-  'sut-sigirciligi': '🐄',
-  'agil-kucukbas': '🐑',
-  'kumes-yumurtaci': '🥚',
-  'kumes-etci': '🍗',
-  'kumes-gezen': '🐔',
-  'kumes-hindi': '🦃',
-  'kaz-ordek': '🦆',
-  'hara': '🐎',
-  'ipek-bocekciligi': '🦋',
-  'evcil-hayvan': '🐕',
-  'besi-sigirciligi': '🐃',
-};
 
 interface HomePageProps {
   yapiTurleri: any[];
@@ -64,15 +19,47 @@ interface HomePageProps {
   pageDescription: string;
 }
 
-export default function HomePage({ yapiTurleri, pageTitle, pageDescription }: HomePageProps) {
+type NavigationItem = {
+  icon: string;
+  title: string;
+  description: string;
+  href: string;
+  trackingType?: string;
+  children?: Array<{ title: string; href: string }>;
+};
+
+type NavigationSection = {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+  items: NavigationItem[];
+};
+
+export default function HomePage({ yapiTurleri: _yapiTurleri, pageTitle, pageDescription }: HomePageProps) {
   const ga4 = useGA4();
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  const normalizeSlugValue = (value: string): string => {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/ı/g, 'i')
+      .replace(/İ/g, 'i')
+      .replace(/I/g, 'i')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  };
 
   const getStructureUrl = (urlSlug: string) => {
     return `/${urlSlug}`;
   };
 
   // GA4: Hesaplama sayfasına yönlendirme tracking
-  const handleCalculationClick = (calculationType: string, event: React.MouseEvent) => {
+  const handleCalculationClick = (calculationType: string, event: MouseEvent<HTMLAnchorElement>) => {
     ga4.trackEvent('calculation_navigation', {
       calculation_type: calculationType,
       source_page: 'homepage',
@@ -80,35 +67,95 @@ export default function HomePage({ yapiTurleri, pageTitle, pageDescription }: Ho
     });
   };
 
-  // Kategorilere grupla - yapiTurleri'nin array olduğundan emin ol
-  const validYapiTurleri = Array.isArray(yapiTurleri) ? yapiTurleri : [];
-  const categories = validYapiTurleri.reduce((acc: any, item: any) => {
-    const category = item.kategori || 'Diğer';
-    if (!acc[category]) {
-      acc[category] = {
-        name: category,
-        icon: getCategoryIcon(category),
-        types: []
-      };
-    }
-    acc[category].types.push(item);
-    return acc;
-  }, {});
+  const coveredProvinceLinks = Array.from(new Set(planData.planlar.flatMap((plan) => plan.iller)))
+    .sort((firstProvince, secondProvince) => firstProvince.localeCompare(secondProvince, 'tr-TR'))
+    .map((province) => ({
+      title: province,
+      href: `/cevre-duzeni-planlari/il/${normalizeSlugValue(province)}`,
+    }));
 
-  const categoriesArray = Object.values(categories);
+  const navigationSections: NavigationSection[] = [
+    {
+      id: 'tarimsal-yapi-hesaplama',
+      icon: '🏗️',
+      title: 'Tarımsal Yapı Hesaplama',
+      description: 'Yapı türlerine göre alan, kapasite ve mevzuat uygunluğu hesaplamaları',
+      items: [
+        { icon: '🏡', title: 'Bağ evi', description: 'Bağ evi yapı alanı ve koşulları hesaplaması', href: getStructureUrl('bag-evi'), trackingType: 'bag-evi' },
+        { icon: '🪱', title: 'Solucan ve solucan gübresi', description: 'Solucan üretimi ve kompost gübre tesisi hesaplaması', href: getStructureUrl('solucan-tesisi') },
+        { icon: '🍄', title: 'Mantar üretim', description: 'Mantar üretim alanı ve tesisi hesaplaması', href: getStructureUrl('mantar-tesisi') },
+        { icon: '🌱', title: 'Sera', description: 'Sera tesisi kurulum alanı ve kapasite hesaplaması', href: getStructureUrl('sera') },
+        { icon: '🐝', title: 'Arıcılık', description: 'Arı kovanı ve bal üretim tesisi hesaplaması', href: getStructureUrl('aricilik'), trackingType: 'aricilik' },
+        { icon: '🌾', title: 'Hububat ve yem depolama silosu', description: 'Hububat depolama silosu alan ve kapasite hesaplaması', href: getStructureUrl('hububat-silo') },
+        { icon: '🏪', title: 'Tarımsal amaçlı depo', description: 'Genel tarımsal ürün depolama tesisi hesaplaması', href: getStructureUrl('tarimsal-depo') },
+        { icon: '📦', title: 'Lisanslı depolar', description: 'Lisanslı depolama tesisi alan hesaplaması', href: getStructureUrl('lisansli-depo') },
+        { icon: '🚿', title: 'Tarımsal ürün yıkama', description: 'Ürün yıkama ve temizleme tesisi hesaplaması', href: getStructureUrl('yikama-tesisi') },
+        { icon: '🌞', title: 'Hububat, çeltik, ayçiçeği kurutma', description: 'Tahıl kurutma tesisi alan hesaplaması', href: getStructureUrl('kurutma-tesisi') },
+        { icon: '🍑', title: 'Açıkta meyve/sebze kurutma', description: 'Meyve ve sebze kurutma alanı hesaplaması', href: getStructureUrl('meyve-sebze-kurutma') },
+        { icon: '🫒', title: 'Zeytinyağı fabrikası', description: 'Zeytinyağı üretim tesisi alan hesaplaması', href: getStructureUrl('zeytinyagi-fabrikasi') },
+        { icon: '❄️', title: 'Soğuk hava deposu', description: 'Tarımsal ürün soğuk depolama tesisi hesaplaması', href: getStructureUrl('soguk-hava-deposu') },
+        { icon: '💧', title: 'Su depolama ve pompaj sistemi', description: 'Tarımsal sulama su depolama hesaplaması', href: getStructureUrl('su-depolama') },
+        { icon: '⛲', title: 'Su kuyuları', description: 'Tarımsal sulama kuyusu tesisi hesaplaması', href: getStructureUrl('su-kuyulari') },
+        { icon: '🐄', title: 'Süt Sığırcılığı', description: 'Süt sığırı ahırı alan ve kapasite hesaplaması', href: getStructureUrl('sut-sigirciligi') },
+        { icon: '🐑', title: 'Ağıl (küçükbaş)', description: 'Koyun-keçi ağılı alan ve kapasite hesaplaması', href: getStructureUrl('agil-kucukbas') },
+        { icon: '🥚', title: 'Kümes (yumurtacı tavuk)', description: 'Yumurta tavuğu tesisi alan ve kapasite hesaplaması', href: getStructureUrl('kumes-yumurtaci') },
+        { icon: '🍗', title: 'Kümes (etçi tavuk)', description: 'Etlik piliç tesisi alan ve kapasite hesaplaması', href: getStructureUrl('kumes-etci') },
+        { icon: '🐔', title: 'Kümes (gezen tavuk)', description: 'Organik tavuk tesisi alan hesaplaması', href: getStructureUrl('kumes-gezen') },
+        { icon: '🦃', title: 'Kümes (hindi)', description: 'Hindi üretim tesisi alan hesaplaması', href: getStructureUrl('kumes-hindi') },
+        { icon: '🦆', title: 'Kaz Ördek çiftliği', description: 'Su kuşları üretim tesisi hesaplaması', href: getStructureUrl('kaz-ordek') },
+        { icon: '🐎', title: 'Hara (at üretimi)', description: 'At yetiştiriciliği tesisi alan hesaplaması', href: getStructureUrl('hara') },
+        { icon: '🦋', title: 'İpek böcekçiliği', description: 'İpek böceği üretim tesisi hesaplaması', href: getStructureUrl('ipek-bocekciligi') },
+        { icon: '🐕', title: 'Evcil hayvan ve bilimsel araştırma hayvanı üretim', description: 'Pet ve laboratuvar hayvanı üretim tesisi', href: getStructureUrl('evcil-hayvan') },
+        { icon: '🐃', title: 'Besi Sığırcılığı', description: 'Besi sığırı tesisi alan ve kapasite hesaplaması', href: getStructureUrl('besi-sigirciligi') },
+      ],
+    },
+    {
+      id: 'ciftlik-hayvanciligi',
+      icon: '🐄',
+      title: 'Çiftlik Hayvancılığı',
+      description: 'Hayvancılık işletmeleri için gelişmiş kapasite, planlama ve 3D analiz araçları',
+      items: [
+        { icon: '🐄', title: 'Gübre Çukuru Kapasite Hesaplama', description: 'Hayvan türüne göre gübre deposu hacim hesaplaması - 3D görselleştirme ile profesyonel analiz', href: '/gubre-cukuru-hesaplama', trackingType: 'gubre_cukuru' },
+        { icon: '🐮', title: 'Buzağı Destekleme Hesaplaması', description: '2026 buzağı desteklerini temel tutar ve ilave katsayılara göre detaylı hesaplayın', href: '/buzagi-destegi-hesaplama', trackingType: 'buzagi_destegi_hesaplama' },
+        { icon: '🏗️', title: 'Hayvancılık İşletmeleri Kapasite Hesaplama', description: 'Besi ve süt sığırı ahırları için istenilen kapasite raporunu yaş gruplarına göre alan gereksinimleri ile hesaplayın.', href: '/sigir-ahiri-kapasite-hesaplama', trackingType: 'sigir_ahiri_kapasite' },
+        { icon: '🗺️', title: 'Gezginci Arıcılık Konaklama Planlama', description: 'Bitkilerin çiçeklenme zamanına göre gezginci arıcılık rotanızı planlayın.', href: '/aricilik-planlama', trackingType: 'aricilik_planlama' },
+        { icon: '🌸', title: 'Çiçeklenme Takvimi', description: 'İlçe bazlı çiçeklenme takvimi ve Türkiye haritası ile verimli bölgeleri keşfedin.', href: '/ciceklenme-takvimi', trackingType: 'ciceklenme_takvimi' },
+      ],
+    },
+    {
+      id: 'bitkisel-uretim',
+      icon: '🌾',
+      title: 'Bitkisel Üretim',
+      description: 'Bitkisel üretim destek modelleri ve ürün bazlı teşvik hesaplamaları',
+      items: [
+        { icon: '💰', title: 'Havza Bazlı Destekleme Modeli', description: '2026 yılı bitkisel üretim desteklerini ürün, il/ilçe ve destek türüne göre hesaplayın', href: '/havza-bazli-destekleme-modeli', trackingType: 'havza_bazli_destekleme_modeli' },
+      ],
+    },
+    {
+      id: 'mevzuat',
+      icon: '📚',
+      title: 'Mevzuat',
+      description: 'Tarımsal yapılaşma için temel kanunlar, genelgeler ve plan notları',
+      items: [
+        { icon: '🌱', title: 'Toprak Koruma ve Arazi Kullanımı Kanunu', description: '5403 Sayılı Kanun - Tarım arazilerinin korunması ve sınıflandırılması', href: '/documents/toprak-koruma-kanunu' },
+        { icon: '📋', title: 'Tarım Arazileri Kullanımı Genelgesi', description: 'İmar ve yapılaşma düzenlemeleri - Bağ evi, sera, hayvancılık tesisleri', href: '/documents/tarim-arazileri-kullanimi-genelgesi' },
+        { icon: '🫒', title: 'Zeytinciliğin Islahı Kanunu', description: '3573 Sayılı Kanun (1939) - Zeytinlik alanlarda yapılaşma yasak ve kısıtlamaları', href: '/documents/zeytincilik-islahi-kanunu' },
+        { icon: '🫒', title: 'Zeytinciliğin Islahı Yönetmeliği', description: '1996 Yönetmeliği - Zeytincilik alanlarında yapılaşma kısıtlamaları', href: '/documents/zeytincilik-islahi-yonetmeligi' },
+        { icon: '🗺️', title: 'İzmir Büyükşehir Plan Notları', description: 'Tarım alanları ve yapılaşma koşulları', href: '/documents/izmir-buyuksehir-plan-notlari' },
+        {
+          icon: '🗺️',
+          title: '1/100.000 Ölçekli Çevre Düzeni Planlarında Tarımsal Hükümler',
+          description: '20 bölge, 55+ il için tarımsal yapılaşma koşulları ve emsal değerleri - İnteraktif harita',
+          href: '/cevre-duzeni-planlari',
+          children: coveredProvinceLinks,
+        },
+      ],
+    },
+  ];
 
-  function getCategoryIcon(category: string): string {
-    const iconMap: Record<string, string> = {
-      'Hububat Depolama': '🌾',
-      'Tarımsal Depolama': '🏪',
-      'Tarımsal Tesisler': '🏗️',
-      'Su Yapıları': '💧',
-      'Sera ve Bahçe': '🌱',
-      'Hayvancılık': '🐄',
-      'Diğer': '🔧'
-    };
-    return iconMap[category] || '🏗️';
-  }
+  const toggleSection = (sectionId: string) => {
+    setActiveSection((current) => (current === sectionId ? null : sectionId));
+  };
 
   // Structured Data for the homepage
   const structuredData = {
@@ -201,337 +248,109 @@ export default function HomePage({ yapiTurleri, pageTitle, pageDescription }: Ho
             </button>
           </div>
 
-          <MethodologySection />
-          
           <div className={styles.content}>
-            <DisclaimerSection />
+            <section className={styles.section} aria-label="Hızlı Erişim Menüsü">
+              <div className={styles.accordionContainer}>
+                {navigationSections.map((section) => {
+                  const panelId = `${section.id}-panel`;
+                  const isOpen = activeSection === section.id;
 
-            {/* Barınma */}
-            <div className={styles.section}>
-              <h2>🏡 Barınma</h2>
-              <div className={styles.calculationGrid}>
-                                <a href={getStructureUrl('bag-evi')} className={styles.calculationCard} onClick={(e) => handleCalculationClick('bag-evi', e)}>
-                  <div className={styles.calculationIcon}>{structureTypeIcons['bag-evi']}</div>
-                  <h3>Bağ evi</h3>
-                  <p>Bağ evi yapı alanı ve koşulları hesaplaması</p>
-                </a>
-              </div>
-            </div>
+                  return (
+                    <div key={section.id} className={styles.accordionItem}>
+                      <button
+                        type="button"
+                        className={styles.accordionButton}
+                        aria-expanded={isOpen}
+                        aria-controls={panelId}
+                        onClick={() => toggleSection(section.id)}
+                      >
+                        <span className={styles.accordionButtonMain}>
+                          <span className={styles.accordionIcon}>{section.icon}</span>
+                          <span>
+                            <span className={styles.accordionTitle}>{section.title}</span>
+                            <span className={styles.accordionDescription}>{section.description}</span>
+                          </span>
+                        </span>
+                        <span className={styles.accordionChevron} aria-hidden="true">{isOpen ? '−' : '+'}</span>
+                      </button>
 
-            {/* Özel Üretim Tesisleri */}
-            <div className={styles.section}>
-              <h2>🌱 Özel Üretim Tesisleri</h2>
-              <div className={styles.calculationGrid}>
-                <a href={getStructureUrl('solucan-tesisi')} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🪱</div>
-                  <h3>Solucan ve solucan gübresi</h3>
-                  <p>Solucan üretimi ve kompost gübre tesisi hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl('mantar-tesisi')} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🍄</div>
-                  <h3>Mantar üretim</h3>
-                  <p>Mantar üretim alanı ve tesisi hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl('sera')} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🌱</div>
-                  <h3>Sera</h3>
-                  <p>Sera tesisi kurulum alanı ve kapasite hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl('aricilik')} className={styles.calculationCard} onClick={(e) => handleCalculationClick('aricilik', e)}>
-                  <div className={styles.calculationIcon}>🐝</div>
-                  <h3>Arıcılık</h3>
-                  <p>Arı kovanı ve bal üretim tesisi hesaplaması</p>
-                </a>
-              </div>
-            </div>
+                      <div
+                        id={panelId}
+                        className={`${styles.accordionPanel} ${isOpen ? styles.accordionPanelOpen : styles.accordionPanelClosed}`}
+                      >
+                          <div className={styles.calculationGrid}>
+                            {section.items.map((item) => {
+                              const itemKey = `${section.id}-${item.href}`;
 
-            {/* Depolama ve İşleme */}
-            <div className={styles.section}>
-              <h2>📦 Depolama ve İşleme</h2>
-              <div className={styles.calculationGrid}>
-                <a href={getStructureUrl("hububat-silo")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🌾</div>
-                  <h3>Hububat ve yem depolama silosu</h3>
-                  <p>Hububat depolama silosu alan ve kapasite hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("tarimsal-depo")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🏪</div>
-                  <h3>Tarımsal amaçlı depo</h3>
-                  <p>Genel tarımsal ürün depolama tesisi hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("lisansli-depo")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>📦</div>
-                  <h3>Lisanslı depolar</h3>
-                  <p>Lisanslı depolama tesisi alan hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("yikama-tesisi")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🚿</div>
-                  <h3>Tarımsal ürün yıkama</h3>
-                  <p>Ürün yıkama ve temizleme tesisi hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("kurutma-tesisi")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🌞</div>
-                  <h3>Hububat, çeltik, ayçiçeği kurutma</h3>
-                  <p>Tahıl kurutma tesisi alan hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("meyve-sebze-kurutma")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🍑</div>
-                  <h3>Açıkta meyve/sebze kurutma</h3>
-                  <p>Meyve ve sebze kurutma alanı hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("zeytinyagi-fabrikasi")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🫒</div>
-                  <h3>Zeytinyağı fabrikası</h3>
-                  <p>Zeytinyağı üretim tesisi alan hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("soguk-hava-deposu")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>❄️</div>
-                  <h3>Soğuk hava deposu</h3>
-                  <p>Tarımsal ürün soğuk depolama tesisi hesaplaması</p>
-                </a>
-              </div>
-            </div>
+                              if (!item.children || item.children.length === 0) {
+                                return (
+                                  <a
+                                    key={itemKey}
+                                    href={item.href}
+                                    className={styles.calculationCard}
+                                    onClick={item.trackingType ? (event) => handleCalculationClick(item.trackingType!, event) : undefined}
+                                  >
+                                    <div className={styles.calculationIcon}>{item.icon}</div>
+                                    <h3>{item.title}</h3>
+                                    <p>{item.description}</p>
+                                  </a>
+                                );
+                              }
 
-            {/* Su Yapıları */}
-            <div className={styles.section}>
-              <h2>💧 Su Yapıları</h2>
-              <div className={styles.calculationGrid}>
-                <a href={getStructureUrl("su-depolama")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>💧</div>
-                  <h3>Su depolama ve pompaj sistemi</h3>
-                  <p>Tarımsal sulama su depolama hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("su-kuyulari")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>⛲</div>
-                  <h3>Su kuyuları</h3>
-                  <p>Tarımsal sulama kuyusu tesisi hesaplaması</p>
-                </a>
-              </div>
-            </div>
+                              return (
+                                <div key={itemKey} className={`${styles.calculationCard} ${styles.calculationCardWithChildren}`}>
+                                  <a
+                                    href={item.href}
+                                    className={styles.calculationCardMainLink}
+                                    onClick={item.trackingType ? (event) => handleCalculationClick(item.trackingType!, event) : undefined}
+                                  >
+                                    <div className={styles.calculationIcon}>{item.icon}</div>
+                                    <h3>{item.title}</h3>
+                                    <p>{item.description}</p>
+                                  </a>
 
-            {/* Hayvancılık Tesisleri */}
-            <div className={styles.section}>
-              <h2>🐄 Hayvancılık Tesisleri</h2>
-              <div className={styles.calculationGrid}>
-                <a href={getStructureUrl("sut-sigirciligi")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🐄</div>
-                  <h3>Süt Sığırcılığı</h3>
-                  <p>Süt sığırı ahırı alan ve kapasite hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("agil-kucukbas")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🐑</div>
-                  <h3>Ağıl (küçükbaş)</h3>
-                  <p>Koyun-keçi ağılı alan ve kapasite hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("kumes-yumurtaci")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🥚</div>
-                  <h3>Kümes (yumurtacı tavuk)</h3>
-                  <p>Yumurta tavuğu tesisi alan ve kapasite hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("kumes-etci")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🍗</div>
-                  <h3>Kümes (etçi tavuk)</h3>
-                  <p>Etlik piliç tesisi alan ve kapasite hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("kumes-gezen")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🐔</div>
-                  <h3>Kümes (gezen tavuk)</h3>
-                  <p>Organik tavuk tesisi alan hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("kumes-hindi")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🦃</div>
-                  <h3>Kümes (hindi)</h3>
-                  <p>Hindi üretim tesisi alan hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("kaz-ordek")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🦆</div>
-                  <h3>Kaz Ördek çiftliği</h3>
-                  <p>Su kuşları üretim tesisi hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("hara")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🐎</div>
-                  <h3>Hara (at üretimi)</h3>
-                  <p>At yetiştiriciliği tesisi alan hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("ipek-bocekciligi")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🦋</div>
-                  <h3>İpek böcekçiliği</h3>
-                  <p>İpek böceği üretim tesisi hesaplaması</p>
-                </a>
-                
-                <a href={getStructureUrl("evcil-hayvan")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🐕</div>
-                  <h3>Evcil hayvan ve bilimsel araştırma hayvanı üretim</h3>
-                  <p>Pet ve laboratuvar hayvanı üretim tesisi</p>
-                </a>
-                
-                <a href={getStructureUrl("besi-sigirciligi")} className={styles.calculationCard}>
-                  <div className={styles.calculationIcon}>🐃</div>
-                  <h3>Besi Sığırcılığı</h3>
-                  <p>Besi sığırı tesisi alan ve kapasite hesaplaması</p>
-                </a>
-              </div>
-
-              {/* Öne Çıkan Hesaplama - Havza Bazlı Destekleme Modeli */}
-              <div className={styles.featuredSection} style={{ marginTop: '3rem' }}>
-                <h2>🌾 Havza Bazlı Destekleme Modeli</h2>
-                <p>2026 yılı bitkisel üretim desteklerini ürün, il/ilçe ve destek türüne göre hesaplayın</p>
-                <a
-                  href="/havza-bazli-destekleme-modeli"
-                  className={styles.featuredButton}
-                  onClick={(e) => handleCalculationClick('havza_bazli_destekleme_modeli', e)}
-                >
-                  💰 Destek Hesapla
-                </a>
-              </div>
-
-              {/* Öne Çıkan Hesaplama - Gübre Çukuru */}
-              <div className={styles.featuredSection} style={{ marginTop: '2rem' }}>
-                <h2>🐄 Gübre Çukuru Kapasite Hesaplama</h2>
-                <p>Hayvan türüne göre gübre deposu hacim hesaplaması - 3D görselleştirme ile profesyonel analiz</p>
-                <a href="/gubre-cukuru-hesaplama" className={styles.featuredButton} onClick={(e) => handleCalculationClick('gubre_cukuru', e)}>
-                  3D Hesaplamaya Başla
-                </a>
-              </div>
-
-              {/* Hayvancılık İşletmeleri Kapasite Hesaplama */}
-              <div className={styles.featuredSection} style={{ marginTop: '2rem' }}>
-                <h2>🏗️ Hayvancılık İşletmeleri Kapasite Hesaplama</h2>
-                <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-                  <p>
-                    Besi ve süt sığırı ahırları için istenilen kapasite raporunu yaş gruplarına göre alan gereksinimleri, durak boyutları ve teknik kriterleri ile hesaplayın.
-                  </p>
-                  <a href="/sigir-ahiri-kapasite-hesaplama" className={styles.featuredButton} onClick={(e) => handleCalculationClick('sigir_ahiri_kapasite', e)}>
-                    🐄 Sığır Ahırı Hesapla
-                  </a>
-                </div>
-              </div>
-
-              {/* Gezginci Arıcılık Konaklama Planlama */}
-              <div className={styles.featuredSection} style={{ marginTop: '2rem' }}>
-                <h2>🐝 Gezginci Arıcılık Konaklama Planlama</h2>
-                <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-                  <p>
-                    Bitkilerin çiçeklenme zamanına göre gezginci arıcılık rotanızı planlayın. İlçe bazlı çiçeklenme takvimi ve Türkiye haritası ile en verimli bal üretim bölgelerini keşfedin.
-                  </p>
-                  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <a href="/aricilik-planlama" className={styles.featuredButton} onClick={(e) => handleCalculationClick('aricilik_planlama', e)}>
-                      🗺️ Rota Planla
-                    </a>
-                    <a href="/ciceklenme-takvimi" className={styles.featuredButton} style={{ background: 'linear-gradient(135deg, #4CAF50, #388E3C)' }} onClick={(e) => handleCalculationClick('ciceklenme_takvimi', e)}>
-                      🌸 Çiçeklenme Takvimi
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Yapı Türleri */}
-            {categoriesArray.length > 0 && (
-              <div className={styles.section}>
-                <h2>Desteklenen Yapı Türleri</h2>
-                <div className={styles.calculationGrid}>
-                  {categoriesArray.map((category: any, index) => (
-                    <div key={index} className={styles.calculationCard}>
-                      <div className={styles.calculationIcon}>{category.icon}</div>
-                      <h3>{category.name}</h3>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
-                        {category.types.slice(0, 3).map((type: any, idx: number) => (
-                          <a
-                            key={type.id + '-' + idx}
-                            href={getStructureUrl(type.url)}
-                            style={{ 
-                              padding: '4px 8px', 
-                              background: '#f8f9fa', 
-                              borderRadius: '4px', 
-                              fontSize: '0.8rem',
-                              textDecoration: 'none',
-                              color: '#6c757d'
-                            }}
-                          >
-                            {structureTypeIcons[type.url] || category.icon} {type.name}
-                          </a>
-                        ))}
+                                  <details className={styles.nestedDetails}>
+                                    <summary className={styles.nestedSummary}>🏛️ Kapsamdaki Tüm İller ({item.children.length})</summary>
+                                    <div className={styles.provinceLinks}>
+                                      {item.children.map((childLink) => (
+                                        <a
+                                          key={childLink.href}
+                                          href={childLink.href}
+                                          className={styles.provinceLink}
+                                        >
+                                          {childLink.title}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </details>
+                                </div>
+                              );
+                            })}
+                          </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
-            )}
 
-            {/* Mevzuat ve Belgeler */}
-            <div className={styles.section}>
-              <h2>Mevzuat ve Belgeler</h2>
-              <div className={styles.legislationGrid}>
-                <a href="/documents/toprak-koruma-kanunu" className={styles.legislationButton}>
-                  <div className={styles.legislationIcon}>🌱</div>
-                  <div className={styles.legislationInfo}>
-                    <h3>Toprak Koruma ve Arazi Kullanımı Kanunu</h3>
-                    <p>5403 Sayılı Kanun - Tarım arazilerinin korunması ve sınıflandırılması</p>
-                  </div>
-                </a>
-                
-                <a href="/documents/tarim-arazileri-kullanimi-genelgesi" className={styles.legislationButton}>
-                  <div className={styles.legislationIcon}>📋</div>
-                  <div className={styles.legislationInfo}>
-                    <h3>Tarım Arazileri Kullanımı Genelgesi</h3>
-                    <p>İmar ve yapılaşma düzenlemeleri - Bağ evi, sera, hayvancılık tesisleri</p>
-                  </div>
-                </a>
-                
-                <a href="/documents/zeytincilik-islahi-kanunu" className={styles.legislationButton}>
-                  <div className={styles.legislationIcon}>🫒</div>
-                  <div className={styles.legislationInfo}>
-                    <h3>Zeytinciliğin Islahı Kanunu</h3>
-                    <p>3573 Sayılı Kanun (1939) - Zeytinlik alanlarda yapılaşma yasak ve kısıtlamaları</p>
-                  </div>
-                </a>
-                
-                <a href="/documents/zeytincilik-islahi-yonetmeligi" className={styles.legislationButton}>
-                  <div className={styles.legislationIcon}>🫒</div>
-                  <div className={styles.legislationInfo}>
-                    <h3>Zeytinciliğin Islahı Yönetmeliği</h3>
-                    <p>1996 Yönetmeliği - Zeytincilik alanlarında yapılaşma kısıtlamaları</p>
-                  </div>
-                </a>
-                
-                <a href="/documents/izmir-buyuksehir-plan-notlari" className={styles.legislationButton}>
-                  <div className={styles.legislationIcon}>🗺️</div>
-                  <div className={styles.legislationInfo}>
-                    <h3>İzmir Büyükşehir Plan Notları</h3>
-                    <p>Tarım alanları ve yapılaşma koşulları</p>
-                  </div>
-                </a>
-                
-                <a href="/cevre-duzeni-planlari" className={styles.legislationButton}>
-                  <div className={styles.legislationIcon}>🗺️</div>
-                  <div className={styles.legislationInfo}>
-                    <h3>1/100.000 Ölçekli Çevre Düzeni Planlarında Tarımsal Hükümler</h3>
-                    <p>20 bölge, 55+ il için tarımsal yapılaşma koşulları ve emsal değerleri - İnteraktif harita</p>
-                  </div>
-                </a>
-              </div>
-            </div>
+              <nav className={styles.botSitemap} aria-label="Ana sayfa kapsamındaki tüm alt bağlantılar">
+                {navigationSections.flatMap((section) =>
+                  section.items.flatMap((item) => [
+                    <a key={`bot-${section.id}-${item.href}`} href={item.href}>{item.title}</a>,
+                    ...(item.children || []).map((childLink) => (
+                      <a key={`bot-${section.id}-${childLink.href}`} href={childLink.href}>{childLink.title}</a>
+                    )),
+                  ])
+                )}
+              </nav>
+            </section>
+
+            <CalculationInsights />
+
+            <DisclaimerSection />
           </div>
+
+          <MethodologySection />
 
           <FAQSection />
           

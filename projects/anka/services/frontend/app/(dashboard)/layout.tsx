@@ -1,12 +1,20 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { isAuthenticated, logout, getCurrentUser, User } from '@/lib/auth'
 
+const PAGE_TITLES: Record<string, string> = {
+  '/dashboard': 'Gösterge Paneli',
+  '/batch/new': 'Yeni Batch Oluştur',
+  '/exports': 'İndirilmişler',
+  '/checkout': 'Kredi Satın Al',
+}
+
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter()
+  const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [showUserMenu, setShowUserMenu] = useState(false)
@@ -108,7 +116,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         {/* Header */}
         <header className="border-b border-gray-200 bg-white px-8 py-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Kontrol Paneli</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {PAGE_TITLES[pathname] ||
+                (pathname.startsWith('/batch/') && !pathname.endsWith('/new') ? 'Batch Detayı' : 'Kontrol Paneli')}
+            </h2>
             {user && (
               <div className="text-sm text-gray-600">
                 Hoş geldiniz, <span className="font-medium">{user.first_name || user.username}</span>
@@ -128,10 +139,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
 // Helper component for navigation links
 function NavLink({ href, label }: { href: string; label: string }) {
+  const pathname = usePathname()
+  const isActive = pathname === href
   return (
     <Link
       href={href}
-      className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+      className={`block rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+        isActive
+          ? 'bg-blue-50 text-blue-600 font-semibold'
+          : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+      }`}
     >
       {label}
     </Link>

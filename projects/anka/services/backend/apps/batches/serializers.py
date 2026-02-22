@@ -9,6 +9,30 @@ from apps.batches.models import Batch, BatchItem
 
 
 class BatchItemSerializer(serializers.ModelSerializer):
+    @staticmethod
+    def _normalize_item_data(data):
+        if not isinstance(data, dict):
+            return data
+
+        normalized = dict(data)
+
+        key_map = {
+            "formattedAddress": "formatted_address",
+            "websiteUri": "website_uri",
+            "nationalPhoneNumber": "phone_number",
+        }
+
+        for source_key, target_key in key_map.items():
+            if target_key not in normalized and source_key in normalized:
+                normalized[target_key] = normalized.get(source_key)
+
+        return normalized
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["data"] = self._normalize_item_data(representation.get("data"))
+        return representation
+
     class Meta:
         model = BatchItem
         fields = [
@@ -44,6 +68,12 @@ class BatchSerializer(serializers.ModelSerializer):
             "total_records",
             "processed_records",
             "error_records",
+            "ids_collected",
+            "ids_verified",
+            "contacts_enriched",
+            "emails_enriched",
+            "skipped_404",
+            "aborted_reason",
             "record_count_estimate",
             "estimated_cost",
             "status",
@@ -64,6 +94,12 @@ class BatchSerializer(serializers.ModelSerializer):
             "total_records",
             "processed_records",
             "error_records",
+            "ids_collected",
+            "ids_verified",
+            "contacts_enriched",
+            "emails_enriched",
+            "skipped_404",
+            "aborted_reason",
             "estimated_cost",
             "status",
             "csv_url",

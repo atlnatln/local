@@ -93,7 +93,7 @@ Google'ın 60 sonuç limitini aşmak için hedef bölge küçük parçalara böl
 
 ### Türkiye İl ve İlçe Vektörel Verileri
 Grid Search algoritmaları oluşturulurken, tarama alanlarının sınırlarını belirlemek için Türkiye idari sınırları kullanılmalıdır. Bu proje kapsamında referans alınacak GeoJSON dosyası:
-*   **Dosya Yolu:** `[docs/turkey-districts.geojson](docs/turkey-districts.geojson)`
+*   **Dosya Yolu:** `[docs/turkey-districts.geojson](turkey-districts.geojson)`
 *   **Kullanım Amacı:** Bu dosya, il ve ilçe bazlı poligonları içerir. Tarama algoritmaları bu poligonların sınırları dışına taşmayacak veya boş arazileri taramayacak şekilde optimize edilebilir.
 
 ### Türkçe Lokalizasyon ve Normalizasyon
@@ -107,7 +107,7 @@ Grid Search algoritmaları oluşturulurken, tarama alanlarının sınırlarını
 
 Places API (Aşama 3) sonrası `website` alanı boş kalan doğrulanmış işletmeler için aşağıdaki prensip uygulanır:
 
-*   **Model:** `gemini-2.0-flash`
+*   **Model:** `gemini-2.5-flash`
 *   **Araç:** Google Search Grounding (`google_search`)
 *   **Hedef Çıktı:** Sadece resmi website URL'si veya `NONE`
 *   **Filtreleme:** Sosyal medya/dizin domainleri kabul edilmez

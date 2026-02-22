@@ -18,6 +18,13 @@ interface CatalogItem {
   code?: string;
 }
 
+interface CreatedBatch {
+  id: string;
+}
+
+const MAX_RECORD_ESTIMATE = 50
+const MIN_RECORD_ESTIMATE = 1
+
 export default function NewBatchPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -32,7 +39,8 @@ export default function NewBatchPage() {
     organization: '',
     city: '',
     sector: '',
-    record_count_estimate: 100,
+    district: '',
+    record_count_estimate: 2,
   })
 
   useEffect(() => {
@@ -65,6 +73,20 @@ export default function NewBatchPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
+
+    if (name === 'record_count_estimate') {
+      const numericValue = Number(value)
+      const safeValue = Number.isFinite(numericValue)
+        ? Math.min(MAX_RECORD_ESTIMATE, Math.max(MIN_RECORD_ESTIMATE, numericValue))
+        : MIN_RECORD_ESTIMATE
+
+      setFormData(prev => ({
+        ...prev,
+        record_count_estimate: safeValue,
+      }))
+      return
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: value,
@@ -81,17 +103,19 @@ export default function NewBatchPage() {
             throw new Error('Lütfen şehir, sektör ve organizasyon seçiniz.')
         }
 
-        await fetchAPI('/batches/', {
+        const payload = {
+          organization: formData.organization,
+          city: formData.city,
+          sector: formData.sector,
+          filters: formData.district.trim() ? { district: formData.district.trim() } : {},
+          record_count_estimate: Math.min(MAX_RECORD_ESTIMATE, Math.max(MIN_RECORD_ESTIMATE, Number(formData.record_count_estimate)))
+        }
+
+        const createdBatch = await fetchAPI<CreatedBatch>('/batches/', {
             method: 'POST',
-            body: JSON.stringify({
-                organization: formData.organization,
-                city: formData.city,
-                sector: formData.sector,
-                filters: {},
-                record_count_estimate: Number(formData.record_count_estimate)
-            })
+          body: JSON.stringify(payload)
         })
-        router.push('/dashboard')
+        router.push(`/batch/${createdBatch.id}`)
     } catch (err) {
         setError(formatError(err))
     } finally {
@@ -123,13 +147,19 @@ export default function NewBatchPage() {
     <div className="max-w-2xl mx-auto py-8">
       <Card>
         <CardHeader>
-          <CardTitle>Yeni Batch Oluştur</CardTitle>
+          <CardTitle>Yeni Sorgu (Batch) Oluştur</CardTitle>
           <CardDescription>
-            Hedef kitlenizi belirleyin ve veri setini oluşturun.
+            Şehir ve sektör seçin. Sistem 3 aşamalı doğrulama ile iletişim ve website alanlarını üretir.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            <Alert>
+              <AlertDescription>
+                Düşük maliyetli başlangıç için önce <strong>2 kayıt</strong> ile deneme önerilir.
+              </AlertDescription>
+            </Alert>
+
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
@@ -157,41 +187,55 @@ export default function NewBatchPage() {
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                 <Label htmlFor="city">Şehir</Label>
-                <select
+              <Input
                     id="city"
                     name="city"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={formData.city}
                     onChange={handleChange}
+                list="city-options"
+                placeholder="Örn: Ankara"
                     required
-                >
-                    <option value="">Seçiniz</option>
-                    {cities.map((city) => (
-                    <option key={city.id} value={city.name}>
-                        {city.name}
-                    </option>
-                    ))}
-                </select>
+              />
+              <datalist id="city-options">
+                {cities.map((city) => (
+                <option key={city.id} value={city.name} />
+                ))}
+              </datalist>
+              <p className="text-xs text-muted-foreground">Öneriden seçebilir veya doğal dilde yazabilirsiniz.</p>
                 </div>
 
                 <div className="space-y-2">
                 <Label htmlFor="sector">Sektör</Label>
-                <select
+              <Input
                     id="sector"
                     name="sector"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={formData.sector}
                     onChange={handleChange}
+                list="sector-options"
+                placeholder="Örn: şehir plancısı"
                     required
-                >
-                    <option value="">Seçiniz</option>
-                    {sectors.map((sector) => (
-                    <option key={sector.id} value={sector.name}>
-                        {sector.name}
-                    </option>
-                    ))}
-                </select>
+              />
+              <datalist id="sector-options">
+                {sectors.map((sector) => (
+                <option key={sector.id} value={sector.name} />
+                ))}
+              </datalist>
+              <p className="text-xs text-muted-foreground">Kategoriyi sade tutun; konumu şehir alanında verin.</p>
                 </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="district">İlçe (Opsiyonel)</Label>
+              <Input
+                id="district"
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                placeholder="Örn: Menteşe"
+              />
+              <p className="text-xs text-muted-foreground">
+                Arama sonuçlarını belirli bir ilçeyle sınırlandırır.
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -200,13 +244,22 @@ export default function NewBatchPage() {
                 id="record_count_estimate"
                 name="record_count_estimate"
                 type="number"
-                min="1"
+                min={String(MIN_RECORD_ESTIMATE)}
+                max={String(MAX_RECORD_ESTIMATE)}
                 value={formData.record_count_estimate}
                 onChange={handleChange}
                 required
               />
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" onClick={() => setFormData(prev => ({ ...prev, record_count_estimate: 2 }))}>
+                  2 Kayıt Deneme
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setFormData(prev => ({ ...prev, record_count_estimate: 10 }))}>
+                  10 Kayıt
+                </Button>
+              </div>
               <p className="text-xs text-muted-foreground">
-                  Bu değer sadece maliyet hesaplaması için ön tahmindir.
+                  Bu değer kredi bloke ve pipeline planlaması için kullanılır. Üst sınır: {MAX_RECORD_ESTIMATE}.
               </p>
             </div>
 

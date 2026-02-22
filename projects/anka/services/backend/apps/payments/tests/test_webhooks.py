@@ -1,6 +1,9 @@
 import json
+import hmac
+import hashlib
 from django.test import TestCase, Client
 from decimal import Decimal
+from django.test.utils import override_settings
 from apps.payments.models import PaymentIntent, PaymentTransaction
 from django.contrib.auth import get_user_model
 
@@ -35,7 +38,8 @@ class WebhookHandlerTest(TestCase):
         response = self.client.post(
             '/api/payments/webhooks/iyzico/',
             data=payload,
-            content_type='application/json'
+            content_type='application/json',
+            secure=True,
         )
         
         self.assertEqual(response.status_code, 200)
@@ -47,6 +51,77 @@ class WebhookHandlerTest(TestCase):
         
         # Check if transaction created
         self.assertTrue(PaymentTransaction.objects.filter(iyzico_payment_id='pay-999').exists())
+
+    @override_settings(IYZICO_WEBHOOK_SECRET='test-webhook-secret')
+    def test_payment_completed_with_valid_signature(self):
+        payload = {
+            "eventType": "payment.completed",
+            "data": {
+                "conversationId": "conv-web-123",
+                "paymentId": "pay-1000",
+                "status": "SUCCESS",
+                "transactionId": "trans-1000",
+            }
+        }
+        body = json.dumps(payload).encode('utf-8')
+        signature = hmac.new(
+            b'test-webhook-secret',
+            body,
+            hashlib.sha256,
+        ).hexdigest()
+
+        response = self.client.post(
+            '/api/payments/webhooks/iyzico/',
+            data=body,
+            content_type='application/json',
+            HTTP_X_IYZICO_SIGNATURE=signature,
+            secure=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    @override_settings(IYZICO_WEBHOOK_SECRET='test-webhook-secret')
+    def test_rejects_missing_signature_when_secret_configured(self):
+        payload = {
+            "eventType": "payment.completed",
+            "data": {
+                "conversationId": "conv-web-123",
+                "paymentId": "pay-1001",
+                "status": "SUCCESS",
+                "transactionId": "trans-1001",
+            }
+        }
+
+        response = self.client.post(
+            '/api/payments/webhooks/iyzico/',
+            data=payload,
+            content_type='application/json',
+            secure=True,
+        )
+
+        self.assertEqual(response.status_code, 401)
+
+    @override_settings(IYZICO_WEBHOOK_SECRET='test-webhook-secret')
+    def test_rejects_invalid_signature(self):
+        payload = {
+            "eventType": "payment.completed",
+            "data": {
+                "conversationId": "conv-web-123",
+                "paymentId": "pay-1002",
+                "status": "SUCCESS",
+                "transactionId": "trans-1002",
+            }
+        }
+
+        response = self.client.post(
+            '/api/payments/webhooks/iyzico/',
+            data=payload,
+            content_type='application/json',
+            HTTP_X_IYZICO_SIGNATURE='invalid-signature',
+            secure=True,
+        )
+
+        self.assertEqual(response.status_code, 401)
 
     def test_payment_failed(self):
         payload = {
@@ -61,7 +136,8 @@ class WebhookHandlerTest(TestCase):
         response = self.client.post(
             '/api/payments/webhooks/iyzico/',
             data=payload,
-            content_type='application/json'
+            content_type='application/json',
+            secure=True,
         )
         
         self.assertEqual(response.status_code, 200)
@@ -74,7 +150,8 @@ class WebhookHandlerTest(TestCase):
         response = self.client.post(
             '/api/payments/webhooks/iyzico/',
             data="not a json",
-            content_type='application/json'
+            content_type='application/json',
+            secure=True,
         )
         # Should handle gracefully with 400
         self.assertEqual(response.status_code, 400)
