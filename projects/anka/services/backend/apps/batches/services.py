@@ -315,6 +315,31 @@ class BatchProcessor:
             
             # Start the adaptive search
             all_places = adaptive_search_recursive(start_region)
+
+            # Fallback: bazı şehirlerde sadece sektör kelimesi (örn. "şehir plancısı")
+            # Google Maps UI'da sonuç gösterse bile Places API'da 0 dönebiliyor.
+            # Bu durumda sadece 1 ek istekle şehir+sektör birleşik sorgu dene.
+            if not all_places and total_requests[0] < self.stage1_api_call_cap:
+                fallback_query = f"{self.batch.city} {self.batch.sector}".strip()
+                logger.info(
+                    "Batch %s: Stage 1 fallback query (0 results) → %s",
+                    self.batch.id,
+                    fallback_query,
+                )
+                try:
+                    total_requests[0] += 1
+                    fallback_resp = self.client.text_search_ids_only(
+                        query=fallback_query,
+                        location_restriction=start_region.to_dict(),
+                        language_code="tr",
+                    )
+                    all_places = fallback_resp.get("places", []) if fallback_resp else []
+                except Exception as exc:
+                    logger.warning(
+                        "Batch %s: Stage 1 fallback query failed: %s",
+                        self.batch.id,
+                        exc,
+                    )
             
             # Process results
             for p in all_places:

@@ -88,6 +88,42 @@ curl http://127.0.0.1:18010/api/health/
 
 Bu sayede Google API çağrısı VPS üzerinden çıkar ve key kısıtları bozulmaz.
 
+## 5.1) Playwright testlerinde local → VPS yönlendirme
+
+Repo içinde E2E helper (`tests/e2e/playwright/helpers/auth.ts`) varsayılan olarak:
+
+- `BACKEND_URL=http://localhost:8000`
+
+değerini kullanır. Yani default durumda test-login çağrısı lokale gider.
+
+VPS backend'e yönlendirmek için iki güvenli seçenek vardır:
+
+### Seçenek A — SSH tunnel (önerilen)
+
+Önce tunnel aç:
+
+```bash
+./scripts/secure-vps-tunnel.sh backend
+```
+
+Sonra testi VPS backend'e yönlendir:
+
+```bash
+BACKEND_URL=http://127.0.0.1:18010 BASE_URL=http://localhost:3100 npx playwright test
+```
+
+### Seçenek B — Doğrudan VPS domain/IP (daha kırılgan)
+
+```bash
+BACKEND_URL=https://ankadata.com.tr BASE_URL=https://ankadata.com.tr npx playwright test
+```
+
+Notlar:
+
+- Prod ortamında `test-login` endpoint'i genellikle kapalıdır (`ANKA_ALLOW_TEST_LOGIN=False`).
+- Bu yüzden prod'da test-login tabanlı senaryolar yerine gerçek Google login akışı kullanılmalıdır.
+- Local testte domain/IP üzerinden çalışmak CORS/cookie/same-site farkları nedeniyle local senaryodan farklı davranabilir.
+
 ## 6) Operasyon güvenliği
 
 - Deploy sadece anahtar doğrulamalı SSH ile yapılır (`deploy.sh` içinde sertleştirildi).

@@ -97,6 +97,7 @@ Bu proje Docker üzerinde çalışacak şekilde tasarlanmıştır.
 Mimari kararlar ve operasyonel rehberler `docs/` klasöründe yer almaktadır:
 *   [ADR-0006: 3-Stage Verification Pipeline](docs/ADR/0006-three-stage-verification-pipeline.md)
 *   [Runbook: Maps Sorgu Mantığı](docs/RUNBOOKS/maps-query-logic-pipeline.md)
+*   [Runbook: Email Enrichment (Stage 4)](docs/RUNBOOKS/email-enrichment-stage4.md)
 *   [Runbook: Gemini Search Grounding Enrichment](docs/RUNBOOKS/gemini-search-grounding-enrichment.md)
 *   [Test Stratejileri](tests/kurallar.md)
 *   [Veritabanı Modelleri](services/backend/apps/batches/models.py)

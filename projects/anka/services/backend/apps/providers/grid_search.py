@@ -166,7 +166,26 @@ class GridSearch:
         if not text:
             return ""
         import unicodedata
-        return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').decode('utf-8').upper()
+        # Türkçe karakterleri ASCII'ye indirgerken özellikle dotless i (ı)
+        # karakterinin tamamen düşmesini engelle.
+        turkish_map = str.maketrans(
+            {
+                "ı": "i",
+                "İ": "I",
+                "ş": "s",
+                "Ş": "S",
+                "ğ": "g",
+                "Ğ": "G",
+                "ü": "u",
+                "Ü": "U",
+                "ö": "o",
+                "Ö": "O",
+                "ç": "c",
+                "Ç": "C",
+            }
+        )
+        text = text.translate(turkish_map)
+        return unicodedata.normalize("NFKD", text).encode("ASCII", "ignore").decode("utf-8").upper()
 
     def _merge_features(self, features: List[dict]) -> dict:
         """

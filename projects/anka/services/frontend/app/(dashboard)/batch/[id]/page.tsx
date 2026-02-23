@@ -55,6 +55,7 @@ interface BatchItem {
         website?: string
         website_uri?: string
         websiteUri?: string
+        email?: string
         address?: string
         formatted_address?: string
         formattedAddress?: string
@@ -70,15 +71,17 @@ export default function BatchDetailPage() {
     const downloadItemsCsv = () => {
         if (!batch || !batch.items || batch.items.length === 0) return
 
-        const headers = ['Firma', 'Telefon', 'Website', 'Adres', 'Doğrulandı']
+        const headers = ['Firma', 'Telefon', 'Website', 'Email', 'Adres', 'Doğrulandı']
         const rows = batch.items.map((item) => {
             const phone = item.data?.phone || item.data?.phone_number || item.data?.nationalPhoneNumber || ''
             const website = item.data?.website || item.data?.website_uri || item.data?.websiteUri || ''
+            const email = item.data?.email || ''
             const address = item.data?.address || item.data?.formatted_address || item.data?.formattedAddress || ''
             return [
                 item.firm_name,
                 phone,
                 website,
+                email,
                 address,
                 item.is_verified ? 'Evet' : 'Hayır',
             ]
@@ -107,7 +110,7 @@ export default function BatchDetailPage() {
         setBatch(data)
         
         // Polling if not finished
-        if (['CREATED', 'COLLECTING_IDS', 'FILTERING', 'ENRICHING_CONTACTS'].includes(data.status)) {
+        if (['CREATED', 'COLLECTING_IDS', 'FILTERING', 'ENRICHING_CONTACTS', 'ENRICHING_EMAILS'].includes(data.status)) {
             intervalId = setTimeout(loadBatch, 2000)
         } else {
             setLoading(false)
@@ -372,6 +375,7 @@ export default function BatchDetailPage() {
                                         <th className="py-2 pr-3">Firma</th>
                                         <th className="py-2 pr-3">Telefon</th>
                                         <th className="py-2 pr-3">Website</th>
+                                        <th className="py-2 pr-3">Email</th>
                                         <th className="py-2 pr-3">Adres</th>
                                     </tr>
                                 </thead>
@@ -379,6 +383,7 @@ export default function BatchDetailPage() {
                                     {batch.items.map((item) => {
                                         const phone = item.data?.phone || item.data?.phone_number || item.data?.nationalPhoneNumber || '-'
                                         const website = item.data?.website || item.data?.website_uri || item.data?.websiteUri || ''
+                                        const email = item.data?.email || ''
                                         const address = item.data?.address || item.data?.formatted_address || item.data?.formattedAddress || '-'
 
                                         return (
@@ -389,6 +394,15 @@ export default function BatchDetailPage() {
                                                     {website ? (
                                                         <a href={website} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline break-all">
                                                             {website}
+                                                        </a>
+                                                    ) : (
+                                                        '-'
+                                                    )}
+                                                </td>
+                                                <td className="py-2 pr-3 text-slate-700">
+                                                    {email ? (
+                                                        <a href={`mailto:${email}`} className="text-indigo-600 hover:underline break-all">
+                                                            {email}
                                                         </a>
                                                     ) : (
                                                         '-'
