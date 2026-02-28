@@ -36,6 +36,12 @@ from urllib.parse import urljoin, urlparse
 import requests
 from django.conf import settings
 
+from apps.providers.domain_blacklist import (
+    EXCLUDED_SCRAPE_DOMAINS,
+    is_excluded_for_scrape,
+    is_excluded_official_website_candidate,
+)
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -58,36 +64,8 @@ _JUNK_RE = re.compile(
     re.IGNORECASE,
 )
 
-# Bu domainleri scrape etme
-_EXCLUDED_SCRAPE_DOMAINS = frozenset(
-    {
-        "google.com",
-        "google.com.tr",
-        "facebook.com",
-        "instagram.com",
-        "twitter.com",
-        "x.com",
-        "linkedin.com",
-        "youtube.com",
-        "tiktok.com",
-        "yandex.com",
-        "bing.com",
-        "wikipedia.org",
-        "tripadvisor.com",
-        "yelp.com",
-        "foursquare.com",
-        "maps.google.com",
-        "goo.gl",
-        "bit.ly",
-        "t.co",
-        "sahibinden.com",
-        "hepsiburada.com",
-        "n11.com",
-        "gittigidiyor.com",
-        "isbank.com.tr",
-        "garanti.com.tr",
-    }
-)
+# Backward-compatible alias (merkezi listeyi kullan)
+_EXCLUDED_SCRAPE_DOMAINS = EXCLUDED_SCRAPE_DOMAINS
 
 # İletişim sayfaları – bu sırada denenir
 _CONTACT_PATHS = [
@@ -110,6 +88,8 @@ _CONTACT_PATHS = [
 
 _SCRAPE_TIMEOUT = 6          # saniye
 _MAX_SCRAPE_BYTES = 200_000  # 200 KB
+
+_URL_RE = re.compile(r"https?://[^\s\]\)\"'<>]+", re.IGNORECASE)
 
 
 # ---------------------------------------------------------------------------
@@ -166,6 +146,10 @@ class EmailEnrichmentClient:
             or getattr(settings, "ANKA_EMAIL_TOKEN_LOG_PATH", "")
         )
 
+        # last-call debug/telemetry (stage 4 sayaçları için)
+        self.last_discovered_website: Optional[str] = None
+        self.last_gemini_calls: int = 0
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
@@ -182,6 +166,10 @@ class EmailEnrichmentClient:
         Önce Strategy 1 (scrape), başarısızsa Strategy 2 (Gemini grounding)
         denenir.
         """
+        # reset last-call metadata
+        self.last_discovered_website = None
+        self.last_gemini_calls = 0
+
         firm_name = (firm_name or "").strip()
         if not firm_name:
             return None
@@ -194,6 +182,23 @@ class EmailEnrichmentClient:
                 return email
             logger.debug("[EmailEnrich] S1-scrape  [%s] → not found, trying S2", firm_name)
 
+        # Website yoksa: önce resmi website bul (Gemini grounding) → scrape ile email dene
+        # Bu adım, modelin "email" uydurmasını azaltır; önce kanıtlanabilir URL yakalanır.
+        discovered_website: Optional[str] = None
+        if not website_url and self._api_key:
+            discovered_website = self._gemini_find_official_website(firm_name, address)
+            if discovered_website:
+                self.last_discovered_website = discovered_website
+                self.last_gemini_calls += 1
+                email = self._scrape_website_for_email(discovered_website)
+                if email:
+                    logger.info(
+                        "[EmailEnrich] S2-website→scrape [%s] → %s",
+                        firm_name,
+                        email,
+                    )
+                    return email
+
         # Strategy 2: Gemini grounding araması
         if not self._api_key:
             logger.warning(
@@ -203,18 +208,93 @@ class EmailEnrichmentClient:
 
         # website biliniyorsa domain bilgisini Gemini'ye ilet (site: hedefli arama)
         known_domain: Optional[str] = None
-        if website_url:
-            parsed_domain = _base_url(website_url)
+        domain_source_url = website_url or discovered_website
+        if domain_source_url:
+            parsed_domain = _base_url(domain_source_url)
             if parsed_domain:
                 from urllib.parse import urlparse as _up
                 known_domain = _up(parsed_domain).netloc.lstrip("www.")
 
         email = self._gemini_search_email(firm_name, address, known_domain=known_domain)
+        self.last_gemini_calls += 1
         if email:
             logger.info("[EmailEnrich] S2-gemini  [%s] → %s", firm_name, email)
         else:
             logger.debug("[EmailEnrich] S2-gemini  [%s] → not found", firm_name)
         return email
+
+    def _gemini_find_official_website(self, firm_name: str, address: str) -> Optional[str]:
+        """Gemini Search Grounding ile işletmenin resmi web sitesini bulur (URL veya None)."""
+        try:
+            from google import genai  # type: ignore
+            from google.genai import types  # type: ignore
+        except ImportError:
+            logger.warning("[EmailEnrich] google-genai paketi kurulu değil – website araması atlandı")
+            return None
+
+        client = genai.Client(api_key=self._api_key)
+        prompt = (
+            "Aşağıdaki işletmenin resmi web sitesini Google Search ile bul. "
+            "Sosyal medya, harita, dizin veya ilan sitelerini asla döndürme. "
+            "Bulamazsan NONE döndür. Yalnızca tek satır döndür: URL veya NONE.\n\n"
+            f"İşletme adı: {firm_name}\n"
+            f"Adres: {address}\n"
+        )
+
+        try:
+            response = client.models.generate_content(
+                model=self._model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0,
+                    max_output_tokens=64,
+                    tools=[{"google_search": {}}],
+                ),
+            )
+        except Exception as exc:
+            logger.warning("[EmailEnrich] Website grounding hatası [%s]: %s", firm_name, exc)
+            self._log_token_event(
+                firm_name=firm_name,
+                address=address,
+                known_domain=None,
+                status="error",
+                prompt_tokens=0,
+                output_tokens=0,
+                total_tokens=0,
+                error=str(exc),
+                extra={"event_type": "website_lookup"},
+            )
+            return None
+
+        prompt_tokens, output_tokens, total_tokens = _extract_usage_tokens(response)
+        self._log_token_event(
+            firm_name=firm_name,
+            address=address,
+            known_domain=None,
+            status="ok",
+            prompt_tokens=prompt_tokens,
+            output_tokens=output_tokens,
+            total_tokens=total_tokens,
+            error="",
+            extra={"event_type": "website_lookup"},
+        )
+
+        text = (getattr(response, "text", None) or "").strip()
+        candidates: list[str] = []
+        if text and text.upper() != "NONE":
+            candidates.extend(_URL_RE.findall(text))
+            if not candidates and "." in text and " " not in text:
+                candidates.append(text)
+
+        # grounding URL'lerini de aday olarak ekle
+        candidates.extend(_get_grounding_urls(response))
+
+        for raw in candidates:
+            normalized = _normalize_public_url(raw)
+            if normalized:
+                return normalized
+
+        return None
 
     # ------------------------------------------------------------------
     # Strategy 1 – web site scraping
@@ -275,8 +355,9 @@ class EmailEnrichmentClient:
 
         client = genai.Client(api_key=self._api_key)
 
+        domain_hint = f" site:{known_domain}" if known_domain else ""
         prompt = (
-            f'"{firm_name}" {address} iletişim mail e-posta. '
+            f'"{firm_name}" {address}{domain_hint} iletişim mail e-posta. '
             "Arama sonuçlarındaki en alakalı resmi iletişim sayfasının linkini ve email adresini bul. "
             "Sosyal medya (facebook, instagram vb.) ve rehber sitelerini (bulurum.com vb.) yoksay. "
             "Sadece email adresini döndür, bulamazsan NONE yaz."
@@ -384,6 +465,7 @@ class EmailEnrichmentClient:
         output_tokens: int,
         total_tokens: int,
         error: str,
+        extra: Optional[dict] = None,
     ) -> None:
         if not self._token_log_enabled:
             return
@@ -400,6 +482,11 @@ class EmailEnrichmentClient:
             "total_tokens": int(total_tokens),
             "error": error,
         }
+
+        if extra and isinstance(extra, dict):
+            for key, value in extra.items():
+                if key not in event:
+                    event[key] = value
 
         try:
             self._token_log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -488,15 +575,33 @@ def _base_url(url: str) -> Optional[str]:
     return None
 
 
-def _is_excluded_domain(url: str) -> bool:
+def _normalize_public_url(raw_url: str) -> Optional[str]:
+    """Gemini/grounding çıktısından gelen URL adayını normalize eder ve riskli domainleri eler."""
+    raw_url = (raw_url or "").strip().strip(".,;)")
+    if not raw_url:
+        return None
+
+    if not raw_url.startswith(("http://", "https://")):
+        raw_url = f"https://{raw_url}"
+
     try:
-        domain = urlparse(url).netloc.lower().lstrip("www.")
-        return any(
-            domain == ex or domain.endswith(f".{ex}")
-            for ex in _EXCLUDED_SCRAPE_DOMAINS
-        )
+        parsed = urlparse(raw_url)
     except Exception:
-        return False
+        return None
+
+    if not parsed.netloc:
+        return None
+
+    if is_excluded_official_website_candidate(raw_url):
+        return None
+
+    # path varsa koru, query/fragment’i at (daha deterministik)
+    path = parsed.path or ""
+    return f"{parsed.scheme}://{parsed.netloc}{path}"
+
+
+def _is_excluded_domain(url: str) -> bool:
+    return is_excluded_for_scrape(url)
 
 
 def _extract_best_email(text: str, source_url: str = "") -> Optional[str]:

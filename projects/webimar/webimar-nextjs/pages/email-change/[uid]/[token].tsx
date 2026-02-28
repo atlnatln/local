@@ -187,8 +187,8 @@ const EmailChangeConfirm: React.FC = () => {
         <Seo
           title="E-posta Değişikliği Onaylanıyor - Tarım İmar"
           description="E-posta değişikliği onaylanıyor"
-          canonical="https://tarimimar.com.tr/email-change"
-          url="https://tarimimar.com.tr/email-change"
+          canonical="https://tarimimar.com.tr/email-change/"
+          url="https://tarimimar.com.tr/email-change/"
           ogImage="https://tarimimar.com.tr/og-image.svg"
           type="website"
           keywords="e-posta değişikliği, onay, tarım imar"
@@ -210,8 +210,8 @@ const EmailChangeConfirm: React.FC = () => {
         <Seo
           title="E-posta Değişikliği Başarılı - Tarım İmar"
           description="E-posta adresiniz başarıyla değiştirildi"
-          canonical="https://tarimimar.com.tr/email-change"
-          url="https://tarimimar.com.tr/email-change"
+          canonical="https://tarimimar.com.tr/email-change/"
+          url="https://tarimimar.com.tr/email-change/"
           ogImage="https://tarimimar.com.tr/og-image.svg"
           type="website"
           keywords="e-posta değişikliği, başarılı, tarım imar"
@@ -240,8 +240,8 @@ const EmailChangeConfirm: React.FC = () => {
       <Seo
         title="E-posta Değişikliği Başarısız - Tarım İmar"
         description="E-posta değişikliği onaylanamadı"
-        canonical="https://tarimimar.com.tr/email-change"
-        url="https://tarimimar.com.tr/email-change"
+        canonical="https://tarimimar.com.tr/email-change/"
+        url="https://tarimimar.com.tr/email-change/"
         ogImage="https://tarimimar.com.tr/og-image.svg"
         type="website"
         keywords="e-posta değişikliği, başarısız, tarım imar"

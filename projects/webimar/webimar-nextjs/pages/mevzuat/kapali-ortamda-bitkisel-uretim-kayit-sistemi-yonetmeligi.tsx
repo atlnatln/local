@@ -13,7 +13,7 @@ export default function KapaliOrtamdaBitkiselUretimKayitSistemiYonetmeligi() {
         />
         <link
           rel="canonical"
-          href="https://tarimimar.com.tr/mevzuat/kapali-ortamda-bitkisel-uretim-kayit-sistemi-yonetmeligi"
+          href="https://tarimimar.com.tr/mevzuat/kapali-ortamda-bitkisel-uretim-kayit-sistemi-yonetmeligi/"
         />
       </Head>
 

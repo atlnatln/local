@@ -10,7 +10,7 @@ const KVKKAydinlatma: React.FC = () => {
         <title>KVKK Aydınlatma Metni | Tarım İmar</title>
         <meta name="description" content="6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında Tarım İmar aydınlatma metni." />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://tarimimar.com.tr/kvkk-aydinlatma" />
+        <link rel="canonical" href="https://tarimimar.com.tr/kvkk-aydinlatma/" />
       </Head>
 
       <Layout>

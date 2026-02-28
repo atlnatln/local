@@ -49,6 +49,24 @@ function createSlug(ilAdi: string): string {
   return normalizeSlugValue(ilAdi);
 }
 
+function decodeLegacySlug(value: string): string {
+  let decodedValue = value;
+
+  for (let index = 0; index < 2; index += 1) {
+    try {
+      const nextValue = decodeURIComponent(decodedValue);
+      if (nextValue === decodedValue) {
+        break;
+      }
+      decodedValue = nextValue;
+    } catch {
+      break;
+    }
+  }
+
+  return decodedValue;
+}
+
 // Tüm illeri ve planlarını eşleştir
 function getTumIller(): IlData[] {
   const iller: IlData[] = [];
@@ -197,10 +215,10 @@ export default function IlSayfasi({ ilData }: IlSayfasiProps) {
         "@id": `https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}#page`,
         "name": `${ilAdi} İli Çevre Düzeni Planı Tarımsal Hükümleri`,
         "description": `${ilAdi} ili için geçerli 1/100.000 ölçekli çevre düzeni planı tarımsal hükümleri, yapılaşma koşulları ve emsal değerleri. ${plan.baslik} kapsamındadır.`,
-        "url": `https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}`,
+        "url": `https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}/`,
         "isPartOf": {
           "@type": "WebPage",
-          "@id": `https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}`,
+          "@id": `https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}/`,
           "name": plan.baslik
         },
         "about": {
@@ -225,13 +243,13 @@ export default function IlSayfasi({ ilData }: IlSayfasiProps) {
             "@type": "ListItem",
             "position": 2,
             "name": "Çevre Düzeni Planları",
-            "item": "https://tarimimar.com.tr/cevre-duzeni-planlari"
+            "item": "https://tarimimar.com.tr/cevre-duzeni-planlari/"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": ilAdi,
-            "item": `https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}`
+            "item": `https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}/`
           }
         ]
       },
@@ -272,8 +290,8 @@ export default function IlSayfasi({ ilData }: IlSayfasiProps) {
       <Seo
         title={`${ilAdi} Çevre Düzeni Planı | Tarımsal Yapılaşma Koşulları | Tarım İmar`}
         description={`${ilAdi} ili için 1/100.000 ölçekli çevre düzeni planı tarımsal hükümleri. Mutlak tarım, marjinal tarım ve dikili tarım arazilerinde emsal değerleri ve yapılaşma koşulları.`}
-        canonical={`https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}`}
-        url={`https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}`}
+        canonical={`https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}/`}
+        url={`https://tarimimar.com.tr/cevre-duzeni-planlari/il/${ilData.ilSlug}/`}
         ogImage="https://tarimimar.com.tr/og-image.svg"
         type="article"
         jsonLd={structuredData}
@@ -309,7 +327,7 @@ export default function IlSayfasi({ ilData }: IlSayfasiProps) {
                       {komsuIller.map((il, idx) => (
                         <Link 
                           key={idx} 
-                          href={`/cevre-duzeni-planlari/il/${createSlug(il)}`}
+                          href={`/cevre-duzeni-planlari/il/${createSlug(il)}/`}
                           className={styles.komsuBadge}
                         >
                           {il}
@@ -471,7 +489,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<IlSayfasiProps> = async ({ params }: { params?: { ilSlug?: string } }) => {
   const ilSlug = params?.ilSlug as string;
-  const normalizedSlug = normalizeSlugValue(ilSlug);
+  const decodedSlug = decodeLegacySlug(ilSlug);
+  const normalizedSlug = normalizeSlugValue(decodedSlug);
   const tumIller = getTumIller();
   
   const ilData = tumIller.find(il => il.ilSlug === normalizedSlug);
@@ -483,7 +502,7 @@ export const getStaticProps: GetStaticProps<IlSayfasiProps> = async ({ params }:
   if (ilData.ilSlug !== ilSlug) {
     return {
       redirect: {
-        destination: `/cevre-duzeni-planlari/il/${ilData.ilSlug}`,
+        destination: `/cevre-duzeni-planlari/il/${ilData.ilSlug}/`,
         permanent: true
       }
     };

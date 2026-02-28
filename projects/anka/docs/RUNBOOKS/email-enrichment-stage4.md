@@ -4,7 +4,9 @@ Bu doküman, batch pipeline içindeki Stage 4 (email kazıma/zenginleştirme) ak
 
 ## 1) Kapsam
 
-- Stage 1-2-3 sonrası `BatchItem.data` içindeki website alanlarını kullanarak e-posta çıkarımı yapılır.
+- Stage 1-2 sonrası doğrulanmış kayıtlar için (Stage 3 başarılı olmasa bile) email enrichment çalışabilir.
+- `BatchItem.data` içindeki website alanı varsa doğrudan scraping ile email aranır.
+- Website yoksa önce Gemini Search Grounding ile **resmi website/iletişim sayfası** bulunmaya çalışılır; bulunan website `BatchItem.data.website_uri` alanına yazılabilir ve ardından scraping ile email aranır.
 - Çıkan e-postalar `BatchItem.data.email` alanına yazılır.
 - Batch seviyesinde sayaç `emails_enriched` güncellenir.
 - Export tarafında CSV/XLSX başlıklarına `Email` kolonu dahil edilir.
@@ -56,20 +58,19 @@ Not: Limit aşılırsa Stage 4, S2 (Gemini) çağrısını güvenli şekilde atl
 
 ## 4) Arama Mantığı (S2 Gemini Grounding)
 
-S1 ile email bulunamazsa aşağıdaki prompt stratejisi kullanılır:
+S1 ile email bulunamazsa veya website yoksa aşağıdaki strateji kullanılır:
 
-1. İşletme adı + adres + iletişim anahtar kelimeleri ile arama niyeti kurulur.
-2. Sosyal medya ve rehber/dizin kaynakları dışlanır.
-3. Modelden sadece email veya `NONE` dönmesi istenir.
-4. Model yanıt metninde email yoksa grounding URL'lerinden en fazla 3 kaynak scrape edilir.
+1. (Website yoksa) Gemini ile resmi website URL’si bulunur (URL veya `NONE`).
+2. Bulunan website üzerinde iletişim sayfaları kazınır (scrape) ve email aranır.
+3. Hâlâ bulunamazsa Gemini ile email araması yapılır; mümkünse `site:<domain>` ile domain hedeflenir.
 
-Pratik prompt formu:
+Pratik prompt formu (email araması):
 
 ```text
-"{işletme_adı}" {adres} iletişim mail e-posta ...
+"{işletme_adı}" {adres} site:{domain} iletişim mail e-posta ...
 ```
 
-Bu yaklaşım, resmi iletişim sayfalarına öncelik vererek gereksiz token ve scrape maliyetini azaltır.
+Bu yaklaşım, önce kanıtlanabilir URL yakalayıp sonra scraping ile doğrulamaya çalıştığı için yanlış/uydurma email riskini azaltır.
 
 ## 5) Deploy Sonrası Doğrulama
 
@@ -119,6 +120,16 @@ Not: Aynı `csv_url` tekrar okunurken browser/proxy cache eski header döndüreb
 - `ANKA_EMAIL_ENRICHMENT_ENABLED` false/eksik olabilir.
 - Uygun website kaydı yoksa item bazında email bulunamaz; sayaç 0 kalabilir.
 
+### F) Dizin siteleri (örn. firma rehberleri) “website” olarak geliyor
+
+- Resmi website adayı olarak sosyal medya/dizin/ilan domainleri blacklist ile dışlanır.
+- Gerekirse blacklist listesi genişletilir (örn. `firmasec.com`, `bulurum.com` vb.).
+
+### G) Token log eksik/yanıltıcı görünüyor
+
+- Token log yalnızca “email arama” değil, “resmi website bulma” Gemini çağrılarını da kapsamalıdır.
+- JSONL satırlarında `event_type` gibi bir alan ile çağrı türü ayrıştırılabilir.
+
 ### D) Token tüketimi izlenemiyor
 
 - `ANKA_EMAIL_TOKEN_LOG_ENABLED=true` mi kontrol edin.
@@ -135,7 +146,7 @@ Not: Aynı `csv_url` tekrar okunurken browser/proxy cache eski header döndüreb
 
 - Local varsayılan akış localhost endpoint'lerini kullanır.
 - VPS API'ye localden test isteniyorsa bu açık bir override gerektirir (örn. `BACKEND_URL`, `BASE_URL`, SSH tunnel).
-- E2E helper `tests/e2e/playwright/helpers/auth.ts` içinde `BACKEND_URL` desteği vardır; default `http://localhost:8000`.
+- E2E helper `tests/e2e/playwright/helpers/auth.ts` içinde `BACKEND_URL` desteği vardır; default `http://localhost:8000` (native local). Docker kullanımında backend için tipik değer `http://localhost:8100` olur.
 - Prod benzeri auth akışı (Google-only) ile test-login tabanlı E2E akışı farklıdır.
 
 ## 8) Güvenli Local Test Komutu (Önerilen)

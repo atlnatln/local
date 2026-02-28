@@ -6,7 +6,7 @@ interface FAQItem {
   answer: string;
 }
 
-const faqs: FAQItem[] = [
+export const homepageFaqs: FAQItem[] = [
   {
     question: "Tarım arazisine ev yapılabilir mi?",
     answer: "Tarım arazilerine yapılaşma izni, 5403 sayılı Toprak Koruma ve Arazi Kullanımı Kanunu'na tabidir. Bağ evi gibi yapılar için belirli bir parsel 'büyüklüğü (genellikle 5.000 m²) ve yola cephe şartı aranmaktadır. Sistemimiz, parselinizin bu şartları sağlayıp sağlamadığını kontrol etmenize yardımcı olur."
@@ -41,7 +41,7 @@ export default function FAQSection() {
       <div className={styles.container}>
         <h2 className={styles.sectionTitle}>Sıkça Sorulan Sorular</h2>
         <div className={styles.faqList}>
-          {faqs.map((faq, index) => (
+          {homepageFaqs.map((faq, index) => (
             <div key={index} className={`${styles.faqItem} ${openIndex === index ? styles.active : ''}`}>
               <button 
                 className={styles.faqQuestion} 

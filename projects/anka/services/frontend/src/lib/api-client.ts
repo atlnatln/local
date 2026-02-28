@@ -3,10 +3,20 @@
  * Handles JWT authentication, requests, and error handling
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL =
+  typeof window !== 'undefined'
+    ? window.location.origin
+    : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function normalizeApiBase(rawUrl: string): string {
   const trimmed = rawUrl.replace(/\/+$/, '');
+
+  // Allow callers to provide either a host (https://example.com) or an API root
+  // (https://example.com/api). Also defensively collapse accidental double '/api'.
+  if (/\/api(?:\/api)+$/.test(trimmed)) {
+    return trimmed.replace(/(\/api)+$/, '/api');
+  }
+
   return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
 }
 

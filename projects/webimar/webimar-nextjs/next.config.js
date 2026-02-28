@@ -77,8 +77,13 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/cevre-duzeni-planlari/[planId]',
-        destination: '/cevre-duzeni-planlari/',
+        source: '/%5Byapi-turu%5D',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/%5Byapi-turu%5D/',
+        destination: '/',
         permanent: true,
       },
       {
@@ -87,13 +92,38 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/cevre-duzeni-planlari/il/[ilSlug]',
+        source: '/cevre-duzeni-planlari/%5BplanId%5D/',
         destination: '/cevre-duzeni-planlari/',
         permanent: true,
       },
       {
         source: '/cevre-duzeni-planlari/il/%5BilSlug%5D',
         destination: '/cevre-duzeni-planlari/',
+        permanent: true,
+      },
+      {
+        source: '/cevre-duzeni-planlari/il/%5BilSlug%5D/',
+        destination: '/cevre-duzeni-planlari/',
+        permanent: true,
+      },
+      {
+        source: '/mevzuat/izmir-sera-yonetmeligi',
+        destination: '/documents/izmir-sera-yonetmeligi/',
+        permanent: true,
+      },
+      {
+        source: '/mevzuat/izmir-sera-yonetmeligi/',
+        destination: '/documents/izmir-sera-yonetmeligi/',
+        permanent: true,
+      },
+      {
+        source: '/mevzuat/kapali-ortamda-bitkisel-uretim-kayit-sistemi-yonetmeligi',
+        destination: '/documents/kapali-ortamda-bitkisel-uretim-kayit-sistemi-yonetmeligi/',
+        permanent: true,
+      },
+      {
+        source: '/mevzuat/kapali-ortamda-bitkisel-uretim-kayit-sistemi-yonetmeligi/',
+        destination: '/documents/kapali-ortamda-bitkisel-uretim-kayit-sistemi-yonetmeligi/',
         permanent: true,
       },
       {

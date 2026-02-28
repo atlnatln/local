@@ -96,6 +96,8 @@ Repo içinde E2E helper (`tests/e2e/playwright/helpers/auth.ts`) varsayılan ola
 
 değerini kullanır. Yani default durumda test-login çağrısı lokale gider.
 
+Not: `8000` native local (`./dev-local.sh`) içindir; Docker profilde backend `8100` portundadır (`./dev-docker.sh`).
+
 VPS backend'e yönlendirmek için iki güvenli seçenek vardır:
 
 ### Seçenek A — SSH tunnel (önerilen)

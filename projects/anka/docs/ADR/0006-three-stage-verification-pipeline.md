@@ -32,7 +32,7 @@ We will implement a **3-Stage Waterfall Pipeline** in the backend (`BatchProcess
 *   **Cost:** Pro Tier (Moderate).
 *   **Fields:** `displayName`, `formattedAddress`.
 *   **Logic:** If the place returns 404 or fails validation rules (e.g., missing address), it is discarded here. We do not proceed to Stage 3 for these items.
-*   **Circuit Breaker:** If >50% of items fail in this stage, the batch is aborted to prevent system-wide issues.
+*   **Circuit Breaker:** If >50% of items fail in this stage, the batch korumalı şekilde `PARTIAL` durumuna çekilerek süreç durdurulur.
 
 ### Stage 3: Enrichment (High Cost / Value)
 *   **Source:** Google Places API `Place Details (Enterprise / Contact Data)`.
@@ -56,5 +56,5 @@ We will implement a **3-Stage Waterfall Pipeline** in the backend (`BatchProcess
 ## Technical Implementation
 
 *   **Model:** `Batch` model tracks `ids_collected`, `ids_verified`, `contacts_enriched`.
-*   **Status:** New statuses `PARTIAL` and `ABORTED` handle cases where the pipeline stops early.
+*   **Status:** Pipeline durumları `COLLECTING_IDS -> FILTERING -> ENRICHING_CONTACTS -> READY`; korumalı duruşlarda `PARTIAL` veya hata durumunda `FAILED` kullanılır.
 *   **Billing:** Users are billed only for `contacts_enriched`.

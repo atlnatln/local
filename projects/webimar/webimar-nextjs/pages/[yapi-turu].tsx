@@ -151,7 +151,7 @@ export default function YapiTuruPage({ data }: YapiTuruPageProps) {
           {data.slug === 'sera' && (
             <div style={{ marginTop: '3rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
               <a 
-                href="/mevzuat/izmir-sera-yonetmeligi"
+                href="/documents/izmir-sera-yonetmeligi"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -182,7 +182,7 @@ export default function YapiTuruPage({ data }: YapiTuruPageProps) {
               </a>
 
               <a 
-                href="/mevzuat/kapali-ortamda-bitkisel-uretim-kayit-sistemi-yonetmeligi"
+                href="/documents/kapali-ortamda-bitkisel-uretim-kayit-sistemi-yonetmeligi"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',

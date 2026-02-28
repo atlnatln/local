@@ -18,8 +18,8 @@ const LoginPage: React.FC = () => {
       <Seo
         title="Giriş Yap - Tarım İmar"
         description="Tarım İmar hesabınıza giriş yapın ve hesaplama araçlarına erişin"
-        canonical="https://tarimimar.com.tr/login"
-        url="https://tarimimar.com.tr/login"
+        canonical="https://tarimimar.com.tr/login/"
+        url="https://tarimimar.com.tr/login/"
         ogImage="https://tarimimar.com.tr/og-image.svg"
         type="website"
         keywords="giriş, hesap, tarım imar, hesap oluşturma"

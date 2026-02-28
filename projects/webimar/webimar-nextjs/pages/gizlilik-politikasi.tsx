@@ -10,7 +10,7 @@ const GizlilikPolitikasi: React.FC = () => {
         <title>Gizlilik Politikası | Tarım İmar</title>
         <meta name="description" content="Tarım İmar gizlilik politikası. Kişisel verilerinizin nasıl toplandığı, işlendiği ve korunduğu hakkında bilgi edinin." />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://tarimimar.com.tr/gizlilik-politikasi" />
+        <link rel="canonical" href="https://tarimimar.com.tr/gizlilik-politikasi/" />
       </Head>
 
       <Layout>

@@ -10,7 +10,7 @@ const KullanimKosullari: React.FC = () => {
         <title>Kullanım Koşulları | Tarım İmar</title>
         <meta name="description" content="Tarım İmar web sitesi kullanım koşulları ve şartları." />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://tarimimar.com.tr/kullanim-kosullari" />
+        <link rel="canonical" href="https://tarimimar.com.tr/kullanim-kosullari/" />
       </Head>
 
       <Layout>

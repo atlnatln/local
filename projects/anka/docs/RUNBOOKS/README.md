@@ -24,6 +24,22 @@ Bu klasör, Anka Data için operasyonel uygulama rehberlerini içerir.
 - **Production deploy güvenlik kapıları ve smoke testleri:** `production-readiness-and-deploy-guardrails.md`
 - **Ödeme webhook operasyonları:** `payments-webhook-management.md`, `payments-webhook-replay.md`
 
+## Kaynak Önceliği (Copilot için)
+
+Doküman-kod çelişkisinde aşağıdaki sıra uygulanır:
+1. Çalışan kod ve scriptler (`services/backend/**`, `services/frontend/**`, `dev-docker.sh`, `dev-local.sh`, `verify.sh`, `deploy.sh`)
+2. API sözleşmesi (`docs/API/openapi.yaml`)
+3. ADR kararları (`docs/ADR/*`)
+4. Runbook’lar (`docs/RUNBOOKS/*`)
+
+## Kanonik Hızlı Gerçekler
+
+- Docker dev portları: frontend `3100`, backend `8100`.
+- Native dev portları: frontend `3000`, backend `8000`.
+- Auth modeli: JWT Bearer (`Authorization: Bearer <token>`).
+- API dokümantasyon endpoint’i: `/api/docs`.
+- Test-only login endpoint’i: `/api/auth/test-login/` (yalnız test ayarında).
+
 ## Notlar
 - Mimari kararlar için `docs/ADR/` klasörünü kullanın.
 - API sözleşmesi için `docs/API/openapi.yaml` esas alınır.

@@ -145,7 +145,7 @@ export default function PlanDetay({ plan, icerik }: PlanDetayProps) {
       <Layout>
         <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
           <h1>Plan bulunamadı</h1>
-          <Link href="/cevre-duzeni-planlari">← Planlara Dön</Link>
+          <Link href="/cevre-duzeni-planlari/">← Planlara Dön</Link>
         </div>
       </Layout>
     );
@@ -178,7 +178,7 @@ export default function PlanDetay({ plan, icerik }: PlanDetayProps) {
         },
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": `https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}`
+          "@id": `https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}/`
         },
         "about": {
           "@type": "GovernmentService",
@@ -207,13 +207,13 @@ export default function PlanDetay({ plan, icerik }: PlanDetayProps) {
             "@type": "ListItem",
             "position": 2,
             "name": "Çevre Düzeni Planları",
-            "item": "https://tarimimar.com.tr/cevre-duzeni-planlari"
+            "item": "https://tarimimar.com.tr/cevre-duzeni-planlari/"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": plan.baslik,
-            "item": `https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}`
+            "item": `https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}/`
           }
         ]
       }
@@ -228,8 +228,8 @@ export default function PlanDetay({ plan, icerik }: PlanDetayProps) {
       <Seo
         title={`${plan.baslik} | Tarımsal Hükümler | Tarım İmar`}
         description={`${plan.baslik} - ${plan.iller.join(', ')} illeri için 1/100.000 ölçekli çevre düzeni planı tarımsal hükümleri ve yapılaşma koşulları`}
-        canonical={`https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}`}
-        url={`https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}`}
+        canonical={`https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}/`}
+        url={`https://tarimimar.com.tr/cevre-duzeni-planlari/${plan.id}/`}
         ogImage="https://tarimimar.com.tr/og-image.svg"
         type="article"
         jsonLd={structuredData}
@@ -319,7 +319,7 @@ export default function PlanDetay({ plan, icerik }: PlanDetayProps) {
 
           {/* Alt navigasyon */}
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <Link href="/cevre-duzeni-planlari" className={styles.backButton}>
+            <Link href="/cevre-duzeni-planlari/" className={styles.backButton}>
               ← Tüm Planlara Dön
             </Link>
           </div>

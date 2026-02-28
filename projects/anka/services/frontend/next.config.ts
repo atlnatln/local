@@ -1,4 +1,11 @@
 /** @type {import('next').NextConfig} */
+
+// Backend URL for server-side rewrites (NOT the browser URL).
+// Docker: "http://backend:8000"   (Docker DNS)
+// Native: "http://localhost:8000"  (default)
+const INTERNAL_BACKEND_URL =
+  process.env.NEXT_INTERNAL_BACKEND_URL || 'http://localhost:8000';
+
 const nextConfig = {
   reactStrictMode: true,
   
@@ -9,7 +16,7 @@ const nextConfig = {
         // Proxy API requests to backend
         {
           source: '/api/:path*',
-          destination: 'http://backend:8000/api/:path*',
+          destination: `${INTERNAL_BACKEND_URL}/api/:path*`,
         },
       ],
     };

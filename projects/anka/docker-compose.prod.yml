@@ -194,8 +194,10 @@ services:
       context: ./services/frontend
       dockerfile: ../../infra/docker/frontend.Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://ankadata.com.tr}
-        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://ankadata.com.tr}
+        # NOTE: Keep these literal in prod so the Next.js build can't
+        # accidentally pick up repo-root `.env` (localhost) values.
+        NEXT_PUBLIC_API_URL: https://ankadata.com.tr
+        NEXT_PUBLIC_SITE_URL: https://ankadata.com.tr
         NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
         NEXT_PUBLIC_ENVIRONMENT: ${NEXT_PUBLIC_ENVIRONMENT:-production}
     container_name: anka_frontend_prod
@@ -204,6 +206,7 @@ services:
       - NEXT_PUBLIC_API_URL=https://ankadata.com.tr
       - NEXT_PUBLIC_SITE_URL=https://ankadata.com.tr
       - NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
+      - NEXT_INTERNAL_BACKEND_URL=http://backend:8000
     restart: unless-stopped
     depends_on:
       - backend

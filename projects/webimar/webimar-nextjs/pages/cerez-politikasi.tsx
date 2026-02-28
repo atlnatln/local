@@ -10,7 +10,7 @@ const CerezPolitikasi: React.FC = () => {
         <title>Çerez Politikası | Tarım İmar</title>
         <meta name="description" content="Tarım İmar çerez politikası. Web sitemizde kullanılan çerezler ve bunları nasıl yönetebileceğiniz hakkında bilgi." />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://tarimimar.com.tr/cerez-politikasi" />
+        <link rel="canonical" href="https://tarimimar.com.tr/cerez-politikasi/" />
       </Head>
 
       <Layout>

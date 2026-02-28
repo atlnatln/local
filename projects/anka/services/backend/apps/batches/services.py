@@ -664,8 +664,9 @@ class BatchProcessor:
         gemini_calls = 0
 
         for idx, item in enumerate(items):
-            if not item.data.get("stage_3_enterprise"):
-                continue  # Stage 3'ten geçmemiş kayıtları atla
+            # Eğer email zaten bulunduysa tekrar deneme (maliyet/tekrar çağrı önleme)
+            if (item.data or {}).get("email"):
+                continue
 
             if gemini_calls >= stage4_api_cap:
                 logger.warning(
@@ -675,9 +676,8 @@ class BatchProcessor:
                 )
                 break
 
-            # Mevcut website yoksa bu kayıt için Gemini kullanılacak (1 call)
+            # Mevcut website yoksa Gemini ile resmi site bulma denenebilir
             website = item.data.get("website_uri") or item.data.get("websiteUri") or ""
-            will_use_gemini = not bool(website)
 
             try:
                 email = email_client.enrich(
@@ -686,8 +686,14 @@ class BatchProcessor:
                     website_url=website or None,
                 )
 
-                if will_use_gemini:
-                    gemini_calls += 1
+                # client son çağrıda bir website keşfettiyse kaydet (UI/export için değerli)
+                discovered = getattr(email_client, "last_discovered_website", None)
+                if discovered and not website:
+                    item.data["website_uri"] = discovered
+                    item.data["websiteUri"] = discovered
+
+                # gemini çağrı sayacını client metadata’sından topla
+                gemini_calls += int(getattr(email_client, "last_gemini_calls", 0) or 0)
 
                 if email:
                     item.data["email"] = email
@@ -699,6 +705,9 @@ class BatchProcessor:
                         item.firm_name,
                         email,
                     )
+                elif discovered and not website:
+                    # email bulunamasa bile keşfedilen website’i sakla
+                    item.save(update_fields=["data", "updated_at"])
 
             except Exception as exc:
                 logger.warning(
@@ -707,8 +716,7 @@ class BatchProcessor:
                     item.firm_name,
                     exc,
                 )
-                if will_use_gemini:
-                    gemini_calls += 1  # sayacı artır ki kota aşımında loop durabilsin
+                # Hata durumunda gemini sayacını artırmak yerine log'a bırakıyoruz.
 
         self.batch.emails_enriched = found_count
         self.batch.save(update_fields=["emails_enriched", "updated_at"])

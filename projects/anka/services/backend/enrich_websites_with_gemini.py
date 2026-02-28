@@ -20,23 +20,11 @@ from urllib.parse import urlparse
 from google import genai
 from google.genai import types
 
+from apps.providers.domain_blacklist import is_excluded_official_website_candidate
+
 URL_PATTERN = re.compile(r"https?://[^\s\]\)\"'<>]+", re.IGNORECASE)
 
-EXCLUDED_DOMAINS = {
-    "instagram.com",
-    "facebook.com",
-    "linkedin.com",
-    "x.com",
-    "twitter.com",
-    "youtube.com",
-    "tiktok.com",
-    "maps.google.com",
-    "google.com",
-    "yelp.com",
-    "foursquare.com",
-    "tripadvisor.com",
-    "wikipedia.org",
-}
+EXCLUDED_DOMAINS = set()  # legacy (merkezi blacklist kullanılıyor)
 
 
 def _env_int(name: str, default: int) -> int:
@@ -142,13 +130,8 @@ def normalize_url(raw_url: str) -> Optional[str]:
     if not parsed.netloc:
         return None
 
-    hostname = parsed.netloc.lower()
-    if hostname.startswith("www."):
-        hostname = hostname[4:]
-
-    for blocked in EXCLUDED_DOMAINS:
-        if hostname == blocked or hostname.endswith(f".{blocked}"):
-            return None
+    if is_excluded_official_website_candidate(raw_url):
+        return None
 
     return f"{parsed.scheme}://{parsed.netloc}{parsed.path or ''}"
 

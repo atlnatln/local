@@ -18,8 +18,8 @@ const RegisterPage: React.FC = () => {
       <Seo
         title="Kayıt Ol - Tarım İmar"
         description="Tarım İmar hesabınızı oluşturun ve hesaplama araçlarına erişin"
-        canonical="https://tarimimar.com.tr/register"
-        url="https://tarimimar.com.tr/register"
+        canonical="https://tarimimar.com.tr/register/"
+        url="https://tarimimar.com.tr/register/"
         ogImage="https://tarimimar.com.tr/og-image.svg"
         type="website"
         keywords="kayıt, hesap oluşturma, tarım imar, üye ol"

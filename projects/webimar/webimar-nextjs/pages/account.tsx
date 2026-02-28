@@ -68,8 +68,8 @@ const AccountPage: React.FC = () => {
       <Seo
         title="Hesabım - Tarım İmar"
         description="Tarım İmar hesabınız, hesap bilgileriniz ve ayarlarınız"
-        canonical="https://tarimimar.com.tr/account"
-        url="https://tarimimar.com.tr/account"
+        canonical="https://tarimimar.com.tr/account/"
+        url="https://tarimimar.com.tr/account/"
         ogImage="https://tarimimar.com.tr/og-image.svg"
         type="website"
         keywords="hesap, profil, tarım imar, hesap ayarları"

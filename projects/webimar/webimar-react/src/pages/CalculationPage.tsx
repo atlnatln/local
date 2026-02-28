@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import SEO from '../components/SEO';
 import CalculationForm from '../components/CalculationForm';
 import ResultDisplay from '../components/ResultDisplay';
+import AdPlacementAccordion from '../components/AdPlacementAccordion';
 import MapComponent, { MapRef } from '../components/Map/MapComponent';
 import LocationAutocomplete from '../components/LocationAutocomplete';
 import WaterPermitWarning from '../components/WaterPermitWarning';
@@ -96,6 +97,14 @@ const ResultSection = styled.div`
   
   @media (max-width: 768px) {
     margin: 0 -4px; /* Result bileşenlerini kahverengi çerçeve içinde genişlet */
+  }
+`;
+
+const AdSection = styled.div`
+  order: 1;
+
+  @media (max-width: 768px) {
+    margin: 0 -4px;
   }
 `;
 
@@ -613,8 +622,6 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
           <PageDescription>{description}</PageDescription>
         </PageHeader>
 
-      <CalculationFeedbackAccordion calculationType={calculationType} />
-      
       {/* Su Tahsis Belgesi Uyarısı */}
       {shouldShowWaterPermitWarning() && <WaterPermitWarning />}
 
@@ -762,6 +769,15 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
             onMapCoordinatesChange={handleMapCoordinatesChange}
           />
         </FormSection>
+
+        {result?.success && !isLoading && locationState.kmlCheckResult?.province && (
+          <AdSection>
+            <AdPlacementAccordion
+              selectedProvince={locationState.kmlCheckResult?.province || null}
+              calculationType={calculationType}
+            />
+          </AdSection>
+        )}
         
         {(() => {
           // console.log('🔍 CalculationPage - Render Check:', { result, isLoading, shouldRender: (result || isLoading) });
@@ -788,6 +804,11 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
           </ResultSection>
         )}
       </ContentGrid>
+
+      {/* Geri Bildirim — hesaplama sonucu geldikten sonra, footer'ın hemen üstünde */}
+      {result && !isLoading && (
+        <CalculationFeedbackAccordion calculationType={calculationType} />
+      )}
     </PageContainer>
     </>
   );

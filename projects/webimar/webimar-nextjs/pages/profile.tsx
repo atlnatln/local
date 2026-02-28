@@ -18,8 +18,8 @@ const ProfilePage = () => {
       <Seo
         title="Profil - Tarım İmar"
         description="Tarım İmar profil sayfası"
-        canonical="https://tarimimar.com.tr/profile"
-        url="https://tarimimar.com.tr/profile"
+        canonical="https://tarimimar.com.tr/profile/"
+        url="https://tarimimar.com.tr/profile/"
         ogImage="https://tarimimar.com.tr/og-image.svg"
         type="website"
         keywords="profil, hesap, tarım imar"

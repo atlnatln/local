@@ -31,7 +31,7 @@ export default function ContactPage() {
         title="İletişim - Tarım İmar"
         description="Sorularınız, önerileriniz ve destek için bizimle iletişime geçin. info@tarimimar.com.tr adresine e-posta gönderebilir veya iletişim formunu kullanabilirsiniz."
         keywords="iletişim, e-posta, destek, tarım imar, tarımsal yapı hesaplama iletişim, tarım imar e-posta"
-        canonical="https://tarimimar.com.tr/iletisim"
+        canonical="https://tarimimar.com.tr/iletisim/"
         structuredData={structuredData}
       />
       

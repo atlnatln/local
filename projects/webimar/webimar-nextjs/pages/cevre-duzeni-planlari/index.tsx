@@ -66,10 +66,10 @@ const structuredData = {
   "@graph": [
     {
       "@type": "CollectionPage",
-      "@id": "https://tarimimar.com.tr/cevre-duzeni-planlari#page",
+      "@id": "https://tarimimar.com.tr/cevre-duzeni-planlari/#page",
       "name": "1/100.000 Ölçekli Çevre Düzeni Planlarında Tarımsal Hükümler",
       "description": "Türkiye'nin çeşitli bölgelerindeki 1/100.000 ölçekli çevre düzeni planlarında yer alan tarımsal hükümler, yapılaşma koşulları ve emsal değerleri",
-      "url": "https://tarimimar.com.tr/cevre-duzeni-planlari",
+      "url": "https://tarimimar.com.tr/cevre-duzeni-planlari/",
       "publisher": {
         "@type": "Organization",
         "name": "Tarım İmar",
@@ -100,7 +100,7 @@ const structuredData = {
           "@type": "ListItem",
           "position": 2,
           "name": "Çevre Düzeni Planları",
-          "item": "https://tarimimar.com.tr/cevre-duzeni-planlari"
+          "item": "https://tarimimar.com.tr/cevre-duzeni-planlari/"
         }
       ]
     },
@@ -230,7 +230,7 @@ export default function CevreDuzeniPlanlari() {
       mouseout: () => setHoveredIl(null),
       click: () => {
         if (planId) {
-          window.location.href = `/cevre-duzeni-planlari/${planId}`;
+          window.location.href = `/cevre-duzeni-planlari/${planId}/`;
         }
       }
     });
@@ -241,8 +241,8 @@ export default function CevreDuzeniPlanlari() {
       <Seo
         title="1/100.000 Ölçekli Çevre Düzeni Planları | Tarımsal Hükümler | Tarım İmar"
         description="Türkiye'nin çeşitli bölgelerindeki 1/100.000 ölçekli çevre düzeni planlarında yer alan tarımsal hükümler, yapılaşma koşulları ve emsal değerleri"
-        canonical="https://tarimimar.com.tr/cevre-duzeni-planlari"
-        url="https://tarimimar.com.tr/cevre-duzeni-planlari"
+        canonical="https://tarimimar.com.tr/cevre-duzeni-planlari/"
+        url="https://tarimimar.com.tr/cevre-duzeni-planlari/"
         ogImage="https://tarimimar.com.tr/og-image.svg"
         type="website"
         jsonLd={structuredData}
@@ -289,7 +289,7 @@ export default function CevreDuzeniPlanlari() {
                     return planId ? (
                       <Link 
                         key={il} 
-                        href={`/cevre-duzeni-planlari/${planId}`}
+                        href={`/cevre-duzeni-planlari/${planId}/`}
                         className={styles.searchResultItem}
                       >
                         📍 {il}
@@ -657,7 +657,7 @@ export default function CevreDuzeniPlanlari() {
                 {filteredPlanlar.map((plan: any) => (
                   <Link 
                     key={plan.id} 
-                    href={`/cevre-duzeni-planlari/${plan.id}`}
+                    href={`/cevre-duzeni-planlari/${plan.id}/`}
                     className={styles.planKart}
                   >
                     <div className={styles.planKartHeader}>
@@ -718,7 +718,7 @@ export default function CevreDuzeniPlanlari() {
                 return planId ? (
                   <Link 
                     key={il}
-                    href={`/cevre-duzeni-planlari/${planId}`}
+                    href={`/cevre-duzeni-planlari/${planId}/`}
                     className={styles.ilQuickLink}
                   >
                     {il}
