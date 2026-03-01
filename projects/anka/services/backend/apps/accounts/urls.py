@@ -19,7 +19,8 @@ router.register(r'organizations', OrganizationViewSet, basename='organizations')
 
 urlpatterns = [
     # Authentication endpoints
-    path('google', GoogleLoginView.as_view(), name='google-login-no-slash'),
+    # Not: 'google' (slash'sız) URL kaldırıldı — OpenAPI operationId çakışmasını önlemek için.
+    # Frontend ve tüm istemciler '/api/auth/google/' (trailing slash) kullanmalıdır.
     path('google/', GoogleLoginView.as_view(), name='google-login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('refresh/', RefreshTokenView.as_view(), name='refresh'),

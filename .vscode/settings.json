@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^source venv/bin/activate && python -m py_compile apps/batches/views\\.py && python -m py_compile apps/exports/views\\.py && python -m py_compile apps/credits/views\\.py && python -m py_compile apps/payments/views\\.py && python -m py_compile apps/ledger/views\\.py && python -m py_compile apps/accounts/views\\.py && echo \"ALL BACKEND SYNTAX OK\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

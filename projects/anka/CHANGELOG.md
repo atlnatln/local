@@ -66,10 +66,8 @@ Uçtan uca kullanıcı akışı simülasyonu ile tespit edilen 4 kritik, 3 orta 
 - **Dashboard: Son İndirmeler kartı** — Son 3 export format badge, batch bilgisi, durum göstergesi ve tarih ile gösterilir. ADR-0005 gereksinimini karşılar.
 
 #### Belgeleme
-- `docs/RUNBOOKS/code-audit-and-fixes-2026-06.md` — tam denetim raporu.
 - `docs/RUNBOOKS/payments-webhook-management.md` — düzeltilen hatalar bölümü eklendi.
 - `docs/RUNBOOKS/sistem-akisi-kusbakisi.md` — dashboard export kartı notu eklendi.
-- `docs/SECURITY/security-audit-2026-02-28.md` — katalog izin düzeltmesi ek bölümü.
 
 ---
 
@@ -91,7 +89,7 @@ Kullanıcı akışı simülasyonu (login → batch → export → ayarlar → ç
 #### Belgeleme
 - `ADR-0006` frontend Stage 4 yansıması eklendi.
 - `sistem-akisi-kusbakisi.md` frontend düzeltmeleri güncellendi.
-- `roadmap-kalite-maliyet.md` tamamlanan maddeler işaretlendi.
+
 - `CHANGELOG.md` ikinci tur notları eklendi.
 
 ---
@@ -145,7 +143,6 @@ Kullanıcı akışı simülasyonu (login → batch → export → ayarlar → ç
 - **GCP Google Maps API Key Rotasyonu** — Eski key (`AIzaSyAZxawz0ab...`) GCP Console'dan rotate edildi ve silindi. Yeni key tüm env dosyalarına uygulandı (`.env`, `.env.production`, `.env.local.docker`, `.env.local.native`, `.env.example`, `.env.test.example`)
 
 #### Belgeleme
-- `security-audit-2026-02-28.md` v1.2'ye güncellendi (3/3 kritik, 7/7 yüksek, 8/8 orta düzeltildi)
 - `ADR-0007` üçüncü tur kararları eklendi (HttpOnly cookie, standalone output, stdout güvenliği)
 - `RUNBOOKS/README.md` auth modeli notları güncellendi
 - `CONTRIBUTING.md` güvenlik bölümüne cookie auth notu eklendi

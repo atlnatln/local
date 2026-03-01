@@ -73,6 +73,9 @@ export default function BatchDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [exportLoading, setExportLoading] = useState(false)
+  // hasExports: true when exports already exist for this batch (any status).
+  // Prevents duplicate export creation on page re-visits when csv_url is not yet set.
+  const [hasExports, setHasExports] = useState(false)
   const [exportCreated, setExportCreated] = useState(false)
   const { addToast } = useToast()
 
@@ -126,7 +129,22 @@ export default function BatchDetailPage() {
         if (cancelled) return
         setBatch(data)
         setLoading(false)
-        
+
+        // When batch is terminal (READY/PARTIAL) and csv_url not yet set,
+        // check if exports already exist to prevent duplicate creation on revisit.
+        if (['READY', 'PARTIAL'].includes(data.status) && !data.csv_url) {
+          try {
+            const exportsData = await fetchAPI<{ results: { id: string }[] }>(
+              `/exports/?batch=${params.id}`
+            )
+            if (!cancelled && (exportsData.results || []).length > 0) {
+              setHasExports(true)
+            }
+          } catch {
+            // Non-critical: if this fails, the duplicate-export guard simply won't apply
+          }
+        }
+
         // Polling if not finished
         if (['CREATED', 'COLLECTING_IDS', 'FILTERING', 'ENRICHING_CONTACTS', 'ENRICHING_EMAILS'].includes(data.status)) {
             timeoutId = setTimeout(loadBatch, 2000)
@@ -424,7 +442,7 @@ export default function BatchDetailPage() {
                         Excel (XLSX) İndir
                     </Button>
                     
-                    {!batch.csv_url && !exportCreated && (isReady || isPartial) && (
+                    {!batch.csv_url && !exportCreated && !hasExports && (isReady || isPartial) && (
                         <div className="space-y-2">
                             <Button
                                 className="w-full justify-start"
@@ -446,9 +464,11 @@ export default function BatchDetailPage() {
                                         const failures = results.filter(r => r.status === 'rejected')
                                         if (failures.length === 0) {
                                             setExportCreated(true)
+                                            setHasExports(true)
                                             addToast('Export oluşturuldu! İndirilmişler sayfasından takip edebilirsiniz.', 'success')
                                         } else if (failures.length < results.length) {
                                             setExportCreated(true)
+                                            setHasExports(true)
                                             addToast('Bazı export formatları oluşturuldu ancak bir kısmı hata aldı. İndirilmişler sayfasını kontrol edin.', 'warning')
                                         } else {
                                             throw new Error('Tüm export istekleri başarısız oldu.')
@@ -467,7 +487,7 @@ export default function BatchDetailPage() {
                             <p className="text-xs text-slate-400 text-center pt-1">Dosyalar hazırlanıyor, İndirilmişler sayfasından takip edebilirsiniz.</p>
                         </div>
                     )}
-                    {exportCreated && (
+                    {(exportCreated || hasExports) && !batch.csv_url && (
                         <Link href="/exports" className="block">
                             <Button variant="default" className="w-full justify-start">
                                 <ExternalLink className="mr-2 h-4 w-4" />

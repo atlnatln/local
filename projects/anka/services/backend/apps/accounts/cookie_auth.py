@@ -71,6 +71,28 @@ def clear_jwt_cookies(response: Response) -> Response:
     return response
 
 
+# ---------------------------------------------------------------------------
+# OpenAPI / drf-spectacular authentication extension
+# Tells spectacular how to document CookieJWTAuthentication in the schema.
+# ---------------------------------------------------------------------------
+try:
+    from drf_spectacular.extensions import OpenApiAuthenticationExtension
+
+    class CookieJWTAuthenticationScheme(OpenApiAuthenticationExtension):
+        target_class = 'apps.accounts.cookie_auth.CookieJWTAuthentication'
+        name = 'ankaJWTAuth'  # Unique name — 'cookieAuth' is reserved by SessionAuthentication
+
+        def get_security_definition(self, auto_schema):
+            return {
+                'type': 'apiKey',
+                'in': 'cookie',
+                'name': 'anka_access_token',
+                'description': 'HttpOnly cookie tabanlı JWT kimlik doğrulaması (anka_access_token)',
+            }
+except ImportError:
+    pass  # drf_spectacular kurulu değil, API şeması üretilmeyecek
+
+
 class CookieJWTAuthentication(JWTAuthentication):
     """
     Extends SimpleJWT's JWTAuthentication to also look for the access token in

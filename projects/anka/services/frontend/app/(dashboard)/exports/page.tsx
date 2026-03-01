@@ -74,9 +74,9 @@ export default function ExportsPage() {
         fetchAPI<{ results: Export[] }>('/exports/'),
         fetchAPI<{ results: Batch[] }>('/batches/'),
       ])
-      setExports(exportsData.results)
+      setExports(exportsData.results || [])
       const batchMap: Record<string, Batch> = {}
-      batchesData.results.forEach((b) => { batchMap[b.id] = b })
+      ;(batchesData.results || []).forEach((b) => { batchMap[b.id] = b })
       setBatches(batchMap)
     } catch {
       setError('Dışa aktarımlar yüklenirken hata oluştu.')

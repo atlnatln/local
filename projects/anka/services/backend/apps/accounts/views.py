@@ -227,6 +227,7 @@ class GoogleLoginView(APIView):
         return response
 
 
+@extend_schema(exclude=True)
 class TestLoginView(APIView):
     """Test-only helper: mint JWT for a known user (disabled by default)."""
 

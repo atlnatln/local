@@ -35,9 +35,6 @@ Bu repo, çekirdek kullanımda Google Maps + Gemini enrichment hattına odaklana
 - Çekirdekleştirme = çalışma profilini sadeleştirme
 - Çekirdekleştirme ≠ uygulama/migration silme
 
-Detay denetim raporu:
-- `docs/RUNBOOKS/core-structure-audit-2026-02-15.md`
-
 ---
 
 ## 🚀 Kurulum (Quick Start)

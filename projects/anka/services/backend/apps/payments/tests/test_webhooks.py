@@ -22,6 +22,7 @@ class WebhookHandlerTest(TestCase):
             status='PENDING'
         )
 
+    @override_settings(IYZICO_WEBHOOK_SECRET='')
     def test_payment_completed_success(self):
         payload = {
             "eventType": "payment.completed",
@@ -123,6 +124,7 @@ class WebhookHandlerTest(TestCase):
 
         self.assertEqual(response.status_code, 401)
 
+    @override_settings(IYZICO_WEBHOOK_SECRET='')
     def test_payment_failed(self):
         payload = {
             "eventType": "payment.failed",
@@ -146,6 +148,7 @@ class WebhookHandlerTest(TestCase):
         self.assertEqual(self.intent.status, 'failed')
         self.assertIn("Insufficient funds", self.intent.error_message)
 
+    @override_settings(IYZICO_WEBHOOK_SECRET='')
     def test_invalid_json(self):
         response = self.client.post(
             '/api/payments/webhooks/iyzico/',

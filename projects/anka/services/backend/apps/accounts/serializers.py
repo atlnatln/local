@@ -27,16 +27,21 @@ class UserDetailSerializer(serializers.ModelSerializer):
     
     profile = serializers.SerializerMethodField()
     organizations = serializers.SerializerMethodField()
+    has_usable_password = serializers.SerializerMethodField()
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'profile', 'organizations', 'date_joined')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'profile', 'organizations', 'date_joined', 'has_usable_password')
         read_only_fields = ('id', 'date_joined')
     
     def get_profile(self, obj) -> dict | None:
         if hasattr(obj, 'profile'):
             return UserProfileSerializer(obj.profile).data
         return None
+
+    def get_has_usable_password(self, obj) -> bool:
+        """True if user has a usable (non-Google) password."""
+        return obj.has_usable_password()
     
     def get_organizations(self, obj) -> list[dict]:
         """Get organizations this user is member of"""

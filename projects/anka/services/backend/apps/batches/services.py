@@ -18,6 +18,23 @@ from apps.providers.email_enrichment import EmailEnrichmentClient
 logger = logging.getLogger(__name__)
 
 
+def _enqueue_export_task(export_id: str) -> None:
+    try:
+        generate_export_file.delay(export_id)
+        return
+    except Exception as exc:
+        logger.warning(
+            "Export %s: async enqueue failed, falling back to sync generation (%s)",
+            export_id,
+            exc,
+        )
+
+    try:
+        generate_export_file(export_id)
+    except Exception:
+        logger.exception("Export %s: sync fallback generation failed", export_id)
+
+
 def _env_int(name: str, default: int) -> int:
     raw = os.environ.get(name)
     if raw is None or raw == "":
@@ -145,7 +162,7 @@ class BatchProcessor:
                 export_obj.error_message = ""
                 export_obj.save(update_fields=["status", "error_message", "updated_at"])
 
-            generate_export_file.delay(str(export_obj.id))
+            _enqueue_export_task(str(export_obj.id))
 
     def run_pipeline(self):
         try:
@@ -178,6 +195,13 @@ class BatchProcessor:
             self.batch.skipped_404 = self.batch.error_records # We are tracking errors in stage 2
             self.batch.save()
 
+            if self.batch.status == 'PARTIAL':
+                # Aborted in stage 2, stop here and keep original abort reason
+                self.batch.completed_at = timezone.now()
+                self.batch.save()
+                self._settle_credits(delivered_count=0, reason='partial_stage_2')
+                return
+
             if not verified_items:
                 self.batch.status = 'PARTIAL'
                 self.batch.aborted_reason = 'Stage 2 doğrulamada sonuç kalmadı'
@@ -186,13 +210,6 @@ class BatchProcessor:
                 self.batch.completed_at = timezone.now()
                 self.batch.save()
                 self._settle_credits(delivered_count=0, reason='no_verified_stage_2')
-                return
-
-            if self.batch.status == 'PARTIAL':
-                # Aborted in stage 2, stop here
-                self.batch.completed_at = timezone.now()
-                self.batch.save()
-                self._settle_credits(delivered_count=0, reason='partial_stage_2')
                 return
 
             # 4. Enrich (Stage 3)
@@ -438,6 +455,49 @@ class BatchProcessor:
                     if pid and pid not in seen_ids:
                         seen_ids.add(pid)
                         candidates.append({'id': pid, 'name': p.get('name')})
+        else:
+            logger.warning(
+                "Batch %s: Adaptive region unavailable, using unrestricted Stage 1 fallback search",
+                self.batch.id,
+            )
+            fallback_queries = [
+                f"{self.batch.city} {self.batch.sector}".strip(),
+                (self.batch.sector or "").strip(),
+            ]
+
+            stage1_calls = 0
+            for query in fallback_queries:
+                if not query:
+                    continue
+                if stage1_calls >= self.stage1_api_call_cap:
+                    break
+
+                try:
+                    stage1_calls += 1
+                    response = self.client.text_search_ids_only(
+                        query=query,
+                        language_code='tr'
+                    )
+                except Exception as exc:
+                    logger.warning(
+                        "Batch %s: Unrestricted Stage 1 fallback failed for query '%s': %s",
+                        self.batch.id,
+                        query,
+                        exc,
+                    )
+                    continue
+
+                places = response.get('places', []) if response else []
+                for p in places:
+                    if len(candidates) >= limit:
+                        break
+                    pid = p.get('id')
+                    if pid and pid not in seen_ids:
+                        seen_ids.add(pid)
+                        candidates.append({'id': pid, 'name': p.get('name')})
+
+                if candidates:
+                    break
                 
         logger.info(f"Batch {self.batch.id}: Collected {len(candidates)} IDs")
         return candidates
@@ -576,6 +636,7 @@ class BatchProcessor:
         verified_items = []
         error_count = 0
         THRESHOLD_ABORT = 0.5 # If 50% fail, stop batch to save money
+        MIN_SAMPLE_FOR_ABORT = 5
         
         for i, cand in enumerate(candidates):
             if i >= self.stage2_api_call_cap:
@@ -588,8 +649,9 @@ class BatchProcessor:
                 self.batch.aborted_reason = "Stage 2 API cap reached"
                 break
 
-            # Circuit breaker check every 10 items
-            if i > 10 and (error_count / i) > THRESHOLD_ABORT:
+            # Circuit breaker check after enough samples
+            processed_count = i + 1
+            if processed_count >= MIN_SAMPLE_FOR_ABORT and (error_count / processed_count) > THRESHOLD_ABORT:
                 logger.error(f"Batch {self.batch.id} aborted: High failure rate in Stage 2")
                 self.batch.status = 'PARTIAL'
                 self.batch.aborted_reason = "High failure rate in Stage 2 (Place Details Pro)"
@@ -727,13 +789,20 @@ class BatchProcessor:
 
                 if email:
                     item.data["email"] = email
+                    src_url = getattr(email_client, "last_email_source_url", None)
+                    src_type = getattr(email_client, "last_email_source_type", None)
+                    if src_url:
+                        item.data["email_source_url"] = src_url
+                    if src_type:
+                        item.data["email_source_type"] = src_type
                     item.save(update_fields=["data", "updated_at"])
                     found_count += 1
                     logger.debug(
-                        "Batch %s: Stage 4 email found [%s] → %s",
+                        "Batch %s: Stage 4 email found [%s] → %s (source: %s)",
                         self.batch.id,
                         item.firm_name,
                         email,
+                        src_type or "unknown",
                     )
                 elif discovered and not website:
                     # email bulunamasa bile keşfedilen website’i sakla

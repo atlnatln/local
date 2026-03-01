@@ -86,8 +86,8 @@ async function handle401(): Promise<void> {
     // Clean up any legacy keys
     localStorage.removeItem('anka_access_token');
     localStorage.removeItem('anka_refresh_token');
-    // Preserve current path for redirect-after-login
-    const currentPath = window.location.pathname;
+    // Preserve current path (+query) for redirect-after-login
+    const currentPath = `${window.location.pathname}${window.location.search || ''}`;
     const redirectParam =
       currentPath && currentPath !== '/' && currentPath !== '/login'
         ? `?redirect=${encodeURIComponent(currentPath)}`
@@ -152,6 +152,7 @@ export async function fetchAPI<T = any>(
     const message =
       errorData.detail ||
       errorData.error ||
+      errorData.message ||
       // Collect first field-level error
       Object.values(errorData)
         .flat()

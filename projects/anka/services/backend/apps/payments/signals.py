@@ -39,14 +39,22 @@ def grant_credits_on_payment_completion(sender, instance, created, update_fields
             organization = member.organization
         else:
             # Create default organization if none exists
+            # slug is required (unique), so we generate one from the username
+            import uuid as _uuid
+            from django.utils.text import slugify as _slugify
+            _base_slug = _slugify(user.username) or f"org-{user.id}"
+            _candidate = _base_slug
+            while Organization.objects.filter(slug=_candidate).exists():
+                _candidate = f"{_base_slug}-{_uuid.uuid4().hex[:8]}"
             organization = Organization.objects.create(
                 name=f"{user.username}'s Organization",
-                # description="Auto-created"
+                slug=_candidate,
+                description="Auto-created organization",
             )
             OrganizationMember.objects.create(
                 organization=organization,
                 user=user,
-                role='owner'
+                role='owner',
             )
         
         # Get or create credit package for organization

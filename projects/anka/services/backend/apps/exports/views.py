@@ -22,6 +22,23 @@ from apps.exports.tasks import generate_export_file
 logger = logging.getLogger(__name__)
 
 
+def _enqueue_export_generation(export_id: str) -> None:
+    try:
+        generate_export_file.delay(export_id)
+        return
+    except Exception as exc:
+        logger.warning(
+            "Export %s: async enqueue failed, falling back to sync generation (%s)",
+            export_id,
+            exc,
+        )
+
+    try:
+        generate_export_file(export_id)
+    except Exception:
+        logger.exception("Export %s: sync fallback generation failed", export_id)
+
+
 class ExportViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Export.objects.all().select_related("organization", "batch")
@@ -41,7 +58,14 @@ class ExportViewSet(viewsets.ModelViewSet):
             user=self.request.user, is_active=True
         ).values_list("organization_id", flat=True)
 
-        return super().get_queryset().filter(organization_id__in=org_ids)
+        qs = super().get_queryset().filter(organization_id__in=org_ids)
+
+        # Optional filtering by batch ID: GET /api/exports/?batch=<uuid>
+        batch_id = self.request.query_params.get("batch")
+        if batch_id:
+            qs = qs.filter(batch_id=batch_id)
+
+        return qs
 
     def perform_create(self, serializer):
         batch = serializer.validated_data.get("batch")
@@ -59,7 +83,7 @@ class ExportViewSet(viewsets.ModelViewSet):
             raise ValidationError({"detail": "Export için teslim edilebilir kayıt bulunamadı."})
 
         export = serializer.save(organization=batch.organization)
-        generate_export_file.delay(str(export.id))
+        _enqueue_export_generation(str(export.id))
 
     # ── Secure file download (no public media access needed) ──────────
     @action(detail=True, methods=["get"], url_path="download")
@@ -108,7 +132,7 @@ class ExportViewSet(viewsets.ModelViewSet):
         export.save(update_fields=[
             "status", "error_message", "signed_url", "signed_url_expires_at", "updated_at"
         ])
-        generate_export_file.delay(str(export.id))
+        _enqueue_export_generation(str(export.id))
 
         serializer = ExportSerializer(export)
         return Response(serializer.data)

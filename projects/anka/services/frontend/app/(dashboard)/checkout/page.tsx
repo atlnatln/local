@@ -224,7 +224,7 @@ export default function CheckoutPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="flex items-center justify-center min-h-[50vh] p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">✓ Ödeme Başarılı</CardTitle>
@@ -253,7 +253,7 @@ export default function CheckoutPage() {
         {currentBalance !== null && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg px-5 py-3 text-center">
             <p className="text-xs text-blue-500 font-medium uppercase tracking-wide">Mevcut Bakiye</p>
-            <p className="text-2xl font-bold text-blue-700">{currentBalance.toLocaleString('tr-TR')}</p>
+            <p className="text-2xl font-bold text-blue-700">{Math.round(currentBalance).toLocaleString('tr-TR')}</p>
             <p className="text-xs text-blue-400">kredi</p>
           </div>
         )}

@@ -120,7 +120,7 @@ export default function SettingsPage() {
               {balance !== null && (
                 <div className="flex justify-between">
                   <dt className="text-gray-500">Kredi Bakiyesi</dt>
-                  <dd className="font-bold text-blue-600">{balance.toLocaleString('tr-TR')}</dd>
+                  <dd className="font-bold text-blue-600">{Math.round(balance).toLocaleString('tr-TR')}</dd>
                 </div>
               )}
             </dl>
@@ -135,13 +135,13 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle>Şifre Değiştir</CardTitle>
           <CardDescription>
-            {user?.username === user?.email
+            {!user?.has_usable_password
               ? 'Google ile giriş yaptığınız için şifre değiştirme kullanılamaz.'
               : 'Hesap şifrenizi güncelleyin'}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {user?.username === user?.email ? (
+          {!user?.has_usable_password ? (
             <div className="rounded-md bg-blue-50 border border-blue-200 p-4 text-sm text-blue-700">
               Google hesabınızla giriş yaptığınız için şifre belirlemenize gerek yoktur.
               Hesap güvenliğiniz Google&apos;ın iki faktörlü doğrulaması ile sağlanmaktadır.

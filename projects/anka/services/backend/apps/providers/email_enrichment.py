@@ -149,6 +149,9 @@ class EmailEnrichmentClient:
         # last-call debug/telemetry (stage 4 sayaçları için)
         self.last_discovered_website: Optional[str] = None
         self.last_gemini_calls: int = 0
+        # email kaynağı bilgisi (services.py tarafından BatchItem.data'ya yazılır)
+        self.last_email_source_url: Optional[str] = None
+        self.last_email_source_type: Optional[str] = None
 
     # ------------------------------------------------------------------
     # Public API
@@ -169,6 +172,8 @@ class EmailEnrichmentClient:
         # reset last-call metadata
         self.last_discovered_website = None
         self.last_gemini_calls = 0
+        self.last_email_source_url = None
+        self.last_email_source_type = None
 
         firm_name = (firm_name or "").strip()
         if not firm_name:
@@ -178,6 +183,8 @@ class EmailEnrichmentClient:
         if website_url:
             email = self._scrape_website_for_email(website_url)
             if email:
+                self.last_email_source_url = website_url
+                self.last_email_source_type = "scrape_website"
                 logger.info("[EmailEnrich] S1-scrape  [%s] → %s", firm_name, email)
                 return email
             logger.debug("[EmailEnrich] S1-scrape  [%s] → not found, trying S2", firm_name)
@@ -192,6 +199,8 @@ class EmailEnrichmentClient:
                 self.last_gemini_calls += 1
                 email = self._scrape_website_for_email(discovered_website)
                 if email:
+                    self.last_email_source_url = discovered_website
+                    self.last_email_source_type = "scrape_discovered"
                     logger.info(
                         "[EmailEnrich] S2-website→scrape [%s] → %s",
                         firm_name,
@@ -218,6 +227,8 @@ class EmailEnrichmentClient:
         email = self._gemini_search_email(firm_name, address, known_domain=known_domain)
         self.last_gemini_calls += 1
         if email:
+            self.last_email_source_url = getattr(self, "_last_s2_source_url", None) or "gemini-grounding"
+            self.last_email_source_type = getattr(self, "_last_s2_source_type", None) or "gemini_grounding"
             logger.info("[EmailEnrich] S2-gemini  [%s] → %s", firm_name, email)
         else:
             logger.debug("[EmailEnrich] S2-gemini  [%s] → not found", firm_name)
@@ -414,6 +425,8 @@ class EmailEnrichmentClient:
         if text.upper() != "NONE":
             email = _extract_best_email(text, source_url="gemini-response")
             if email:
+                self._last_s2_source_url = "gemini-direct"
+                self._last_s2_source_type = "gemini_direct"
                 return email
 
         # Grounding chunk URL'lerini scrape et (max 3)
@@ -424,6 +437,8 @@ class EmailEnrichmentClient:
                 continue
             email = _extract_best_email(html, source_url=url)
             if email:
+                self._last_s2_source_url = url
+                self._last_s2_source_type = "gemini_grounding"
                 return email
 
         return None

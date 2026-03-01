@@ -20,11 +20,13 @@ NC='\033[0m'
 PROJECT_NAME="anka"
 DOMAIN="ankadata.com.tr"
 SERVER_IP="${SERVER_IP:-89.252.152.222}"
-VPS_HOST="${VPS_HOST:-akn@${SERVER_IP}}"
+VPS_HOST="${VPS_HOST:-}"
 VPS_PATH="/home/akn/vps/projects/anka"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$PROJECT_DIR/../.." && pwd)"
 SSH_CONNECT_TIMEOUT="${SSH_CONNECT_TIMEOUT:-10}"
+TRANSFER_RETRIES="${TRANSFER_RETRIES:-3}"
+TRANSFER_RETRY_SLEEP="${TRANSFER_RETRY_SLEEP:-5}"
 SSH_OPTS=(
     -o BatchMode=yes
     -o IdentitiesOnly=yes
@@ -39,16 +41,42 @@ GIT_REMOTE_NAME="origin"
 GIT_REMOTE_URL="https://github.com/atlnatln/vps.git"
 GIT_BRANCH="main"
 
-echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║              🚀 Anka Production Deploy                        ║${NC}"
-echo -e "${CYAN}║              Domain: ${DOMAIN}                   ║${NC}"
-echo -e "${CYAN}║              Server: ${SERVER_IP}                ║${NC}"
-echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════╝${NC}"
-
 log_info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
 log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
+
+is_ipv4() {
+    local ip="$1"
+    [[ "$ip" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || return 1
+    IFS='.' read -r o1 o2 o3 o4 <<< "$ip"
+    for octet in "$o1" "$o2" "$o3" "$o4"; do
+        if [ "$octet" -lt 0 ] || [ "$octet" -gt 255 ]; then
+            return 1
+        fi
+    done
+    return 0
+}
+
+scp_with_retry() {
+    local src="$1"
+    local dst="$2"
+    local attempt=1
+
+    while [ "$attempt" -le "$TRANSFER_RETRIES" ]; do
+        if scp "${SSH_OPTS[@]}" "$src" "$dst"; then
+            return 0
+        fi
+
+        if [ "$attempt" -lt "$TRANSFER_RETRIES" ]; then
+            log_warning "SCP failed (attempt ${attempt}/${TRANSFER_RETRIES}), retrying in ${TRANSFER_RETRY_SLEEP}s..."
+            sleep "$TRANSFER_RETRY_SLEEP"
+        fi
+        attempt=$((attempt + 1))
+    done
+
+    return 1
+}
 
 # ─────────────────────── Argument parsing ──────────────────────────
 SKIP_BUILD=false
@@ -71,6 +99,10 @@ while [[ $# -gt 0 ]]; do
             DEPLOY_MODE="${2:-}"
             shift 2
             ;;
+        --server-ip)
+            SERVER_IP="${2:-}"
+            shift 2
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo "Options:"
@@ -81,6 +113,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --force-recreate      Force recreate all containers"
             echo "  --no-vps-cleanup      Skip deploy sonrası VPS disk temizliği"
             echo "  --mode <package|git>  Deploy mode:"
+            echo "  --server-ip <IP>      Override VPS server IP for this run"
             echo "        package: build+export images and scp to VPS (default)"
             echo "        git:     VPS repo git pull + docker compose up --build"
             exit 0
@@ -96,6 +129,21 @@ if [[ "$DEPLOY_MODE" != "package" && "$DEPLOY_MODE" != "git" ]]; then
     log_error "Invalid --mode: ${DEPLOY_MODE} (use: package|git)"
     exit 1
 fi
+
+if ! is_ipv4 "$SERVER_IP"; then
+    log_error "Invalid SERVER_IP: ${SERVER_IP}"
+    exit 1
+fi
+
+if [ -z "$VPS_HOST" ]; then
+    VPS_HOST="akn@${SERVER_IP}"
+fi
+
+echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║              🚀 Anka Production Deploy                        ║${NC}"
+echo -e "${CYAN}║              Domain: ${DOMAIN}                   ║${NC}"
+echo -e "${CYAN}║              Server: ${SERVER_IP}                ║${NC}"
+echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════╝${NC}"
 
 cd "$PROJECT_DIR"
 
@@ -442,7 +490,10 @@ if [ "$SKIP_VPS" = false ]; then
              docker network create vps_infrastructure_network >/dev/null"
 
         echo -e "  → Uploading package to VPS..."
-        scp "${SSH_OPTS[@]}" "$BUILD_DIR/anka-deploy.tar.gz" "$VPS_HOST:$VPS_PATH/"
+        if ! scp_with_retry "$BUILD_DIR/anka-deploy.tar.gz" "$VPS_HOST:$VPS_PATH/"; then
+            log_error "Failed to upload deployment package after ${TRANSFER_RETRIES} attempts"
+            exit 1
+        fi
 
         echo -e "  → Extracting and deploying..."
         FORCE_ENV=""

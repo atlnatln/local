@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { isAuthenticated, logout, getCurrentUser, User } from '@/lib/auth'
+import { isAuthenticated, logout, getCurrentUser, User, refreshAuthFlag } from '@/lib/auth'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ToastProvider } from '@/components/ToastProvider'
 
@@ -40,15 +40,28 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function checkAuth() {
       try {
+        // Fast path via optimistic localStorage flag; fallback to server cookie session
         if (!isAuthenticated()) {
-          router.push('/login')
+          const currentUser = await getCurrentUser()
+          // Restore the localStorage flag so future quick-checks skip the API call
+          refreshAuthFlag()
+          setUser(currentUser)
           return
         }
 
         const currentUser = await getCurrentUser()
         setUser(currentUser)
       } catch {
-        router.push('/login')
+        // api-client, 401 yanıtlarını handle401() ile zaten ele alıp localStorage
+        // flag'ini temizler ve redirect yapar. Burada sadece isAuthenticated()
+        // false ise (yani kesin oturum yoksa) login'e yönlendiriyoruz;
+        // ağ hataları / 5xx gibi geçici sorunlarda kullanıcıyı zorla çıkarmıyoruz.
+        if (!isAuthenticated()) {
+          const currentPath = typeof window !== 'undefined'
+            ? `${window.location.pathname}${window.location.search || ''}`
+            : ''
+          router.push(`/login${currentPath ? `?redirect=${encodeURIComponent(currentPath)}` : ''}`)
+        }
       } finally {
         setLoading(false)
       }

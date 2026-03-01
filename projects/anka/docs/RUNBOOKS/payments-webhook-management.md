@@ -69,8 +69,6 @@ Aşağıdaki webhook / ödeme hataları kod denetimi sırasında tespit edilip d
 - **`mark_completed()` — signal tetiklemiyordu:** `self.save()` → `self.save(update_fields=[...])` ile kredi yansıması signal'ı artık doğru çalışıyor.
 - **`confirm` view — payment_id kaybı:** `payment_id` ayrı `save(update_fields=...)` ile kaydediliyor.
 
-Detaylar: `docs/RUNBOOKS/code-audit-and-fixes-2026-06.md`
-
 ## İlgili Dosyalar
 
 - `services/backend/apps/payments/models.py`

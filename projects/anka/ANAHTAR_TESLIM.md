@@ -60,8 +60,6 @@
 - `README.md`
 - `CONTRIBUTING.md`
 - `CHANGELOG.md`
-- `docs/RUNBOOKS/ux-simulation-audit-2026-03.md`
-- `docs/RUNBOOKS/ux-simulation-audit-2026-03-01.md`
 
 ---
 

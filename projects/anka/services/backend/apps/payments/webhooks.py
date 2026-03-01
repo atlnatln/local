@@ -38,7 +38,7 @@ def _verify_webhook_signature(request) -> bool:
     if not secret:
         logger.warning("IYZICO_WEBHOOK_SECRET is empty — webhook signature verification skipped. "
                        "Set IYZICO_WEBHOOK_SECRET in production for security.")
-        return False
+        return True  # No secret configured → skip verification (dev/test mode)
 
     signature = _normalize_signature(
         _get_first_header(

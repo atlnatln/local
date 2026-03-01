@@ -39,6 +39,7 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
+  has_usable_password: boolean;
   profile?: {
     avatar_url: string;
     phone: string;
@@ -114,6 +115,18 @@ export function isTokenExpired(): boolean {
 
 export function clearTokens(): void {
   clearAuthFlag();
+}
+
+/**
+ * Restore the "authenticated" optimistic flag after a successful
+ * server-side cookie fallback (when localStorage was cleared/expired
+ * but the HttpOnly access-token cookie is still valid).
+ *
+ * Call this whenever a getCurrentUser() succeeds without an explicit login
+ * so that subsequent navigations use the fast localStorage path.
+ */
+export function refreshAuthFlag(): void {
+  setAuthFlag();
 }
 
 // ─── auth flows ───────────────────────────────────────────
