@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { importLibrary, setOptions } from '@googlemaps/js-api-loader'
 import { Button } from '@/components/ui/button'
 
@@ -108,96 +108,87 @@ export default function MapAreaSelector({
     startDrawingMode()
   }, [onBoundsChange, startDrawingMode])
 
-  // Pointer-event handlers attached to the transparent overlay div
-  useEffect(() => {
+  // ── Pointer-event handlers as React props (avoids useEffect timing issues) ───
+  // The overlay div is only rendered when ready && drawingMode, so these handlers
+  // are guaranteed to be attached when the element exists. No useEffect needed.
+
+  const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault()
     const overlay = overlayDivRef.current
     const dragBox = dragBoxRef.current
     if (!overlay || !dragBox) return
-    if (!drawingMode) return
+    overlay.setPointerCapture(e.pointerId)
+    const rect = overlay.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    dragRef.current = { startX: x, startY: y, currentX: x, currentY: y, active: true }
+    dragBox.style.display = 'block'
+    dragBox.style.left = `${x}px`
+    dragBox.style.top = `${y}px`
+    dragBox.style.width = '0px'
+    dragBox.style.height = '0px'
+  }, [])
 
-    const getRelativePos = (e: PointerEvent) => {
-      const rect = overlay.getBoundingClientRect()
-      return { x: e.clientX - rect.left, y: e.clientY - rect.top }
-    }
+  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current?.active) return
+    e.preventDefault()
+    const overlay = overlayDivRef.current
+    const dragBox = dragBoxRef.current
+    if (!overlay || !dragBox) return
+    const rect = overlay.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    dragRef.current.currentX = x
+    dragRef.current.currentY = y
+    const { startX, startY } = dragRef.current
+    dragBox.style.left = `${Math.min(startX, x)}px`
+    dragBox.style.top = `${Math.min(startY, y)}px`
+    dragBox.style.width = `${Math.abs(x - startX)}px`
+    dragBox.style.height = `${Math.abs(y - startY)}px`
+  }, [])
 
-    const onPointerDown = (e: PointerEvent) => {
-      e.preventDefault()
-      overlay.setPointerCapture(e.pointerId)
-      const { x, y } = getRelativePos(e)
-      dragRef.current = { startX: x, startY: y, currentX: x, currentY: y, active: true }
-      dragBox.style.display = 'block'
-      dragBox.style.left = `${x}px`
-      dragBox.style.top = `${y}px`
-      dragBox.style.width = '0px'
-      dragBox.style.height = '0px'
-    }
+  const handlePointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current?.active) return
+    const overlay = overlayDivRef.current
+    const dragBox = dragBoxRef.current
+    if (!overlay || !dragBox) return
+    overlay.releasePointerCapture(e.pointerId)
+    dragRef.current.active = false
+    dragBox.style.display = 'none'
 
-    const onPointerMove = (e: PointerEvent) => {
-      if (!dragRef.current?.active) return
-      e.preventDefault()
-      const { x, y } = getRelativePos(e)
-      dragRef.current.currentX = x
-      dragRef.current.currentY = y
+    const map = mapInstanceRef.current
+    if (!map) return
 
-      const { startX, startY } = dragRef.current
-      dragBox.style.left = `${Math.min(startX, x)}px`
-      dragBox.style.top = `${Math.min(startY, y)}px`
-      dragBox.style.width = `${Math.abs(x - startX)}px`
-      dragBox.style.height = `${Math.abs(y - startY)}px`
-    }
+    const { startX, startY, currentX, currentY } = dragRef.current
+    const minX = Math.min(startX, currentX)
+    const maxX = Math.max(startX, currentX)
+    const minY = Math.min(startY, currentY)
+    const maxY = Math.max(startY, currentY)
 
-    const onPointerUp = (e: PointerEvent) => {
-      if (!dragRef.current?.active) return
-      overlay.releasePointerCapture(e.pointerId)
-      dragRef.current.active = false
-      dragBox.style.display = 'none'
+    // Ignore tiny drags (< 8px)
+    if (maxX - minX < 8 || maxY - minY < 8) return
 
-      const map = mapInstanceRef.current
-      if (!map) return
+    // Convert container pixels → LatLng using map viewport bounds.
+    // Reliable alternative to MapCanvasProjection.fromContainerPixelToLatLng
+    // which is unavailable when OverlayView.draw() hasn't been called (Maps API v3.60+).
+    const mapBounds = map.getBounds()
+    const containerEl = mapRef.current
+    if (!mapBounds || !containerEl) return
 
-      const { startX, startY, currentX, currentY } = dragRef.current
-      const minX = Math.min(startX, currentX)
-      const maxX = Math.max(startX, currentX)
-      const minY = Math.min(startY, currentY)
-      const maxY = Math.max(startY, currentY)
+    const ne = mapBounds.getNorthEast()
+    const sw = mapBounds.getSouthWest()
+    const w = containerEl.offsetWidth || containerEl.getBoundingClientRect().width
+    const h = containerEl.offsetHeight || containerEl.getBoundingClientRect().height
+    if (!w || !h) return
 
-      // Ignore tiny drags (< 8px)
-      if (maxX - minX < 8 || maxY - minY < 8) return
+    const toLat = (py: number) => ne.lat() - (py / h) * (ne.lat() - sw.lat())
+    const toLng = (px: number) => sw.lng() + (px / w) * (ne.lng() - sw.lng())
 
-      // Convert container pixels → LatLng using map viewport bounds.
-      // Reliable alternative to MapCanvasProjection.fromContainerPixelToLatLng
-      // which is unavailable when OverlayView.draw() hasn't been called (Maps API v3.60+).
-      const mapBounds = map.getBounds()
-      const containerEl = mapRef.current
-      if (!mapBounds || !containerEl) return
-
-      const ne = mapBounds.getNorthEast()
-      const sw = mapBounds.getSouthWest()
-      const w = containerEl.offsetWidth || containerEl.getBoundingClientRect().width
-      const h = containerEl.offsetHeight || containerEl.getBoundingClientRect().height
-      if (!w || !h) return
-
-      const toLat = (py: number) => ne.lat() - (py / h) * (ne.lat() - sw.lat())
-      const toLng = (px: number) => sw.lng() + (px / w) * (ne.lng() - sw.lng())
-
-      const swLatLng = new google.maps.LatLng(toLat(maxY), toLng(minX))
-      const neLatLng = new google.maps.LatLng(toLat(minY), toLng(maxX))
-      const bounds = new google.maps.LatLngBounds(swLatLng, neLatLng)
-      placeRectangle(map, bounds)
-    }
-
-    overlay.addEventListener('pointerdown', onPointerDown)
-    overlay.addEventListener('pointermove', onPointerMove)
-    overlay.addEventListener('pointerup', onPointerUp)
-
-    return () => {
-      overlay.removeEventListener('pointerdown', onPointerDown)
-      overlay.removeEventListener('pointermove', onPointerMove)
-      overlay.removeEventListener('pointerup', onPointerUp)
-    }
-  // `ready` buraya eklendi: overlay div ancak ready=true olunca render edilir,
-  // bu yüzden effect ready değiştiğinde yeniden çalışmalı.
-  }, [drawingMode, placeRectangle, ready])
+    const swLatLng = new google.maps.LatLng(toLat(maxY), toLng(minX))
+    const neLatLng = new google.maps.LatLng(toLat(minY), toLng(maxX))
+    const bounds = new google.maps.LatLngBounds(swLatLng, neLatLng)
+    placeRectangle(map, bounds)
+  }, [placeRectangle])
 
   useEffect(() => {
     if (!apiKey) { setLoadError('Google Maps API key tanımlı değil.'); return }
@@ -278,6 +269,9 @@ export default function MapAreaSelector({
             ref={overlayDivRef}
             className="absolute inset-0"
             style={{ cursor: 'crosshair', zIndex: 10 }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
           >
             {/* Live drag-rectangle feedback (pure CSS, no Maps API) */}
             <div
