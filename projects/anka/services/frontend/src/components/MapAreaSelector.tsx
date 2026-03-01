@@ -46,16 +46,6 @@ function loadGoogleMaps(apiKey: string): Promise<void> {
   return googleMapsLoadPromise
 }
 
-/** Factory: creates a ProjectionBridge AFTER google.maps is loaded. */
-function makeProjectionBridge() {
-  class ProjectionBridge extends google.maps.OverlayView {
-    onAdd() {}
-    draw() {}
-    onRemove() {}
-  }
-  return new ProjectionBridge()
-}
-
 interface DragState {
   startX: number
   startY: number
@@ -74,7 +64,6 @@ export default function MapAreaSelector({
   const dragBoxRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const rectangleRef = useRef<google.maps.Rectangle | null>(null)
-  const projBridgeRef = useRef<google.maps.OverlayView | null>(null)
   const dragRef = useRef<DragState | null>(null)
 
   const [ready, setReady] = useState(false)
@@ -163,9 +152,8 @@ export default function MapAreaSelector({
       dragRef.current.active = false
       dragBox.style.display = 'none'
 
-      const proj = projBridgeRef.current?.getProjection()
       const map = mapInstanceRef.current
-      if (!proj || !map) return
+      if (!map) return
 
       const { startX, startY, currentX, currentY } = dragRef.current
       const minX = Math.min(startX, currentX)
@@ -176,9 +164,25 @@ export default function MapAreaSelector({
       // Ignore tiny drags (< 8px)
       if (maxX - minX < 8 || maxY - minY < 8) return
 
-      const sw = proj.fromContainerPixelToLatLng(new google.maps.Point(minX, maxY))!
-      const ne = proj.fromContainerPixelToLatLng(new google.maps.Point(maxX, minY))!
-      const bounds = new google.maps.LatLngBounds(sw, ne)
+      // Convert container pixels → LatLng using map viewport bounds.
+      // Reliable alternative to MapCanvasProjection.fromContainerPixelToLatLng
+      // which is unavailable when OverlayView.draw() hasn't been called (Maps API v3.60+).
+      const mapBounds = map.getBounds()
+      const containerEl = mapRef.current
+      if (!mapBounds || !containerEl) return
+
+      const ne = mapBounds.getNorthEast()
+      const sw = mapBounds.getSouthWest()
+      const w = containerEl.offsetWidth || containerEl.getBoundingClientRect().width
+      const h = containerEl.offsetHeight || containerEl.getBoundingClientRect().height
+      if (!w || !h) return
+
+      const toLat = (py: number) => ne.lat() - (py / h) * (ne.lat() - sw.lat())
+      const toLng = (px: number) => sw.lng() + (px / w) * (ne.lng() - sw.lng())
+
+      const swLatLng = new google.maps.LatLng(toLat(maxY), toLng(minX))
+      const neLatLng = new google.maps.LatLng(toLat(minY), toLng(maxX))
+      const bounds = new google.maps.LatLngBounds(swLatLng, neLatLng)
       placeRectangle(map, bounds)
     }
 
@@ -215,11 +219,6 @@ export default function MapAreaSelector({
           ],
         })
         mapInstanceRef.current = map
-
-        // Projection bridge — gives us fromContainerPixelToLatLng
-        const bridge = makeProjectionBridge()
-        bridge.setMap(map)
-        projBridgeRef.current = bridge
 
         if (initialBounds) {
           const sw = new google.maps.LatLng(initialBounds.low.latitude, initialBounds.low.longitude)
@@ -276,7 +275,7 @@ export default function MapAreaSelector({
           <div
             ref={overlayDivRef}
             className="absolute inset-0"
-            style={{ cursor: 'crosshair', zIndex: 1 }}
+            style={{ cursor: 'crosshair', zIndex: 10 }}
           >
             {/* Live drag-rectangle feedback (pure CSS, no Maps API) */}
             <div
