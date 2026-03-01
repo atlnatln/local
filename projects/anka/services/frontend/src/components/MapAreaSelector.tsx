@@ -114,7 +114,8 @@ export default function MapAreaSelector({
 
   const enableDrawingMode = useCallback((map: google.maps.Map) => {
     removeDrawingListeners()
-    map.setOptions({ draggable: false, gestureHandling: 'none', cursor: 'crosshair' })
+    map.setOptions({ draggable: false, gestureHandling: 'none' })
+    if (mapRef.current) mapRef.current.style.cursor = 'crosshair'
     isDrawingRef.current = false
     drawStartRef.current = null
 
@@ -156,7 +157,7 @@ export default function MapAreaSelector({
         tempRectRef.current = null
         if (bounds) {
           removeDrawingListeners()
-          map.setOptions({ cursor: '' })
+          if (mapRef.current) mapRef.current.style.cursor = ''
           placeRectangle(map, bounds)
         }
       }
