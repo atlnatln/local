@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { fetchAPI } from '@/lib/api-client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -90,6 +90,8 @@ function DashboardContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const router = useRouter();
+  // Track first load to avoid showing loading spinner on background polling refreshes
+  const isFirstLoad = useRef(true);
 
   useEffect(() => {
     // Show payment success banner if redirected from checkout
@@ -106,7 +108,9 @@ function DashboardContent() {
 
     async function loadDashboardData() {
       try {
-        if (!cancelled) setLoading(prev => batches.length === 0 ? true : prev);
+        // Only show the full-page loading spinner on the very first fetch.
+        // Background polling refreshes should not flash the loading state.
+        if (!cancelled && isFirstLoad.current) setLoading(true);
         // Execute fetches in parallel
         const [creditsRaw, batchesData, exportsData] = await Promise.all([
           fetchAPI<CreditPackage[] | CreditPackage>('/credits/balance/'),
@@ -136,7 +140,10 @@ function DashboardContent() {
         console.error('Dashboard load error:', err);
         setError('Veriler yüklenirken bir hata oluştu.');
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          isFirstLoad.current = false;
+        }
       }
     }
 
@@ -174,6 +181,19 @@ function DashboardContent() {
         <Alert className="bg-green-50 border-green-200">
           <AlertDescription className="text-green-800 font-medium">
             Ödeme başarıyla tamamlandı! Kredileriniz hesabınıza yansıtılmıştır.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Sıfır bakiye uyarısı: batch oluşturmadan önce kredi satın almasını hatırlat */}
+      {totalBalance === 0 && !paymentSuccess && (
+        <Alert className="bg-amber-50 border-amber-200">
+          <AlertDescription className="text-amber-800">
+            <span className="font-semibold">Kredi bakiyeniz yok.</span>{' '}
+            Batch oluşturabilmek için önce kredi satın almanız gerekmektedir.{' '}
+            <a href="/checkout" className="underline font-medium hover:no-underline">
+              Kredi Satın Al →
+            </a>
           </AlertDescription>
         </Alert>
       )}

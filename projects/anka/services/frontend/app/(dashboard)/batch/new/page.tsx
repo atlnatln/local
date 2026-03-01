@@ -47,6 +47,7 @@ export default function NewBatchPage() {
   const [cities, setCities] = useState<CatalogItem[]>([])
   const [sectors, setSectors] = useState<CatalogItem[]>([])
   const [organizations, setOrganizations] = useState<any[]>([])
+  const [creditBalance, setCreditBalance] = useState<number | null>(null)
 
   // Map mode toggle
   const [useMapArea, setUseMapArea] = useState(false)
@@ -66,10 +67,11 @@ export default function NewBatchPage() {
   useEffect(() => {
     async function init() {
       try {
-        const [citiesData, sectorsData, userData] = await Promise.all([
+        const [citiesData, sectorsData, userData, creditsRaw] = await Promise.all([
            fetchAPI<{results: CatalogItem[]}>('/catalog/cities/'),
            fetchAPI<{results: CatalogItem[]}>('/catalog/sectors/'),
-           getCurrentUser()
+           getCurrentUser(),
+           fetchAPI<Array<{ balance: string }> | { balance: string }>('/credits/balance/').catch(() => []),
         ])
         
         setCities(citiesData.results || [])
@@ -81,6 +83,14 @@ export default function NewBatchPage() {
         if (userOrgs.length > 0) {
             setFormData(prev => ({ ...prev, organization: userOrgs[0].id }))
         }
+
+        // Kredi bakiyesi hesapla
+        const creditsArr = Array.isArray(creditsRaw) ? creditsRaw : (creditsRaw ? [creditsRaw] : [])
+        const total = creditsArr.reduce((sum: number, pkg: { balance: string }) => {
+          const val = parseFloat(pkg.balance || '0')
+          return sum + (isNaN(val) ? 0 : val)
+        }, 0)
+        setCreditBalance(total)
       } catch (err) {
         console.error(err)
         setError('Konfigürasyon yüklenemedi. Lütfen sayfayı yenileyin.')
@@ -228,7 +238,7 @@ export default function NewBatchPage() {
         <CardHeader>
           <CardTitle>Yeni Sorgu (Batch) Oluştur</CardTitle>
           <CardDescription>
-            Şehir ve sektör seçin veya harita üzerinden alan çizerek arama yapın. Sistem 3 aşamalı doğrulama ile iletişim ve website alanlarını üretir.
+            Şehir ve sektör seçin veya harita üzerinden alan çizerek arama yapın. Sistem 4 aşamalı doğrulama ile iletişim, website ve email alanlarını üretir.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -238,6 +248,20 @@ export default function NewBatchPage() {
                 Düşük maliyetli başlangıç için önce <strong>2 kayıt</strong> ile deneme önerilir.
               </AlertDescription>
             </Alert>
+
+            {/* Sıfır bakiye uyarısı */}
+            {creditBalance !== null && creditBalance === 0 && (
+              <Alert className="bg-amber-50 border-amber-200">
+                <AlertDescription className="text-amber-800">
+                  <span className="font-semibold">Kredi bakiyeniz yok.</span>{' '}
+                  Batch oluşturmak için önce{' '}
+                  <a href="/checkout" className="underline font-medium hover:no-underline">
+                    kredi satın alın
+                  </a>
+                  . Mevcut bakiye: <strong>0 kredi</strong>.
+                </AlertDescription>
+              </Alert>
+            )}
 
             {error && (
               <Alert variant="destructive">
