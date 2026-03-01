@@ -176,6 +176,7 @@ export default function BatchDetailPage() {
   const isPartial = batch.status === 'PARTIAL'
   const isReady = batch.status === 'READY'
   const isFailed = batch.status === 'FAILED'
+  const isCreated = batch.status === 'CREATED'
   const isProcessing = !isReady && !isPartial && !isFailed
 
   return (
@@ -198,7 +199,8 @@ export default function BatchDetailPage() {
         </div>
 
         <div className="flex items-center gap-2">
-            {isProcessing && <Badge variant="secondary" className="px-3 py-1 animate-pulse">İşleniyor</Badge>}
+            {isCreated && <Badge variant="secondary" className="px-3 py-1 text-slate-500">Kuyruğa Alındı</Badge>}
+            {isProcessing && !isCreated && <Badge variant="secondary" className="px-3 py-1 animate-pulse">İşleniyor</Badge>}
             {isReady && <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border-green-200 px-3 py-1">Hazır</Badge>}
             {isPartial && <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border-yellow-200 px-3 py-1">Kısmen Tamamlandı</Badge>}
             {isFailed && <Badge variant="destructive" className="px-3 py-1">Başarısız</Badge>}
@@ -245,82 +247,138 @@ export default function BatchDetailPage() {
                     <CardDescription>4 Aşamalı doğrulama sürecinin sonuçları</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    <div className="relative pl-6 border-l-2 border-slate-100 space-y-8">
-                        
-                        {/* Stage 1 */}
-                        <div className="relative">
-                            <span className="absolute -left-[29px] top-0 w-3 h-3 rounded-full bg-slate-200 ring-4 ring-white"></span>
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <h4 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                                        <Search className="w-4 h-4 text-slate-400" />
-                                        Aday Havuzu
-                                    </h4>
-                                    <p className="text-sm text-slate-500 mt-1">Geniş tarama ile bulunan toplam kayıt</p>
-                                </div>
-                                <div className="text-right">
-                                    <span className="text-lg font-bold text-slate-700">{batch.ids_collected}</span>
-                                </div>
-                            </div>
-                        </div>
+                    {(() => {
+                        type StageKey = 'CREATED' | 'COLLECTING_IDS' | 'FILTERING' | 'ENRICHING_CONTACTS' | 'ENRICHING_EMAILS' | 'READY' | 'PARTIAL' | 'FAILED'
+                        const STATUS_STAGE: Record<StageKey, number> = {
+                            CREATED: 0,
+                            COLLECTING_IDS: 1,
+                            FILTERING: 2,
+                            ENRICHING_CONTACTS: 3,
+                            ENRICHING_EMAILS: 4,
+                            READY: 5,
+                            PARTIAL: 5,
+                            FAILED: 5,
+                        }
+                        const currentStage = STATUS_STAGE[(batch.status as StageKey)] ?? 0
 
-                        {/* Stage 2 */}
-                        <div className="relative">
-                            <span className="absolute -left-[29px] top-0 w-3 h-3 rounded-full bg-indigo-200 ring-4 ring-white"></span>
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <h4 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                                        <Filter className="w-4 h-4 text-indigo-500" />
-                                        Doğrulanmış Firma
-                                    </h4>
-                                    <p className="text-sm text-slate-500 mt-1">İnsan-okunur adres doğrulaması geçen</p>
-                                    {batch.skipped_404 > 0 && (
-                                        <span className="text-xs text-red-500 mt-1 block">
-                                            {batch.skipped_404} kayıt elendi (Bulunamadı/Doğrulanamadı)
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="text-right">
-                                    <span className="text-lg font-bold text-indigo-600">{batch.ids_verified}</span>
-                                </div>
-                            </div>
-                        </div>
+                        const isDone = batch.status === 'READY' || batch.status === 'PARTIAL'
+                        const isFailed = batch.status === 'FAILED'
 
-                        {/* Stage 3 */}
-                        <div className="relative">
-                            <span className="absolute -left-[29px] top-0 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-white"></span>
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <h4 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                                        <Phone className="w-4 h-4 text-emerald-600" />
-                                        Zenginleştirilmiş İletişim
-                                    </h4>
-                                    <p className="text-sm text-slate-500 mt-1">Telefon ve web bilgisi eklenen net liste</p>
-                                </div>
-                                <div className="text-right">
-                                    <span className="text-lg font-bold text-emerald-700">{batch.contacts_enriched}</span>
-                                </div>
-                            </div>
-                        </div>
+                        const stages = [
+                            {
+                                index: 1,
+                                label: 'Aday Havuzu',
+                                desc: 'Geniş tarama ile bulunan toplam kayıt',
+                                icon: Search,
+                                iconColor: 'text-slate-400',
+                                valueColor: 'text-slate-700',
+                                dotDone: 'bg-slate-400',
+                                dotActive: 'bg-slate-400',
+                                dotPending: 'bg-slate-200',
+                                value: batch.ids_collected,
+                                activeLabel: 'ID\'ler toplanıyor…',
+                            },
+                            {
+                                index: 2,
+                                label: 'Doğrulanmış Firma',
+                                desc: 'İnsan-okunur adres doğrulaması geçen',
+                                icon: Filter,
+                                iconColor: 'text-indigo-500',
+                                valueColor: 'text-indigo-600',
+                                dotDone: 'bg-indigo-400',
+                                dotActive: 'bg-indigo-500',
+                                dotPending: 'bg-indigo-100',
+                                value: batch.ids_verified,
+                                activeLabel: 'Adresler doğrulanıyor…',
+                            },
+                            {
+                                index: 3,
+                                label: 'Zenginleştirilmiş İletişim',
+                                desc: 'Telefon ve web bilgisi eklenen net liste',
+                                icon: Phone,
+                                iconColor: 'text-emerald-600',
+                                valueColor: 'text-emerald-700',
+                                dotDone: 'bg-emerald-400',
+                                dotActive: 'bg-emerald-500',
+                                dotPending: 'bg-emerald-100',
+                                value: batch.contacts_enriched,
+                                activeLabel: 'İletişim bilgileri zenginleştiriliyor…',
+                            },
+                            {
+                                index: 4,
+                                label: 'Email Zenginleştirme',
+                                desc: 'Web scraping ve AI ile bulunan email adresleri',
+                                icon: Mail,
+                                iconColor: 'text-violet-600',
+                                valueColor: 'text-violet-700',
+                                dotDone: 'bg-violet-400',
+                                dotActive: 'bg-violet-500',
+                                dotPending: 'bg-violet-100',
+                                value: batch.emails_enriched ?? 0,
+                                activeLabel: 'Email adresleri aranıyor…',
+                            },
+                        ]
 
-                        {/* Stage 4 — Email Enrichment */}
-                        <div className="relative">
-                            <span className="absolute -left-[29px] top-0 w-3 h-3 rounded-full bg-violet-500 ring-4 ring-white"></span>
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <h4 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                                        <Mail className="w-4 h-4 text-violet-600" />
-                                        Email Zenginleştirme
-                                    </h4>
-                                    <p className="text-sm text-slate-500 mt-1">Web scraping ve AI ile bulunan email adresleri</p>
-                                </div>
-                                <div className="text-right">
-                                    <span className="text-2xl font-bold text-violet-700">{batch.emails_enriched ?? 0}</span>
-                                </div>
-                            </div>
-                        </div>
+                        return (
+                            <div className="relative pl-6 border-l-2 border-slate-100 space-y-8">
+                                {stages.map((stage) => {
+                                    const stageStatus = currentStage > stage.index
+                                        ? 'done'
+                                        : currentStage === stage.index
+                                            ? 'active'
+                                            : 'pending'
+                                    const Icon = stage.icon
+                                    const isActive = stageStatus === 'active' && !isDone && !isFailed
+                                    const isDoneStage = stageStatus === 'done' || isDone
 
-                    </div>
+                                    return (
+                                        <div key={stage.index} className={`relative transition-opacity duration-300 ${stageStatus === 'pending' && !isDone ? 'opacity-40' : 'opacity-100'}`}>
+                                            {/* Timeline dot */}
+                                            {isActive ? (
+                                                <span className={`absolute -left-[29px] top-0 w-3 h-3 rounded-full ${stage.dotActive} ring-4 ring-white animate-pulse`} />
+                                            ) : isDoneStage ? (
+                                                <span className={`absolute -left-[31px] top-[-1px] flex items-center justify-center w-4 h-4`}>
+                                                    <CheckCircle2 className={`w-4 h-4 ${stage.dotDone.replace('bg-', 'text-')}`} />
+                                                </span>
+                                            ) : (
+                                                <span className={`absolute -left-[29px] top-0 w-3 h-3 rounded-full ${stage.dotPending} ring-4 ring-white`} />
+                                            )}
+
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex-1">
+                                                    <h4 className={`flex items-center gap-2 text-sm font-semibold ${isDoneStage ? 'text-slate-900' : isActive ? 'text-slate-900' : 'text-slate-400'}`}>
+                                                        <Icon className={`w-4 h-4 ${isActive ? stage.iconColor : isDoneStage ? stage.iconColor : 'text-slate-300'}`} aria-hidden="true" />
+                                                        {stage.label}
+                                                        {isActive && (
+                                                            <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                                                                <Loader2 className="w-3 h-3 animate-spin" />
+                                                                {stage.activeLabel}
+                                                            </span>
+                                                        )}
+                                                    </h4>
+                                                    <p className="text-sm text-slate-500 mt-1">{stage.desc}</p>
+                                                    {stage.index === 2 && batch.skipped_404 > 0 && (
+                                                        <span className="text-xs text-red-500 mt-1 block">
+                                                            {batch.skipped_404} kayıt elendi (Bulunamadı/Doğrulanamadı)
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div className="text-right ml-4">
+                                                    <span className={`font-bold ${isActive ? 'text-base ' + stage.valueColor : isDoneStage ? 'text-lg ' + stage.valueColor : 'text-base text-slate-300'}`}>
+                                                        {isActive && stage.value === 0 ? (
+                                                            <span className="inline-flex items-center gap-1">
+                                                                <Loader2 className="w-3 h-3 animate-spin" />
+                                                            </span>
+                                                        ) : stage.value}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        )
+                    })()}
                 </CardContent>
             </Card>
 

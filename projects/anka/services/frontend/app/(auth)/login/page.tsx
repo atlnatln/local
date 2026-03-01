@@ -62,9 +62,11 @@ function LoginContent() {
         callback: handleGoogleCallback,
       })
 
+      const btnEl = document.getElementById('googleSignInButton')
+      const btnWidth = btnEl ? Math.min(Math.max(btnEl.offsetWidth || 400, 100), 400) : 400
       window.google.accounts.id.renderButton(
-        document.getElementById('googleSignInButton'),
-        { theme: 'outline', size: 'large', width: 'auto' }
+        btnEl,
+        { theme: 'outline', size: 'large', width: btnWidth }
       )
     }
 
