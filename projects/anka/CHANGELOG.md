@@ -7,6 +7,45 @@ Format: [Keep a Changelog](https://keepachangelog.com/tr/1.1.0/)
 
 ## [Unreleased]
 
+### Frontend Platform Migrasyonu (1 Mart 2026 — Anahtar Teslim)
+
+#### Tamamlanan Güncellemeler
+- **Next.js 16 Breaking Changes**
+  - `middleware.ts` → `proxy.ts` olarak yeniden adlandırıldı.
+  - Fonksiyon adı `middleware` → `proxy` olarak güncellendi.
+  - `next.config.ts` içine `turbopack.root` eklendi (monorepo lockfile uyarısı kapatıldı).
+- **TailwindCSS v4 Migration**
+  - `app/globals.css`: `@tailwind` direktifleri yerine `@import "tailwindcss"` + `@theme {}` bloğu.
+  - `postcss.config.js`: `tailwindcss` + `autoprefixer` yerine `@tailwindcss/postcss`.
+  - `tailwind.config.ts`: v4 CSS-first yaklaşımı için deprecation notu eklendi.
+  - `@apply btn` paterni v4 uyumlu inline utility yaklaşımına geçirildi.
+  - `focus:ring-opacity-50` kullanımı `focus:ring-blue-500/50` ile güncellendi.
+- **ESLint 10 Migration**
+  - `.eslintrc.json` yerine `eslint.config.mjs` flat config yapısı oluşturuldu (`FlatCompat`).
+- **React 19 Düzeltme**
+  - `services/frontend/app/(dashboard)/checkout/page.tsx` dosyasından gereksiz `import React` kaldırıldı (automatic JSX runtime).
+
+#### Paket Sürüm Güncellemeleri
+
+| Paket | Eski | Yeni |
+|-------|------|------|
+| `next` | `15.5.12` | `16.1.6` |
+| `react` / `react-dom` | `18.2.0` | `19.2.4` |
+| `tailwindcss` | `3.4.1` | `4.2.1` |
+| `zod` | `3.22.4` | `4.3.6` |
+| `@hookform/resolvers` | `3.3.4` | `5.2.2` |
+| `eslint` | `8.56.0` | `10.0.2` |
+| `eslint-config-next` | `15.5.12` | `16.1.6` |
+| `lucide-react` | `0.309.0` | `0.575.0` |
+| `tailwind-merge` | `2.2.0` | `3.5.0` |
+| `axios` | `1.13.5` | `1.13.6` |
+| `@types/react` / `@types/react-dom` | `18.x` | `19.0.0` |
+| `@types/node` | `20.x` | `25.0.0` |
+| `@tailwindcss/postcss` | `-` | `4.2.1` |
+
+#### Kaldırılan
+- `autoprefixer` kaldırıldı (TailwindCSS v4 PostCSS pipeline içinde built-in).
+
 ### Kritik Bug Düzeltmeleri & UX İyileştirmeleri (Haziran 2026 — Kod Denetimi)
 
 Uçtan uca kullanıcı akışı simülasyonu ile tespit edilen 4 kritik, 3 orta seviye hata ve 2 UX iyileştirmesi.

@@ -14,18 +14,15 @@ export interface LocationBounds {
 }
 
 interface MapAreaSelectorProps {
-  /** Called whenever the user draws or edits the rectangle */
   onBoundsChange: (bounds: LocationBounds | null) => void
-  /** Initial bounds (e.g. from an existing batch) */
   initialBounds?: LocationBounds | null
-  /** Map height in CSS units */
   height?: string
 }
 
 const DEFAULT_CENTER = { lat: 39.0, lng: 35.0 }
 const DEFAULT_ZOOM = 6
 
-const RECT_STYLE = {
+const RECT_STYLE: google.maps.RectangleOptions = {
   editable: true,
   draggable: true,
   strokeColor: '#2563eb',
@@ -44,15 +41,27 @@ function loadGoogleMaps(apiKey: string): Promise<void> {
     return Promise.resolve()
   }
 
-  setOptions({
-    key: apiKey,
-    v: 'weekly',
-    libraries: ['maps'],
-  })
-
-  googleMapsLoadPromise = importLibrary('maps').then(() => undefined)
-
+  setOptions({ key: apiKey, v: 'weekly', libraries: ['maps'] })
+  googleMapsLoadPromise = (importLibrary('maps') as Promise<any>).then(() => undefined)
   return googleMapsLoadPromise
+}
+
+/** Factory: creates a ProjectionBridge AFTER google.maps is loaded. */
+function makeProjectionBridge() {
+  class ProjectionBridge extends google.maps.OverlayView {
+    onAdd() {}
+    draw() {}
+    onRemove() {}
+  }
+  return new ProjectionBridge()
+}
+
+interface DragState {
+  startX: number
+  startY: number
+  currentX: number
+  currentY: number
+  active: boolean
 }
 
 export default function MapAreaSelector({
@@ -61,24 +70,22 @@ export default function MapAreaSelector({
   height = '420px',
 }: MapAreaSelectorProps) {
   const mapRef = useRef<HTMLDivElement>(null)
+  const overlayDivRef = useRef<HTMLDivElement>(null)
+  const dragBoxRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const rectangleRef = useRef<google.maps.Rectangle | null>(null)
-  const drawingListenersRef = useRef<google.maps.MapsEventListener[]>([])
-  const isDrawingRef = useRef(false)
-  const drawStartRef = useRef<google.maps.LatLng | null>(null)
-  const tempRectRef = useRef<google.maps.Rectangle | null>(null)
+  const projBridgeRef = useRef<google.maps.OverlayView | null>(null)
+  const dragRef = useRef<DragState | null>(null)
+
   const [ready, setReady] = useState(false)
   const [hasRect, setHasRect] = useState(!!initialBounds)
-  const [loadError, setLoadError] = useState('')
   const [drawingMode, setDrawingMode] = useState(!initialBounds)
+  const [loadError, setLoadError] = useState('')
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
 
   const emitBounds = useCallback((rect: google.maps.Rectangle | null) => {
-    if (!rect) {
-      onBoundsChange(null)
-      return
-    }
+    if (!rect) { onBoundsChange(null); return }
     const b = rect.getBounds()!
     onBoundsChange({
       low: { latitude: b.getSouthWest().lat(), longitude: b.getSouthWest().lng() },
@@ -86,104 +93,108 @@ export default function MapAreaSelector({
     })
   }, [onBoundsChange])
 
-  const placeRectangle = useCallback((map: google.maps.Map, bounds: google.maps.LatLngBounds) => {
-    if (rectangleRef.current) {
-      rectangleRef.current.setMap(null)
-    }
-
-    const rect = new google.maps.Rectangle({
-      ...RECT_STYLE,
-      bounds,
-      map,
-    })
-
+  const placeRectangle = useCallback((
+    map: google.maps.Map,
+    bounds: google.maps.LatLngBounds,
+  ) => {
+    rectangleRef.current?.setMap(null)
+    const rect = new google.maps.Rectangle({ ...RECT_STYLE, bounds, map })
     rect.addListener('bounds_changed', () => emitBounds(rect))
     rectangleRef.current = rect
     setHasRect(true)
     setDrawingMode(false)
     emitBounds(rect)
-
-    // Re-enable map panning
-    map.setOptions({ draggable: true, gestureHandling: 'greedy' })
   }, [emitBounds])
 
-  const removeDrawingListeners = useCallback(() => {
-    drawingListenersRef.current.forEach(l => google.maps.event.removeListener(l))
-    drawingListenersRef.current = []
+  // ── DOM-event drawing (no deprecated drawing library) ──────────────────────
+  const startDrawingMode = useCallback(() => {
+    setDrawingMode(true)
   }, [])
 
-  const enableDrawingMode = useCallback((map: google.maps.Map) => {
-    removeDrawingListeners()
-    map.setOptions({ draggable: false, gestureHandling: 'none' })
-    if (mapRef.current) mapRef.current.style.cursor = 'crosshair'
-    isDrawingRef.current = false
-    drawStartRef.current = null
-
-    const onMouseDown = map.addListener('mousedown', (e: google.maps.MapMouseEvent) => {
-      if (!e.latLng) return
-      isDrawingRef.current = true
-      drawStartRef.current = e.latLng
-      if (tempRectRef.current) {
-        tempRectRef.current.setMap(null)
-        tempRectRef.current = null
-      }
-      tempRectRef.current = new google.maps.Rectangle({
-        ...RECT_STYLE,
-        editable: false,
-        draggable: false,
-        bounds: { north: e.latLng.lat(), south: e.latLng.lat(), east: e.latLng.lng(), west: e.latLng.lng() },
-        map,
-      })
-    })
-
-    const onMouseMove = map.addListener('mousemove', (e: google.maps.MapMouseEvent) => {
-      if (!isDrawingRef.current || !drawStartRef.current || !tempRectRef.current || !e.latLng) return
-      const s = drawStartRef.current
-      const c = e.latLng
-      tempRectRef.current.setBounds({
-        north: Math.max(s.lat(), c.lat()),
-        south: Math.min(s.lat(), c.lat()),
-        east: Math.max(s.lng(), c.lng()),
-        west: Math.min(s.lng(), c.lng()),
-      })
-    })
-
-    const onMouseUp = map.addListener('mouseup', (_e: google.maps.MapMouseEvent) => {
-      if (!isDrawingRef.current || !drawStartRef.current) return
-      isDrawingRef.current = false
-      if (tempRectRef.current) {
-        const bounds = tempRectRef.current.getBounds()
-        tempRectRef.current.setMap(null)
-        tempRectRef.current = null
-        if (bounds) {
-          removeDrawingListeners()
-          if (mapRef.current) mapRef.current.style.cursor = ''
-          placeRectangle(map, bounds)
-        }
-      }
-    })
-
-    drawingListenersRef.current = [onMouseDown, onMouseMove, onMouseUp]
-  }, [placeRectangle, removeDrawingListeners])
-
   const clearRectangle = useCallback(() => {
-    if (rectangleRef.current) {
-      rectangleRef.current.setMap(null)
-      rectangleRef.current = null
-    }
+    rectangleRef.current?.setMap(null)
+    rectangleRef.current = null
     setHasRect(false)
-    setDrawingMode(true)
     onBoundsChange(null)
-    if (mapInstanceRef.current) {
-      enableDrawingMode(mapInstanceRef.current)
+    startDrawingMode()
+  }, [onBoundsChange, startDrawingMode])
+
+  // Pointer-event handlers attached to the transparent overlay div
+  useEffect(() => {
+    const overlay = overlayDivRef.current
+    const dragBox = dragBoxRef.current
+    if (!overlay || !dragBox) return
+    if (!drawingMode) return
+
+    const getRelativePos = (e: PointerEvent) => {
+      const rect = overlay.getBoundingClientRect()
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top }
     }
-  }, [onBoundsChange, enableDrawingMode])
+
+    const onPointerDown = (e: PointerEvent) => {
+      e.preventDefault()
+      overlay.setPointerCapture(e.pointerId)
+      const { x, y } = getRelativePos(e)
+      dragRef.current = { startX: x, startY: y, currentX: x, currentY: y, active: true }
+      dragBox.style.display = 'block'
+      dragBox.style.left = `${x}px`
+      dragBox.style.top = `${y}px`
+      dragBox.style.width = '0px'
+      dragBox.style.height = '0px'
+    }
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (!dragRef.current?.active) return
+      e.preventDefault()
+      const { x, y } = getRelativePos(e)
+      dragRef.current.currentX = x
+      dragRef.current.currentY = y
+
+      const { startX, startY } = dragRef.current
+      dragBox.style.left = `${Math.min(startX, x)}px`
+      dragBox.style.top = `${Math.min(startY, y)}px`
+      dragBox.style.width = `${Math.abs(x - startX)}px`
+      dragBox.style.height = `${Math.abs(y - startY)}px`
+    }
+
+    const onPointerUp = (e: PointerEvent) => {
+      if (!dragRef.current?.active) return
+      overlay.releasePointerCapture(e.pointerId)
+      dragRef.current.active = false
+      dragBox.style.display = 'none'
+
+      const proj = projBridgeRef.current?.getProjection()
+      const map = mapInstanceRef.current
+      if (!proj || !map) return
+
+      const { startX, startY, currentX, currentY } = dragRef.current
+      const minX = Math.min(startX, currentX)
+      const maxX = Math.max(startX, currentX)
+      const minY = Math.min(startY, currentY)
+      const maxY = Math.max(startY, currentY)
+
+      // Ignore tiny drags (< 8px)
+      if (maxX - minX < 8 || maxY - minY < 8) return
+
+      const sw = proj.fromContainerPixelToLatLng(new google.maps.Point(minX, maxY))!
+      const ne = proj.fromContainerPixelToLatLng(new google.maps.Point(maxX, minY))!
+      const bounds = new google.maps.LatLngBounds(sw, ne)
+      placeRectangle(map, bounds)
+    }
+
+    overlay.addEventListener('pointerdown', onPointerDown)
+    overlay.addEventListener('pointermove', onPointerMove)
+    overlay.addEventListener('pointerup', onPointerUp)
+
+    return () => {
+      overlay.removeEventListener('pointerdown', onPointerDown)
+      overlay.removeEventListener('pointermove', onPointerMove)
+      overlay.removeEventListener('pointerup', onPointerUp)
+    }
+  }, [drawingMode, placeRectangle])
 
   useEffect(() => {
-    if (!apiKey) {
-      setLoadError('Google Maps API key tanımlı değil.')
-      return
-    }
+    if (!apiKey) { setLoadError('Google Maps API key tanımlı değil.'); return }
 
     let cancelled = false
 
@@ -203,8 +214,12 @@ export default function MapAreaSelector({
             { featureType: 'transit', stylers: [{ visibility: 'off' }] },
           ],
         })
-
         mapInstanceRef.current = map
+
+        // Projection bridge — gives us fromContainerPixelToLatLng
+        const bridge = makeProjectionBridge()
+        bridge.setMap(map)
+        projBridgeRef.current = bridge
 
         if (initialBounds) {
           const sw = new google.maps.LatLng(initialBounds.low.latitude, initialBounds.low.longitude)
@@ -212,8 +227,6 @@ export default function MapAreaSelector({
           const bounds = new google.maps.LatLngBounds(sw, ne)
           placeRectangle(map, bounds)
           map.fitBounds(bounds, 60)
-        } else {
-          enableDrawingMode(map)
         }
 
         setReady(true)
@@ -223,15 +236,16 @@ export default function MapAreaSelector({
         setLoadError('Harita yüklenirken hata oluştu.')
       })
 
-    return () => {
-      cancelled = true
-      removeDrawingListeners()
-    }
-  }, [apiKey, initialBounds, placeRectangle, enableDrawingMode, removeDrawingListeners])
+    return () => { cancelled = true }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiKey])
 
   if (loadError) {
     return (
-      <div className="border-2 border-dashed border-red-300 rounded-lg flex items-center justify-center bg-red-50" style={{ height }}>
+      <div
+        className="border-2 border-dashed border-red-300 rounded-lg flex items-center justify-center bg-red-50"
+        style={{ height }}
+      >
         <p className="text-red-600 text-sm">{loadError}</p>
       </div>
     )
@@ -243,9 +257,7 @@ export default function MapAreaSelector({
         <p className="text-xs text-muted-foreground">
           {hasRect
             ? '✅ Arama alanı seçildi. Dörtgeni sürükleyip kenarlarından boyutlandırabilirsiniz.'
-            : drawingMode
-              ? '✏️ Harita üzerinde tıklayıp sürükleyerek arama alanını çizin.'
-              : '🖱 Harita üzerinde dörtgen çizerek arama alanını belirleyin.'}
+            : '✏️ Harita üzerinde tıklayıp sürükleyerek arama alanını çizin.'}
         </p>
         {hasRect && (
           <Button type="button" variant="outline" size="sm" onClick={clearRectangle}>
@@ -254,11 +266,31 @@ export default function MapAreaSelector({
         )}
       </div>
 
-      <div
-        ref={mapRef}
-        className="rounded-lg border border-input overflow-hidden"
-        style={{ height, width: '100%' }}
-      />
+      {/* Map container + transparent drawing overlay */}
+      <div className="relative rounded-lg border border-input overflow-hidden" style={{ height, width: '100%' }}>
+        {/* Google Maps canvas */}
+        <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
+
+        {/* Transparent pointer-capture overlay — active only in drawing mode */}
+        {ready && drawingMode && (
+          <div
+            ref={overlayDivRef}
+            className="absolute inset-0"
+            style={{ cursor: 'crosshair', zIndex: 1 }}
+          >
+            {/* Live drag-rectangle feedback (pure CSS, no Maps API) */}
+            <div
+              ref={dragBoxRef}
+              className="absolute pointer-events-none"
+              style={{
+                display: 'none',
+                border: '2px solid #2563eb',
+                backgroundColor: 'rgba(59,130,246,0.15)',
+              }}
+            />
+          </div>
+        )}
+      </div>
 
       {!ready && !loadError && (
         <div

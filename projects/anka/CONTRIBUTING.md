@@ -139,7 +139,7 @@ def create_batch(user, fields, quantity=100):
 ```
 
 ### Frontend (TypeScript)
-- **Style:** ESLint + Prettier (yapılandırma: `.eslintrc.json`, `prettier.config.js`)
+- **Style:** ESLint + Prettier (yapılandırma: `eslint.config.mjs` flat config, `prettier.config.js`)
 - **Type Safety:** `any` kullanmayın; proper types yazın
 - **Components:** Functional components + hooks
 - **Testing:** E2E + unit tests

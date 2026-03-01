@@ -20,7 +20,7 @@
 ## SİMÜLASYON AKIŞI
 
 ### 1. Landing Page → Login
-Kullanıcı ana sayfayı ziyaret eder, "Başlayın" CTA'sına tıklar. `middleware.ts` cookie kontrolü yapar, cookie yoksa `/login?redirect=...` ile yönlendirir. Login sayfasında Google Identity Services yüklenir, kullanıcı Google butonu ile giriş yapar.
+Kullanıcı ana sayfayı ziyaret eder, "Başlayın" CTA'sına tıklar. `proxy.ts` cookie kontrolü yapar, cookie yoksa `/login?redirect=...` ile yönlendirir. Login sayfasında Google Identity Services yüklenir, kullanıcı Google butonu ile giriş yapar.
 
 ### 2. Login → Dashboard  
 `GoogleLoginView` backend'de token doğrulaması yapar, kullanıcı oluşturulur/güncellenir, organizasyon auto-provision edilir, JWT cookie'ler set edilir. Frontend `setAuthFlag()` ile localStorage günceller ve `redirectRef.current` (varsayılan: `/dashboard`) adresine yönlendirir.
@@ -60,7 +60,7 @@ window.location.href = '/login';
 ```
 Token refresh başarısız olduğunda kullanıcı `/login`'e yönlendiriliyordu ancak **mevcut sayfa yolu korunmuyordu**. Bu durumda kullanıcı oturum yeniledikten sonra her zaman dashboard'a gidiyordu — batch detay, exports, settings gibi sayfadaki konumunu kaybediyordu.
 
-**Etki:** `ProtectedRoute` ve `middleware.ts` redirect parametresini doğru işlese de, API istekleri sırasında oluşan 401'ler bu mekanizmayı bypass ediyordu. Kullanıcı oturum süresi dolduğunda yerini kaybediyordu.
+**Etki:** `ProtectedRoute` ve `proxy.ts` redirect parametresini doğru işlese de, API istekleri sırasında oluşan 401'ler bu mekanizmayı bypass ediyordu. Kullanıcı oturum süresi dolduğunda yerini kaybediyordu.
 
 **Düzeltme:**
 ```typescript

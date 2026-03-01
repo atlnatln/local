@@ -21,7 +21,7 @@
 ## SİMÜLASYON AKIŞI
 
 ### 1. Landing Page → Login
-Kullanıcı siteyi ziyaret eder. `middleware.ts` `anka_access_token` cookie'sini kontrol eder, yoksa `/login?redirect=...` ile yönlendirir. Login sayfasında:
+Kullanıcı siteyi ziyaret eder. `proxy.ts` `anka_access_token` cookie'sini kontrol eder, yoksa `/login?redirect=...` ile yönlendirir. Login sayfasında:
 - Google Identity Services script'i yüklenir
 - Open redirect koruması aktif (`//evil.com` reddedilir)
 - `redirectRef` ile stale closure koruması aktif

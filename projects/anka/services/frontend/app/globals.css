@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* TailwindCSS v4: CSS-first configuration */
+@import "tailwindcss";
+
+/* Custom theme (v4 replaces tailwind.config.ts) */
+@theme {
+  --color-primary: #0066cc;
+  --color-secondary: #6c757d;
+  --color-success: #28a745;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #17a2b8;
+
+  --font-sans: "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
 
 @layer base {
   html {
@@ -33,20 +44,21 @@
 }
 
 @layer components {
+  /* TailwindCSS v4: @apply ile custom CSS sınıfı kullanılamaz, doğrudan utility'ler yazılır */
   .btn {
     @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
   }
 
   .btn-primary {
-    @apply btn bg-blue-600 text-white hover:bg-blue-700;
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 bg-blue-600 text-white hover:bg-blue-700;
   }
 
   .btn-secondary {
-    @apply btn bg-gray-200 text-gray-900 hover:bg-gray-300;
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 bg-gray-200 text-gray-900 hover:bg-gray-300;
   }
 
   .btn-danger {
-    @apply btn bg-red-600 text-white hover:bg-red-700;
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 bg-red-600 text-white hover:bg-red-700;
   }
 
   .card {
@@ -58,7 +70,7 @@
   }
 
   .input-base {
-    @apply w-full rounded-lg border border-gray-300 px-4 py-2 text-base font-normal text-gray-900 placeholder-gray-500 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50;
+    @apply w-full rounded-lg border border-gray-300 px-4 py-2 text-base font-normal text-gray-900 placeholder-gray-500 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50;
   }
 
   .label-base {

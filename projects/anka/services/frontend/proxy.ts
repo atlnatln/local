@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export function middleware(request: NextRequest) {
+// Next.js 16: renamed from middleware to proxy (nodejs runtime, not edge)
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Public routes that don't require authentication

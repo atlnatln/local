@@ -79,8 +79,21 @@ Bu proje Docker üzerinde çalışacak şekilde tasarlanmıştır.
 *   **Backend:** Python 3.11, Django 5.2, Django REST Framework
     *   *Async Processing:* Celery & Redis.
     *   *Data:* PostgreSQL 14.
-*   **Frontend:** Next.js 15 (App Router), TypeScript, Tailwind CSS, Shadcn/UI.
+*   **Frontend:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, Shadcn/UI.
 *   **Altyapı:** Nginx, Docker Compose.
+
+### Frontend Altyapı Notları (Mart 2026)
+
+*   Next.js 16 ile `middleware.ts` → `proxy.ts` olarak taşındı; fonksiyon adı `middleware` → `proxy`.
+*   `next.config.ts` içinde `turbopack.root` eklendi (monorepo lockfile uyarısı kapatıldı).
+*   TailwindCSS v4 geçişi tamamlandı:
+    *   `app/globals.css`: `@import "tailwindcss"` + `@theme {}`
+    *   `postcss.config.js`: `@tailwindcss/postcss` plugin'i
+    *   `tailwind.config.ts`: deprecation notu (CSS-first config)
+*   ESLint 10'a geçildi: `.eslintrc.json` yerine `eslint.config.mjs` (flat config + `FlatCompat`).
+*   React 19 automatic JSX runtime nedeniyle gereksiz `import React` satırları temizlendi.
+
+Detay ve sürüm tablosu: `ANAHTAR_TESLIM.md`
 
 ---
 

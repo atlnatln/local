@@ -1,3 +1,9 @@
+/**
+ * DEPRECATED: TailwindCSS v4 kullanmıyor (CSS-first config).
+ * Tema ayarları artık app/globals.css içindeki @theme bloğunda tanımlanmıştır.
+ * Bu dosya yalnızca referans/arşiv amacıyla tutulmaktadır.
+ * @see app/globals.css
+ */
 import type { Config } from 'tailwindcss'
 
 const config: Config = {

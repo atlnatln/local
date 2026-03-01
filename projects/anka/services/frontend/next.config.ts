@@ -9,7 +9,12 @@ const INTERNAL_BACKEND_URL =
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  
+
+  // Next.js 16: monorepo konfigürasyonu - birden fazla lockfile uyarısını engeller
+  turbopack: {
+    root: __dirname,
+  },
+
   // API proxy configuration
   rewrites: async () => {
     return {

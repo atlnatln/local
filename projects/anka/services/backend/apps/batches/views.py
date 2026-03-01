@@ -110,8 +110,21 @@ class BatchViewSet(viewsets.ModelViewSet):
                         {"detail": "Ledger kaydı oluşturulurken constraint violation (bu batch zaten işlenmiş olabilir)."}
                     )
         
-        # Trigger processing task
-        transaction.on_commit(lambda: process_batch_task.delay(batch.id))
+        # Trigger processing task — wrapped so Redis hiccups don't kill the 201
+        def _dispatch():
+            try:
+                process_batch_task.apply_async(
+                    args=[batch.id],
+                    ignore_result=True,
+                )
+            except Exception as dispatch_err:  # noqa: BLE001
+                logger.error(
+                    "Batch %s created but task dispatch failed (Redis?): %s",
+                    batch.id,
+                    dispatch_err,
+                )
+
+        transaction.on_commit(_dispatch)
 
     @action(detail=True, methods=["get"], url_path="items")
     def items(self, request, pk=None):
