@@ -148,7 +148,7 @@ export default function MapAreaSelector({
       })
     })
 
-    const onMouseUp = map.addListener('mouseup', (e: google.maps.MapMouseEvent) => {
+    const onMouseUp = map.addListener('mouseup', (_e: google.maps.MapMouseEvent) => {
       if (!isDrawingRef.current || !drawStartRef.current) return
       isDrawingRef.current = false
       if (tempRectRef.current) {
