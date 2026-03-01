@@ -68,7 +68,8 @@ export default function MapAreaSelector({
 
   const [ready, setReady] = useState(false)
   const [hasRect, setHasRect] = useState(!!initialBounds)
-  const [drawingMode, setDrawingMode] = useState(!initialBounds)
+  // Harita her zaman pan edilebilir; kullanıcı "Alan Çiz" butonuna basınca drawing mode açılır
+  const [drawingMode, setDrawingMode] = useState(false)
   const [loadError, setLoadError] = useState('')
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
@@ -91,26 +92,29 @@ export default function MapAreaSelector({
     rect.addListener('bounds_changed', () => emitBounds(rect))
     rectangleRef.current = rect
     setHasRect(true)
-    setDrawingMode(false)
+    setDrawingMode(false) // Çizim bitti → normal harita moduna dön
     emitBounds(rect)
   }, [emitBounds])
 
-  // ── DOM-event drawing (no deprecated drawing library) ──────────────────────
-  const startDrawingMode = useCallback(() => {
+  const enterDrawingMode = useCallback(() => {
     setDrawingMode(true)
+  }, [])
+
+  const exitDrawingMode = useCallback(() => {
+    setDrawingMode(false)
   }, [])
 
   const clearRectangle = useCallback(() => {
     rectangleRef.current?.setMap(null)
     rectangleRef.current = null
     setHasRect(false)
+    setDrawingMode(false)
     onBoundsChange(null)
-    startDrawingMode()
-  }, [onBoundsChange, startDrawingMode])
+  }, [onBoundsChange])
 
-  // ── Pointer-event handlers as React props (avoids useEffect timing issues) ───
-  // The overlay div is only rendered when ready && drawingMode, so these handlers
-  // are guaranteed to be attached when the element exists. No useEffect needed.
+  // ── Pointer-event handlers ────────────────────────────────────────────────
+  // touch-action: none CSS ile birlikte kullanılır; iOS/Android'de harita
+  // kaydırmasıyla çakışmayı önler. Overlay yalnızca drawingMode=true iken görünür.
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -165,12 +169,9 @@ export default function MapAreaSelector({
     const minY = Math.min(startY, currentY)
     const maxY = Math.max(startY, currentY)
 
-    // Ignore tiny drags (< 8px)
-    if (maxX - minX < 8 || maxY - minY < 8) return
+    // Çok küçük sürüklemeleri yok say (< 10px — mobilde parmak titremesi)
+    if (maxX - minX < 10 || maxY - minY < 10) return
 
-    // Convert container pixels → LatLng using map viewport bounds.
-    // Reliable alternative to MapCanvasProjection.fromContainerPixelToLatLng
-    // which is unavailable when OverlayView.draw() hasn't been called (Maps API v3.60+).
     const mapBounds = map.getBounds()
     const containerEl = mapRef.current
     if (!mapBounds || !containerEl) return
@@ -205,6 +206,7 @@ export default function MapAreaSelector({
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: true,
+          // 'greedy': tek parmak ile pan, iki parmak ile zoom (mobil standart)
           gestureHandling: 'greedy',
           styles: [
             { featureType: 'poi', stylers: [{ visibility: 'off' }] },
@@ -244,57 +246,100 @@ export default function MapAreaSelector({
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
+    <div className="space-y-2">
+      {/* ── Durum mesajı + aksiyonlar ── */}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <p className="text-xs text-muted-foreground">
-          {hasRect
-            ? '✅ Arama alanı seçildi. Dörtgeni sürükleyip kenarlarından boyutlandırabilirsiniz.'
-            : '✏️ Harita üzerinde tıklayıp sürükleyerek arama alanını çizin.'}
+          {drawingMode
+            ? '✏️ Parmağınızı haritaya basılı tutup sürükleyerek alan çizin.'
+            : hasRect
+              ? '✅ Arama alanı seçildi. Dörtgeni sürükleyip köşelerinden boyutlandırabilirsiniz.'
+              : '📍 Önce haritada konumunuzu bulun, ardından "Alan Çiz" butonuna basın.'}
         </p>
-        {hasRect && (
-          <Button type="button" variant="outline" size="sm" onClick={clearRectangle}>
-            Alanı Temizle
-          </Button>
-        )}
+        <div className="flex gap-2 shrink-0">
+          {hasRect && !drawingMode && (
+            <>
+              <Button type="button" variant="outline" size="sm" onClick={enterDrawingMode}>
+                Yeniden Çiz
+              </Button>
+              <Button type="button" variant="outline" size="sm" onClick={clearRectangle}>
+                Alanı Sil
+              </Button>
+            </>
+          )}
+          {!hasRect && !drawingMode && ready && (
+            <Button type="button" variant="default" size="sm" onClick={enterDrawingMode}>
+              ✏️ Alan Çiz
+            </Button>
+          )}
+          {drawingMode && (
+            <Button type="button" variant="ghost" size="sm" onClick={exitDrawingMode}>
+              İptal
+            </Button>
+          )}
+        </div>
       </div>
 
-      {/* Map container + transparent drawing overlay */}
+      {/* ── Harita + çizim overlay ── */}
       <div className="relative rounded-lg border border-input overflow-hidden" style={{ height, width: '100%' }}>
-        {/* Google Maps canvas */}
+        {/* Google Maps canvas — her zaman görünür ve etkileşimli */}
         <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
 
-        {/* Transparent pointer-capture overlay — active only in drawing mode */}
+        {/* Çizim overlay — YALNIZCA drawing mode açıkken gösterilir.
+            touch-action:none iOS/Android harita pan'ını devre dışı bırakır
+            ve pointer eventlerinin overlay'e gitmesini sağlar. */}
         {ready && drawingMode && (
-          <div
-            ref={overlayDivRef}
-            className="absolute inset-0"
-            style={{ cursor: 'crosshair', zIndex: 10 }}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-          >
-            {/* Live drag-rectangle feedback (pure CSS, no Maps API) */}
+          <>
+            {/* Yarı saydam bilgi bandı */}
             <div
-              ref={dragBoxRef}
-              className="absolute pointer-events-none"
+              className="absolute top-0 left-0 right-0 flex items-center justify-center gap-2 py-2 px-3"
               style={{
-                display: 'none',
-                border: '2px solid #2563eb',
-                backgroundColor: 'rgba(59,130,246,0.15)',
+                background: 'rgba(37,99,235,0.88)',
+                color: '#fff',
+                fontSize: 13,
+                fontWeight: 500,
+                zIndex: 20,
+                pointerEvents: 'none',
               }}
-            />
+            >
+              <span>👆 Parmağınızı basılı tutup sürükleyin</span>
+            </div>
+
+            {/* Şeffaf çizim alanı */}
+            <div
+              ref={overlayDivRef}
+              className="absolute inset-0"
+              style={{
+                cursor: 'crosshair',
+                zIndex: 10,
+                touchAction: 'none', // ← Kritik: iOS/Android kaydırmasını engeller
+              }}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+            >
+              {/* Anlık seçim kutusu (CSS, Maps API yok) */}
+              <div
+                ref={dragBoxRef}
+                className="absolute pointer-events-none"
+                style={{
+                  display: 'none',
+                  border: '2px solid #2563eb',
+                  backgroundColor: 'rgba(59,130,246,0.18)',
+                  borderRadius: 2,
+                }}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Yükleme göstergesi */}
+        {!ready && !loadError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-muted/40">
+            <p className="text-sm text-muted-foreground animate-pulse">Harita yükleniyor…</p>
           </div>
         )}
       </div>
-
-      {!ready && !loadError && (
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-muted/40 rounded-lg"
-          style={{ position: 'relative', marginTop: `-${height}`, height }}
-        >
-          <p className="text-sm text-muted-foreground animate-pulse">Harita yükleniyor...</p>
-        </div>
-      )}
     </div>
   )
 }
