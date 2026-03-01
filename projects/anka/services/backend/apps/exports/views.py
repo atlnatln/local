@@ -2,15 +2,24 @@
 ViewSets for exports app.
 """
 
+import logging
+import mimetypes
+from pathlib import Path
+
+from django.http import FileResponse, Http404
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from apps.accounts.models import OrganizationMember
 from apps.exports.models import Export
 from apps.exports.serializers import ExportCreateSerializer, ExportSerializer
 from apps.exports.tasks import generate_export_file
+
+logger = logging.getLogger(__name__)
 
 
 class ExportViewSet(viewsets.ModelViewSet):
@@ -51,3 +60,55 @@ class ExportViewSet(viewsets.ModelViewSet):
 
         export = serializer.save(organization=batch.organization)
         generate_export_file.delay(str(export.id))
+
+    # ── Secure file download (no public media access needed) ──────────
+    @action(detail=True, methods=["get"], url_path="download")
+    def download(self, request, pk=None):
+        """
+        GET /api/exports/{id}/download/
+
+        Streams the actual file behind auth — no publicly-guessable URL required.
+        """
+        export = self.get_object()  # permission check via get_queryset filter
+
+        if export.status != "completed":
+            raise ValidationError({"detail": "Export henüz hazır değil."})
+
+        file_path = Path(export.file_path) if export.file_path else None
+        if not file_path or not file_path.exists():
+            raise Http404("Export dosyası bulunamadı.")
+
+        content_type, _ = mimetypes.guess_type(str(file_path))
+        response = FileResponse(
+            open(file_path, "rb"),
+            content_type=content_type or "application/octet-stream",
+        )
+        filename = file_path.name
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response
+
+    # ── Regenerate expired export URL ─────────────────────────────────
+    @action(detail=True, methods=["post"], url_path="regenerate")
+    def regenerate(self, request, pk=None):
+        """
+        POST /api/exports/{id}/regenerate/
+
+        Re-queues the export generation task so the user gets a fresh file & URL.
+        """
+        export = self.get_object()
+
+        if export.status == "processing":
+            raise ValidationError({"detail": "Export zaten işleniyor."})
+
+        # Reset and re-queue
+        export.status = "pending"
+        export.error_message = ""
+        export.signed_url = ""
+        export.signed_url_expires_at = None
+        export.save(update_fields=[
+            "status", "error_message", "signed_url", "signed_url_expires_at", "updated_at"
+        ])
+        generate_export_file.delay(str(export.id))
+
+        serializer = ExportSerializer(export)
+        return Response(serializer.data)

@@ -7,6 +7,19 @@ artifacts/playwright/
 django.log
 nextjs.log
 
+# Security: Environment and secrets
+.env
+.env.local
+.env.production
+.env.*.local
+*.pem
+*.key
+*.crt
+!.env.example
+!.env.test.example
+!.env.local.docker
+!.env.local.native
+
 services/backend/artifacts/usage/*.jsonl
 services/backend/htmlcov/
 services/backend/.pytest_cache/

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/components/ToastProvider'
 import { 
   CheckCircle2, 
   AlertCircle, 
@@ -15,8 +16,11 @@ import {
   Search, 
   Filter, 
   Phone,
+  Mail,
   ArrowLeft,
-  Loader2
+  Loader2,
+  Plus,
+  ExternalLink
 } from 'lucide-react'
 
 interface BatchDetail {
@@ -31,6 +35,7 @@ interface BatchDetail {
   ids_collected: number
   ids_verified: number
   contacts_enriched: number
+  emails_enriched: number
   skipped_404: number
   aborted_reason?: string
   
@@ -67,6 +72,9 @@ export default function BatchDetailPage() {
   const [batch, setBatch] = useState<BatchDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [exportLoading, setExportLoading] = useState(false)
+  const [exportCreated, setExportCreated] = useState(false)
+  const { addToast } = useToast()
 
     const downloadItemsCsv = () => {
         if (!batch || !batch.items || batch.items.length === 0) return
@@ -87,7 +95,14 @@ export default function BatchDetailPage() {
             ]
         })
 
-        const escapeCell = (value: string) => `"${String(value).replace(/"/g, '""')}"`
+        const escapeCell = (value: string) => {
+            let s = String(value);
+            // CSV formula injection guard: prepend tab to cells starting with =, +, -, @, \t, \r, \n
+            if (/^[=+\-@\t\r\n]/.test(s)) {
+                s = `'${s}`;
+            }
+            return `"${s.replace(/"/g, '""')}"`;
+        }
         const csv = [headers, ...rows].map((row) => row.map(escapeCell).join(',')).join('\n')
         const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' })
         const url = URL.createObjectURL(blob)
@@ -102,20 +117,22 @@ export default function BatchDetailPage() {
     }
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout
+    let cancelled = false
+    let timeoutId: NodeJS.Timeout
 
     async function loadBatch() {
       try {
         const data = await fetchAPI<BatchDetail>(`/batches/${params.id}/`)
+        if (cancelled) return
         setBatch(data)
+        setLoading(false)
         
         // Polling if not finished
         if (['CREATED', 'COLLECTING_IDS', 'FILTERING', 'ENRICHING_CONTACTS', 'ENRICHING_EMAILS'].includes(data.status)) {
-            intervalId = setTimeout(loadBatch, 2000)
-        } else {
-            setLoading(false)
+            timeoutId = setTimeout(loadBatch, 2000)
         }
       } catch (err: any) {
+        if (cancelled) return
         console.error(err)
         setError('Batch detayları yüklenirken bir hata oluştu.')
         setLoading(false)
@@ -125,7 +142,8 @@ export default function BatchDetailPage() {
     loadBatch()
 
     return () => {
-        if (intervalId) clearTimeout(intervalId)
+        cancelled = true
+        clearTimeout(timeoutId)
     }
   }, [params.id])
 
@@ -224,7 +242,7 @@ export default function BatchDetailPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>İşlem Özeti</CardTitle>
-                    <CardDescription>3 Aşamalı doğrulama sürecinin sonuçları</CardDescription>
+                    <CardDescription>4 Aşamalı doğrulama sürecinin sonuçları</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="relative pl-6 border-l-2 border-slate-100 space-y-8">
@@ -280,7 +298,24 @@ export default function BatchDetailPage() {
                                     <p className="text-sm text-slate-500 mt-1">Telefon ve web bilgisi eklenen net liste</p>
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-2xl font-bold text-emerald-700">{batch.contacts_enriched}</span>
+                                    <span className="text-lg font-bold text-emerald-700">{batch.contacts_enriched}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Stage 4 — Email Enrichment */}
+                        <div className="relative">
+                            <span className="absolute -left-[29px] top-0 w-3 h-3 rounded-full bg-violet-500 ring-4 ring-white"></span>
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <h4 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                                        <Mail className="w-4 h-4 text-violet-600" />
+                                        Email Zenginleştirme
+                                    </h4>
+                                    <p className="text-sm text-slate-500 mt-1">Web scraping ve AI ile bulunan email adresleri</p>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-2xl font-bold text-violet-700">{batch.emails_enriched ?? 0}</span>
                                 </div>
                             </div>
                         </div>
@@ -304,7 +339,7 @@ export default function BatchDetailPage() {
                                                 variant="outline"
                                                 onClick={() => {
                                                     if (batch.csv_url) {
-                                                        window.open(batch.csv_url, '_blank')
+                                                        window.open(batch.csv_url, '_blank', 'noopener,noreferrer')
                                                         return
                                                     }
                                                     downloadItemsCsv()
@@ -331,8 +366,56 @@ export default function BatchDetailPage() {
                         Excel (XLSX) İndir
                     </Button>
                     
-                    {!batch.csv_url && (isReady || isPartial) && (
-                         <p className="text-xs text-slate-400 text-center pt-2">Dosyalar hazırlanıyor...</p>
+                    {!batch.csv_url && !exportCreated && (isReady || isPartial) && (
+                        <div className="space-y-2">
+                            <Button
+                                className="w-full justify-start"
+                                variant="default"
+                                disabled={exportLoading}
+                                onClick={async () => {
+                                    setExportLoading(true)
+                                    try {
+                                        const results = await Promise.allSettled([
+                                            fetchAPI('/exports/', {
+                                                method: 'POST',
+                                                body: JSON.stringify({ batch: batch.id, format: 'csv' })
+                                            }),
+                                            fetchAPI('/exports/', {
+                                                method: 'POST',
+                                                body: JSON.stringify({ batch: batch.id, format: 'xlsx' })
+                                            })
+                                        ])
+                                        const failures = results.filter(r => r.status === 'rejected')
+                                        if (failures.length === 0) {
+                                            setExportCreated(true)
+                                            addToast('Export oluşturuldu! İndirilmişler sayfasından takip edebilirsiniz.', 'success')
+                                        } else if (failures.length < results.length) {
+                                            setExportCreated(true)
+                                            addToast('Bazı export formatları oluşturuldu ancak bir kısmı hata aldı. İndirilmişler sayfasını kontrol edin.', 'warning')
+                                        } else {
+                                            throw new Error('Tüm export istekleri başarısız oldu.')
+                                        }
+                                    } catch (err) {
+                                        console.error('Export oluşturma hatası:', err)
+                                        addToast('Export oluşturulurken bir hata oluştu.', 'error')
+                                    } finally {
+                                        setExportLoading(false)
+                                    }
+                                }}
+                            >
+                                <Plus className="mr-2 h-4 w-4" />
+                                {exportLoading ? 'Oluşturuluyor...' : 'Export Oluştur (CSV + XLSX)'}
+                            </Button>
+                            <p className="text-xs text-slate-400 text-center pt-1">Dosyalar hazırlanıyor, İndirilmişler sayfasından takip edebilirsiniz.</p>
+                        </div>
+                    )}
+                    {exportCreated && (
+                        <Link href="/exports" className="block">
+                            <Button variant="default" className="w-full justify-start">
+                                <ExternalLink className="mr-2 h-4 w-4" />
+                                İndirilmişlere Git
+                            </Button>
+                        </Link>
                     )}
                 </CardContent>
             </Card>
@@ -392,7 +475,12 @@ export default function BatchDetailPage() {
                                                 <td className="py-2 pr-3 text-slate-700">{phone}</td>
                                                 <td className="py-2 pr-3 text-slate-700">
                                                     {website ? (
-                                                        <a href={website} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline break-all">
+                                                        <a
+                                                            href={website.match(/^https?:\/\//) ? website : `https://${website}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-indigo-600 hover:underline break-all"
+                                                        >
                                                             {website}
                                                         </a>
                                                     ) : (

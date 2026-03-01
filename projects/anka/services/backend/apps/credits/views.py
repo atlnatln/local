@@ -67,49 +67,41 @@ class CreditPurchaseView(GenericAPIView):
         return Response(response_serializer.data)
 
 class CreditBalanceView(GenericAPIView):
-    """Get current credit balance for authenticated user."""
-    
+    """Get current credit balance for authenticated user.
+
+    Returns a JSON **array** of CreditPackage objects (one per org membership).
+    Frontend sums `balance` across all entries to display total.
+    """
+
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request):
-        """
-        Get credit balance for current user's organization.
-        
-        Response:
-        {
-            "organization_id": "uuid",
-            "organization_name": "User's Organization",
-            "balance": 1000,
-            "total_purchased": 5000,
-            "total_spent": 4000,
-            "total_refunded": 0,
-            "is_active": true
-        }
-        """
         user = request.user
-        
-        # Get user's organization
-        organization = user.organizations.first()
-        if not organization:
-            # Create default organization if not exists
-            organization = Organization.objects.create(
-                name=f"{user.username}'s Organization",
-                owner=user,
-            )
-            organization.users.add(user)
-        
-        # Get credit package
-        credit_package, _ = CreditPackage.objects.get_or_create(
-            organization=organization,
-            defaults={'balance': 0}
+
+        from apps.accounts.models import OrganizationMember
+
+        # Find all organisations the user belongs to (via OrganizationMember)
+        org_ids = (
+            OrganizationMember.objects
+            .filter(user=user, is_active=True)
+            .values_list('organization_id', flat=True)
         )
-        
-        return Response({
-            'organization_id': str(organization.id),
-            'organization_name': organization.name,
-            'balance': credit_package.balance,
-            'total_purchased': credit_package.total_purchased,
-            'total_spent': credit_package.total_spent,
-            'total_refunded': credit_package.total_refunded,
-            'is_active': credit_package.is_active,
-        })
+
+        results = []
+        for org in Organization.objects.filter(id__in=org_ids):
+            credit_package, _ = CreditPackage.objects.get_or_create(
+                organization=org,
+                defaults={'balance': 0},
+            )
+            results.append({
+                'id': str(credit_package.id),
+                'organization': str(org.id),
+                'organization_name': org.name,
+                'balance': str(credit_package.balance),
+                'total_purchased': str(credit_package.total_purchased),
+                'total_spent': str(credit_package.total_spent),
+                'total_refunded': str(credit_package.total_refunded),
+                'is_active': credit_package.is_active,
+            })
+
+        return Response(results)

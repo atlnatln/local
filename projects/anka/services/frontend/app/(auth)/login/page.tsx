@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -16,8 +16,36 @@ declare global {
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Read redirect target from query string (set by middleware)
+  // Validate redirect to prevent open-redirect attacks — only allow relative paths
+  const rawRedirect = searchParams.get('redirect') || '/dashboard'
+  const redirectTo = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/dashboard'
+  // Ref to avoid stale closure with redirectTo
+  const redirectRef = useRef(redirectTo)
+  redirectRef.current = redirectTo
+
+  const handleGoogleCallback = useCallback(async (response: { credential?: string }) => {
+    if (!response?.credential) {
+      setError('Google oturum yanıtı alınamadı.')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+    try {
+      await loginWithGoogleIdToken(response.credential)
+      router.push(redirectRef.current)
+    } catch (err) {
+      setError(formatError(err))
+      console.error('Google login error:', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [router])
 
   useEffect(() => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
@@ -26,34 +54,24 @@ export default function LoginPage() {
       return
     }
 
-    const existing = document.getElementById('google-identity-services') as HTMLScriptElement | null
-    if (existing && window.google?.accounts?.id) {
+    function initGoogleButton() {
+      if (!window.google?.accounts?.id) return
+
       window.google.accounts.id.initialize({
         client_id: clientId,
-        callback: async (response: { credential?: string }) => {
-          if (!response?.credential) {
-            setError('Google oturum yanıtı alınamadı.')
-            return
-          }
-
-          setLoading(true)
-          setError('')
-          try {
-            await loginWithGoogleIdToken(response.credential)
-            router.push('/dashboard')
-          } catch (err) {
-            setError(formatError(err))
-            console.error('Google login error:', err)
-          } finally {
-            setLoading(false)
-          }
-        },
+        callback: handleGoogleCallback,
       })
 
       window.google.accounts.id.renderButton(
         document.getElementById('googleSignInButton'),
-        { theme: 'outline', size: 'large', width: 400 }
+        { theme: 'outline', size: 'large', width: 'auto' }
       )
+    }
+
+    // If script already loaded, just re-init
+    const existing = document.getElementById('google-identity-services') as HTMLScriptElement | null
+    if (existing && window.google?.accounts?.id) {
+      initGoogleButton()
       return
     }
 
@@ -68,33 +86,7 @@ export default function LoginPage() {
         setError('Google giriş servisi yüklenemedi.')
         return
       }
-
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: async (response: { credential?: string }) => {
-          if (!response?.credential) {
-            setError('Google oturum yanıtı alınamadı.')
-            return
-          }
-
-          setLoading(true)
-          setError('')
-          try {
-            await loginWithGoogleIdToken(response.credential)
-            router.push('/dashboard')
-          } catch (err) {
-            setError(formatError(err))
-            console.error('Google login error:', err)
-          } finally {
-            setLoading(false)
-          }
-        },
-      })
-
-      window.google.accounts.id.renderButton(
-        document.getElementById('googleSignInButton'),
-        { theme: 'outline', size: 'large', width: 400 }
-      )
+      initGoogleButton()
     }
 
     script.onerror = () => {
@@ -102,7 +94,14 @@ export default function LoginPage() {
     }
 
     document.head.appendChild(script)
-  }, [router])
+
+    // Cleanup: remove script on unmount to prevent duplicates
+    return () => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script)
+      }
+    }
+  }, [handleGoogleCallback])
 
   return (
     <Card className="border-0 shadow-lg">
@@ -116,6 +115,20 @@ export default function LoginPage() {
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
+          )}
+
+          {error && error.includes('yüklenemedi') && (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setError('')
+                window.location.reload()
+              }}
+            >
+              Tekrar Dene
+            </Button>
           )}
 
           <div id="googleSignInButton" className="w-full" />

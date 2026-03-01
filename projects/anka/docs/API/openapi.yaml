@@ -1663,6 +1663,78 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/exports/{id}/download/:
+    get:
+      operationId: exports_download
+      description: |-
+        Güvenli dosya indirme — GET /api/exports/{id}/download/
+
+        Auth-gated endpoint: Kullanıcının kendi export dosyasını doğrudan stream eder.
+        Public signed URL gerektirmez; dosya FileResponse ile sunulur.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Export öğesinin UUID'si.
+        required: true
+      tags:
+      - exports
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Dosya binary stream (CSV veya XLSX)
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Export bulunamadı veya dosya mevcut değil
+  /api/exports/{id}/regenerate/:
+    post:
+      operationId: exports_regenerate
+      description: |-
+        Export yeniden oluşturma — POST /api/exports/{id}/regenerate/
+
+        Süresi dolmuş veya başarısız export dosyasını yeniden kuyruğa alır.
+        Status 'pending' olarak güncellenir ve Celery task tetiklenir.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Export öğesinin UUID'si.
+        required: true
+      tags:
+      - exports
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: Export yeniden oluşturuluyor.
+          description: Export kuyruğa alındı
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+          description: Export zaten işleniyor
   /api/ledger/entries/:
     get:
       operationId: ledger_entries_list
@@ -2441,6 +2513,49 @@ components:
       - total_records
       - updated_at
       - xlsx_url
+    BatchList:
+      type: object
+      description: Hafif batch listesi şeması (items hariç, N+1 sorgu önleme).
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        organization:
+          type: string
+          format: uuid
+        city:
+          type: string
+        sector:
+          type: string
+        status:
+          allOf:
+          - $ref: '#/components/schemas/BatchStatusEnum'
+          readOnly: true
+        total_records:
+          type: integer
+          readOnly: true
+        processed_records:
+          type: integer
+          readOnly: true
+        record_count_estimate:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - id
+      - organization
+      - city
+      - sector
+      - status
+      - created_at
+      - updated_at
     BatchItem:
       type: object
       properties:
@@ -3303,7 +3418,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Batch'
+            $ref: '#/components/schemas/BatchList'
     PaginatedCityList:
       type: object
       required:

@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from apps.accounts.models import OrganizationMember
 from apps.batches.models import Batch, BatchItem
 from apps.batches.permissions import IsOrganizationMember
-from apps.batches.serializers import BatchItemSerializer, BatchSerializer
+from apps.batches.serializers import BatchItemSerializer, BatchListSerializer, BatchSerializer
 from apps.batches.tasks import process_batch_task
 from apps.ledger.models import CreditPackage, LedgerEntry
 
@@ -32,6 +32,12 @@ class BatchViewSet(viewsets.ModelViewSet):
     search_fields = ["city", "sector", "query_hash", "status"]
     ordering_fields = ["created_at", "status", "city", "sector"]
     ordering = ["-created_at"]
+
+    def get_serializer_class(self):
+        """Use lightweight serializer for list action (no nested items)."""
+        if self.action == "list":
+            return BatchListSerializer
+        return BatchSerializer
 
     def get_queryset(self):
         if not self.request.user or not self.request.user.is_authenticated:

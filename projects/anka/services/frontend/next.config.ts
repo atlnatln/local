@@ -8,6 +8,7 @@ const INTERNAL_BACKEND_URL =
 
 const nextConfig = {
   reactStrictMode: true,
+  output: 'standalone',
   
   // API proxy configuration
   rewrites: async () => {
@@ -29,6 +30,8 @@ const nextConfig = {
     NEXT_PUBLIC_GOOGLE_CLIENT_ID:
       process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
       '201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com',
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:
+      process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
   },
 
   // Headers for security
@@ -37,6 +40,10 @@ const nextConfig = {
       {
         source: '/login',
         headers: [
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups',
+          },
           {
             key: 'Cache-Control',
             value: 'no-store, no-cache, must-revalidate, max-age=0',

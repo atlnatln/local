@@ -21,7 +21,8 @@ export function withAuth<P extends object>(
       const checkAuth = async () => {
         try {
           if (!isAuthenticated()) {
-            router.push('/login')
+            const currentPath = typeof window !== 'undefined' ? window.location.pathname : ''
+            router.push(`/login${currentPath ? `?redirect=${encodeURIComponent(currentPath)}` : ''}`)
             return
           }
           setIsAuth(true)
@@ -57,7 +58,8 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push('/login')
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : ''
+      router.push(`/login${currentPath ? `?redirect=${encodeURIComponent(currentPath)}` : ''}`)
     } else {
       setIsAuth(true)
     }

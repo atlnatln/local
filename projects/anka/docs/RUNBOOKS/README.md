@@ -16,7 +16,25 @@ Bu klasör, Anka Data için operasyonel uygulama rehberlerini içerir.
 - [Production Readiness ve Deploy Guardrail](production-readiness-and-deploy-guardrails.md)
 - [Secure Local VPS Access](secure-local-vps-access.md)
 
+## Denetim / Audit Raporları
+- [Code Audit & Fixes (Haziran 2026)](code-audit-and-fixes-2026-06.md)
+- [UX Simülasyon Denetim Raporu (Temmuz 2026)](ux-simulation-audit-2026-07.md)
+- [UX Simülasyon Denetim Raporu (Mart 2026)](ux-simulation-audit-2026-03.md)
+
+## Güvenlik Belgeleri
+> Detaylı güvenlik politikaları, denetim raporları ve prosedürler `docs/SECURITY/` dizininde yer alır.
+
+- [Güvenlik Denetim Raporu (2026-02-28)](../SECURITY/security-audit-2026-02-28.md)
+- [Incident Response Playbook](../SECURITY/incident-response-playbook.md)
+- [Secret Rotation Runbook](../SECURITY/secret-rotation-runbook.md)
+- [API Güvenlik Politikası](../SECURITY/api-security-policy.md)
+- [Hardening Checklist](../SECURITY/hardening-checklist.md)
+- [KVKK/Veri Uyumluluk Rehberi](../SECURITY/kvkk-data-compliance.md)
+- [Bağımlılık Güncelleme Politikası](../SECURITY/dependency-update-policy.md)
+
 ## Hızlı Seçim Rehberi
+- **UX denetim raporu (BE+FE hata düzeltmeleri):** `ux-simulation-audit-2026-07.md`, `ux-simulation-audit-2026-03.md`
+- **Önceki kod denetimi (ödeme/export/katalog):** `code-audit-and-fixes-2026-06.md`
 - **Maps/Places sorgu akışı ve maliyet güvenlikleri:** `maps-query-logic-pipeline.md`
 - **Stage 4 email kazıma/zenginleştirme:** `email-enrichment-stage4.md`
 - **Website enrichment (Gemini + grounding):** `gemini-search-grounding-enrichment.md`
@@ -36,7 +54,12 @@ Doküman-kod çelişkisinde aşağıdaki sıra uygulanır:
 
 - Docker dev portları: frontend `3100`, backend `8100`.
 - Native dev portları: frontend `3000`, backend `8000`.
-- Auth modeli: JWT Bearer (`Authorization: Bearer <token>`).
+- Auth modeli: JWT — tarayıcı oturumları **HttpOnly cookie** ile, API istemcileri `Authorization: Bearer <token>` header ile.
+- Cookie ayarları: `HttpOnly=True`, `Secure=True` (prod), `SameSite=Lax`. Refresh cookie path: `/api/auth/` (logout dahil).
+- Frontend auth akışı: `credentials: 'include'` ile cookie otomatik gönderilir; localStorage'da sadece optimistik flag tutulur.
+- Token auto-refresh: `api-client.ts` 401 alınca mutex ile sessiz refresh yapar, orijinal isteği tekrarlar.
+- Export indirme: `GET /api/exports/{id}/download/` (auth-gated FileResponse) — public URL gerektirmez.
+- Export yenileme: `POST /api/exports/{id}/regenerate/` — süresi dolmuş veya hatalı export'u yeniden kuyruğa alır.
 - API dokümantasyon endpoint’i: `/api/docs`.
 - Test-only login endpoint’i: `/api/auth/test-login/` (yalnız test ayarında).
 

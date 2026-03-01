@@ -6,24 +6,24 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans">
       {/* Navbar */}
-      <header className="px-6 py-4 flex items-center justify-between border-b bg-white">
-        <div className="flex items-center gap-2 font-bold text-xl text-slate-800">
-          <Database className="w-6 h-6 text-indigo-600" />
+      <header className="px-4 sm:px-6 py-4 flex items-center justify-between border-b bg-white">
+        <div className="flex items-center gap-2 font-bold text-lg sm:text-xl text-slate-800">
+          <Database className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
           <span>Anka Data</span>
         </div>
-        <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900">Giriş Yap</Link>
+        <div className="flex items-center gap-2 sm:gap-4">
           <Link href="/login">
-            <Button>Hesap Oluştur</Button>
+            <Button size="sm" className="sm:hidden">Giriş Yap</Button>
+            <Button className="hidden sm:inline-flex">Giriş Yap</Button>
           </Link>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="px-6 py-20 lg:py-32 max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-        <div className="space-y-8">
+      <section className="px-4 sm:px-6 py-12 sm:py-20 lg:py-32 max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="space-y-6 sm:space-y-8">
           <div className="space-y-4">
-            <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
               İstediğiniz şehir ve sektörde, <span className="text-indigo-600">doğrulanmış firma iletişim bilgilerini</span> tek seferde alın.
             </h1>
             <p className="text-lg text-slate-600 max-w-xl">
@@ -37,9 +37,11 @@ export default function Home() {
                 Liste Oluştur
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto text-base px-8 h-12">
-              Nasıl Çalışır?
-            </Button>
+            <a href="#nasil-calisir">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto text-base px-8 h-12">
+                Nasıl Çalışır?
+              </Button>
+            </a>
           </div>
           
           <p className="text-sm text-slate-500 flex items-center gap-2">
@@ -56,7 +58,7 @@ export default function Home() {
             <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
             <span className="ml-2 text-xs font-mono text-slate-500">ankadata_preview.csv</span>
           </div>
-          <div className="p-4">
+          <div className="p-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-100">
@@ -98,8 +100,8 @@ export default function Home() {
       </section>
 
       {/* Second Level Promise */}
-      <section className="bg-white py-24 border-y border-slate-200">
-        <div className="max-w-4xl mx-auto text-center px-6">
+      <section className="bg-white py-16 sm:py-24 border-y border-slate-200">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6">
           <p className="text-2xl text-slate-800 font-medium leading-relaxed">
             “Sistemimiz internetteki devasa veri havuzunu önce ücretsiz olarak tarayıp aday listesi oluşturur. 
             Ardından bu adayların gerçekten var olduğunu doğrulamak için düşük maliyetli bir kontrol yapar. 
@@ -109,7 +111,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="py-24 max-w-7xl mx-auto px-6">
+      <section id="nasil-calisir" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 scroll-mt-8">
         <div className="grid md:grid-cols-3 gap-12 text-center md:text-left">
           <div className="space-y-4">
             <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mb-4 mx-auto md:mx-0">
@@ -136,8 +138,8 @@ export default function Home() {
       </section>
 
       {/* What You Get & Audience */}
-      <section className="bg-slate-900 text-slate-50 py-24">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16">
+      <section className="bg-slate-900 text-slate-50 py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-12 md:gap-16">
           <div className="space-y-8">
             <h3 className="text-3xl font-bold">Ne Alırsınız?</h3>
             <ul className="space-y-4">
@@ -188,7 +190,7 @@ export default function Home() {
       </section>
 
       {/* Assurance / Footer */}
-      <section className="py-20 max-w-3xl mx-auto px-6 text-center space-y-6">
+      <section className="py-12 sm:py-20 max-w-3xl mx-auto px-4 sm:px-6 text-center space-y-6">
         <h2 className="text-2xl font-bold text-slate-900">Yanlış kayıt riskini nasıl yönetiyoruz?</h2>
         <p className="text-lg text-slate-600">
           Teslim edilen listede hatalı veya ulaşılamayan kayıtları bildirmeniz halinde, 

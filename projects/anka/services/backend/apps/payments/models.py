@@ -59,10 +59,14 @@ class PaymentIntent(models.Model):
         return f"Intent {self.id} - {self.user.username} - {self.credits} credits - {self.status}"
     
     def mark_completed(self):
-        """Mark intent as completed and set completion time."""
+        """Mark intent as completed and set completion time.
+        
+        Uses save(update_fields=...) so that post_save signal receivers
+        can detect exactly which fields changed (required for credit granting).
+        """
         self.status = self.COMPLETED
         self.completed_at = timezone.now()
-        self.save()
+        self.save(update_fields=['status', 'completed_at', 'updated_at'])
 
 
 class PaymentTransaction(models.Model):

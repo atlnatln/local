@@ -241,12 +241,13 @@ class TestLogout:
         assert response.status_code == status.HTTP_200_OK
     
     def test_logout_without_refresh_token(self, client, user_with_profile):
-        """Test logout without refresh token"""
+        """Test logout without refresh token — still succeeds (clears cookies)."""
         client.force_authenticate(user=user_with_profile)
         
         response = client.post('/api/auth/logout/', {})
         
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        # With AllowAny + graceful handling, logout always succeeds
+        assert response.status_code == status.HTTP_200_OK
 
 
 class TestOrganizations:

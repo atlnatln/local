@@ -260,10 +260,40 @@ class BatchProcessor:
         seen_ids = set()
         
         # Try Adaptive Search first
-        from apps.providers.grid_search import get_adaptive_search_regions
+        from apps.providers.grid_search import get_adaptive_search_regions, Point
         
-        target_district = self.batch.filters.get('district') if self.batch.filters else None
-        start_region = get_adaptive_search_regions(self.batch.city, target_district)
+        # Check for user-drawn map bounds first
+        location_bounds = self.batch.filters.get('location_bounds') if self.batch.filters else None
+        if location_bounds:
+            try:
+                start_region = Rectangle(
+                    low=Point(
+                        lat=float(location_bounds['low']['latitude']),
+                        lng=float(location_bounds['low']['longitude']),
+                    ),
+                    high=Point(
+                        lat=float(location_bounds['high']['latitude']),
+                        lng=float(location_bounds['high']['longitude']),
+                    ),
+                )
+                logger.info(
+                    "Batch %s: Using user-drawn map bounds as search region",
+                    self.batch.id,
+                )
+            except (KeyError, TypeError, ValueError) as exc:
+                logger.warning(
+                    "Batch %s: Invalid location_bounds in filters (%s), falling back to city lookup",
+                    self.batch.id,
+                    exc,
+                )
+                start_region = None
+        else:
+            start_region = None
+
+        # Fallback to city/district geocoding if no valid bounds
+        if start_region is None:
+            target_district = self.batch.filters.get('district') if self.batch.filters else None
+            start_region = get_adaptive_search_regions(self.batch.city, target_district)
         
         if start_region:
             logger.info(f"Batch {self.batch.id}: Starting Adaptive Search for {self.batch.city}")

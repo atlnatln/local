@@ -2,9 +2,10 @@
 
 Bu doküman, tarayıcı testlerinde ve canlı gözlemlerde çıkan geliştirme fırsatlarını maliyet odaklı bir sıraya dizer.
 
-1) UI: Email kolonu görünürlüğü (P0)
-- Batch detay tablosunda `Email` kolonu göster.
-- “CSV İndir (Tarayıcı)” çıktısında `Email` kolonu olduğundan emin ol.
+1) ~~UI: Email kolonu görünürlüğü (P0)~~ ✅ TAMAMLANDI (1 Mart 2026)
+- ~~Batch detay tablosunda `Email` kolonu göster.~~ → email kolonu tabloda ve CSV çıktısında mevcut.
+- ~~"CSV İndir (Tarayıcı)" çıktısında `Email` kolonu olduğundan emin ol.~~ → header'da ve row'larda Email alanı dahil.
+- **Ek (Mart 2026):** Batch detay pipeline özetine Stage 4 (Email Zenginleştirme) aşaması eklendi, `emails_enriched` sayacı frontend'de gösterilir.
 
 2) Token görünürlüğü: Tüm Gemini çağrıları loglansın (P0)
 - Email araması dışında, “resmi website bulma” Gemini çağrısı da token JSONL log’a yazsın.
@@ -28,8 +29,7 @@ Bu doküman, tarayıcı testlerinde ve canlı gözlemlerde çıkan geliştirme f
 
 7) UX: Kazara batch oluşturmayı engelle (P1)
 - Combobox `Enter` davranışı batch submit etmesin (sadece seçim).
-- Submit sadece “Batch Oluştur” butonuyla olsun.
-
+- Submit sadece “Batch Oluştur” butonuyla olsun.- **Not (Mart 2026):** Batch oluşturma artık onay modalı ("Onayla ve Başlat") arkasında; form Enter ile submit olsa bile modal onay gerektirir.
 8) Event-driven durum güncelleme (P2)
 - Polling yerine SSE/WebSocket ile batch status güncelle.
 

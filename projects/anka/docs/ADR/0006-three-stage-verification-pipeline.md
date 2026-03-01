@@ -53,8 +53,19 @@ We will implement a **3-Stage Waterfall Pipeline** in the backend (`BatchProcess
 *   **Latency:** The pipeline is sequential, increasing total processing time per batch (mitigated by async Celery tasks).
 *   **Complexity:** Requires state management (`COLLECTING_IDS` -> `FILTERING` -> `ENRICHING_CONTACTS`) and robust error handling for each stage.
 
+## Stage 4 — Email Enrichment (Addendum, Mart 2026)
+
+Stage 3'ten sonra, doğrulanmış kayıtlar için opsiyonel bir **Stage 4: Email Zenginleştirme** aşaması eklenmiştir:
+
+- **Gösterim:** Frontend batch detay sayfasında 4 aşamalı pipeline özeti gösterilir (Aday Havuzu → Doğrulanmış Firma → Zenginleştirilmiş İletişim → Email Zenginleştirme).
+- **Sayaç:** `Batch.emails_enriched` alanı ile izlenir.
+- **Status:** `ENRICHING_EMAILS` durumu pipeline akışına dahildir.
+- **Feature flag:** `ANKA_EMAIL_ENRICHMENT_ENABLED=false` ise Stage 4 atlanır.
+- **Detay:** Bkz. `docs/RUNBOOKS/email-enrichment-stage4.md`.
+
 ## Technical Implementation
 
-*   **Model:** `Batch` model tracks `ids_collected`, `ids_verified`, `contacts_enriched`.
-*   **Status:** Pipeline durumları `COLLECTING_IDS -> FILTERING -> ENRICHING_CONTACTS -> READY`; korumalı duruşlarda `PARTIAL` veya hata durumunda `FAILED` kullanılır.
+*   **Model:** `Batch` model tracks `ids_collected`, `ids_verified`, `contacts_enriched`, `emails_enriched`.
+*   **Status:** Pipeline durumları `COLLECTING_IDS -> FILTERING -> ENRICHING_CONTACTS -> ENRICHING_EMAILS -> READY`; korumalı duruşlarda `PARTIAL` veya hata durumunda `FAILED` kullanılır.
 *   **Billing:** Users are billed only for `contacts_enriched`.
+*   **Frontend:** Batch detail page shows all 4 stages with dedicated icons and counts.

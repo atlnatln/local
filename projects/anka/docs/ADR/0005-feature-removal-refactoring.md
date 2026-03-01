@@ -139,14 +139,19 @@ Bu bölüm “olsa güzel olur” değildir. Ürünün para kazanması ve uçtan
 - **Backend’te kullandığı yetenekler**: deterministic batch hashing; batch + batch items; credit pre-check; idempotent create.
 - **Mutlaka içermesi gerekenler**:
    - Arama formu (il, sektör, kategori vb.)
+   - **Konum seçim modu toggle**: "Şehir / İlçe" ↔ "Harita ile Seç"
+   - Harita modu: Google Maps üzerinde dörtgen çizerek coğrafi alan belirleme (`MapAreaSelector` bileşeni)
+   - Şehir modu: şehir + opsiyonel ilçe alanları
    - Tahmini kayıt sayısı
    - Tahmini kredi maliyeti
-   - Batch oluştur butonu
+   - **Onay Modalı (Dialog)**: Submit öncesi banka havalesi tarzı özet penceresi — organizasyon, konum (koordinatlarla), konum tipi badge, sektör, kayıt sayısı, kredi bloke uyarısı
+   - "Onayla ve Başlat" / "Düzenle" butonları
    - Batch durumu (created / processing / ready)
 - **Göstermemesi gerekenler**:
    - Provider isimleri (Infobel, Outscraper vb.)
-   - “Ham veri” vs “doğrulanmış veri” gibi teknik ayrımlar
+   - "Ham veri" vs "doğrulanmış veri" gibi teknik ayrımlar
    - Retry / hash detayları
+- **Mobil uyumluluk**: Form alanları tek kolon, harita tam genişlik, onay modalı bottom-sheet benzeri
 
 ### 4) Export / İndirme Ekranı
 

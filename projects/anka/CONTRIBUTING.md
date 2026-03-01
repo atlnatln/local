@@ -235,7 +235,14 @@ PR birleştirilmeden tüm joblar ✅ olmalı.
 
 - `.env` dosyasını repo'ya commit **etmeyin**
 - `.env.example` var; buradan template alın
-- Sensitive datalar (keys, passwords, tokens) sistematik ortam değişkenlerinden gel
+- Sensitive datalar (keys, passwords, tokens) sistematik ortam değişkenlerinden gelir
+- JWT token'lar **HttpOnly cookie** ile yönetilir (bkz. `apps/accounts/cookie_auth.py`)
+  - Frontend: `credentials: 'include'` ile cookie otomatik gönderilir
+  - 401 alındığında `api-client.ts` sessiz token refresh yapar (mutex korumalı)
+  - Refresh cookie path: `/api/auth/` (logout dahil)
+  - API istemcileri (Swagger, curl): `Authorization: Bearer <token>` header kullanabilir
+  - Log'larda PII maskelenir (bkz. `apps/common/pii.py`)
+- Export dosyaları `GET /api/exports/{id}/download/` ile auth-gated sunulur (public URL gerektirmez)
 
 ---
 

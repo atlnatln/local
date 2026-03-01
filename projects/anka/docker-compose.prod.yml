@@ -35,7 +35,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: anka_redis_prod
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru --requirepass ${REDIS_PASSWORD:-}
     volumes:
       - redis_prod_data:/data
     restart: unless-stopped
@@ -61,8 +61,8 @@ services:
     env_file:
       - .env.production
     environment:
-      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-change-this-s3-access-key}
-      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY:-change-this-s3-secret-key}
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
     volumes:
       - minio_prod_data:/data
     command: server /data --console-address ":9001"
@@ -90,7 +90,7 @@ services:
     container_name: anka_backend_prod
     environment:
       - DJANGO_SETTINGS_MODULE=project.settings.prod
-      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
+      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID}
     env_file:
       - .env.production
     volumes:
@@ -129,7 +129,7 @@ services:
     command: celery -A celery_app worker --loglevel=INFO --concurrency=2
     environment:
       - DJANGO_SETTINGS_MODULE=project.settings.prod
-      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
+      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID}
     env_file:
       - .env.production
     volumes:
@@ -166,7 +166,7 @@ services:
     command: celery -A celery_app beat --loglevel=INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     environment:
       - DJANGO_SETTINGS_MODULE=project.settings.prod
-      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
+      - GOOGLE_OIDC_CLIENT_ID=${GOOGLE_OIDC_CLIENT_ID}
     env_file:
       - .env.production
     volumes:
@@ -198,15 +198,17 @@ services:
         # accidentally pick up repo-root `.env` (localhost) values.
         NEXT_PUBLIC_API_URL: https://ankadata.com.tr
         NEXT_PUBLIC_SITE_URL: https://ankadata.com.tr
-        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
         NEXT_PUBLIC_ENVIRONMENT: ${NEXT_PUBLIC_ENVIRONMENT:-production}
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
     container_name: anka_frontend_prod
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=https://ankadata.com.tr
       - NEXT_PUBLIC_SITE_URL=https://ankadata.com.tr
-      - NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-201804658613-d8163rl6enjgc4anq38f9g5r1vsahnee.apps.googleusercontent.com}
+      - NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
       - NEXT_INTERNAL_BACKEND_URL=http://backend:8000
+      - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
     restart: unless-stopped
     depends_on:
       - backend

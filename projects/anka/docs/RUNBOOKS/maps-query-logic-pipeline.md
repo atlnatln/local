@@ -23,8 +23,17 @@
    - `Place Details Enterprise` çağrısı (`websiteUri,nationalPhoneNumber`).
    - Sadece Stage 2’yi geçen kayıtlar zenginleştirilir.
 
+## 3.1) Konum Belirleme (Frontend → Backend)
+
+Frontend'de kullanıcıya iki konum seçim modu sunulur:
+
+1. **Şehir / İlçe modu**: Kullanıcı şehir adı ve opsiyonel ilçe yazar. Backend, `city` ve `filters.district` alanlarından GeoJSON sınırlarını çözer.
+2. **Harita ile Seç modu**: Kullanıcı Google Maps üzerinde dörtgen çizer. Frontend, `filters.location_bounds` olarak `{ low: { latitude, longitude }, high: { latitude, longitude } }` gönderir. Backend bu bounds'u doğrudan Stage 1 arama bölgesi olarak kullanır.
+
+Her iki mod da sonuçta `Rectangle(low, high)` formatına dönüşür ve Stage 1 adaptif bölme (quadtree) algoritmasına beslenir.
+
 ## 4) Stage 1 Detayı: Adaptif Bölme (Quadtree)
-- Başlangıç bölgesi: `get_adaptive_search_regions(city, district)`.
+- Başlangıç bölgesi: `get_adaptive_search_regions(city, district)` veya doğrudan `location_bounds` (harita modu).
 - Bölge tipi: `Rectangle(low, high)`.
 - Kural:
   - Sonuç sayısı `SPLIT_THRESHOLD=60` altındaysa bölme yok.

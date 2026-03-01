@@ -14,6 +14,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_spectacular.utils import extend_schema, inline_serializer
@@ -29,6 +30,8 @@ from .serializers import (
     CreateOrganizationSerializer,
     OrganizationMemberSerializer,
 )
+from apps.common.pii import mask_email, mask_username
+from apps.accounts.cookie_auth import set_jwt_cookies, clear_jwt_cookies
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +47,8 @@ class GoogleLoginView(APIView):
     """
 
     permission_classes = (AllowAny,)
+    throttle_classes = (ScopedRateThrottle,)
+    throttle_scope = 'auth'
 
     @extend_schema(
         request=inline_serializer(
@@ -103,7 +108,7 @@ class GoogleLoginView(APIView):
         email = payload.get('email')
         email_verified = payload.get('email_verified')
 
-        if not email or email_verified is False:
+        if not email or not email_verified:
             return Response(
                 {'error': 'Doğrulanmış email bulunamadı.'},
                 status=status.HTTP_401_UNAUTHORIZED,
@@ -117,7 +122,7 @@ class GoogleLoginView(APIView):
         ]
 
         if allowed_google_emails and normalized_email not in allowed_google_emails:
-            logger.warning(f"Blocked Google login attempt for unauthorized email: {normalized_email}")
+            logger.warning(f"Blocked Google login attempt for unauthorized email: {mask_email(normalized_email)}")
             return Response(
                 {'error': 'Bu Google hesabının giriş izni yok.'},
                 status=status.HTTP_403_FORBIDDEN,
@@ -158,13 +163,18 @@ class GoogleLoginView(APIView):
         # Security & Organization Auto-Provisioning
         # -------------------------------------------------------------
         
-        # 1. Promote specific admin users
-        if normalized_email == 'atalanakin@gmail.com':
+        # 1. Promote admin users defined in env (ANKA_ADMIN_EMAILS)
+        admin_emails = [
+            e.strip().lower()
+            for e in getattr(settings, 'ANKA_ADMIN_EMAILS', [])
+            if str(e).strip()
+        ]
+        if admin_emails and normalized_email in admin_emails:
             if not user.is_superuser or not user.is_staff:
                 user.is_superuser = True
                 user.is_staff = True
                 user.save()
-                logger.info(f"User {email} promoted to superuser/staff.")
+                logger.info(f"User {mask_email(email)} promoted to superuser/staff.")
 
         # 2. Auto-create personal organization IF user has no memberships
         if not OrganizationMember.objects.filter(user=user).exists():
@@ -202,10 +212,10 @@ class GoogleLoginView(APIView):
                     can_manage_disputes=True,
                     can_manage_team=True
                 )
-                logger.info(f"Auto-created organization '{org_name}' for user {email}")
+                logger.info(f"Auto-created organization '{org_name}' for user {mask_email(email)}")
 
         refresh = RefreshToken.for_user(user)
-        return Response(
+        response = Response(
             {
                 'access': str(refresh.access_token),
                 'refresh': str(refresh),
@@ -213,6 +223,8 @@ class GoogleLoginView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+        set_jwt_cookies(response, str(refresh.access_token), str(refresh))
+        return response
 
 
 class TestLoginView(APIView):
@@ -234,7 +246,7 @@ class TestLoginView(APIView):
         UserProfile.objects.get_or_create(user=user)
 
         refresh = RefreshToken.for_user(user)
-        return Response(
+        response = Response(
             {
                 'access': str(refresh.access_token),
                 'refresh': str(refresh),
@@ -242,6 +254,8 @@ class TestLoginView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+        set_jwt_cookies(response, str(refresh.access_token), str(refresh))
+        return response
 
 
 class LoginView(TokenObtainPairView):
@@ -314,7 +328,7 @@ class RegisterView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            logger.info(f"New user registered: {serializer.data.get('username')}")
+            logger.info(f"New user registered: {mask_username(serializer.data.get('username', ''))}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -322,22 +336,25 @@ class RegisterView(APIView):
 class LogoutView(APIView):
     """
     Logout endpoint - POST /api/auth/logout/
-    
+
+    AllowAny so that clients with an expired access token can still
+    blacklist their refresh token and clear cookies.
+
     Request:
         {
-            "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+            "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."  (optional; also read from cookie)
         }
     
     Response:
         {"detail": "Başarıyla çıkış yapıldı."}
     """
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     @extend_schema(
         request=inline_serializer(
             name='LogoutRequest',
             fields={
-                'refresh': serializers.CharField(required=True),
+                'refresh': serializers.CharField(required=False),
             },
         ),
         responses={
@@ -353,26 +370,39 @@ class LogoutView(APIView):
     )
     def post(self, request, *args, **kwargs):
         try:
+            from apps.accounts.cookie_auth import REFRESH_COOKIE
+
             refresh_token = request.data.get('refresh')
+            # Fallback: read refresh from HttpOnly cookie
             if not refresh_token:
-                return Response(
-                    {'error': 'Refresh token gereklidir.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            # For JWT, we don't need to do anything on backend
-            # Token is invalidated on frontend by deletion
-            logger.info(f"User logged out: {request.user.username}")
-            return Response(
+                refresh_token = request.COOKIES.get(REFRESH_COOKIE)
+
+            if refresh_token:
+                # Blacklist the refresh token so it cannot be reused
+                try:
+                    token = RefreshToken(refresh_token)
+                    token.blacklist()
+                except Exception:
+                    pass  # Token may already be blacklisted or invalid
+
+            username = 'anonymous'
+            if hasattr(request, 'user') and request.user and getattr(request.user, 'is_authenticated', False):
+                username = request.user.username
+            logger.info(f"User logged out: {mask_username(username)}")
+            response = Response(
                 {'detail': 'Başarıyla çıkış yapıldı.'},
                 status=status.HTTP_200_OK
             )
+            clear_jwt_cookies(response)
+            return response
         except Exception as e:
             logger.error(f"Logout failed: {str(e)}")
-            return Response(
+            response = Response(
                 {'error': 'Çıkış işlemi başarısız.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+            clear_jwt_cookies(response)
+            return response
 
 
 class CurrentUserView(APIView):
@@ -418,7 +448,25 @@ class CurrentUserView(APIView):
         
         for field in allowed_fields:
             if field in data:
-                setattr(user, field, data[field])
+                value = str(data[field]).strip()
+                if field == 'email':
+                    # Validate email format
+                    from django.core.validators import validate_email
+                    from django.core.exceptions import ValidationError as DjValidationError
+                    try:
+                        validate_email(value)
+                    except DjValidationError:
+                        return Response(
+                            {'error': 'Geçersiz email formatı.'},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+                    # Check uniqueness
+                    if User.objects.filter(email=value).exclude(pk=user.pk).exists():
+                        return Response(
+                            {'error': 'Bu email zaten başka bir kullanıcıya ait.'},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+                setattr(user, field, value)
         
         user.save()
         serializer = UserDetailSerializer(user)
@@ -440,6 +488,8 @@ class ChangePasswordView(APIView):
         {"detail": "Şifre başarıyla değiştirildi."}
     """
     permission_classes = (IsAuthenticated,)
+    throttle_classes = (ScopedRateThrottle,)
+    throttle_scope = 'sensitive'
     
     @extend_schema(
         request=ChangePasswordSerializer,
@@ -455,13 +505,20 @@ class ChangePasswordView(APIView):
         },
     )
     def post(self, request):
+        # Google-only users don't have a usable password
+        if not request.user.has_usable_password():
+            return Response(
+                {'detail': 'Google ile giriş yapan kullanıcılar şifre değiştiremez.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = ChangePasswordSerializer(
             data=request.data,
             context={'request': request}
         )
         if serializer.is_valid():
             serializer.save()
-            logger.info(f"Password changed for user: {request.user.username}")
+            logger.info(f"Password changed for user: {mask_username(request.user.username)}")
             return Response(
                 {'detail': 'Şifre başarıyla değiştirildi.'},
                 status=status.HTTP_200_OK
@@ -545,7 +602,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
                 member.save()
             
             serializer = OrganizationMemberSerializer(member)
-            logger.info(f"User {user.username} added to {org.name}")
+            logger.info(f"User {mask_username(user.username)} added to {org.name}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except User.DoesNotExist:
             return Response(
@@ -573,5 +630,38 @@ class RefreshTokenView(TokenRefreshView):
         {
             "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
         }
+    
+    The refresh token can also be read from the HttpOnly cookie
+    ``anka_refresh_token`` if not provided in the request body.
     """
     permission_classes = (AllowAny,)
+    throttle_classes = (ScopedRateThrottle,)
+    throttle_scope = 'sensitive'
+
+    def post(self, request, *args, **kwargs):
+        from apps.accounts.cookie_auth import REFRESH_COOKIE
+
+        # If body doesn't contain refresh, try to read from cookie
+        if not request.data.get('refresh'):
+            cookie_refresh = request.COOKIES.get(REFRESH_COOKIE)
+            if cookie_refresh:
+                # QueryDict is immutable; plain dict doesn't have _mutable
+                if hasattr(request.data, '_mutable'):
+                    request.data._mutable = True
+                    request.data['refresh'] = cookie_refresh
+                    request.data._mutable = False
+                else:
+                    request.data['refresh'] = cookie_refresh
+
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 200:
+            new_access = response.data.get('access', '')
+            new_refresh = response.data.get('refresh', '')
+            if new_access:
+                # If rotation is on but no new refresh came back, keep the old cookie
+                if not new_refresh:
+                    new_refresh = request.data.get('refresh', '')
+                set_jwt_cookies(response, new_access, new_refresh)
+
+        return response

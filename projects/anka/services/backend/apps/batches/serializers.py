@@ -50,6 +50,32 @@ class BatchItemSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at", "updated_at"]
 
 
+class BatchListSerializer(serializers.ModelSerializer):
+    """Lightweight serializer for list endpoint — no nested items."""
+
+    class Meta:
+        model = Batch
+        fields = [
+            "id",
+            "organization",
+            "created_by",
+            "city",
+            "sector",
+            "record_count_estimate",
+            "estimated_cost",
+            "status",
+            "ids_collected",
+            "ids_verified",
+            "contacts_enriched",
+            "emails_enriched",
+            "csv_url",
+            "xlsx_url",
+            "created_at",
+            "completed_at",
+        ]
+        read_only_fields = fields
+
+
 class BatchSerializer(serializers.ModelSerializer):
     items = BatchItemSerializer(many=True, read_only=True)
 

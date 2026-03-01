@@ -1,13 +1,23 @@
 /**
  * JWT Authentication utilities for Anka Platform
- * Handles JWT token management with localStorage
+ *
+ * Tokens are stored in HttpOnly cookies set by the backend.
+ * The frontend CANNOT read them (by design – XSS protection).
+ *
+ * This module keeps:
+ *   - A lightweight "is-logged-in" flag in localStorage so the
+ *     client can do optimistic UI checks without an API call.
+ *   - Token-expiry tracking for proactive refresh.
+ *
+ * Migration note (ADR-0007): Prior to this change tokens were in
+ * localStorage + non-HttpOnly cookies. The backend now sets
+ * HttpOnly / Secure / SameSite=Lax cookies on every auth response.
  */
 
 import { get, post } from './api-client';
 
-// Token storage keys
-const ACCESS_TOKEN_KEY = 'anka_access_token';
-const REFRESH_TOKEN_KEY = 'anka_refresh_token';
+// Lightweight client-side flag (NOT the actual token)
+const AUTH_FLAG_KEY = 'anka_authenticated';
 const TOKEN_EXPIRES_KEY = 'anka_token_expires';
 
 export interface TokenPair {
@@ -44,109 +54,106 @@ export interface User {
   date_joined: string;
 }
 
-/**
- * Save JWT tokens to localStorage and cookies
- */
-export function saveTokens(tokens: TokenPair): void {
-  // Set cookies for server-side access
-  if (typeof document !== 'undefined') {
-    document.cookie = `anka_access_token=${tokens.access}; path=/; max-age=86400`
-    document.cookie = `anka_refresh_token=${tokens.refresh}; path=/; max-age=604800`
-  }
-  const now = new Date();
-  const expiresAt = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
+// ─── helpers ──────────────────────────────────────────────
 
-  localStorage.setItem(ACCESS_TOKEN_KEY, tokens.access);
-  localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh);
+/** Mark the browser as "logged in" (optimistic flag only). */
+function setAuthFlag(): void {
+  if (typeof window === 'undefined') return;
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+  localStorage.setItem(AUTH_FLAG_KEY, 'true');
   localStorage.setItem(TOKEN_EXPIRES_KEY, expiresAt.toISOString());
 }
 
+/** Clear the optimistic flag. */
+function clearAuthFlag(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(AUTH_FLAG_KEY);
+  localStorage.removeItem(TOKEN_EXPIRES_KEY);
+
+  // Clean up legacy keys from pre-cookie migration
+  localStorage.removeItem('anka_access_token');
+  localStorage.removeItem('anka_refresh_token');
+}
+
+// ─── public API ───────────────────────────────────────────
+
 /**
- * Get access token from localStorage
+ * Save authentication state after a successful login/refresh.
+ * Actual JWT tokens are in HttpOnly cookies (set by the backend).
  */
+export function saveTokens(_tokens: TokenPair): void {
+  setAuthFlag();
+}
+
+/**
+ * Check if the user *appears* to be authenticated.
+ * This is optimistic – the server is the source of truth.
+ */
+export function isAuthenticated(): boolean {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem(AUTH_FLAG_KEY) === 'true' && !isTokenExpired();
+}
+
+/** Access token is now HttpOnly – not readable in JS. */
 export function getAccessToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
+  // Kept for interface compat; always returns null.
+  return null;
 }
 
-/**
- * Get refresh token from localStorage
- */
+/** Refresh token is now HttpOnly – not readable in JS. */
 export function getRefreshToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(REFRESH_TOKEN_KEY);
+  return null;
 }
 
-/**
- * Check if token is expired
- */
 export function isTokenExpired(): boolean {
   if (typeof window === 'undefined') return true;
-  
-  const expiresAt = localStorage.getItem(TOKEN_EXPIRES_KEY);
-  if (!expiresAt) return true;
-  
-  return new Date() > new Date(expiresAt);
+  const exp = localStorage.getItem(TOKEN_EXPIRES_KEY);
+  if (!exp) return true;
+  return new Date() > new Date(exp);
 }
 
-/**
- * Clear all tokens
- */
 export function clearTokens(): void {
-  if (typeof window === 'undefined') return;
-  
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
-  localStorage.removeItem(TOKEN_EXPIRES_KEY);  
+  clearAuthFlag();
 }
 
+// ─── auth flows ───────────────────────────────────────────
+
 /**
- * Login user with Google ID token (Google-only MVP)
+ * Login user with Google ID token (Google-only MVP).
+ * Backend sets HttpOnly cookies in the response.
  */
 export async function loginWithGoogleIdToken(idToken: string): Promise<LoginResponse> {
-  const response = await post<LoginResponse>('/auth/google/', { id_token: idToken } satisfies GoogleLoginRequest);
-  saveTokens({
-    access: response.access,
-    refresh: response.refresh,
-  });
+  const response = await post<LoginResponse>(
+    '/auth/google/',
+    { id_token: idToken } satisfies GoogleLoginRequest,
+  );
+  setAuthFlag();
   return response;
 }
 
 /**
- * Refresh access token using refresh token
+ * Refresh the access token.
+ * The refresh token is sent automatically via the HttpOnly cookie.
  */
 export async function refreshAccessToken(): Promise<string> {
-  const refreshToken = getRefreshToken();
-  if (!refreshToken) throw new Error('No refresh token available');
-
-  const response = await post<{ access: string }>('/auth/refresh/', {
-    refresh: refreshToken,
-  });
-
-  const now = new Date();
-  const expiresAt = new Date(now.getTime() + 15 * 60 * 1000);
-
-  localStorage.setItem(ACCESS_TOKEN_KEY, response.access);
-  localStorage.setItem(TOKEN_EXPIRES_KEY, expiresAt.toISOString());
-
+  // Body is empty – backend reads refresh from cookie
+  const response = await post<{ access: string }>('/auth/refresh/', {});
+  setAuthFlag();
   return response.access;
 }
 
 /**
- * Logout user
+ * Logout – tells backend to blacklist the refresh token.
+ * Backend also clears HttpOnly cookies.
  */
-export function logout(): void {
-  if (typeof window === 'undefined') return;
-  
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
-  localStorage.removeItem(TOKEN_EXPIRES_KEY);
-  
-  // Clear cookies
-  if (typeof document !== 'undefined') {
-    document.cookie = 'anka_access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
-    document.cookie = 'anka_refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+export async function logout(): Promise<void> {
+  try {
+    // Body is empty – backend reads refresh from cookie
+    await post('/auth/logout/', {});
+  } catch {
+    // Ignore errors (token might already be expired)
   }
+  clearAuthFlag();
 }
 
 /**
@@ -157,20 +164,12 @@ export async function getCurrentUser(): Promise<User> {
 }
 
 /**
- * Check if user is authenticated (has valid token)
- */
-export function isAuthenticated(): boolean {
-  const token = getAccessToken();
-  return !!token && !isTokenExpired();
-}
-
-/**
  * Change password
  */
 export async function changePassword(
   oldPassword: string,
   newPassword: string,
-  newPassword2: string
+  newPassword2: string,
 ): Promise<{ detail: string }> {
   return post('/auth/change-password/', {
     old_password: oldPassword,

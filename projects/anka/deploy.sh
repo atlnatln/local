@@ -122,11 +122,37 @@ NEXT_PUBLIC_SITE_URL_VALUE="$(get_env_value "NEXT_PUBLIC_SITE_URL")"
 CORS_ALLOWED_ORIGINS_VALUE="$(get_env_value "CORS_ALLOWED_ORIGINS")"
 ENABLE_IYZICO_VALUE="$(get_env_value "ENABLE_IYZICO")"
 IYZICO_WEBHOOK_SECRET_VALUE="$(get_env_value "IYZICO_WEBHOOK_SECRET")"
+SECRET_KEY_VALUE="$(get_env_value "SECRET_KEY")"
+CSRF_TRUSTED_ORIGINS_VALUE="$(get_env_value "CSRF_TRUSTED_ORIGINS")"
+REDIS_PASSWORD_VALUE="$(get_env_value "REDIS_PASSWORD")"
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY_VALUE="$(get_env_value "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY")"
 
 if [ -z "$GOOGLE_OIDC_CLIENT_ID_VALUE" ] || [ -z "$NEXT_PUBLIC_GOOGLE_CLIENT_ID_VALUE" ]; then
     log_error "Missing Google OAuth env vars in .env.production"
     log_error "Required: GOOGLE_OIDC_CLIENT_ID and NEXT_PUBLIC_GOOGLE_CLIENT_ID"
     exit 1
+fi
+
+# --- Security preflight checks ---
+if [ -z "$SECRET_KEY_VALUE" ] || [ ${#SECRET_KEY_VALUE} -lt 32 ]; then
+    log_error "SECRET_KEY is missing or too short (min 32 chars) in .env.production"
+    exit 1
+fi
+if echo "$SECRET_KEY_VALUE" | grep -qi "insecure\|change.this\|dev-key"; then
+    log_error "SECRET_KEY appears to contain a development/default value. Use a secure random key."
+    exit 1
+fi
+
+if [ -z "$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY_VALUE" ]; then
+    log_warning "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is not set — Google Maps will not work"
+fi
+
+if [ -z "$CSRF_TRUSTED_ORIGINS_VALUE" ]; then
+    log_warning "CSRF_TRUSTED_ORIGINS is not set in .env.production — CSRF protection may block requests"
+fi
+
+if [ -z "$REDIS_PASSWORD_VALUE" ]; then
+    log_warning "REDIS_PASSWORD is not set — Redis has no authentication in production"
 fi
 
 if [ -z "$NEXT_PUBLIC_API_URL_VALUE" ]; then
@@ -376,7 +402,11 @@ docker compose --env-file .env.production -f docker-compose.prod.yml exec -T bac
 import os
 from django.contrib.auth import get_user_model
 User = get_user_model()
-admin_password = os.environ.get('ADMIN_INITIAL_PASSWORD', 'change-this-admin-password')
+admin_password = os.environ.get('ADMIN_INITIAL_PASSWORD', '')
+if not admin_password:
+    import secrets
+    admin_password = secrets.token_urlsafe(20)
+    print(f'Generated secure random admin password (store it safely)')
 if not User.objects.filter(is_superuser=True).exists():
     User.objects.create_superuser('admin', 'admin@ankadata.com.tr', admin_password)
     print('Admin user created')
@@ -391,7 +421,7 @@ SETUP_SCRIPT
 
     echo -e "  → Creating deployment package..."
     cd "$BUILD_DIR"
-    tar -czf anka-deploy.tar.gz --exclude='anka-deploy.tar.gz' .
+    tar --warning=no-file-changed -czf anka-deploy.tar.gz --exclude='anka-deploy.tar.gz' .
     cd "$PROJECT_DIR"
 
     log_success "Package created: $(du -sh "$BUILD_DIR/anka-deploy.tar.gz" | cut -f1)"

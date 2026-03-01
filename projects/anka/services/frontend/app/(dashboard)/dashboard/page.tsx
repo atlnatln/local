@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { fetchAPI } from '@/lib/api-client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import Link from 'next/link';
 
 interface CreditPackage {
@@ -23,6 +25,15 @@ interface Batch {
   created_at: string;
 }
 
+interface Export {
+  id: string;
+  batch: string;
+  format: 'csv' | 'xlsx';
+  status: string;
+  total_rows: number;
+  created_at: string;
+}
+
 
 const getBatchStatusText = (status: string) => {
   switch (status) {
@@ -30,6 +41,7 @@ const getBatchStatusText = (status: string) => {
     case 'COLLECTING_IDS': return 'Havuz oluşturuluyor...';
     case 'FILTERING': return 'Sonuçlar doğrulanıyor...';
     case 'ENRICHING_CONTACTS': return 'İletişim bilgileri ekleniyor...';
+    case 'ENRICHING_EMAILS': return 'Email bilgileri aranıyor...';
     case 'READY': return 'Hazır';
     case 'PARTIAL': return 'Kısmen Tamamlandı';
     case 'FAILED': return 'Hata';
@@ -56,35 +68,81 @@ const getBatchStatusColor = (status: string) => {
 };
 
 export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="p-8 flex justify-center">
+        <p>Yükleniyor...</p>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
+  );
+}
+
+function DashboardContent() {
+  const searchParams = useSearchParams();
   const [credits, setCredits] = useState<CreditPackage[]>([]);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const [batches, setBatches] = useState<Batch[]>([]);
+  const [totalBatchCount, setTotalBatchCount] = useState(0);
+  const [recentExports, setRecentExports] = useState<Export[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
+    // Show payment success banner if redirected from checkout
+    if (searchParams.get('success') === 'payment') {
+      setPaymentSuccess(true);
+      // Clean the URL without full reload — use Next.js router to keep state in sync
+      router.replace('/dashboard', { scroll: false });
+    }
+  }, [searchParams, router]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let refreshTimer: ReturnType<typeof setTimeout>;
+
     async function loadDashboardData() {
       try {
-        setLoading(true);
+        if (!cancelled) setLoading(prev => batches.length === 0 ? true : prev);
         // Execute fetches in parallel
-        const [creditsData, batchesData] = await Promise.all([
-          fetchAPI<CreditPackage[]>('/credits/balance/'),
-          fetchAPI<{ results: Batch[] }>('/batches/') // DRF pagination returns { count, results }
+        const [creditsRaw, batchesData, exportsData] = await Promise.all([
+          fetchAPI<CreditPackage[] | CreditPackage>('/credits/balance/'),
+          fetchAPI<{ count?: number; results: Batch[] }>('/batches/'),
+          fetchAPI<{ results: Export[] }>('/exports/').catch(() => ({ results: [] })),
         ]);
         
-        setCredits(creditsData || []);
+        if (cancelled) return;
+        // Backend returns CreditPackage[] array; guard defensively if single object
+        const creditsData = Array.isArray(creditsRaw) ? creditsRaw : (creditsRaw ? [creditsRaw] : []);
+        setCredits(creditsData);
         // Handle paginated response or direct array
-        setBatches(batchesData.results || (Array.isArray(batchesData) ? batchesData : []));
+        const items = batchesData.results || (Array.isArray(batchesData) ? batchesData : []);
+        setBatches(items);
+        setTotalBatchCount(batchesData.count ?? items.length);
+        setRecentExports((exportsData.results || []).slice(0, 3));
+
+        // Auto-refresh if any batch is still processing
+        const hasProcessing = items.some((b: Batch) =>
+          ['CREATED', 'COLLECTING_IDS', 'FILTERING', 'ENRICHING_CONTACTS', 'ENRICHING_EMAILS', 'processing'].includes(b.status)
+        );
+        if (hasProcessing && !cancelled) {
+          refreshTimer = setTimeout(loadDashboardData, 5000);
+        }
       } catch (err: any) {
+        if (cancelled) return;
         console.error('Dashboard load error:', err);
         setError('Veriler yüklenirken bir hata oluştu.');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
     loadDashboardData();
-  }, []);
+    return () => { cancelled = true; clearTimeout(refreshTimer); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (
@@ -105,10 +163,21 @@ export default function DashboardPage() {
   }
 
   // Calculate total balance across all orgs
-  const totalBalance = credits.reduce((acc, curr) => acc + parseFloat(curr.balance), 0);
+  const totalBalance = credits.reduce((acc, curr) => {
+    const val = parseFloat(curr.balance);
+    return acc + (isNaN(val) ? 0 : val);
+  }, 0);
 
   return (
     <div className="p-6 space-y-6">
+      {paymentSuccess && (
+        <Alert className="bg-green-50 border-green-200">
+          <AlertDescription className="text-green-800 font-medium">
+            Ödeme başarıyla tamamlandı! Kredileriniz hesabınıza yansıtılmıştır.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -127,9 +196,9 @@ export default function DashboardPage() {
             <CardTitle className="text-sm font-medium">Son Batchler</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{batches.length}</div>
+            <div className="text-2xl font-bold">{totalBatchCount}</div>
             <p className="text-xs text-muted-foreground mr-2">
-               İşlemde: {batches.filter(b => ['CREATED', 'COLLECTING_IDS', 'FILTERING', 'ENRICHING_CONTACTS', 'processing'].includes(b.status)).length}
+               İşlemde: {batches.filter(b => ['CREATED', 'COLLECTING_IDS', 'FILTERING', 'ENRICHING_CONTACTS', 'ENRICHING_EMAILS', 'processing'].includes(b.status)).length}
             </p>
           </CardContent>
         </Card>
@@ -162,6 +231,11 @@ export default function DashboardPage() {
                   ))}
                 </div>
              )}
+             {batches.length > 0 && totalBatchCount > 5 && (
+                <p className="text-xs text-center text-gray-400 mt-4 pt-3 border-t">
+                  Gösterilen: 5 / {totalBatchCount} batch. Tüm batch’lerinize Yeni Batch sayfasından ulaşabilirsiniz.
+                </p>
+             )}
           </CardContent>
         </Card>
 
@@ -179,6 +253,49 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Son İndirmeler */}
+      {recentExports.length > 0 && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Son İndirmeler</CardTitle>
+            <Link href="/exports" className="text-sm text-blue-600 hover:underline">Tümünü Gör</Link>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recentExports.map(exp => {
+                const batch = batches.find(b => b.id === exp.batch);
+                return (
+                  <div key={exp.id} className="flex items-center justify-between py-2 px-1 border-b last:border-0">
+                    <div className="flex items-center gap-3">
+                      <span className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold ${
+                        exp.format === 'xlsx' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {exp.format.toUpperCase()}
+                      </span>
+                      <span className="text-sm font-medium">
+                        {batch ? `${batch.city} – ${batch.sector}` : exp.batch.slice(0, 8)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        exp.status === 'completed' ? 'bg-green-100 text-green-700'
+                          : exp.status === 'failed' ? 'bg-red-100 text-red-700'
+                          : 'bg-blue-100 text-blue-700 animate-pulse'
+                      }`}>
+                        {exp.status === 'completed' ? 'Hazır' : exp.status === 'failed' ? 'Hata' : 'İşleniyor'}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        {new Date(exp.created_at).toLocaleDateString('tr-TR')}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

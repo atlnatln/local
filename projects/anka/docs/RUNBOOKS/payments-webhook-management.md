@@ -59,6 +59,18 @@ for wh in recent:
 3. **Refund event sonrası durum tutarsız**
    - İlgili `PaymentTransaction` kaydında `iyzico_payment_id` var mı kontrol edin.
 
+## Düzeltilen Hatalar (Haziran 2026 Denetimi)
+
+Aşağıdaki webhook / ödeme hataları kod denetimi sırasında tespit edilip düzeltilmiştir:
+
+- **`_handle_payment_refunded` — yanlış field adı:** `transaction_obj.payment_intent` → `transaction_obj.intent` (doğru FK related_name).
+- **`_handle_payment_refunded` — geçersiz status değerleri:** `'REFUNDED'` STATUS_CHOICES'ta yoktu; transaction için `'error'`, intent için `'cancelled'` olarak düzeltildi.
+- **Variable shadow:** `status = data.get('status')` ifadesi `rest_framework.status` import'unu gölgeliyordu → `iyzico_status` olarak yeniden adlandırıldı.
+- **`mark_completed()` — signal tetiklemiyordu:** `self.save()` → `self.save(update_fields=[...])` ile kredi yansıması signal'ı artık doğru çalışıyor.
+- **`confirm` view — payment_id kaybı:** `payment_id` ayrı `save(update_fields=...)` ile kaydediliyor.
+
+Detaylar: `docs/RUNBOOKS/code-audit-and-fixes-2026-06.md`
+
 ## İlgili Dosyalar
 
 - `services/backend/apps/payments/models.py`

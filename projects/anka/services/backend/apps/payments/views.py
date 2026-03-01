@@ -201,12 +201,13 @@ class PaymentIntentViewSet(viewsets.ModelViewSet):
                 )
                 
                 # Mark intent as completed
+                # First save payment_id, then mark_completed() saves status + completed_at
                 payment_intent.payment_id = iyzico_response['paymentId']
-                payment_intent.status = 'completed'
+                payment_intent.save(update_fields=['payment_id', 'updated_at'])
                 payment_intent.mark_completed()
                 
-                # Grant credits to user (via ledger app)
-                # This will be called by a signal or celery task
+                # Credits are granted via post_save signal (grant_credits_on_payment_completion)
+                # which is triggered by mark_completed()'s save(update_fields=['status', ...])
                 logger.info(
                     f"Payment confirmed: user={request.user.id}, "
                     f"amount={payment_intent.amount}, credits={payment_intent.credits}"

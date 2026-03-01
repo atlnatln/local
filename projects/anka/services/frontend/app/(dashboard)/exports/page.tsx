@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { fetchAPI } from '@/lib/api-client'
 
 interface Export {
@@ -41,7 +42,23 @@ function formatDate(iso: string): string {
 }
 
 function isExpired(iso: string): boolean {
+  if (!iso) return true
   return new Date(iso) < new Date()
+}
+
+function getExportStatusBadge(status: string) {
+  switch (status) {
+    case 'completed':
+      return <Badge className="bg-green-100 text-green-700 border-green-200">Tamamlandı</Badge>
+    case 'processing':
+      return <Badge className="bg-blue-100 text-blue-700 border-blue-200 animate-pulse">İşleniyor</Badge>
+    case 'pending':
+      return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Bekliyor</Badge>
+    case 'failed':
+      return <Badge variant="destructive">Hata</Badge>
+    default:
+      return <Badge variant="secondary">{status}</Badge>
+  }
 }
 
 export default function ExportsPage() {
@@ -49,43 +66,77 @@ export default function ExportsPage() {
   const [batches, setBatches] = useState<Record<string, Batch>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [regeneratingIds, setRegeneratingIds] = useState<Set<string>>(new Set())
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [exportsData, batchesData] = await Promise.all([
-          fetchAPI<{ results: Export[] }>('/exports/'),
-          fetchAPI<{ results: Batch[] }>('/batches/'),
-        ])
-        setExports(exportsData.results)
-        const batchMap: Record<string, Batch> = {}
-        batchesData.results.forEach((b) => { batchMap[b.id] = b })
-        setBatches(batchMap)
-      } catch {
-        setError('Dışa aktarımlar yüklenirken hata oluştu.')
-      } finally {
-        setLoading(false)
-      }
+  async function loadData() {
+    try {
+      const [exportsData, batchesData] = await Promise.all([
+        fetchAPI<{ results: Export[] }>('/exports/'),
+        fetchAPI<{ results: Batch[] }>('/batches/'),
+      ])
+      setExports(exportsData.results)
+      const batchMap: Record<string, Batch> = {}
+      batchesData.results.forEach((b) => { batchMap[b.id] = b })
+      setBatches(batchMap)
+    } catch {
+      setError('Dışa aktarımlar yüklenirken hata oluştu.')
+    } finally {
+      setLoading(false)
     }
-    load()
+  }
+
+  // Initial load (runs once)
+  useEffect(() => {
+    loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Smart polling: only while there are pending/processing exports
+  useEffect(() => {
+    const hasPending = exports.some((e) => ['pending', 'processing'].includes(e.status))
+    if (!hasPending) return
+
+    const interval = setInterval(() => {
+      if (!document.hidden) {
+        loadData()
+      }
+    }, 8000)
+
+    return () => clearInterval(interval)
+  }, [exports]) // re-subscribe when exports change
+
+  async function handleRegenerate(exp: Export) {
+    setRegeneratingIds(prev => new Set(prev).add(exp.id))
+    try {
+      await fetchAPI(`/exports/${exp.id}/regenerate/`, { method: 'POST' })
+      await loadData()
+    } catch (err: any) {
+      console.error('Regenerate failed:', err)
+      setError('Dosya yeniden oluşturulurken hata oluştu. Lütfen tekrar deneyin.')
+    } finally {
+      setRegeneratingIds(prev => {
+        const next = new Set(prev)
+        next.delete(exp.id)
+        return next
+      })
+    }
+  }
+
   function handleDownload(exp: Export) {
-    if (!exp.signed_url) return
-    const ext = exp.format
-    const batch = batches[exp.batch]
-    const name = batch
-      ? `${batch.city}-${batch.sector}-${exp.batch}.${ext}`
-      : `export-${exp.id}.${ext}`
+    // Use the secure download endpoint
+    const apiBase = typeof window !== 'undefined' ? window.location.origin : ''
+    const downloadUrl = `${apiBase}/api/exports/${exp.id}/download/`
     const link = document.createElement('a')
-    link.href = exp.signed_url
-    link.setAttribute('download', name)
+    link.href = downloadUrl
+    link.setAttribute('download', '')
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   }
 
   const completedExports = exports.filter((e) => e.status === 'completed')
+  const pendingExports = exports.filter((e) => ['pending', 'processing'].includes(e.status))
+  const failedExports = exports.filter((e) => e.status === 'failed')
 
   return (
     <div className="space-y-6">
@@ -101,6 +152,74 @@ export default function ExportsPage() {
         </Link>
       </div>
 
+      {/* Pending/Processing Exports */}
+      {pendingExports.length > 0 && (
+        <Card className="border-blue-200 bg-blue-50/30">
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              İşlenen Dosyalar
+            </CardTitle>
+            <CardDescription>{pendingExports.length} dosya hazırlanıyor</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {pendingExports.map((exp) => {
+                const batch = batches[exp.batch]
+                return (
+                  <div key={exp.id} className="flex items-center justify-between py-2 px-3 bg-white rounded border">
+                    <div className="flex items-center gap-3">
+                      {getExportStatusBadge(exp.status)}
+                      <span className="text-sm font-medium">
+                        {batch ? `${batch.city} – ${batch.sector}` : exp.batch.slice(0, 8)}
+                      </span>
+                      <span className="text-xs text-gray-400">{exp.format.toUpperCase()}</span>
+                    </div>
+                    <span className="text-xs text-gray-500">{formatDate(exp.created_at)}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Failed Exports */}
+      {failedExports.length > 0 && (
+        <Card className="border-red-200 bg-red-50/30">
+          <CardHeader>
+            <CardTitle className="text-base text-red-700">Başarısız Dışa Aktarımlar</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {failedExports.map((exp) => {
+                const batch = batches[exp.batch]
+                return (
+                  <div key={exp.id} className="flex items-center justify-between py-2 px-3 bg-white rounded border">
+                    <div className="flex items-center gap-3">
+                      {getExportStatusBadge(exp.status)}
+                      <span className="text-sm font-medium">
+                        {batch ? `${batch.city} – ${batch.sector}` : exp.batch.slice(0, 8)}
+                      </span>
+                      <span className="text-xs text-red-500 truncate max-w-[200px]">{exp.error_message}</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={regeneratingIds.has(exp.id)}
+                      onClick={() => handleRegenerate(exp)}
+                    >
+                      {regeneratingIds.has(exp.id) ? 'Yeniden...' : 'Tekrar Dene'}
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Completed Exports */}
       <Card>
         <CardHeader>
           <CardTitle>Dışa Aktarılmış Dosyalar</CardTitle>
@@ -175,9 +294,7 @@ export default function ExportsPage() {
                         <td className="py-3 pr-4 text-gray-500">{formatBytes(exp.file_size)}</td>
                         <td className="py-3 pr-4 text-gray-500 whitespace-nowrap">{formatDate(exp.created_at)}</td>
                         <td className="py-3">
-                          {expired ? (
-                            <span className="text-xs text-red-400">Süresi doldu</span>
-                          ) : (
+                          <div className="flex items-center gap-2">
                             <Button
                               size="sm"
                               variant="outline"
@@ -185,7 +302,18 @@ export default function ExportsPage() {
                             >
                               ↓ İndir
                             </Button>
-                          )}
+                            {expired && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-xs text-amber-600"
+                                disabled={regeneratingIds.has(exp.id)}
+                                onClick={() => handleRegenerate(exp)}
+                              >
+                                {regeneratingIds.has(exp.id) ? 'Yenileniyor...' : 'URL Yenile'}
+                              </Button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     )

@@ -1,4 +1,5 @@
 import os
+import sys
 import django
 from django.contrib.auth import get_user_model
 
@@ -19,9 +20,11 @@ def generate_strong_password(length=32):
 password = os.environ.get('TEST_USER_PASSWORD')
 if not password:
     password = generate_strong_password()
-    print(f"INFO: Generated random secure password for {username}: {password}")
+    # Write generated password to stderr only (never stdout)
+    print(f"INFO: Generated random secure password for {username}", file=sys.stderr)
+    print(f"TEST_USER_PASSWORD={password}", file=sys.stderr)
 else:
-    print(f"INFO: Using provided TEST_USER_PASSWORD for {username}")
+    print(f"INFO: Using provided TEST_USER_PASSWORD for {username}", file=sys.stderr)
 
 if not User.objects.filter(username=username).exists():
     user = User.objects.create_user(username=username, email=email, password=password)
@@ -55,13 +58,13 @@ try:
         # Ensure membership exists if org exists
         org = Organization.objects.get(name=org_name)
         if not OrganizationMember.objects.filter(organization=org, user=user).exists():
-                OrganizationMember.objects.create(
+            OrganizationMember.objects.create(
                 organization=org, 
                 user=user, 
                 role='owner', 
                 is_active=True
             )
-                print(f"Added membership for {username} to {org_name}.")
+            print(f"Added membership for {username} to {org_name}.")
         else:
             print(f"Membership for {username} already exists.")
 

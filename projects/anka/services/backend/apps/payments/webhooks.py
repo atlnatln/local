@@ -36,7 +36,9 @@ def _normalize_signature(value: str) -> str:
 def _verify_webhook_signature(request) -> bool:
     secret = getattr(settings, 'IYZICO_WEBHOOK_SECRET', '')
     if not secret:
-        return True
+        logger.warning("IYZICO_WEBHOOK_SECRET is empty — webhook signature verification skipped. "
+                       "Set IYZICO_WEBHOOK_SECRET in production for security.")
+        return False
 
     signature = _normalize_signature(
         _get_first_header(
@@ -154,17 +156,19 @@ def _handle_payment_completed(payload: dict, webhook: PaymentWebhook):
         data = payload.get('data', {})
         conversation_id = data.get('conversationId')
         payment_id = data.get('paymentId')
-        status = data.get('status')
+        iyzico_status = data.get('status')
         
         # Find payment intent
         payment_intent = PaymentIntent.objects.get(conversation_id=conversation_id)
         
         # Only process if status is SUCCESS
-        if status == 'SUCCESS':
+        if iyzico_status == 'SUCCESS':
             with transaction.atomic():
-                # Update intent
+                # Update payment_id first (separate save to not conflict with mark_completed)
                 payment_intent.payment_id = payment_id
-                payment_intent.status = 'completed'
+                payment_intent.save(update_fields=['payment_id', 'updated_at'])
+                # mark_completed saves status + completed_at with update_fields,
+                # which triggers the grant_credits signal
                 payment_intent.mark_completed()
                 
                 # Create transaction record if not exists
@@ -191,7 +195,7 @@ def _handle_payment_completed(payload: dict, webhook: PaymentWebhook):
         else:
             # Mark as failed
             payment_intent.status = 'failed'
-            payment_intent.error_message = f"Webhook status: {status}"
+            payment_intent.error_message = f"Webhook status: {iyzico_status}"
             payment_intent.save()
             logger.warning(f"Payment failed via webhook: {conversation_id}")
     
@@ -235,13 +239,13 @@ def _handle_payment_refunded(payload: dict, webhook: PaymentWebhook):
         
         # Find transaction
         transaction_obj = PaymentTransaction.objects.get(iyzico_payment_id=payment_id)
-        transaction_obj.status = 'REFUNDED'
-        transaction_obj.save()
+        transaction_obj.status = 'error'  # Closest valid status for refund in STATUS_CHOICES
+        transaction_obj.save(update_fields=['status', 'updated_at'])
         
-        # Update intent
-        intent = transaction_obj.payment_intent
-        intent.status = 'REFUNDED'
-        intent.save()
+        # Update intent — use the correct related_name 'intent' (not 'payment_intent')
+        intent = transaction_obj.intent
+        intent.status = 'cancelled'  # Valid STATUS_CHOICES value for refunded intents
+        intent.save(update_fields=['status', 'updated_at'])
         
         logger.info(f"Payment refunded via webhook: {payment_id}")
     
