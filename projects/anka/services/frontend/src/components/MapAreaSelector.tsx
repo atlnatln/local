@@ -195,7 +195,9 @@ export default function MapAreaSelector({
       overlay.removeEventListener('pointermove', onPointerMove)
       overlay.removeEventListener('pointerup', onPointerUp)
     }
-  }, [drawingMode, placeRectangle])
+  // `ready` buraya eklendi: overlay div ancak ready=true olunca render edilir,
+  // bu yüzden effect ready değiştiğinde yeniden çalışmalı.
+  }, [drawingMode, placeRectangle, ready])
 
   useEffect(() => {
     if (!apiKey) { setLoadError('Google Maps API key tanımlı değil.'); return }
