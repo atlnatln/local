@@ -149,6 +149,156 @@ Not: Aynı `csv_url` tekrar okunurken browser/proxy cache eski header döndüreb
 - E2E helper `tests/e2e/playwright/helpers/auth.ts` içinde `BACKEND_URL` desteği vardır; default `http://localhost:8000` (native local). Docker kullanımında backend için tipik değer `http://localhost:8100` olur.
 - Prod benzeri auth akışı (Google-only) ile test-login tabanlı E2E akışı farklıdır.
 
+## 9) Kök Neden Analizi — "Neden email bulunamıyor?" (Mart 2026 Canlı İnceleme)
+
+> Bu bölüm, production'daki batch'lerde `emails_enriched: 0` görülmesinin gerçek sebeplerini
+> Playwright + container exec ile doğrudan izleyerek tespit etmiştir.
+> Test batch: `a70fb8fa...` ("Harita Alanı - Kalıpçı", 02.03.2026, 2 kayıt, email 0)
+
+### Tespit 1 — `GEMINI_API_KEY` Production'da Set Edilmemiş
+
+`.env.production` satır 103:
+
+```dotenv
+# GEMINI_API_KEY=    ← YORUM SATIRI, değer yok
+```
+
+**Etkisi:**
+- `EmailEnrichmentClient.__init__()` → `self._api_key = None`
+- Strateji 2 (Gemini grounding) tamamen atlanıyor: `_gemini_search_email()` > `if not self._api_key: return None`
+- Website'i olmayan firmalar için `_gemini_find_official_website()` da çalışmıyor
+- **Yalnızca Strateji 1 (web scraping) çalışıyor**
+
+**Doğrulama komutu:**
+
+```bash
+docker exec anka_backend_prod env | grep -i "GEMINI\|ANKA_EMAIL"
+# GEMINI_API_KEY satırı çıkmamalı → sorun burada
+```
+
+**Çözüm:**
+`.env.production` içinde `GEMINI_API_KEY=<gerçek_anahtar>` satırını yorum dışına alıp yeniden deploy edin:
+```bash
+# Deploysuz anlık test:
+docker exec anka_backend_prod sh -c 'export GEMINI_API_KEY=<anahtar>; python manage.py shell -c "..."'
+```
+
+---
+
+### Tespit 2 — SSL Sertifikası Bozuk Siteler Sessizce Atlanıyor
+
+Test sitesi `kalipciavyaban.com` her URL için şu hatayı döndürüyor:
+
+```
+SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed:
+unable to get local issuer certificate
+```
+
+`_fetch_html()` içinde bu hata `except Exception` bloğu tarafından yakalanıp `logger.debug()` ile sessizce `None` döndürülüyor.
+Tüm `_CONTACT_PATHS` (`/iletisim`, `/contact`, `/`, ...) denemesi başarısız oluyor.
+
+**Ama email aslında var!**  
+`verify=False` ile `GET /` yapıldığında:
+
+```
+[200] https://www.kalipciavyaban.com/  → ['kalipciavyaban@gmail.com']
+```
+
+Email ana sayfada açıkça bulunuyor; SSL engeli olmasa Strategy 1 başarıyla çalışırdı.
+
+**Türkiye'deki durum:** KOBİ web sitelerinin önemli bir kısmı let's encrypt zinciri
+eksik / self-signed / eski sertifika kullanıyor. Bu kombinasyon yaygın bir "sessiz kayıp"
+yaratıyor.
+
+**Doğrulama komutu (container içinde):**
+
+```bash
+docker exec anka_backend_prod python3 -c "
+import requests, urllib3; urllib3.disable_warnings()
+r = requests.get('https://www.kalipciavyaban.com/', verify=False, timeout=8)
+import re
+emails = re.findall(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,10}', r.text)
+print(emails)
+"
+# Çıktı: ['kalipciavyaban@gmail.com', ...]
+```
+
+**Çözüm seçenekleri:**
+
+| Seçenek | Yaklaşım | Güvenlik |
+|---------|----------|----------|
+| **A (önerilen)** | `_fetch_html()` içinde SSL hatası alınca `verify=False` ile yeniden dene + `logger.warning()` yaz | Düşük risk; sadece fallback |
+| B | Session oluştururken `verify=False` varsayılan yap | Tüm bağlantılar etkilenir; tavsiye edilmez |
+| C | Başarısız SSL sitelerini Gemini'ye yönlendir (S2) | Tespit 1 çözüldüğünde geçerli |
+
+**Seçenek A için kod değişikliği (`email_enrichment.py → _fetch_html`):**
+
+```python
+def _fetch_html(self, url: str) -> Optional[str]:
+    if _is_excluded_domain(url):
+        return None
+    try:
+        # ... mevcut kod ...
+        resp = self._session.get(url, timeout=_SCRAPE_TIMEOUT, stream=True, allow_redirects=True)
+    except requests.exceptions.SSLError:
+        # SSL sertifikası bozuk siteler için verify=False ile bir kez daha dene
+        logger.warning("[EmailEnrich] SSL hatası, verify=False ile yeniden deneniyor: %s", url)
+        try:
+            resp = self._session.get(url, timeout=_SCRAPE_TIMEOUT, stream=True,
+                                     allow_redirects=True, verify=False)
+        except Exception as exc:
+            logger.debug("[EmailEnrich] SSL fallback da başarısız [%s]: %s", url, exc)
+            return None
+    except Exception as exc:
+        logger.debug("[EmailEnrich] Fetch hatası [%s]: %s", url, exc)
+        return None
+    # ... devam: anti-bot check, raise_for_status, stream read ...
+```
+
+---
+
+### Özet Tablo
+
+| Sorun | Etki | Çözüm |
+|-------|------|-------|
+| `GEMINI_API_KEY` yorum satırı | S2 tamamen devre dışı; website'i olmayan tüm firmalar için 0 email | `.env.production`'da key aktif et |
+| SSL sertifikası bozuk siteler | S1 tüm sayfalar için sessizce hata verir; email sitenin ana sayfasında olmasına rağmen bulunamaz | `_fetch_html` SSL fallback ekle |
+| `_CONTACT_PATHS` sırasında `/` en sonda | Şans eseri site 403/rate-limit verince `/`'a hiç gelinmez | Zaten ikincil; SSL çözümü öncelik |
+
+---
+
+### Bulgu Nasıl Elde Edildi (Tekrarlanabilir Adımlar)
+
+```bash
+# 1) Container env kontrol
+docker exec anka_backend_prod env | grep GEMINI
+
+# 2) Belirli bir sitenin scrape testini container içinden çalıştır
+docker exec anka_backend_prod python3 -c "
+import requests, re
+EMAIL_RE = re.compile(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,10}', re.I)
+r = requests.get('https://<WEBSITE>/', timeout=8)  # SSL hatası görünür
+print(r.status_code, EMAIL_RE.findall(r.text))
+"
+
+# 3) SSL bypass ile tekrar dene
+docker exec anka_backend_prod python3 -c "
+import requests, re, urllib3; urllib3.disable_warnings()
+EMAIL_RE = re.compile(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,10}', re.I)
+r = requests.get('https://<WEBSITE>/', timeout=8, verify=False)
+print(r.status_code, EMAIL_RE.findall(r.text))
+"
+
+# 4) Token log (Gemini aktifse)
+tail -f /app/logs/usage/email_enrichment_tokens.jsonl | python3 -c "
+import sys, json
+for l in sys.stdin:
+    if l.strip(): print(json.dumps(json.loads(l), ensure_ascii=False, indent=2))
+"
+```
+
+---
+
 ## 8) Güvenli Local Test Komutu (Önerilen)
 
 Yeni özellik sonrası hızlı ve güvenli doğrulama için:

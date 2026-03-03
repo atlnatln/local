@@ -174,6 +174,7 @@ SECRET_KEY_VALUE="$(get_env_value "SECRET_KEY")"
 CSRF_TRUSTED_ORIGINS_VALUE="$(get_env_value "CSRF_TRUSTED_ORIGINS")"
 REDIS_PASSWORD_VALUE="$(get_env_value "REDIS_PASSWORD")"
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY_VALUE="$(get_env_value "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY")"
+GEMINI_API_KEY_VALUE="$(get_env_value "GEMINI_API_KEY")"
 
 if [ -z "$GOOGLE_OIDC_CLIENT_ID_VALUE" ] || [ -z "$NEXT_PUBLIC_GOOGLE_CLIENT_ID_VALUE" ]; then
     log_error "Missing Google OAuth env vars in .env.production"
@@ -193,6 +194,10 @@ fi
 
 if [ -z "$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY_VALUE" ]; then
     log_warning "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is not set — Google Maps will not work"
+fi
+
+if [ -z "$GEMINI_API_KEY_VALUE" ]; then
+    log_warning "GEMINI_API_KEY is not set — email enrichment will run in scraping-only mode"
 fi
 
 if [ -z "$CSRF_TRUSTED_ORIGINS_VALUE" ]; then

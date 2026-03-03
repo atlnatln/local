@@ -56,12 +56,37 @@ _EMAIL_RE = re.compile(
 # Bunlar gerçek işletme emaili sayılmaz
 _JUNK_RE = re.compile(
     r"(noreply|no-reply|donotreply|do-not-reply|"
-    r"example\.com|@sentry|sentry\.io|wixpress\.com|"
+    r"example\.com|example\.org|example\.net|"
+    r"yoursite\.com|yourdomain\.com|youremail\.com|your-domain\.com|"
+    r"sitename\.com|domain\.com|test\.com|sample\.com|"
+    r"@sentry|sentry\.io|wixpress\.com|"
     r"placeholder|w3\.org|schema\.org|cloudflare\.com|"
     r"@webpack|@babel|@jest|\.png@|\.jpg@|\.gif@|\.svg@|"
     r"@[a-z0-9._%+\-]+\.(png|jpg|jpeg|gif|svg|webp|ico|css|js)$|"
     r"privacy@|abuse@|postmaster@|webmaster@)",
     re.IGNORECASE,
+)
+
+# Türkiye telefon regex: +90 / 0090 / 0 ile başlayan 10/11 haneli numaralar
+_PHONE_RE = re.compile(
+    r"""
+    (?<![\d])          # rakamla başlamamalı
+    (?:
+        \+90           # uluslararası +90
+        | 0090         # 0090 formatı
+        | (?<!\+)\b0   # önünde + olmayan sıfır
+    )
+    [\s\-\.\u00a0(]*
+    \d{3}              # alan/operatör kodu
+    [\s\-\.\u00a0)]*
+    \d{3}
+    [\s\-\.\u00a0]*
+    \d{2}
+    [\s\-\.\u00a0]*
+    \d{2}
+    (?!\d)             # rakamla bitmemeli
+    """,
+    re.VERBOSE,
 )
 
 # Backward-compatible alias (merkezi listeyi kullan)
@@ -152,6 +177,9 @@ class EmailEnrichmentClient:
         # email kaynağı bilgisi (services.py tarafından BatchItem.data'ya yazılır)
         self.last_email_source_url: Optional[str] = None
         self.last_email_source_type: Optional[str] = None
+        # telefon kaynağı bilgisi (web scraping ile bulunan)
+        self.last_phone_source_url: Optional[str] = None
+        self.last_phone_source_type: Optional[str] = None
 
     # ------------------------------------------------------------------
     # Public API
@@ -164,75 +192,111 @@ class EmailEnrichmentClient:
         website_url: Optional[str] = None,
     ) -> Optional[str]:
         """
-        En iyi email adresini döndürür, bulunamazsa None.
-
-        Önce Strategy 1 (scrape), başarısızsa Strategy 2 (Gemini grounding)
-        denenir.
+        Geriye dönük uyumluluk için. Yalnızca email döner.
+        Yeni kodda enrich_contacts() kullanın.
         """
-        # reset last-call metadata
+        return self.enrich_contacts(firm_name, address, website_url).get("email")
+
+    def enrich_contacts(
+        self,
+        firm_name: str,
+        address: str = "",
+        website_url: Optional[str] = None,
+        existing_phone: Optional[str] = None,
+    ) -> dict:
+        """
+        Email ve telefonu birlikte döndürür: {"email": str|None, "phone": str|None}
+
+        Öncelik sırası (Gemini olmadan maksimum değer):
+          S1 – website biliniyorsa doğrudan scrape (0 Gemini token)
+          S2 – website yoksa Gemini ile resmi site bul → scrape (1 Gemini call)
+          S3 – hâlâ email bulunamazsa Gemini grounding ile son çare arama
+        """
+        # reset metadata
         self.last_discovered_website = None
         self.last_gemini_calls = 0
         self.last_email_source_url = None
         self.last_email_source_type = None
+        self.last_phone_source_url = None
+        self.last_phone_source_type = None
 
         firm_name = (firm_name or "").strip()
         if not firm_name:
-            return None
+            return {"email": None, "phone": None}
 
-        # Strategy 1: website biliniyorsa – 0 Gemini token
+        need_phone = not bool(existing_phone)
+        result_email: Optional[str] = None
+        result_phone: Optional[str] = None
+
+        # S1: website biliniyorsa – 0 Gemini token
         if website_url:
-            email = self._scrape_website_for_email(website_url)
-            if email:
+            contacts = self._scrape_website_for_contacts(
+                website_url, need_email=True, need_phone=need_phone
+            )
+            result_email = contacts["email"]
+            result_phone = contacts["phone"]
+            if result_email:
                 self.last_email_source_url = website_url
                 self.last_email_source_type = "scrape_website"
-                logger.info("[EmailEnrich] S1-scrape  [%s] → %s", firm_name, email)
-                return email
-            logger.debug("[EmailEnrich] S1-scrape  [%s] → not found, trying S2", firm_name)
+                logger.info("[EmailEnrich] S1-scrape  [%s] → email: %s", firm_name, result_email)
+            if result_phone:
+                self.last_phone_source_url = website_url
+                self.last_phone_source_type = "scrape_website"
+                logger.info("[EmailEnrich] S1-scrape  [%s] → phone: %s", firm_name, result_phone)
+            if not result_email:
+                logger.debug("[EmailEnrich] S1-scrape  [%s] → email not found, trying S2/S3", firm_name)
 
-        # Website yoksa: önce resmi website bul (Gemini grounding) → scrape ile email dene
-        # Bu adım, modelin "email" uydurmasını azaltır; önce kanıtlanabilir URL yakalanır.
+        # S2: website yoksa Gemini ile resmi site bul → scrape
         discovered_website: Optional[str] = None
-        if not website_url and self._api_key:
+        if not result_email and not website_url and self._api_key:
             discovered_website = self._gemini_find_official_website(firm_name, address)
             if discovered_website:
                 self.last_discovered_website = discovered_website
                 self.last_gemini_calls += 1
-                email = self._scrape_website_for_email(discovered_website)
-                if email:
+                contacts = self._scrape_website_for_contacts(
+                    discovered_website, need_email=True, need_phone=need_phone
+                )
+                result_email = contacts["email"]
+                if need_phone and not result_phone:
+                    result_phone = contacts["phone"]
+                if result_email:
                     self.last_email_source_url = discovered_website
                     self.last_email_source_type = "scrape_discovered"
                     logger.info(
-                        "[EmailEnrich] S2-website→scrape [%s] → %s",
-                        firm_name,
-                        email,
+                        "[EmailEnrich] S2-website→scrape [%s] → email: %s",
+                        firm_name, result_email,
                     )
-                    return email
+                if result_phone and not self.last_phone_source_url:
+                    self.last_phone_source_url = discovered_website
+                    self.last_phone_source_type = "scrape_discovered"
+                    logger.info(
+                        "[EmailEnrich] S2-website→scrape [%s] → phone: %s",
+                        firm_name, result_phone,
+                    )
 
-        # Strategy 2: Gemini grounding araması
-        if not self._api_key:
-            logger.warning(
-                "[EmailEnrich] GEMINI_API_KEY yok – S2 atlandı [%s]", firm_name
-            )
-            return None
+        # S3: son çare — Gemini grounding ile email araması
+        if not result_email:
+            if not self._api_key:
+                logger.warning("[EmailEnrich] GEMINI_API_KEY yok – S3 atlandı [%s]", firm_name)
+            else:
+                known_domain: Optional[str] = None
+                domain_source_url = website_url or discovered_website
+                if domain_source_url:
+                    parsed = _base_url(domain_source_url)
+                    if parsed:
+                        from urllib.parse import urlparse as _up
+                        known_domain = _up(parsed).netloc.lstrip("www.")
 
-        # website biliniyorsa domain bilgisini Gemini'ye ilet (site: hedefli arama)
-        known_domain: Optional[str] = None
-        domain_source_url = website_url or discovered_website
-        if domain_source_url:
-            parsed_domain = _base_url(domain_source_url)
-            if parsed_domain:
-                from urllib.parse import urlparse as _up
-                known_domain = _up(parsed_domain).netloc.lstrip("www.")
+                result_email = self._gemini_search_email(firm_name, address, known_domain=known_domain)
+                self.last_gemini_calls += 1
+                if result_email:
+                    self.last_email_source_url = getattr(self, "_last_s2_source_url", None) or "gemini-grounding"
+                    self.last_email_source_type = getattr(self, "_last_s2_source_type", None) or "gemini_grounding"
+                    logger.info("[EmailEnrich] S3-gemini  [%s] → email: %s", firm_name, result_email)
+                else:
+                    logger.debug("[EmailEnrich] S3-gemini  [%s] → not found", firm_name)
 
-        email = self._gemini_search_email(firm_name, address, known_domain=known_domain)
-        self.last_gemini_calls += 1
-        if email:
-            self.last_email_source_url = getattr(self, "_last_s2_source_url", None) or "gemini-grounding"
-            self.last_email_source_type = getattr(self, "_last_s2_source_type", None) or "gemini_grounding"
-            logger.info("[EmailEnrich] S2-gemini  [%s] → %s", firm_name, email)
-        else:
-            logger.debug("[EmailEnrich] S2-gemini  [%s] → not found", firm_name)
-        return email
+        return {"email": result_email, "phone": result_phone}
 
     def _gemini_find_official_website(self, firm_name: str, address: str) -> Optional[str]:
         """Gemini Search Grounding ile işletmenin resmi web sitesini bulur (URL veya None)."""
@@ -311,21 +375,70 @@ class EmailEnrichmentClient:
     # Strategy 1 – web site scraping
     # ------------------------------------------------------------------
 
-    def _scrape_website_for_email(self, website_url: str) -> Optional[str]:
+    def _scrape_website_for_contacts(
+        self,
+        website_url: str,
+        need_email: bool = True,
+        need_phone: bool = True,
+    ) -> dict:
+        """
+        Web sitesini tarar; email ve/veya telefon arar.
+        Sayfaları _CONTACT_PATHS sırasıyla dener.
+        Email için: aynı domain'den veya açık info@ gibi adresler bulununca durur;
+        gmail/hotmail adresi bulunsa bile daha iyi bir aday ararken devam eder.
+        Returns: {"email": str|None, "phone": str|None}
+        """
         base = _base_url(website_url)
         if not base:
-            return None
+            return {"email": None, "phone": None}
+
+        try:
+            from urllib.parse import urlparse as _up
+            site_domain = _up(base).netloc.lstrip("www.")
+        except Exception:
+            site_domain = ""
+
+        best_email: Optional[str] = None  # en iyi email adayı
+        found_phone: Optional[str] = None
 
         for path in _CONTACT_PATHS:
             url = urljoin(base + "/", path.lstrip("/"))
             html = self._fetch_html(url)
             if not html:
                 continue
-            email = _extract_best_email(html, source_url=url)
-            if email:
-                return email
 
-        return None
+            if need_email:
+                candidate = _extract_best_email(html, source_url=url)
+                if candidate:
+                    cand_domain = candidate.split("@")[-1].lstrip("www.")
+                    if best_email is None:
+                        best_email = candidate  # ilk aday
+                    # Daha iyi bir email bulunduysa güncelle:
+                    # Kriter 1: Site domain'inden ise üstdür (kesin)
+                    if cand_domain == site_domain:
+                        best_email = candidate
+                        if not need_phone or found_phone:
+                            break  # en iyi email bulundu, telefon da bulunduysa dur
+                    # Kriter 2: info/iletisim gibi prefix varsa gmail'den üstdür
+                    info_prefixes = ("info", "iletisim", "iletişim", "contact", "mail", "bilgi")
+                    if candidate.split("@")[0].lower().startswith(info_prefixes):
+                        best_email = candidate
+
+            if need_phone and not found_phone:
+                found_phone = _extract_best_phone(html)
+
+            # Kesin email (site domain'inden) ve telefon bulundu — dur
+            if best_email and site_domain and best_email.split("@")[-1].lstrip("www.") == site_domain:
+                if not need_phone or found_phone:
+                    break
+
+        return {"email": best_email, "phone": found_phone}
+
+    def _scrape_website_for_email(self, website_url: str) -> Optional[str]:
+        """Geriye dönük uyumluluk. Yalnızca email döner."""
+        return self._scrape_website_for_contacts(
+            website_url, need_email=True, need_phone=False
+        )["email"]
 
     # ------------------------------------------------------------------
     # Strategy 2 – Gemini Search Grounding
@@ -515,42 +628,59 @@ class EmailEnrichmentClient:
     # ------------------------------------------------------------------
 
     def _fetch_html(self, url: str) -> Optional[str]:
-        """URL'yi güvenli şekilde çek. Hata durumunda None döner."""
+        """
+        URL'yi güvenli şekilde çeker.
+        SSL sertifikası bozuk siteler için yeni bir session + verify=False ile fallback yapar.
+        """
         if _is_excluded_domain(url):
             return None
-        try:
-            import random
-            import time
-            time.sleep(random.uniform(0.5, 1.5))  # Anti-Ban: Rastgele gecikme
-            
-            resp = self._session.get(
-                url,
-                timeout=_SCRAPE_TIMEOUT,
-                stream=True,
-                allow_redirects=True,
-            )
-            # Anti-Ban: Bot koruması varsa zorlama
-            if resp.status_code in (403, 406, 429):
-                logger.debug("[EmailEnrich] Anti-bot detected [%s]: %s", resp.status_code, url)
+
+        import random
+        import time as _time_mod
+        _time_mod.sleep(random.uniform(0.5, 1.5))  # Anti-Ban: Rastgele gecikme
+
+        def _do_get(session: requests.Session, verify: bool) -> Optional[str]:
+            try:
+                resp = session.get(
+                    url,
+                    timeout=_SCRAPE_TIMEOUT,
+                    stream=True,
+                    allow_redirects=True,
+                    verify=verify,
+                )
+                # Anti-Ban: Bot koruması varsa zorlama
+                if resp.status_code in (403, 406, 429):
+                    logger.debug("[EmailEnrich] Anti-bot [%s]: %s", resp.status_code, url)
+                    return None
+                resp.raise_for_status()
+
+                chunks: list[bytes] = []
+                total = 0
+                for chunk in resp.iter_content(chunk_size=8192, decode_unicode=False):
+                    total += len(chunk)
+                    chunks.append(chunk)
+                    if total >= _MAX_SCRAPE_BYTES:
+                        break
+
+                raw = b"".join(chunks)
+                encoding = resp.encoding or "utf-8"
+                return raw.decode(encoding, errors="replace")
+
+            except requests.exceptions.SSLError:
+                if verify:
+                    # SSL sertifikası bozuk KOBİ siteleri için yeni session + verify=False
+                    logger.warning(
+                        "[EmailEnrich] SSL doğrulama hatası, verify=False ile yeniden deneniyor: %s", url
+                    )
+                    fallback_session = _build_session()
+                    return _do_get(fallback_session, verify=False)
+                logger.debug("[EmailEnrich] SSL fallback da başarısız: %s", url)
                 return None
-                
-            resp.raise_for_status()
+            except Exception as exc:
+                logger.debug("[EmailEnrich] Fetch hatası [%s]: %s", url, exc)
+                return None
 
-            chunks: list[bytes] = []
-            total = 0
-            for chunk in resp.iter_content(chunk_size=8192, decode_unicode=False):
-                total += len(chunk)
-                chunks.append(chunk)
-                if total >= _MAX_SCRAPE_BYTES:
-                    break
-
-            raw = b"".join(chunks)
-            encoding = resp.encoding or "utf-8"
-            return raw.decode(encoding, errors="replace")
-
-        except Exception as exc:
-            logger.debug("[EmailEnrich] Fetch hatası [%s]: %s", url, exc)
-            return None
+        return _do_get(self._session, verify=True)
 
 
 # ---------------------------------------------------------------------------
@@ -561,12 +691,13 @@ class EmailEnrichmentClient:
 def _build_session() -> requests.Session:
     session = requests.Session()
     # Anti-Ban: Gerçek bir Chrome tarayıcısı gibi davran
+    # Not: "br" (Brotli) kaldırıldı — Python brotli paketi olmadan içeriği çözümleyemeyiz
     session.headers.update(
         {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
             "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Encoding": "gzip, deflate",
             "Connection": "keep-alive",
             "Upgrade-Insecure-Requests": "1",
             "Sec-Fetch-Dest": "document",
@@ -654,6 +785,45 @@ def _extract_best_email(text: str, source_url: str = "") -> Optional[str]:
 
     result = (preferred or domain_local or clean)[0]
     return result.lower()
+
+
+def _normalize_phone(raw: str) -> Optional[str]:
+    """
+    Ham telefon metnini standart Türk formatına dönüştürür: 0XXX XXX XX XX
+    Geçersiz uzunluktaki numaraları None döndürür.
+    """
+    digits = re.sub(r"\D", "", raw)
+    # +905321234567 veya 00905321234567 → 05321234567
+    if digits.startswith("90") and len(digits) == 12:
+        digits = "0" + digits[2:]
+    elif digits.startswith("0090") and len(digits) == 14:
+        digits = "0" + digits[4:]
+    # 5321234567 (10 hane, 0 yok) → 05321234567
+    if len(digits) == 10 and digits[0] != "0":
+        digits = "0" + digits
+    if len(digits) != 11 or digits[0] != "0":
+        return None
+    return f"{digits[0:4]} {digits[4:7]} {digits[7:9]} {digits[9:11]}"
+
+
+def _extract_best_phone(text: str) -> Optional[str]:
+    """
+    Metinden en iyi Türk telefon numarasını çıkarır.
+    Öncelik: mobil hatlar (05xx) → diğer.
+    """
+    matches = _PHONE_RE.findall(text or "")
+    phones: list[str] = []
+    seen: set[str] = set()
+    for raw in matches:
+        normalized = _normalize_phone(raw.strip())
+        if normalized and normalized not in seen:
+            seen.add(normalized)
+            phones.append(normalized)
+    if not phones:
+        return None
+    # Mobil hatlara (05xx) öncelik ver
+    mobile = [p for p in phones if p.startswith("05")]
+    return (mobile or phones)[0]
 
 
 def _get_grounding_urls(response) -> list[str]:

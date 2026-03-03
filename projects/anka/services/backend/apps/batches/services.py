@@ -744,11 +744,12 @@ class BatchProcessor:
 
     def _stage_enrich_emails(self, items: List) -> None:
         """
-        Stage 4: Email Enrichment
-        BatchItem.data'ya 'email' anahtarı yazar.
-        Strateji 1 – website biliniyorsa: HTTP scrape (0 Gemini token)
-        Strateji 2 – website yoksa: Gemini Search Grounding → HTTP scrape (1 Gemini call)
-        Hatalar batch'i durdurmaz; o kayıt için email boş kalır.
+        Stage 4: Email + Telefon Enrichment (web scraping öncelikli, Gemini son çare)
+        BatchItem.data'ya 'email' ve gerekirse 'nationalPhoneNumber' anahtarı yazar.
+        S1 – website biliniyorsa: HTTP scrape (0 Gemini token)
+        S2 – website yoksa: Gemini ile resmi site bul → scrape (1 Gemini call)
+        S3 – hâlâ email yok: Gemini grounding doğrudan email araması (son çare)
+        Hatalar batch'i durdurmaz; o kayıt için email/telefon boş kalır.
         """
         stage4_api_cap = _env_int("ANKA_STAGE4_MAX_API_CALLS", 80)
         email_client = EmailEnrichmentClient()
@@ -756,7 +757,7 @@ class BatchProcessor:
         gemini_calls = 0
 
         for idx, item in enumerate(items):
-            # Eğer email zaten bulunduysa tekrar deneme (maliyet/tekrar çağrı önleme)
+            # Email zaten bulunduysa tekrar deneme
             if (item.data or {}).get("email"):
                 continue
 
@@ -768,24 +769,30 @@ class BatchProcessor:
                 )
                 break
 
-            # Mevcut website yoksa Gemini ile resmi site bulma denenebilir
             website = item.data.get("website_uri") or item.data.get("websiteUri") or ""
+            existing_phone = item.data.get("nationalPhoneNumber") or ""
 
             try:
-                email = email_client.enrich(
+                contacts = email_client.enrich_contacts(
                     firm_name=item.firm_name or "",
                     address=item.data.get("formatted_address") or "",
                     website_url=website or None,
+                    existing_phone=existing_phone or None,
                 )
 
-                # client son çağrıda bir website keşfettiyse kaydet (UI/export için değerli)
+                email = contacts.get("email")
+                phone_from_scrape = contacts.get("phone")
+
+                # client son çağrıda bir website keşfettiyse kaydet
                 discovered = getattr(email_client, "last_discovered_website", None)
                 if discovered and not website:
                     item.data["website_uri"] = discovered
                     item.data["websiteUri"] = discovered
 
-                # gemini çağrı sayacını client metadata’sından topla
+                # Gemini çağrı sayacını client metadata'sından topla
                 gemini_calls += int(getattr(email_client, "last_gemini_calls", 0) or 0)
+
+                data_changed = bool(discovered and not website)
 
                 if email:
                     item.data["email"] = email
@@ -795,8 +802,8 @@ class BatchProcessor:
                         item.data["email_source_url"] = src_url
                     if src_type:
                         item.data["email_source_type"] = src_type
-                    item.save(update_fields=["data", "updated_at"])
                     found_count += 1
+                    data_changed = True
                     logger.debug(
                         "Batch %s: Stage 4 email found [%s] → %s (source: %s)",
                         self.batch.id,
@@ -804,18 +811,32 @@ class BatchProcessor:
                         email,
                         src_type or "unknown",
                     )
-                elif discovered and not website:
-                    # email bulunamasa bile keşfedilen website’i sakla
+
+                # Web scraping'den telefon bulunduysa ve item'da henüz yoksa kaydet
+                if phone_from_scrape and not existing_phone:
+                    item.data["nationalPhoneNumber"] = phone_from_scrape
+                    phone_src_type = getattr(email_client, "last_phone_source_type", None)
+                    item.data["phone_source_type"] = phone_src_type or "scrape"
+                    data_changed = True
+                    logger.debug(
+                        "Batch %s: Stage 4 phone found [%s] → %s (source: %s)",
+                        self.batch.id,
+                        item.firm_name,
+                        phone_from_scrape,
+                        phone_src_type or "scrape",
+                    )
+
+                if data_changed:
                     item.save(update_fields=["data", "updated_at"])
 
             except Exception as exc:
                 logger.warning(
-                    "Batch %s: Stage 4 email error for %s: %s",
+                    "Batch %s: Stage 4 error for %s: %s",
                     self.batch.id,
                     item.firm_name,
                     exc,
                 )
-                # Hata durumunda gemini sayacını artırmak yerine log'a bırakıyoruz.
+                # Hata durumunda gemini sayıcısını artırmak yerine log'a bırakıyoruz.
 
         self.batch.emails_enriched = found_count
         self.batch.save(update_fields=["emails_enriched", "updated_at"])
