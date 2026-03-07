@@ -1,18 +1,24 @@
 import Seo from '../components/Seo';
+import dynamic from 'next/dynamic';
 import { GetStaticProps } from 'next';
-import { Suspense, lazy, useState } from 'react';
+import { useMemo, useState } from 'react';
+import DeferredSection from '../components/DeferredSection';
 import Layout from '../components/Layout';
 import MethodologySection from '../components/LandingPage/MethodologySection';
 import FAQSection from '../components/LandingPage/FAQSection';
 import { homepageFaqs } from '../components/LandingPage/FAQSection';
 import DisclaimerSection from '../components/LandingPage/DisclaimerSection';
-import CalculationInsights from '../components/CalculationInsights';
 import { useGA4 } from '../lib/useGA4';
 import styles from '../styles/HomePage.module.css';
 import planData from '../data/cevre-duzeni-planlari.json';
 
-// Lazy load ContactForm for better performance
-const ContactForm = lazy(() => import('../components/ContactForm'));
+const DeferredCalculationInsights = dynamic(() => import('../components/CalculationInsights'), {
+  ssr: false,
+});
+
+const DeferredContactForm = dynamic(() => import('../components/ContactForm'), {
+  ssr: false,
+});
 
 interface HomePageProps {
   yapiTurleri: unknown[];
@@ -26,7 +32,7 @@ type NavigationItem = {
   description: string;
   href: string;
   trackingType?: string;
-  children?: Array<{ title: string; href: string }>;
+  provinceList?: string[];
 };
 
 type NavigationSection = {
@@ -40,6 +46,7 @@ type NavigationSection = {
 export default function HomePage({ pageTitle, pageDescription }: Omit<HomePageProps, 'yapiTurleri'>) {
   const ga4 = useGA4();
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [expandedProvinceGroups, setExpandedProvinceGroups] = useState<Record<string, boolean>>({});
 
   const normalizeSlugValue = (value: string): string => {
     return value
@@ -68,12 +75,11 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
     });
   };
 
-  const coveredProvinceLinks = Array.from(new Set(planData.planlar.flatMap((plan) => plan.iller)))
-    .sort((firstProvince, secondProvince) => firstProvince.localeCompare(secondProvince, 'tr-TR'))
-    .map((province) => ({
-      title: province,
-      href: `/cevre-duzeni-planlari/il/${normalizeSlugValue(province)}`,
-    }));
+  const coveredProvinceNames = useMemo(
+    () => Array.from(new Set(planData.planlar.flatMap((plan) => plan.iller)))
+      .sort((firstProvince, secondProvince) => firstProvince.localeCompare(secondProvince, 'tr-TR')),
+    []
+  );
 
   const navigationSections: NavigationSection[] = [
     {
@@ -148,7 +154,7 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
           title: '1/100.000 Ölçekli Çevre Düzeni Planlarında Tarımsal Hükümler',
           description: '20 bölge, 55+ il için tarımsal yapılaşma koşulları ve emsal değerleri - İnteraktif harita',
           href: '/cevre-duzeni-planlari',
-          children: coveredProvinceLinks,
+          provinceList: coveredProvinceNames,
         },
       ],
     },
@@ -156,6 +162,13 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
 
   const toggleSection = (sectionId: string) => {
     setActiveSection((current) => (current === sectionId ? null : sectionId));
+  };
+
+  const toggleProvinceGroup = (itemKey: string) => {
+    setExpandedProvinceGroups((current) => ({
+      ...current,
+      [itemKey]: !current[itemKey],
+    }));
   };
 
   // Structured Data for the homepage
@@ -299,7 +312,7 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
                             {section.items.map((item) => {
                               const itemKey = `${section.id}-${item.href}`;
 
-                              if (!item.children || item.children.length === 0) {
+                              if (!item.provinceList || item.provinceList.length === 0) {
                                 return (
                                   <a
                                     key={itemKey}
@@ -316,6 +329,11 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
 
                               return (
                                 <div key={itemKey} className={`${styles.calculationCard} ${styles.calculationCardWithChildren}`}>
+                                  {(() => {
+                                    const isProvinceGroupOpen = Boolean(expandedProvinceGroups[itemKey]);
+
+                                    return (
+                                      <>
                                   <a
                                     href={item.href}
                                     className={styles.calculationCardMainLink}
@@ -326,20 +344,43 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
                                     <p>{item.description}</p>
                                   </a>
 
-                                  <details className={styles.nestedDetails}>
-                                    <summary className={styles.nestedSummary}>🏛️ Kapsamdaki Tüm İller ({item.children.length})</summary>
-                                    <div className={styles.provinceLinks}>
-                                      {item.children.map((childLink) => (
-                                        <a
-                                          key={childLink.href}
-                                          href={childLink.href}
-                                          className={styles.provinceLink}
-                                        >
-                                          {childLink.title}
-                                        </a>
-                                      ))}
-                                    </div>
-                                  </details>
+                                  <div className={styles.nestedDetails}>
+                                    <button
+                                      type="button"
+                                      className={styles.nestedSummaryButton}
+                                      onClick={() => toggleProvinceGroup(itemKey)}
+                                      aria-expanded={isProvinceGroupOpen}
+                                      aria-controls={`${itemKey}-province-list`}
+                                    >
+                                      <span className={styles.nestedSummaryLabel}>
+                                        🏛️ Kapsamdaki Tüm İller ({item.provinceList.length})
+                                      </span>
+                                      <span className={styles.nestedSummaryChevron} aria-hidden="true">
+                                        {isProvinceGroupOpen ? '−' : '+'}
+                                      </span>
+                                    </button>
+
+                                    {isProvinceGroupOpen && (
+                                      <div id={`${itemKey}-province-list`} className={styles.provinceLinks}>
+                                        {item.provinceList.map((province) => {
+                                          const href = `/cevre-duzeni-planlari/il/${normalizeSlugValue(province)}`;
+
+                                          return (
+                                            <a
+                                              key={href}
+                                              href={href}
+                                              className={styles.provinceLink}
+                                            >
+                                              {province}
+                                            </a>
+                                          );
+                                        })}
+                                      </div>
+                                    )}
+                                  </div>
+                                      </>
+                                    );
+                                  })()}
                                 </div>
                               );
                             })}
@@ -352,17 +393,19 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
 
               <nav className={styles.botSitemap} aria-label="Ana sayfa kapsamındaki tüm alt bağlantılar">
                 {navigationSections.flatMap((section) =>
-                  section.items.flatMap((item) => [
-                    <a key={`bot-${section.id}-${item.href}`} href={item.href}>{item.title}</a>,
-                    ...(item.children || []).map((childLink) => (
-                      <a key={`bot-${section.id}-${childLink.href}`} href={childLink.href}>{childLink.title}</a>
-                    )),
-                  ])
+                  section.items.map((item) => (
+                    <a key={`bot-${section.id}-${item.href}`} href={item.href}>{item.title}</a>
+                  ))
                 )}
               </nav>
             </section>
 
-            <CalculationInsights />
+            <DeferredSection
+              minHeight={240}
+              placeholder={<div className={styles.lazySectionPlaceholder} aria-hidden="true" />}
+            >
+              <DeferredCalculationInsights />
+            </DeferredSection>
 
             <DisclaimerSection />
           </div>
@@ -370,11 +413,13 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
           <MethodologySection />
 
           <FAQSection />
-          
-          {/* Contact Form */}
-          <Suspense fallback={<div>Yükleniyor...</div>}>
-            <ContactForm />
-          </Suspense>
+
+          <DeferredSection
+            minHeight={520}
+            placeholder={<div className={`${styles.lazySectionPlaceholder} ${styles.lazySectionPlaceholderLarge}`} aria-hidden="true" />}
+          >
+            <DeferredContactForm />
+          </DeferredSection>
         </div>
       </Layout>
     </>

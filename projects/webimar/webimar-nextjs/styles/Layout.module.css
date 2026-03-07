@@ -236,11 +236,11 @@
     rgba(255,255,255,0.1) 100%
   );
   border-radius: 20px;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(5px);
   border: 1px solid rgba(255,255,255,0.2);
   box-shadow: 
-    0 8px 32px rgba(0,0,0,0.1),
-    inset 0 2px 8px rgba(255,255,255,0.2);
+    0 6px 20px rgba(0,0,0,0.08),
+    inset 0 1px 6px rgba(255,255,255,0.16);
   overflow: hidden;
 }
 
@@ -260,8 +260,8 @@
       transparent 3px,
       transparent 30px
     );
-  animation: modernWave 12s linear infinite;
-  opacity: 0.6;
+  animation: modernWave 20s linear infinite;
+  opacity: 0.35;
 }
 
 .waveBackground::after {
@@ -277,13 +277,22 @@
     rgba(255, 255, 255, 0.4) 50%,
     transparent 70%
   );
-  animation: sparkle 8s ease-in-out infinite;
-  opacity: 0.3;
+  animation: sparkle 12s ease-in-out infinite;
+  opacity: 0.18;
 }
 
 @keyframes modernWave {
   0% { background-position: 0 0; }
   100% { background-position: 60px 60px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waveBackground::before,
+  .waveBackground::after,
+  .modernHeaderTitle,
+  .modernHeaderTitle::after {
+    animation: none !important;
+  }
 }
 
 @keyframes sparkle {
@@ -359,6 +368,55 @@
 @keyframes titleUnderline {
   0% { width: 60%; opacity: 0.6; }
   100% { width: 90%; opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .headerContent {
+    backdrop-filter: none;
+  }
+
+  .waveBackground {
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.14) 0%,
+      rgba(187,225,250,0.16) 55%,
+      rgba(50,130,184,0.12) 100%
+    );
+    backdrop-filter: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  }
+
+  .waveBackground::before,
+  .waveBackground::after,
+  .modernHeaderTitle,
+  .modernHeaderTitle::after {
+    animation: none;
+  }
+
+  .waveBackground::before {
+    background: linear-gradient(
+      135deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.14) 50%,
+      transparent 100%
+    );
+    opacity: 0.18;
+  }
+
+  .waveBackground::after {
+    display: none;
+  }
+
+  .modernHeaderTitle {
+    background-size: 100% auto;
+    filter: none;
+    text-shadow: 0 1px 2px rgba(0, 60, 120, 0.14);
+  }
+
+  .modernHeaderTitle::after {
+    width: 72%;
+    opacity: 0.65;
+  }
 }
 
 .userActions {

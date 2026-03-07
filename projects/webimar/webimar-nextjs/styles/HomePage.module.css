@@ -262,6 +262,32 @@
   display: none;
 }
 
+.nestedSummaryButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #2c3e50;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nestedSummaryLabel {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.nestedSummaryChevron {
+  flex-shrink: 0;
+  color: #8b4513;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
 .provinceLinks {
   margin-top: 10px;
   display: grid;
@@ -292,6 +318,19 @@
   width: 1px;
   height: 1px;
   overflow: hidden;
+}
+
+.lazySectionPlaceholder {
+  min-height: 240px;
+  margin-bottom: 32px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.78) 0%, rgba(244,247,249,0.94) 100%);
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.lazySectionPlaceholderLarge {
+  min-height: 520px;
 }
 
 .insightsSection {
@@ -815,6 +854,10 @@
     font-size: 0.82rem;
   }
 
+  .nestedSummaryLabel {
+    font-size: 0.82rem;
+  }
+
   .provinceLinks {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
@@ -1007,6 +1050,10 @@
   }
 
   .nestedSummary {
+    font-size: 0.76rem;
+  }
+
+  .nestedSummaryLabel {
     font-size: 0.76rem;
   }
 

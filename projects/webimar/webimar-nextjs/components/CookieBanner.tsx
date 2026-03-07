@@ -37,11 +37,33 @@ const CookieBanner: React.FC = () => {
     }
   }, []);
 
+  const scheduleAnalyticsBootstrap = () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const loadAnalytics = () => {
+      (window as any).__loadGoogleAnalytics?.();
+    };
+
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(loadAnalytics, { timeout: 5000 });
+      return;
+    }
+
+    setTimeout(loadAnalytics, 2500);
+  };
+
   const enableAnalytics = () => {
+    scheduleAnalyticsBootstrap();
+
     // Google Analytics'i etkinleştir
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('consent', 'update', {
         analytics_storage: 'granted',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
       });
     }
   };
@@ -51,6 +73,9 @@ const CookieBanner: React.FC = () => {
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('consent', 'update', {
         analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
       });
     }
   };

@@ -74,18 +74,26 @@ export default class MyDocument extends Document {
                   __html: `
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}
-                    gtag('js', new Date());
-                    
-                    // Lazy load GTM script after page interaction
-                    function loadGTMScript() {
+                    window.gtag = window.gtag || gtag;
+
+                    window.__loadGoogleAnalytics = function loadGTMScript() {
                       if (window.gtmLoaded) return;
                       window.gtmLoaded = true;
-                      
+
+                      gtag('js', new Date());
+                      gtag('consent', 'default', {
+                        analytics_storage: 'denied',
+                        ad_storage: 'denied',
+                        ad_user_data: 'denied',
+                        ad_personalization: 'denied',
+                        wait_for_update: 500
+                      });
+
                       const script = document.createElement('script');
                       script.async = true;
                       script.src = 'https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}';
                       document.head.appendChild(script);
-                      
+
                       script.onload = function() {
                         gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
                           page_title: document.title,
@@ -95,15 +103,7 @@ export default class MyDocument extends Document {
                           cookie_flags: 'SameSite=None;Secure'
                         });
                       };
-                    }
-                    
-                    // Load GTM on first user interaction
-                    ['mousedown', 'touchstart', 'scroll'].forEach(event => {
-                      document.addEventListener(event, loadGTMScript, { once: true, passive: true });
-                    });
-                    
-                    // Fallback: load after 3 seconds if no interaction
-                    setTimeout(loadGTMScript, 3000);
+                    };
                   `,
                 }}
               />
@@ -144,10 +144,6 @@ export default class MyDocument extends Document {
             }}
           />
 
-          {/* Preconnect for performance */}
-          <link rel="preconnect" href="https://www.google-analytics.com" />
-          <link rel="preconnect" href="https://www.googletagmanager.com" />
-          
           {/* Leaflet CSS - Local (Performance Optimized) */}
           <link rel="preload" href="/leaflet.css" as="style" />
           <link rel="stylesheet" href="/leaflet.css" />
