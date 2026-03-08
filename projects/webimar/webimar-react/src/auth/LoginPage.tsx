@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import { navigateToNextJs } from '../utils/environment';
 
-const LoginPageContainer = styled.div`
+const LoginPageContainer = styled.div<{ $backgroundUrl: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  background: #f7f3f0 url('/backgrounds/girisyap-arka-fon.webp') center center/cover no-repeat;
+  background: #f7f3f0 url(${props => props.$backgroundUrl}) center center/cover no-repeat;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -42,6 +42,10 @@ const Title = styled.h1`
 const LoginPage: React.FC = () => {
   const { state } = useAuth();
   const navigate = useNavigate();
+  const backgroundUrl = typeof window !== 'undefined'
+    && window.location.pathname.startsWith('/hesaplama')
+      ? '/hesaplama/backgrounds/girisyap-arka-fon.webp'
+      : '/backgrounds/girisyap-arka-fon.webp';
 
   useEffect(() => {
     if (state.isAuthenticated) {
@@ -54,7 +58,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <LoginPageContainer>
+    <LoginPageContainer $backgroundUrl={backgroundUrl}>
       <LoginCard>
         <LoginForm />
         <div style={{ textAlign: 'center', marginTop: 20 }}>

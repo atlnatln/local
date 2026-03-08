@@ -8,80 +8,11 @@ export default function GoogleCallbackPage() {
   useEffect(() => {
     if (!router.isReady) return;
 
-    // URL parametrelerinden token'ları al
-    const { access, refresh, requires_approval, user_email, error, message } = router.query;
+    const queryString = window.location.search;
+    const bridgeUrl = `${window.location.origin}/hesaplama/auth/google/callback${queryString}`;
 
-    if (error) {
-      console.error('Google OAuth Hata:', error, message);
-      // Hata durumunda ana sayfaya yönlendir
-      router.push('/?auth_error=' + encodeURIComponent(error as string));
-      return;
-    }
-
-    if (requires_approval === 'true') {
-      // Admin onay bekleyen kullanıcı
-      console.log('Kullanıcı admin onay bekliyor:', user_email);
-      router.push('/?requires_approval=true&email=' + encodeURIComponent(user_email as string || ''));
-      return;
-    }
-
-    if (access && refresh) {
-      // Token'ları localStorage'a kaydet
-      try {
-        localStorage.setItem('access_token', access as string);
-        localStorage.setItem('refresh_token', refresh as string);
-        
-        // Kullanıcı bilgilerini çek ve state'i güncelle
-        const fetchUserAndRedirect = async () => {
-          try {
-            const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://tarimimar.com.tr/api';
-            const response = await fetch(`${API_BASE_URL}/accounts/me/`, {
-              headers: {
-                'Authorization': `Bearer ${access}`
-              }
-            });
-
-            if (response.ok) {
-              const userData = await response.json();
-              localStorage.setItem('user', JSON.stringify(userData));
-              
-              // Layout.tsx için shared state güncelle
-              const authState = {
-                isAuthenticated: true,
-                user: userData,
-                timestamp: new Date().getTime()
-              };
-              localStorage.setItem('webimar_auth_state', JSON.stringify(authState));
-              console.log('✅ User data fetched and state updated:', userData);
-            } else {
-              console.error('⚠️ Failed to fetch user data:', response.status);
-            }
-          } catch (err) {
-            console.error('💥 Error fetching user data:', err);
-          } finally {
-            // Başarılı giriş sonrası ana sayfaya yönlendir
-            const returnUrl = localStorage.getItem('returnUrl') || sessionStorage.getItem('returnUrl') || '/';
-            
-            // Return URL'yi temizle
-            localStorage.removeItem('returnUrl');
-            sessionStorage.removeItem('returnUrl');
-            
-            console.log('Google OAuth başarılı - Yönlendiriliyor:', returnUrl);
-            router.push(returnUrl);
-          }
-        };
-
-        fetchUserAndRedirect();
-        
-      } catch (error) {
-        console.error('Token kaydetme hatası:', error);
-        router.push('/?auth_error=token_storage');
-      }
-    } else {
-      console.error('Google OAuth: Token bulunamadı');
-      router.push('/?auth_error=no_tokens');
-    }
-  }, [router.isReady, router.query]);
+    window.location.replace(bridgeUrl);
+  }, [router.isReady]);
 
   return (
     <>
@@ -109,7 +40,7 @@ export default function GoogleCallbackPage() {
         }} />
         
         <p style={{ color: '#6b7280', fontSize: '16px', margin: '0' }}>
-          Google giriş bilgileriniz işleniyor...
+          Giriş akışı React callback hattına devrediliyor...
         </p>
         
         <style jsx>{`

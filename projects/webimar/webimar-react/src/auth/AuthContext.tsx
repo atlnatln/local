@@ -1,7 +1,15 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback, ReactNode } from 'react';
 import { tokenStorage } from '../utils/tokenStorage';
 import { setAuthCookie, clearAuthCookie } from '../utils/authCookie';
-import { replaceToNextJs, navigateToNextJs } from '../utils/environment';
+import { navigateToNextJs } from '../utils/environment';
+import {
+  AUTH_CHANGE_EVENT,
+  AUTH_STORAGE_KEYS,
+  clearAuthSessionStorage,
+  persistAuthSession,
+  readSharedAuthState,
+  readStoredUser,
+} from '../utils/authSync';
 
 // Enhanced error types for better error handling
 export class APIError extends Error {
@@ -303,10 +311,10 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 const AuthContext = createContext<{
   state: AuthState;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   register: (userData: any) => Promise<void>;
   clearError: () => void;
-  checkAuthStatus: (forceRefresh?: boolean) => void;
+  checkAuthStatus: (forceRefresh?: boolean) => Promise<void>;
   // Helper methods for better UX
   isNetworkError: () => boolean;
   isAuthError: () => boolean;
@@ -321,6 +329,98 @@ interface AuthProviderProps {
 // Auth Provider Component
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+
+  const getApiBaseUrl = useCallback(() => {
+    if (typeof window !== 'undefined' && (window as any).WEBIMAR_API_BASE_URL) {
+      return (window as any).WEBIMAR_API_BASE_URL as string;
+    }
+
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}/api`;
+    }
+
+    return process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api';
+  }, []);
+
+  const finalizeLocalLogout = useCallback((reason: string, redirectToHome = true) => {
+    tokenStorage.clearAll();
+    clearAuthSessionStorage({ source: 'react', reason });
+
+    try {
+      clearAuthCookie();
+    } catch (cookieErr) {
+      console.warn('clearAuthCookie failed', cookieErr);
+    }
+
+    dispatch({ type: 'LOGOUT' });
+
+    if (redirectToHome && typeof window !== 'undefined') {
+      navigateToNextJs('/');
+    }
+  }, []);
+
+  const persistVerifiedSession = useCallback((params: {
+    accessToken: string;
+    refreshToken?: string | null;
+    user: User;
+    reason: string;
+  }) => {
+    persistAuthSession({
+      accessToken: params.accessToken,
+      refreshToken: params.refreshToken,
+      user: params.user,
+      source: 'react',
+      reason: params.reason,
+    });
+
+    try {
+      setAuthCookie(params.user?.email);
+    } catch (cookieErr) {
+      console.warn('setAuthCookie failed', cookieErr);
+    }
+
+    dispatch({
+      type: 'AUTH_SUCCESS',
+      payload: {
+        user: params.user,
+        token: params.accessToken,
+      },
+    });
+  }, []);
+
+  const refreshAccessToken = useCallback(async () => {
+    const refreshToken = tokenStorage.getRefreshToken();
+    if (!refreshToken) {
+      return null;
+    }
+
+    const response = await fetch(`${getApiBaseUrl()}/token/refresh/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    if (!data.access) {
+      return null;
+    }
+
+    tokenStorage.setAccessToken(data.access);
+    if (data.refresh) {
+      tokenStorage.setRefreshToken(data.refresh);
+    }
+
+    return {
+      accessToken: data.access as string,
+      refreshToken: (data.refresh || refreshToken) as string,
+    };
+  }, [getApiBaseUrl]);
 
   // Network status monitoring
   useEffect(() => {
@@ -349,142 +449,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
   }, []);
 
-  // Enhanced login function with comprehensive error handling
+  // Mail/şifre girişi production'da devre dışı
   const login = async (email: string, password: string) => {
     dispatch({ type: 'AUTH_START' });
-    
+
     try {
-      const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api';
-      
-      console.log('🔄 Login attempt:', { email, apiBase: API_BASE_URL });
-      
-      const response = await fetch(`${API_BASE_URL}/token/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: email, password }),
+      console.warn('Mail/şifre login akışı devre dışı.', {
+        email,
+        attemptedPassword: Boolean(password),
       });
 
-      if (!response.ok) {
-        let errorData;
-        try {
-          errorData = await response.json();
-          console.log('🚨 Login API Response Error Data:', errorData);
-        } catch (parseError) {
-          console.error('Failed to parse error response:', parseError);
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        console.error('🚨 Login API error:', { status: response.status, data: errorData });
-        
-        // Backend'den gelen hata mesajını detaylı debug
-        console.log('🔍 ERROR DATA STRUCTURE:', {
-          errorData,
-          detail: errorData.detail,
-          message: errorData.message,
-          error: errorData.error,
-          nonFieldErrors: errorData.non_field_errors
-        });
-        
-        // Backend'den gelen hata mesajını direkt kullan
-        const backendErrorMessage = errorData.detail || 
-                                   errorData.message || 
-                                   errorData.error || 
-                                   (Array.isArray(errorData.non_field_errors) ? errorData.non_field_errors[0] : errorData.non_field_errors);
-        console.log('🔍 FINAL BACKEND MESSAGE:', backendErrorMessage);
-        
-        const error = new Error(backendErrorMessage || `Login failed with status ${response.status}`);
-        (error as any).response = { status: response.status, data: errorData };
-        throw error;
-      }
-
-      const data = await response.json();
-      console.log('✅ Login successful, fetching user data...');
-      
-      // Token'ı localStorage'a kaydet
-      tokenStorage.setAccessToken(data.access);
-      tokenStorage.setRefreshToken(data.refresh);
-      
-      // User bilgilerini al
-      const userResponse = await fetch(`${API_BASE_URL}/accounts/me/`, {
-        headers: {
-          'Authorization': `Bearer ${data.access}`,
-        },
-      });
-      
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        console.log('✅ User data fetched successfully');
-        
-        // Token'ları ve user bilgilerini localStorage'a kaydet
-        tokenStorage.setUser(userData);
-        
-        // --- CRITICAL: Cross-app key compatibility ---
-        try {
-          // Next.js uygulamasının kontrol ettiği anahtar isimlerini de set et
-          localStorage.setItem('access_token', data.access);
-          localStorage.setItem('refresh_token', data.refresh);
-          localStorage.setItem('token', data.access);
-          localStorage.setItem('user', JSON.stringify(userData));
-        } catch (e) {
-          console.warn('localStorage write failed:', e);
-        }
-
-        // Shared auth state (mevcut uygulamalar kontrol ediyor)
-        try {
-          const authState = {
-            isAuthenticated: true,
-            user: userData,
-            timestamp: Date.now()
-          };
-          localStorage.setItem('webimar_auth_state', JSON.stringify(authState));
-        } catch (e) {
-          console.warn('webimar_auth_state write failed:', e);
-        }
-        // ----------------------------------------------
-        
-        // Next.js header görünürlüğü için auth cookie ayarla
-        try { setAuthCookie(userData?.email); } catch (cookieErr) { console.warn('setAuthCookie failed', cookieErr); }
-        dispatch({
-          type: 'AUTH_SUCCESS',
-          payload: {
-            user: userData,
-            token: data.access,
-          },
-        });
-        
-        console.log('🔄 [React] Auth state updated - login successful');
-        
-        // Login başarılı - önceki sayfaya veya ana sayfaya yönlendir
-        const returnUrl = localStorage.getItem('returnUrl') || sessionStorage.getItem('returnUrl');
-        localStorage.removeItem('returnUrl');
-        sessionStorage.removeItem('returnUrl');
-        
-        // Gecikmeli yönlendirme: storage write işlemlerinin tarayıcıda commit olmasına kısa süre izin ver
-        setTimeout(() => {
-          if (returnUrl && returnUrl !== '/login' && returnUrl !== '/register') {
-            window.location.replace(returnUrl);
-          } else {
-            replaceToNextJs('/');
-          }
-        }, 120); // 100-200ms arası küçük gecikme yarışmayı azaltır
-      } else {
-        console.error('🚨 Failed to fetch user data:', userResponse.status);
-        const userError = new Error('Kullanıcı bilgileri alınamadı');
-        (userError as any).response = { status: userResponse.status };
-        throw userError;
-      }
+      throw new APIError(
+        'Password login disabled',
+        410,
+        'GOOGLE_OAUTH_ONLY',
+        'Mail/şifre girişi kapalı. Lütfen Google ile giriş yapın.'
+      );
     } catch (error: any) {
       const normalizedError = normalizeError(error, 'LOGIN');
       console.error('🚨 Login error (normalized):', normalizedError);
-      
-      dispatch({ 
-        type: 'AUTH_FAILURE', 
-        payload: { 
-          error: normalizedError, 
-          context: 'LOGIN' 
-        } 
+
+      dispatch({
+        type: 'AUTH_FAILURE',
+        payload: {
+          error: normalizedError,
+          context: 'LOGIN'
+        }
       });
       throw normalizedError;
     }
@@ -561,61 +551,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // Logout function
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       const token = tokenStorage.getAccessToken();
+      const refreshToken = tokenStorage.getRefreshToken();
+
       if (token) {
-        // Backend'e logout isteği gönder
-        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api';
-        await fetch(`${API_BASE_URL}/accounts/me/logout/`, {
+        await fetch(`${getApiBaseUrl()}/accounts/me/logout/`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({ refresh_token: refreshToken }),
         });
       }
     } catch (error) {
       console.error('Logout API hatası:', error);
     } finally {
-      // Shared auth state - logout bildirimi
-      const authState = {
-        isAuthenticated: false,
-        user: null,
-        timestamp: Date.now()
-      };
-      
-      // Token storage temizle
-      tokenStorage.clearAll();
-      
-      // Hem React hem Next'in kontrol ettiği anahtarları temizle
-      try {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('token');
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-      } catch (e) {
-        console.warn('localStorage remove failed:', e);
-      }
-      
-      try {
-        localStorage.setItem('webimar_auth_state', JSON.stringify(authState));
-      } catch (e) {
-        console.warn('webimar_auth_state clear failed:', e);
-      }
-      
-      // Next.js ile senkron: auth cookie'lerini temizle
-      try { clearAuthCookie(); } catch (cookieErr) { console.warn('clearAuthCookie failed', cookieErr); }
-      
-      dispatch({ type: 'LOGOUT' });
-      
-      console.log('� [React] Auth state cleared - redirecting');
-      
-      // Direkt yönlendirme
-      navigateToNextJs('/');
+      finalizeLocalLogout('manual-logout');
     }
-  };
+  }, [finalizeLocalLogout, getApiBaseUrl]);
 
   // Clear error function
   const clearError = () => {
@@ -627,65 +583,163 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (typeof window === 'undefined') {
       return;
     }
-    
-    const token = tokenStorage.getAccessToken();
-    
-    if (!token) {
+
+    let token = tokenStorage.getAccessToken();
+    let refreshToken = tokenStorage.getRefreshToken();
+    const sharedState = readSharedAuthState<User>();
+    const sharedUser = readStoredUser<User>() || sharedState?.user || null;
+
+    if (!token && !refreshToken) {
+      if (state.isAuthenticated) {
+        dispatch({ type: 'LOGOUT' });
+      }
       return;
     }
 
-    // Cache kontrolü: son fetch'ten bu yana 5 dakika geçtiyse veya force refresh
-    const CACHE_DURATION = 5 * 60 * 1000; // 5 dakika
+    const CACHE_DURATION = 5 * 60 * 1000;
     const now = Date.now();
-    
+
     if (!forceRefresh && state.lastFetched && state.user && (now - state.lastFetched < CACHE_DURATION)) {
-      // Cache fresh, API call yapmaya gerek yok
       return;
     }
 
     dispatch({ type: 'SET_LOADING', payload: true });
-    
+
     try {
-      const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api';
-      const response = await fetch(`${API_BASE_URL}/accounts/me/`, {
+      if (!token && refreshToken) {
+        const refreshed = await refreshAccessToken();
+        if (!refreshed) {
+          finalizeLocalLogout('refresh-failed', false);
+          return;
+        }
+
+        token = refreshed.accessToken;
+        refreshToken = refreshed.refreshToken;
+      }
+
+      if (!token) {
+        finalizeLocalLogout('missing-access-token', false);
+        return;
+      }
+
+      let response = await fetch(`${getApiBaseUrl()}/accounts/me/`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
-      if (response.ok) {
-        const userData = await response.json();
-        
-        // User bilgilerini localStorage'a kaydet
-        tokenStorage.setUser(userData);
-        
+      if (response.status === 401 && refreshToken) {
+        const refreshed = await refreshAccessToken();
+        if (!refreshed) {
+          finalizeLocalLogout('refresh-failed', false);
+          return;
+        }
+
+        token = refreshed.accessToken;
+        refreshToken = refreshed.refreshToken;
+        response = await fetch(`${getApiBaseUrl()}/accounts/me/`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+      }
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          finalizeLocalLogout('session-expired', false);
+          return;
+        }
+
+        if (sharedUser && token) {
+          dispatch({
+            type: 'AUTH_SUCCESS',
+            payload: {
+              user: sharedUser,
+              token,
+            },
+          });
+          return;
+        }
+
+        finalizeLocalLogout('session-invalid', false);
+        return;
+      }
+
+      const userData = await response.json();
+      persistVerifiedSession({
+        accessToken: token,
+        refreshToken,
+        user: userData,
+        reason: forceRefresh ? 'forced-auth-check' : 'auth-check',
+      });
+    } catch (error) {
+      if (state.user && token) {
         dispatch({
           type: 'AUTH_SUCCESS',
           payload: {
-            user: userData,
+            user: state.user,
             token,
           },
         });
-        // Cookie'yi tazele (süre uzasın)
-        try { setAuthCookie(userData?.email); } catch {}
+      } else if (sharedUser && token) {
+        dispatch({
+          type: 'AUTH_SUCCESS',
+          payload: {
+            user: sharedUser,
+            token,
+          },
+        });
       } else {
-        // Token geçersiz, temizle
-        tokenStorage.clearAll();
-        try { clearAuthCookie(); } catch {}
-        dispatch({ type: 'LOGOUT' });
+        finalizeLocalLogout('network-auth-check-failed', false);
       }
-    } catch (error) {
-      tokenStorage.clearAll();
-      try { clearAuthCookie(); } catch {}
-      dispatch({ type: 'LOGOUT' });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
-  }, [state.lastFetched, state.user]);
+  }, [finalizeLocalLogout, getApiBaseUrl, persistVerifiedSession, refreshAccessToken, state.isAuthenticated, state.lastFetched, state.user]);
+
+  useEffect(() => {
+    const syncAuthSignal = async () => {
+      const sharedState = readSharedAuthState<User>();
+      const accessToken = tokenStorage.getAccessToken();
+
+      if (!sharedState) {
+        return;
+      }
+
+      if (!sharedState.isAuthenticated) {
+        if (state.isAuthenticated || accessToken || tokenStorage.getRefreshToken()) {
+          finalizeLocalLogout(sharedState.reason || 'external-logout');
+        }
+        return;
+      }
+
+      if (accessToken) {
+        await checkAuthStatus(true);
+      }
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (!event.key || Object.values(AUTH_STORAGE_KEYS).includes(event.key as typeof AUTH_STORAGE_KEYS[keyof typeof AUTH_STORAGE_KEYS])) {
+        void syncAuthSignal();
+      }
+    };
+
+    const handleAuthChange = () => {
+      void syncAuthSignal();
+    };
+
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener(AUTH_CHANGE_EVENT, handleAuthChange as EventListener);
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener(AUTH_CHANGE_EVENT, handleAuthChange as EventListener);
+    };
+  }, [checkAuthStatus, finalizeLocalLogout, state.isAuthenticated]);
 
   // App başladığında auth durumunu kontrol et
   useEffect(() => {
-    checkAuthStatus();
+    void checkAuthStatus();
   }, [checkAuthStatus]);
 
   // Helper methods for better UX

@@ -1,56 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Seo from '../components/Seo';
 import Layout from '../components/Layout';
 import styles from '../styles/AccountPage.module.css';
+import { AuthUser, clearAuthSession, logoutFromBackend, resolveAuthenticatedSession } from '../lib/authSync';
 
 const AccountPage: React.FC = () => {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Kullanıcı bilgilerini localStorage'dan al
-    const checkAuth = () => {
+    const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('access_token') || localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
+        const session = await resolveAuthenticatedSession();
 
-        if (!token) {
-          // Giriş yapılmamışsa login sayfasına yönlendir
-          router.push('/login');
+        if (!session.isAuthenticated || !session.user) {
+          await router.push('/login');
           return;
         }
 
-        if (userData) {
-          const parsedUser = JSON.parse(userData);
-          setUser(parsedUser);
-        } else {
-          // User data yoksa varsayılan oluştur
-          setUser({ email: 'authenticated', username: 'authenticated' });
-        }
+        setUser(session.user);
       } catch (error) {
         console.error('Auth check error:', error);
-        router.push('/login');
+        await router.push('/login');
       } finally {
         setIsLoading(false);
       }
     };
 
-    checkAuth();
+    void checkAuth();
   }, [router]);
 
-  const handleLogout = () => {
-    // Tüm auth bilgilerini temizle
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('webimar_auth_state');
-
-    // Ana sayfaya yönlendir
-    router.push('/');
+  const handleLogout = async () => {
+    try {
+      await logoutFromBackend();
+    } finally {
+      clearAuthSession({ reason: 'manual-logout' });
+      await router.replace('/');
+    }
   };
 
   if (isLoading) {

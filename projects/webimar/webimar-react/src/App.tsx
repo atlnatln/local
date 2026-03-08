@@ -108,9 +108,16 @@ const App: React.FC = () => {
   // Runtime environment variables kullan (window._webimar_env)
   // @ts-ignore
   const envVars = window._webimar_env || {};
-  const basename = envVars.REACT_APP_ROUTER_BASENAME !== undefined 
+  const configuredBasename = envVars.REACT_APP_ROUTER_BASENAME !== undefined 
     ? envVars.REACT_APP_ROUTER_BASENAME 
     : '/hesaplama';
+
+  const basename = configuredBasename
+    && typeof window !== 'undefined'
+    && !window.location.pathname.startsWith(`${configuredBasename}/`)
+    && window.location.pathname !== configuredBasename
+      ? ''
+      : configuredBasename;
 
   return (
     <HelmetProvider>

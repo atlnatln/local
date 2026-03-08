@@ -15,6 +15,7 @@ from datetime import timedelta
 import os
 from django.db import transaction
 import logging
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from accounts.models import UserProfile, UserSession, SecurityEvent
 from accounts.serializers import UserDetailSerializer, UserProfileSerializer, UserSessionSerializer
 from accounts.utils import log_user_activity, update_user_session, log_security_event
@@ -350,19 +351,35 @@ def terminate_session(request, session_key):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout(request):
-    """Kullanıcı çıkış işlemi - mevcut oturumu sonlandır"""
+    """Kullanıcı çıkış işlemi - mevcut oturumu sonlandır ve mümkünse refresh token'ı iptal et."""
     try:
-        # Mevcut request'in session_key'ini bul
         current_session_key = request.session.session_key
-        
-        # Session'ı pasifleştir
         from accounts.utils import deactivate_user_sessions_on_logout
         deactivated_count = deactivate_user_sessions_on_logout(
             user=request.user, 
             session_key=current_session_key
         )
+
+        refresh_token = request.data.get('refresh_token') or request.data.get('refresh')
+        refresh_revoked = False
+        refresh_revoke_detail = 'refresh_token_missing'
+
+        if refresh_token:
+            try:
+                refresh = RefreshToken(refresh_token)
+                refresh.blacklist()
+                refresh_revoked = True
+                refresh_revoke_detail = 'refresh_token_blacklisted'
+            except AttributeError:
+                refresh_revoke_detail = 'token_blacklist_not_configured'
+                logger.warning('Logout sırasında refresh token blacklist yapılandırması aktif değil.')
+            except TokenError as token_error:
+                refresh_revoke_detail = f'refresh_token_invalid:{token_error}'
+                logger.warning('Logout sırasında refresh token iptal edilemedi: %s', token_error)
+            except Exception as revoke_error:
+                refresh_revoke_detail = f'refresh_token_revoke_failed:{revoke_error}'
+                logger.exception('Logout sırasında refresh token iptalinde beklenmeyen hata oluştu.')
         
-        # Kullanıcı aktivitesini logla
         log_user_activity(
             user=request.user,
             activity_type='logout',
@@ -371,12 +388,14 @@ def logout(request):
         )
         
         return Response({
-            'detail': 'Çıkış işlemi başarılı.',
             'detail': 'Oturum sonlandırıldı.',
-            'deactivated_sessions': deactivated_count
+            'deactivated_sessions': deactivated_count,
+            'refresh_revoked': refresh_revoked,
+            'refresh_revoke_detail': refresh_revoke_detail,
         })
         
     except Exception as e:
+        logger.exception('Logout sırasında hata oluştu.')
         return Response({
             'detail': 'Çıkış işlemi sırasında hata oluştu.',
             'error': str(e)

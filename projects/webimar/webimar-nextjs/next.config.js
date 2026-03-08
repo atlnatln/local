@@ -22,7 +22,6 @@ const nextConfig = {
   compress: true,
   
   // Performance optimizations
-  swcMinify: true, // Use SWC instead of Terser for faster builds
   modularizeImports: {
     // Tree shake large libraries
     'react-bootstrap': {

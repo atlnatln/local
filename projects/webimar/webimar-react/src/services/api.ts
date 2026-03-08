@@ -1,6 +1,9 @@
 // API Service for Webimar Calculation Endpoints
 import axios from 'axios';
 import { tokenStorage } from '../utils/tokenStorage';
+import { clearAuthCookie } from '../utils/authCookie';
+import { clearAuthSessionStorage } from '../utils/authSync';
+import { navigateToNextJs } from '../utils/environment';
 import { CalculationResult, StructureType, STRUCTURE_TYPE_TO_ID } from '../types';
 
 console.log('🔧 API SERVICE FILE LOADING - DYNAMIC VERSION 2.0');
@@ -92,7 +95,13 @@ api.interceptors.response.use(
         return api(original);
       } catch (refreshError) {
         tokenStorage.clearAll();
-        window.location.href = '/giris';
+        clearAuthSessionStorage({ source: 'react', reason: 'api-refresh-failed' });
+        try {
+          clearAuthCookie();
+        } catch {
+          // ignore cookie cleanup failures
+        }
+        navigateToNextJs('/');
         return Promise.reject(refreshError);
       }
     }

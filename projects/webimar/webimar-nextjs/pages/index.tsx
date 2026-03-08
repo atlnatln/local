@@ -1,13 +1,11 @@
 import Seo from '../components/Seo';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { GetStaticProps } from 'next';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import DeferredSection from '../components/DeferredSection';
 import Layout from '../components/Layout';
-import MethodologySection from '../components/LandingPage/MethodologySection';
-import FAQSection from '../components/LandingPage/FAQSection';
 import { homepageFaqs } from '../components/LandingPage/FAQSection';
-import DisclaimerSection from '../components/LandingPage/DisclaimerSection';
 import { useGA4 } from '../lib/useGA4';
 import styles from '../styles/HomePage.module.css';
 import planData from '../data/cevre-duzeni-planlari.json';
@@ -19,6 +17,12 @@ const DeferredCalculationInsights = dynamic(() => import('../components/Calculat
 const DeferredContactForm = dynamic(() => import('../components/ContactForm'), {
   ssr: false,
 });
+
+const DeferredMethodologySection = dynamic(() => import('../components/LandingPage/MethodologySection'));
+
+const DeferredFAQSection = dynamic(() => import('../components/LandingPage/FAQSection'));
+
+const DeferredDisclaimerSection = dynamic(() => import('../components/LandingPage/DisclaimerSection'));
 
 interface HomePageProps {
   yapiTurleri: unknown[];
@@ -43,28 +47,31 @@ type NavigationSection = {
   items: NavigationItem[];
 };
 
+const normalizeSlugValue = (value: string): string => {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ı/g, 'i')
+    .replace(/İ/g, 'i')
+    .replace(/I/g, 'i')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+};
+
+const getStructureUrl = (urlSlug: string) => {
+  return `/${urlSlug}`;
+};
+
+const coveredProvinceNames = Array.from(new Set(planData.planlar.flatMap((plan) => plan.iller)))
+  .sort((firstProvince, secondProvince) => firstProvince.localeCompare(secondProvince, 'tr-TR'));
+
 export default function HomePage({ pageTitle, pageDescription }: Omit<HomePageProps, 'yapiTurleri'>) {
   const ga4 = useGA4();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [expandedProvinceGroups, setExpandedProvinceGroups] = useState<Record<string, boolean>>({});
-
-  const normalizeSlugValue = (value: string): string => {
-    return value
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/ı/g, 'i')
-      .replace(/İ/g, 'i')
-      .replace(/I/g, 'i')
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
-  };
-
-  const getStructureUrl = (urlSlug: string) => {
-    return `/${urlSlug}`;
-  };
 
   // GA4: Hesaplama sayfasına yönlendirme tracking
   const handleCalculationClick = (calculationType: string) => {
@@ -74,12 +81,6 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
       page_location: window.location.href,
     });
   };
-
-  const coveredProvinceNames = useMemo(
-    () => Array.from(new Set(planData.planlar.flatMap((plan) => plan.iller)))
-      .sort((firstProvince, secondProvince) => firstProvince.localeCompare(secondProvince, 'tr-TR')),
-    []
-  );
 
   const navigationSections: NavigationSection[] = [
     {
@@ -280,6 +281,7 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
 
           <div className={styles.content}>
             <section className={styles.section} aria-label="Hızlı Erişim Menüsü">
+              <h2 className="sr-only">Hızlı erişim bölümleri</h2>
               <div className={styles.accordionContainer}>
                 {navigationSections.map((section) => {
                   const panelId = `${section.id}-panel`;
@@ -307,23 +309,26 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
                       <div
                         id={panelId}
                         className={`${styles.accordionPanel} ${isOpen ? styles.accordionPanelOpen : styles.accordionPanelClosed}`}
+                        hidden={!isOpen}
                       >
+                        {isOpen && (
                           <div className={styles.calculationGrid}>
                             {section.items.map((item) => {
                               const itemKey = `${section.id}-${item.href}`;
 
                               if (!item.provinceList || item.provinceList.length === 0) {
                                 return (
-                                  <a
+                                  <Link
                                     key={itemKey}
                                     href={item.href}
+                                    prefetch={false}
                                     className={styles.calculationCard}
                                     onClick={item.trackingType ? () => handleCalculationClick(item.trackingType!) : undefined}
                                   >
                                     <div className={styles.calculationIcon}>{item.icon}</div>
                                     <h3>{item.title}</h3>
                                     <p>{item.description}</p>
-                                  </a>
+                                  </Link>
                                 );
                               }
 
@@ -334,15 +339,16 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
 
                                     return (
                                       <>
-                                  <a
+                                  <Link
                                     href={item.href}
+                                    prefetch={false}
                                     className={styles.calculationCardMainLink}
                                     onClick={item.trackingType ? () => handleCalculationClick(item.trackingType!) : undefined}
                                   >
                                     <div className={styles.calculationIcon}>{item.icon}</div>
                                     <h3>{item.title}</h3>
                                     <p>{item.description}</p>
-                                  </a>
+                                  </Link>
 
                                   <div className={styles.nestedDetails}>
                                     <button
@@ -366,13 +372,14 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
                                           const href = `/cevre-duzeni-planlari/il/${normalizeSlugValue(province)}`;
 
                                           return (
-                                            <a
+                                            <Link
                                               key={href}
                                               href={href}
+                                              prefetch={false}
                                               className={styles.provinceLink}
                                             >
                                               {province}
-                                            </a>
+                                            </Link>
                                           );
                                         })}
                                       </div>
@@ -385,6 +392,7 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
                               );
                             })}
                           </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -407,12 +415,27 @@ export default function HomePage({ pageTitle, pageDescription }: Omit<HomePagePr
               <DeferredCalculationInsights />
             </DeferredSection>
 
-            <DisclaimerSection />
+            <DeferredSection
+              minHeight={220}
+              placeholder={<div className={styles.lazySectionPlaceholder} aria-hidden="true" />}
+            >
+              <DeferredDisclaimerSection />
+            </DeferredSection>
           </div>
 
-          <MethodologySection />
+          <DeferredSection
+            minHeight={520}
+            placeholder={<div className={`${styles.lazySectionPlaceholder} ${styles.lazySectionPlaceholderLarge}`} aria-hidden="true" />}
+          >
+            <DeferredMethodologySection />
+          </DeferredSection>
 
-          <FAQSection />
+          <DeferredSection
+            minHeight={520}
+            placeholder={<div className={`${styles.lazySectionPlaceholder} ${styles.lazySectionPlaceholderLarge}`} aria-hidden="true" />}
+          >
+            <DeferredFAQSection />
+          </DeferredSection>
 
           <DeferredSection
             minHeight={520}

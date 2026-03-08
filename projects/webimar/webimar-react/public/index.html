@@ -62,6 +62,10 @@
       if (!isLocalhost) envType = 'PRODUCTION';
       else if (isDockerDev) envType = 'DOCKER';
 
+      const runtimeBasename = pathname.startsWith('/hesaplama/') || pathname === '/hesaplama'
+        ? '/hesaplama'
+        : '';
+
       console.log('Environment detected:', envType, 'for', location.href);
       
       // Set environment variables immediately
@@ -70,7 +74,7 @@
         const origin = window.location.origin; // e.g. https://tarimimar.com.tr
         window._webimar_env = {
           REACT_APP_API_BASE_URL: origin + '/api',
-          REACT_APP_ROUTER_BASENAME: '/hesaplama',
+          REACT_APP_ROUTER_BASENAME: runtimeBasename,
           REACT_APP_NEXTJS_URL: origin,
           NODE_ENV: 'production'
         };
@@ -79,7 +83,7 @@
         // Docker Local Development
         window._webimar_env = {
           REACT_APP_API_BASE_URL: 'http://localhost/api',
-          REACT_APP_ROUTER_BASENAME: '/hesaplama',
+          REACT_APP_ROUTER_BASENAME: runtimeBasename,
           REACT_APP_NEXTJS_URL: 'http://localhost',
           NODE_ENV: 'development'
         };

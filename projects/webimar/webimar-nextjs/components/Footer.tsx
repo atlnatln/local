@@ -20,8 +20,8 @@ const Footer: React.FC = () => {
           <h4 className={styles.sectionTitle}>Hızlı Erişim</h4>
           <nav className={styles.footerNav}>
             <Link href="/">Ana Sayfa</Link>
-            <Link href="/hesaplama/bag-evi">Bağ Evi</Link>
-            <Link href="/hesaplama/sera">Sera</Link>
+            <Link href="/bag-evi">Bağ Evi</Link>
+            <Link href="/sera">Sera</Link>
             <Link href="/aricilik-planlama">Arıcılık Planlama</Link>
           </nav>
         </div>

@@ -5,6 +5,7 @@ import AppLayout from '../components/AppLayout';
 import { useToast } from '../hooks/useToast';
 import { tokenStorage } from '../utils/tokenStorage';
 import { navigateToNextJs } from '../utils/environment';
+import { saveReturnUrl } from '../utils/redirectUtils';
 import EmailChangeForm from '../components/Email/EmailChangeForm';
 import CalculationHistoryList from '../components/CalculationHistoryList';
 
@@ -150,6 +151,17 @@ const ProfilePage: React.FC = () => {
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
   });
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
+    if (!user) {
+      saveReturnUrl(window.location.pathname + window.location.search);
+      window.location.replace('/login');
+    }
+  }, [isLoading, user]);
 
   const handleEdit = () => {
     setEditForm({

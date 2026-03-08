@@ -304,7 +304,8 @@ def google_oauth_callback(request):
         print(f"   🎯 Redirect URL: {frontend_url[:100]}...")
         print(f"   🚀 Redirect işlemi başlatılıyor...")
         
-        # Redirect yanıtını oluştur ve auth cookie ayarla (Next.js ana sayfa için)
+        # Redirect yanıtını oluştur ve yalnızca UI fallback amaçlı hafif cookie ayarla.
+        # Not: Bu cookie artık auth kanıtı olarak kullanılmamalı; JWT + /me doğrulaması esastır.
         response = redirect(frontend_url)
         try:
             cookie_domain = get_cookie_domain_from_frontend() or ('localhost' if settings.DEBUG else 'tarimimar.com.tr')

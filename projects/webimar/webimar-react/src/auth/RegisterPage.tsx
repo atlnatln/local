@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import RegisterForm from './RegisterForm';
 import { navigateToNextJs } from '../utils/environment';
 
-const RegisterPageContainer = styled.div`
+const RegisterPageContainer = styled.div<{ $backgroundUrl: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  background: #f7f3f0 url('/backgrounds/girisyap-arka-fon.webp') center center/cover no-repeat;
+  background: #f7f3f0 url(${props => props.$backgroundUrl}) center center/cover no-repeat;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -104,6 +104,10 @@ const RegisterPage: React.FC = () => {
   const { state } = useAuth();
   const navigate = useNavigate();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const backgroundUrl = typeof window !== 'undefined'
+    && window.location.pathname.startsWith('/hesaplama')
+      ? '/hesaplama/backgrounds/girisyap-arka-fon.webp'
+      : '/backgrounds/girisyap-arka-fon.webp';
 
   useEffect(() => {
     if (state.isAuthenticated) {
@@ -127,7 +131,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <>
-      <RegisterPageContainer>
+      <RegisterPageContainer $backgroundUrl={backgroundUrl}>
         <RegisterCard>
           <RegisterForm onSuccess={handleRegisterSuccess} />
           <div style={{ textAlign: 'center', marginTop: 20 }}>

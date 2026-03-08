@@ -599,43 +599,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     }
   }, [isMobile]);
 
-  // RADIKAL ÇÖZÜM: Shared auth state polling (optimized)
-  useEffect(() => {
-    let lastAuthState = isAuthenticated;
-    
-    const checkSharedAuthState = () => {
-      try {
-        const sharedState = localStorage.getItem('webimar_auth_state');
-        if (sharedState) {
-          const authData = JSON.parse(sharedState);
-          const { isAuthenticated: sharedAuth } = authData;
-          
-          // Sadece gerçekten değişiklik olduysa log bas
-          if (sharedAuth !== isAuthenticated && sharedAuth !== lastAuthState) {
-            console.log(`� [React] Auth state sync: ${isAuthenticated} → ${sharedAuth}`);
-            lastAuthState = sharedAuth;
-            
-            if (!sharedAuth && isAuthenticated) {
-              // Next.js'ten logout sinyali geldi
-              console.log('� [React] Logout detected from shared state');
-              logout();
-            }
-          }
-        }
-      } catch (e) {
-        // Sadece production'da değilse log bas
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('Shared auth state check error:', e);
-        }
-      }
-    };
-
-    // Her 5 saniyede bir kontrol et (1 saniye yerine)
-    const interval = setInterval(checkSharedAuthState, 5000);
-    
-    return () => clearInterval(interval);
-  }, [isAuthenticated, logout]);
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };

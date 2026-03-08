@@ -1,22 +1,19 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from './AuthContext';
-import { tokenStorage } from '../utils/tokenStorage';
 import { setAuthCookie } from '../utils/authCookie';
-import { navigateToNextJs } from '../utils/environment';
+import { navigateToNextJs, getApiBaseUrl } from '../utils/environment';
+import { persistAuthSession } from '../utils/authSync';
 
 const GoogleCallback: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { checkAuthStatus } = useAuth();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // URL parametrelerini al
         const accessToken = searchParams.get('access');
         const refreshToken = searchParams.get('refresh');
         const error = searchParams.get('error');
@@ -29,81 +26,58 @@ const GoogleCallback: React.FC = () => {
           hasRefresh: !!refreshToken,
           error,
           requiresApproval,
-          userEmail
+          userEmail,
         });
 
         if (error) {
-          // Hata durumu
           setStatus('error');
           setMessage(errorMessage || 'Google girişi sırasında hata oluştu');
           return;
         }
 
         if (requiresApproval === 'true') {
-          // Admin onayı bekleniyor
           setStatus('error');
           setMessage(`${userEmail} için admin onayı bekleniyor. Kısa süre içinde e-posta alacaksınız.`);
           return;
         }
 
         if (!accessToken || !refreshToken) {
-          // Token'lar eksik
           setStatus('error');
           setMessage('Eksik yetkilendirme bilgileri. Lütfen tekrar giriş yapın.');
           return;
         }
 
-        // Token'ları tokenStorage'a kaydet
-        console.log('💾 Token\'ları kaydediyor...');
-        tokenStorage.setAccessToken(accessToken);
-        tokenStorage.setRefreshToken(refreshToken);
-
-        // --- CRITICAL: Next ile uyumlu localStorage anahtarları set et ---
-        try {
-          localStorage.setItem('access_token', accessToken);
-          localStorage.setItem('refresh_token', refreshToken);
-          localStorage.setItem('token', accessToken);
-        } catch (e) {
-          console.warn('localStorage write failed in GoogleCallback:', e);
-        }
-        // -------------------------------------------------------------
-
-        // Auth durumunu kontrol et ve user bilgilerini al
-        await checkAuthStatus(true); // force refresh
-
-        // User bilgilerini al ve kaydet
-        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api';
-        const userResponse = await fetch(`${API_BASE_URL}/accounts/me/`, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-          },
+        // /accounts/me/ ile kullanıcı bilgilerini al – token'ları henüz storage'a yazmıyoruz
+        // böylece eski {isAuthenticated:false} shared state → finalizeLocalLogout race'i önlenir
+        console.log('🔑 /accounts/me/ doğrulaması...');
+        const meResponse = await fetch(`${getApiBaseUrl()}/accounts/me/`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          tokenStorage.setUser(userData);
-          try {
-            localStorage.setItem('user', JSON.stringify(userData));
-            const authState = {
-              isAuthenticated: true,
-              user: userData,
-              timestamp: Date.now()
-            };
-            localStorage.setItem('webimar_auth_state', JSON.stringify(authState));
-          } catch (e) {
-            console.warn('localStorage user/webimar_auth_state write failed:', e);
-          }
-          console.log('✅ User bilgileri kaydedildi:', userData);
-        } else {
-          console.warn('⚠️ User bilgileri alınamadı, devam ediliyor...');
+        if (!meResponse.ok) {
+          console.error('❌ /accounts/me/ başarısız:', meResponse.status);
+          setStatus('error');
+          setMessage('Kullanıcı doğrulaması başarısız. Lütfen tekrar giriş yapın.');
+          return;
         }
 
-        // Cookie ayarla
+        const userData = await meResponse.json();
+        console.log('✅ Kullanıcı doğrulandı:', userData.email);
+
+        // Tüm token + user + shared state'i tek atomik yazıyla kaydet.
+        // persistAuthSession, webimar_auth_state'i {isAuthenticated:true} olarak yazar
+        // ÖNCE, sonra event dispatch eder → syncAuthSignal artık yanlışlıkla logout yapmaz.
+        persistAuthSession({
+          accessToken,
+          refreshToken,
+          user: userData,
+          source: 'react',
+          reason: 'google-callback',
+        });
+
+        // Cookie (UI göstergesi amaçlı)
         try {
-          const user = tokenStorage.getUser();
-          if (user?.email) {
-            setAuthCookie(user.email);
-          }
+          if (userData?.email) setAuthCookie(userData.email);
         } catch (cookieError) {
           console.warn('Cookie ayarlama hatası:', cookieError);
         }
@@ -111,15 +85,14 @@ const GoogleCallback: React.FC = () => {
         setStatus('success');
         setMessage('Google ile giriş başarılı! Yönlendiriliyorsunuz...');
 
-        // Yönlendirmeyi token ve storage setlendikten sonra yap
         setTimeout(() => {
-          const returnUrl = localStorage.getItem('returnUrl') || sessionStorage.getItem('returnUrl') || '/';
+          const returnUrl =
+            localStorage.getItem('returnUrl') ||
+            sessionStorage.getItem('returnUrl') ||
+            '/';
           localStorage.removeItem('returnUrl');
           sessionStorage.removeItem('returnUrl');
-          
-          console.log('🔄 Google OAuth başarılı - Next.js\'e yönlendiriliyor:', returnUrl);
-          
-          // Next.js ana sayfasına yönlendir
+          console.log('🔄 Google OAuth başarılı → yönlendiriliyor:', returnUrl);
           navigateToNextJs(returnUrl);
         }, 150);
 
@@ -131,7 +104,7 @@ const GoogleCallback: React.FC = () => {
     };
 
     handleCallback();
-  }, [searchParams, navigate, checkAuthStatus]);
+  }, [searchParams, navigate]);
 
   return (
     <div style={{

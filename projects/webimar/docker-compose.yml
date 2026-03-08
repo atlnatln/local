@@ -24,6 +24,10 @@ services:
       - DATABASE_URL=postgresql://webimar:webimar123@postgres:5432/webimar_api
       - REDIS_URL=redis://redis:6379/1
       - ALLOWED_HOSTS=localhost,127.0.0.1,webimar-api
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID:-}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      - GOOGLE_OAUTH_REDIRECT_URI=${GOOGLE_OAUTH_REDIRECT_URI:-http://localhost/api/accounts/google/callback/}
+      - FRONTEND_BASE_URL=${FRONTEND_BASE_URL:-http://localhost}
     depends_on:
       - postgres
       - redis
