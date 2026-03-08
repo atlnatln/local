@@ -86,3 +86,13 @@ Not:
 - Bulunamayan kayıtlar için ayrı fallback stratejisi uygulanabilir (isim sadeleştirme, ilçe bazlı ikinci deneme).
 - Bu akış yalnızca web sitesi URL'sini hedefler; site içi scraping bu runbook kapsamı dışındadır.
 - `gemini-2.0-flash` yeni kullanıcılar/projeler için erişim dışı olabilir. 404 `NOT_FOUND` alınırsa `gemini-2.5-flash` ile devam edilmelidir.
+## 10) Batch Pipeline'daki Unified S2 ile İlişki (Mart 2026)
+
+> Bu runbook `enrich_websites_with_gemini.py` **standalone script**ini belgeler (toplu CSV işleme).
+>
+> Batch pipeline (Stage 4) için ise `apps/providers/email_enrichment.py` kullanılır.
+> Mart 2026 itibarıyla Stage 4, eski S2-website + S3-email iki ayrı çağrısı yerine
+> **tek `_gemini_find_contact_unified()` çağrısı** kullanır.
+> Bu değişiklik firma başına ~850 token tasarrufu sağlar.
+>
+> Bkz. [email-enrichment-stage4.md](./email-enrichment-stage4.md) ve ADR-0008.

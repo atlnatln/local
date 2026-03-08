@@ -2,16 +2,18 @@
 Email Enrichment Provider
 =========================
 
-İki stratejili email bulma servisi:
+İki stratejili email/iletişim bulma servisi:
 
 Strateji 1 – Web sitesi zaten biliniyorsa (0 Gemini token):
   HTTP GET ile /iletisim, /contact, /about sayfalarını çek.
   Sayfadan regex ile email adresini çıkar.
 
-Strateji 2 – Web sitesi bilinmiyorsa (1 Gemini çağrısı):
-    Gemini Search Grounding ile '"{işletme adı}" {adres} iletişim mail e-posta' araması yap.
-  grounding_chunks içinden gelen ilk site URL'lerini HTTP ile çek.
-  Sayfadan email çıkar.
+Strateji 2 – Web sitesi bilinmiyorsa (1 Gemini çağrısı — unified):
+  _gemini_find_contact_unified() ile tek çağrıda hem web sitesi hem de
+  email/telefon bilgisi aranır (EMAIL:/WEB: çıktı formatı).
+  grounding_chunks içinden gelen URL'ler ek kaynak olarak taranır.
+  → Eski S2 (_gemini_find_official_website) + S3 (_gemini_search_email)
+    iki ayrı çağrısının yerini almıştır; ~850 token tasarrufu sağlar.
 
 Ayarlar (.env):
   GEMINI_API_KEY          – Gemini API anahtarı
@@ -207,10 +209,10 @@ class EmailEnrichmentClient:
         """
         Email ve telefonu birlikte döndürür: {"email": str|None, "phone": str|None}
 
-        Öncelik sırası (Gemini olmadan maksimum değer):
+        Öncelik sırası:
           S1 – website biliniyorsa doğrudan scrape (0 Gemini token)
-          S2 – website yoksa Gemini ile resmi site bul → scrape (1 Gemini call)
-          S3 – hâlâ email bulunamazsa Gemini grounding ile son çare arama
+          S2 – website yoksa tek Gemini çağrısıyla hem web sitesi hem email+phone bulma
+               (önceki S2+S3 iki ayrı çağrısının birleşimi; kötü senaryoda ~950 token tasarrufu)
         """
         # reset metadata
         self.last_discovered_website = None
@@ -244,62 +246,216 @@ class EmailEnrichmentClient:
                 self.last_phone_source_type = "scrape_website"
                 logger.info("[EmailEnrich] S1-scrape  [%s] → phone: %s", firm_name, result_phone)
             if not result_email:
-                logger.debug("[EmailEnrich] S1-scrape  [%s] → email not found, trying S2/S3", firm_name)
+                logger.debug("[EmailEnrich] S1-scrape  [%s] → email not found, trying S2", firm_name)
 
-        # S2: website yoksa Gemini ile resmi site bul → scrape
-        discovered_website: Optional[str] = None
-        if not result_email and not website_url and self._api_key:
-            discovered_website = self._gemini_find_official_website(firm_name, address)
-            if discovered_website:
-                self.last_discovered_website = discovered_website
-                self.last_gemini_calls += 1
-                contacts = self._scrape_website_for_contacts(
-                    discovered_website, need_email=True, need_phone=need_phone
-                )
-                result_email = contacts["email"]
-                if need_phone and not result_phone:
-                    result_phone = contacts["phone"]
-                if result_email:
-                    self.last_email_source_url = discovered_website
-                    self.last_email_source_type = "scrape_discovered"
-                    logger.info(
-                        "[EmailEnrich] S2-website→scrape [%s] → email: %s",
-                        firm_name, result_email,
-                    )
-                if result_phone and not self.last_phone_source_url:
-                    self.last_phone_source_url = discovered_website
-                    self.last_phone_source_type = "scrape_discovered"
-                    logger.info(
-                        "[EmailEnrich] S2-website→scrape [%s] → phone: %s",
-                        firm_name, result_phone,
-                    )
-
-        # S3: son çare — Gemini grounding ile email araması
-        if not result_email:
+        # S2: website yoksa – tek Gemini call ile web sitesi + email + phone
+        if not result_email and not website_url:
             if not self._api_key:
-                logger.warning("[EmailEnrich] GEMINI_API_KEY yok – S3 atlandı [%s]", firm_name)
+                logger.warning("[EmailEnrich] GEMINI_API_KEY yok – S2 atlandı [%s]", firm_name)
             else:
-                known_domain: Optional[str] = None
-                domain_source_url = website_url or discovered_website
-                if domain_source_url:
-                    parsed = _base_url(domain_source_url)
-                    if parsed:
-                        from urllib.parse import urlparse as _up
-                        known_domain = _up(parsed).netloc.lstrip("www.")
-
-                result_email = self._gemini_search_email(firm_name, address, known_domain=known_domain)
+                unified = self._gemini_find_contact_unified(firm_name, address, need_phone=need_phone)
                 self.last_gemini_calls += 1
-                if result_email:
-                    self.last_email_source_url = getattr(self, "_last_s2_source_url", None) or "gemini-grounding"
-                    self.last_email_source_type = getattr(self, "_last_s2_source_type", None) or "gemini_grounding"
-                    logger.info("[EmailEnrich] S3-gemini  [%s] → email: %s", firm_name, result_email)
-                else:
-                    logger.debug("[EmailEnrich] S3-gemini  [%s] → not found", firm_name)
+
+                if unified["website"]:
+                    self.last_discovered_website = unified["website"]
+
+                if unified["email"]:
+                    result_email = unified["email"]
+                    self.last_email_source_url = unified.get("email_source_url") or "gemini-unified"
+                    self.last_email_source_type = unified.get("email_source_type") or "gemini_unified"
+                    logger.info("[EmailEnrich] S2-unified [%s] → email: %s", firm_name, result_email)
+
+                if need_phone and unified["phone"] and not result_phone:
+                    result_phone = unified["phone"]
+                    self.last_phone_source_url = unified.get("phone_source_url") or "gemini-unified"
+                    self.last_phone_source_type = unified.get("phone_source_type") or "gemini_unified"
+                    logger.info("[EmailEnrich] S2-unified [%s] → phone: %s", firm_name, result_phone)
+
+                if not result_email:
+                    logger.debug("[EmailEnrich] S2-unified [%s] → not found", firm_name)
 
         return {"email": result_email, "phone": result_phone}
 
+    def _gemini_find_contact_unified(
+        self,
+        firm_name: str,
+        address: str,
+        need_phone: bool = True,
+    ) -> dict:
+        """
+        Tek Gemini Search Grounding çağrısıyla hem web sitesini hem email+phone bilgisini bulur.
+
+        Eski akış (2 call, kötü senaryoda):
+          _gemini_find_official_website()  →  scrape  →  email yok
+          _gemini_search_email()           →  scrape  →  email (bazen)
+
+        Yeni akış (her zaman MAX 1 call):
+          1. Grounding ile "firma iletişim e-posta" araması → yanıt metni + chunk URL'leri
+          2. Yanıt metninde email varsa → direkt kullan (0 scrape)
+          3. Yoksa: grounding chunk URL'lerini site adayı olarak al
+             a. Her URL'yi scrape et → email + phone
+             b. En temiz URL'yi last_discovered_website olarak kaydet
+
+        Returns:
+          {
+            "email": str | None,
+            "phone": str | None,
+            "website": str | None,       # grounding'den keşfedilen site
+            "email_source_url": str | None,
+            "email_source_type": str | None,
+            "phone_source_url": str | None,
+            "phone_source_type": str | None,
+          }
+        """
+        try:
+            from google import genai  # type: ignore
+            from google.genai import types  # type: ignore
+        except ImportError:
+            logger.warning("[EmailEnrich] google-genai paketi kurulu değil – S2 unified atlandı")
+            return self._empty_unified_result()
+
+        # Token limiti kontrolü
+        today_used_tokens = self._get_today_token_usage()
+        if self._daily_token_limit > 0 and today_used_tokens >= self._daily_token_limit:
+            logger.warning(
+                "[EmailEnrich] Token limiti aşıldı (%s/%s) – S2 unified atlandı [%s]",
+                today_used_tokens, self._daily_token_limit, firm_name,
+            )
+            return self._empty_unified_result()
+
+        if (
+            self._daily_token_limit > 0
+            and today_used_tokens >= int(self._daily_token_limit * self._token_warn_threshold)
+        ):
+            logger.warning(
+                "[EmailEnrich] Token kullanımı uyarı eşiğinde (%s/%s, %.0f%%)",
+                today_used_tokens, self._daily_token_limit, self._token_warn_threshold * 100,
+            )
+
+        client = genai.Client(api_key=self._api_key)
+
+        # Tek prompt: hem iletişim e-postayı hem resmi web sitesini bul.
+        # Yapılandırılmış yanıt formatı Gemini'yi daha az token üretmeye iter.
+        prompt = (
+            f'"{firm_name}" {address} resmi web sitesi iletişim e-posta.\n'
+            "Şirketin resmi web sitesindeki iletişim/hakkında sayfasını bul. "
+            "Sosyal medya (facebook, instagram), harita (maps, yandex) ve rehber "
+            "sitelerini (bulurum, sahibinden, yemeksepeti vb.) yoksay.\n"
+            "Yalnızca aşağıdaki formatta döndür (bulamazsan NONE yaz):\n"
+            "EMAIL: <email@domain.com veya NONE>\n"
+            "WEB: <https://... veya NONE>"
+        )
+
+        try:
+            response = client.models.generate_content(
+                model=self._model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0,
+                    max_output_tokens=80,
+                    tools=[{"google_search": {}}],
+                ),
+            )
+        except Exception as exc:
+            logger.warning("[EmailEnrich] Unified grounding hatası [%s]: %s", firm_name, exc)
+            self._log_token_event(
+                firm_name=firm_name, address=address, known_domain=None,
+                status="error", prompt_tokens=0, output_tokens=0, total_tokens=0,
+                error=str(exc), extra={"event_type": "unified_lookup"},
+            )
+            return self._empty_unified_result()
+
+        prompt_tokens, output_tokens, total_tokens = _extract_usage_tokens(response)
+        self._log_token_event(
+            firm_name=firm_name, address=address, known_domain=None,
+            status="ok", prompt_tokens=prompt_tokens, output_tokens=output_tokens,
+            total_tokens=total_tokens, error="", extra={"event_type": "unified_lookup"},
+        )
+        if total_tokens > 0:
+            logger.info(
+                "[EmailEnrich] Token usage [%s]: prompt=%s output=%s total=%s",
+                firm_name, prompt_tokens, output_tokens, total_tokens,
+            )
+
+        result: dict = self._empty_unified_result()
+
+        # ── 1. Yanıt metninden EMAIL ve WEB satırlarını parse et ────────────
+        text = (getattr(response, "text", None) or "").strip()
+        for line in text.splitlines():
+            line = line.strip()
+            if line.upper().startswith("EMAIL:"):
+                val = line.split(":", 1)[1].strip()
+                if val.upper() != "NONE":
+                    candidate = _extract_best_email(val, source_url="gemini-text")
+                    if not candidate:
+                        # regex bulamazsa satırın tamamını dene
+                        candidate = _extract_best_email(text, source_url="gemini-text")
+                    if candidate:
+                        result["email"] = candidate
+                        result["email_source_url"] = "gemini-direct"
+                        result["email_source_type"] = "gemini_direct"
+            elif line.upper().startswith("WEB:"):
+                val = line.split(":", 1)[1].strip()
+                if val.upper() != "NONE":
+                    urls = _URL_RE.findall(val) or ([val] if "." in val and " " not in val else [])
+                    for raw in urls:
+                        normalized = _normalize_public_url(raw)
+                        if normalized:
+                            result["website"] = normalized
+                            break
+
+        # ── 2. Grounding chunk URL'lerini aday site olarak al ───────────────
+        chunk_urls = _get_grounding_urls(response)
+
+        # Eğer WEB satırından site bulunamadıysa ilk geçerli chunk URL'sini kullan
+        if not result["website"] and chunk_urls:
+            for raw in chunk_urls:
+                normalized = _normalize_public_url(raw)
+                if normalized:
+                    result["website"] = normalized
+                    break
+
+        # ── 3. Email hâlâ yoksa chunk URL'lerini scrape et ──────────────────
+        if not result["email"]:
+            scrape_urls = chunk_urls[:4]  # max 4 sayfa
+            if result["website"] and result["website"] not in scrape_urls:
+                scrape_urls = [result["website"]] + scrape_urls
+
+            for url in scrape_urls:
+                contacts = self._scrape_website_for_contacts(
+                    url,
+                    need_email=True,
+                    need_phone=need_phone,
+                )
+                if contacts["email"]:
+                    result["email"] = contacts["email"]
+                    result["email_source_url"] = url
+                    result["email_source_type"] = "scrape_grounding_chunk"
+                    if not result["website"]:
+                        result["website"] = _normalize_public_url(url)
+                if need_phone and contacts["phone"] and not result["phone"]:
+                    result["phone"] = contacts["phone"]
+                    result["phone_source_url"] = url
+                    result["phone_source_type"] = "scrape_grounding_chunk"
+
+                if result["email"] and (not need_phone or result["phone"]):
+                    break
+
+        return result
+
+    @staticmethod
+    def _empty_unified_result() -> dict:
+        return {
+            "email": None, "phone": None, "website": None,
+            "email_source_url": None, "email_source_type": None,
+            "phone_source_url": None, "phone_source_type": None,
+        }
+
     def _gemini_find_official_website(self, firm_name: str, address: str) -> Optional[str]:
-        """Gemini Search Grounding ile işletmenin resmi web sitesini bulur (URL veya None)."""
+        """
+        [DEPRECATED – _gemini_find_contact_unified() kullanın]
+        Geriye dönük uyumluluk için bırakıldı.
+        """
         try:
             from google import genai  # type: ignore
             from google.genai import types  # type: ignore
@@ -450,6 +606,12 @@ class EmailEnrichmentClient:
         address: str,
         known_domain: Optional[str] = None,
     ) -> Optional[str]:
+        """[DEPRECATED] Yalnızca email arar (tek çıktı).
+
+        Yerine _gemini_find_contact_unified() kullanın; hem web sitesi hem
+        email+telefon tek çağrıda döner ve ~850 token tasarrufu sağlar.
+        Bu metot geriye dönük uyumluluk için bırakılmıştır.
+        """
         today_used_tokens = self._get_today_token_usage()
         if self._daily_token_limit > 0 and today_used_tokens >= self._daily_token_limit:
             logger.warning(

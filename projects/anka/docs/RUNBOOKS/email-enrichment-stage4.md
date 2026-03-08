@@ -36,9 +36,10 @@ ANKA_EMAIL_ENRICHMENT_ENABLED=true
 
 `GEMINI_API_KEY` verilirse fallback/grounding akışları kullanılabilir. Bu değer yoksa Stage 4 tamamen kapanmaz; yalnızca Gemini tabanlı parçalar devre dışı kalır.
 
-### Token kontrol ayarları (Gemini S2)
+### Token kontrol ayarları (Gemini S2 Unified)
 
 Stage 4 içinde Gemini çağrılarının token tüketimi JSONL log dosyasına yazılır ve istenirse günlük token limiti uygulanır.
+Mart 2026 itibarıyla S2+S3 birleştirildiğinden en kötü senaryoda firma başına **~950 token** kullanılır (eski: ~1 850 token).
 
 `.env.production` (veya ilgili ortam) örneği:
 
@@ -54,23 +55,48 @@ ANKA_EMAIL_TOKEN_WARN_THRESHOLD=0.8
 - `ANKA_EMAIL_DAILY_TOKEN_LIMIT`: günlük toplam token limiti (`0` ise sınırsız).
 - `ANKA_EMAIL_TOKEN_WARN_THRESHOLD`: limitin hangi oranında uyarı üretileceği (`0.8` = %80).
 
-Not: Limit aşılırsa Stage 4, S2 (Gemini) çağrısını güvenli şekilde atlar; S1 scraping davranışı aynı kalır.
+Not: Limit aşılırsa Stage 4, S2-unified (Gemini) çağrısını güvenli şekilde atlar; S1 scraping davranışı aynı kalır.
 
-## 4) Arama Mantığı (S2 Gemini Grounding)
+## 4) Arama Mantığı (S2 Unified — Mart 2026 itibarıyla)
 
-S1 ile email bulunamazsa veya website yoksa aşağıdaki strateji kullanılır:
+> **ÖNEMLİ:** Önceki iki ayrı Gemini çağrısı (S2-website + S3-email) **tek bir unified çağrıya** indirildi.  
+> Metot: `_gemini_find_contact_unified()` | Eski metotlar: `_gemini_find_official_website()` `[DEPRECATED]`, `_gemini_search_email()` `[DEPRECATED]`  
+> Bkz. ADR-0008.
 
-1. (Website yoksa) Gemini ile resmi website URL’si bulunur (URL veya `NONE`).
-2. Bulunan website üzerinde iletişim sayfaları kazınır (scrape) ve email aranır.
-3. Hâlâ bulunamazsa Gemini ile email araması yapılır; mümkünse `site:<domain>` ile domain hedeflenir.
+S1 ile email bulunamazsa veya website yoksa tek Gemini çağrısı kullanılır:
 
-Pratik prompt formu (email araması):
-
-```text
-"{işletme_adı}" {adres} site:{domain} iletişim mail e-posta ...
+```
+"{işletme_adı}" {adres} resmi web sitesi, e-posta iletişim bilgileri
 ```
 
-Bu yaklaşım, önce kanıtlanabilir URL yakalayıp sonra scraping ile doğrulamaya çalıştığı için yanlış/uydurma email riskini azaltır.
+Gemini cevabı `EMAIL:` ve `WEB:` satırlarıyla ayrıştırılır. Ardından grounding_chunks URL'leri
+de scrape edilir. Tek çağrıda hem resmi website hem de email+telefon döner.
+
+### Eski (S2+S3) vs Yeni (Unified) karşılaştırma
+
+| Kriter | Eski akış | Yeni unified akış |
+|---|---|---|
+| Gemini çağrı sayısı (website yoksa) | 2 (S2-website + S3-email) | 1 (`_gemini_find_contact_unified`) |
+| Token tüketimi (en kötü durum) | ~1 850 | ~950 |
+| Telefon desteği | Yalnızca scraping | Unified prompt + scraping |
+| Kod yolu | `_gemini_find_official_website` → `_gemini_search_email` | `_gemini_find_contact_unified` |
+
+### Unified prompt çıktı formatı
+
+```text
+EMAIL: ornek@firma.com
+WEB: https://www.firma.com.tr
+```
+
+Bulunamazsa satır `NONE` değeri alır. Parçalı/çoklu email için ilk geçerli adres kullanılır.
+
+### Scraping zinciri (grounding_chunks)
+
+Gemini grounding_chunks içindeki URL'ler `/iletisim`, `/contact`, `/about` yollarıyla
+sırayla denenir. İlk bulunan email/telefon kaydedilir.
+
+Bu yaklaşım, önce kanıtlanabilir URL yakalayıp sonra scraping ile doğrulamaya çalıştığı için
+yanlış/uydurma email riskini azaltır.
 
 ## 5) Deploy Sonrası Doğrulama
 
@@ -127,8 +153,21 @@ Not: Aynı `csv_url` tekrar okunurken browser/proxy cache eski header döndüreb
 
 ### G) Token log eksik/yanıltıcı görünüyor
 
-- Token log yalnızca “email arama” değil, “resmi website bulma” Gemini çağrılarını da kapsamalıdır.
+- Token log yalnızca "email arama" değil, tüm Gemini çağrılarını (unified dahil) kapsamalıdır.
 - JSONL satırlarında `event_type` gibi bir alan ile çağrı türü ayrıştırılabilir.
+- Mart 2026 itibarıyla unified çağrısında `event_type: "s2_unified"` beklenir.
+
+### H) Log'da `S2-website` veya `S3-email` satırları hâlâ görünüyorsa
+
+- Container eski image üzerinde çalışıyordur. `docker cp` sonrası `restart` yeterlidir:
+  ```bash
+  docker cp email_enrichment.py anka_backend_prod:/app/apps/providers/email_enrichment.py
+  docker compose -f docker-compose.prod.yml restart backend
+  ```
+- Doğrulama:
+  ```bash
+  docker exec anka_backend_prod grep 'S2-unified\|DEPRECATED' /app/apps/providers/email_enrichment.py | head -5
+  ```
 
 ### D) Token tüketimi izlenemiyor
 
@@ -162,6 +201,9 @@ Not: Aynı `csv_url` tekrar okunurken browser/proxy cache eski header döndüreb
 ```dotenv
 # GEMINI_API_KEY=    ← YORUM SATIRI, değer yok
 ```
+
+> **[ÇÖZÜLDÜ – Mart 2026]** `GEMINI_API_KEY` artık `.env.production` içinde aktif.
+> Ayrıca S2+S3 çifti `_gemini_find_contact_unified()` ile tek çağrıya indirildi (bkz. ADR-0008).
 
 **Etkisi:**
 - `EmailEnrichmentClient.__init__()` → `self._api_key = None`
@@ -261,9 +303,10 @@ def _fetch_html(self, url: str) -> Optional[str]:
 
 | Sorun | Etki | Çözüm |
 |-------|------|-------|
-| `GEMINI_API_KEY` yorum satırı | S2 tamamen devre dışı; website'i olmayan tüm firmalar için 0 email | `.env.production`'da key aktif et |
+| `GEMINI_API_KEY` yorum satırı | S2-unified tamamen devre dışı; website'i olmayan tüm firmalar için 0 email | `.env.production`'da key aktif et |
 | SSL sertifikası bozuk siteler | S1 tüm sayfalar için sessizce hata verir; email sitenin ana sayfasında olmasına rağmen bulunamaz | `_fetch_html` SSL fallback ekle |
 | `_CONTACT_PATHS` sırasında `/` en sonda | Şans eseri site 403/rate-limit verince `/`'a hiç gelinmez | Zaten ikincil; SSL çözümü öncelik |
+| S2-website + S3-email çift çağrısı (eski) | Firma başına ~1 850 token | Çözüldü — `_gemini_find_contact_unified` tek çağrısı (~950 token) |
 
 ---
 
