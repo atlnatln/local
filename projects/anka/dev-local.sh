@@ -2,6 +2,11 @@
 # ========================================
 # Anka Platform Local Development Script
 # Hızlı geliştirme için Docker olmadan servisleri başlatır
+#
+# Kullanım:
+#   ./dev-local.sh              → native (Django + Next.js local)
+#   ./dev-local.sh --vps        → tunnel modu: local frontend + VPS backend
+#                                 (Google API key IP kısıtı için önerilen)
 # ========================================
 
 set +e
@@ -16,9 +21,25 @@ NC='\033[0m'
 # Proje dizini
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║   🚀 Anka Platform Local Dev Setup      ║${NC}"
-echo -e "${BLUE}╚════════════════════════════════════════╝${NC}"
+# --vps flag kontrolü
+VPS_BACKEND=false
+for arg in "$@"; do
+    [[ "$arg" == "--vps" ]] && VPS_BACKEND=true
+done
+
+# Tunnel portu (secure-vps-tunnel.sh default: 18010)
+TUNNEL_PORT="${BACKEND_LOCAL_PORT:-18010}"
+
+if [ "$VPS_BACKEND" = true ]; then
+    echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
+    echo -e "${BLUE}║  🚀 Anka Local Frontend + VPS Backend  ║${NC}"
+    echo -e "${BLUE}║      (SSH Tunnel modu)                 ║${NC}"
+    echo -e "${BLUE}╚════════════════════════════════════════╝${NC}"
+else
+    echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
+    echo -e "${BLUE}║   🚀 Anka Platform Local Dev Setup      ║${NC}"
+    echo -e "${BLUE}╚════════════════════════════════════════╝${NC}"
+fi
 echo -e "📂 Proje: ${PROJECT_DIR}\n"
 
 # Cleanup fonksiyonu
@@ -28,6 +49,7 @@ cleanup() {
     [ ! -z "$DJANGO_PID" ] && kill $DJANGO_PID 2>/dev/null && echo "  ✓ Django kapatıldı"
     [ ! -z "$CELERY_PID" ] && kill $CELERY_PID 2>/dev/null && echo "  ✓ Celery kapatıldı"
     [ ! -z "$NEXTJS_PID" ] && kill $NEXTJS_PID 2>/dev/null && echo "  ✓ Next.js kapatıldı"
+    [ ! -z "$TUNNEL_PID" ] && kill $TUNNEL_PID 2>/dev/null && echo "  ✓ SSH tunnel kapatıldı"
 
     # Port temizliği
     fuser -k 8000/tcp 2>/dev/null
@@ -73,53 +95,83 @@ for port in 8000 3000 3001 5555; do
 done
 
 # ==========================================
-# 1. BACKEND SETUP
+# 1. BACKEND SETUP  (VPS modunda atlanır)
 # ==========================================
-echo -e "\n${BLUE}📡 [1/3] Django Backend Kurulumu...${NC}"
-
-BACKEND_DIR="${PROJECT_DIR}/services/backend"
-
-# Venv oluştur veya aktifleştir
-if [ ! -d "$BACKEND_DIR/venv" ]; then
-    echo -e "${YELLOW}  🐍 Virtual environment oluşturuluyor...${NC}"
-    cd "$BACKEND_DIR"
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -U pip setuptools wheel
-    echo -e "${YELLOW}  📦 Dependencies yükleniyor...${NC}"
-    pip install -r requirements.txt
-else
-    cd "$BACKEND_DIR"
-    source venv/bin/activate
-    echo -e "${GREEN}  ✓ Venv aktifleştirildi${NC}"
-fi
-
-# Migrations
-echo -e "${YELLOW}  🔄 Database migrations...${NC}"
-python manage.py migrate --noinput 2>&1 | grep -E "(Applying|OK|No migrations)" || true
-
-# Django server
-echo -e "${YELLOW}  🚀 Django server başlatılıyor (port 8000)...${NC}"
-python manage.py runserver 0.0.0.0:8000 > "${PROJECT_DIR}/django.log" 2>&1 &
-DJANGO_PID=$!
-
-# Health check
-echo -e "${YELLOW}  ⏳ API sağlık kontrolü (10 saniye)...${NC}"
-for i in {1..10}; do
-    sleep 1
-    if curl -s http://localhost:8000/api/health/ > /dev/null 2>&1; then
-        echo -e "${GREEN}  ✓ Django API ready (PID: $DJANGO_PID)${NC}"
-        DJANGO_OK=true
-        break
-    elif curl -s http://localhost:8000/ > /dev/null 2>&1; then
-        echo -e "${GREEN}  ✓ Django ready (PID: $DJANGO_PID)${NC}"
-        DJANGO_OK=true
-        break
+if [ "$VPS_BACKEND" = true ]; then
+    echo -e "\n${BLUE}🔒 [1/3] VPS Backend — SSH Tunnel açılıyor (port ${TUNNEL_PORT})...${NC}"
+    TUNNEL_SCRIPT="${PROJECT_DIR}/scripts/secure-vps-tunnel.sh"
+    if [ ! -f "$TUNNEL_SCRIPT" ]; then
+        echo -e "${RED}  ❌ Tunnel scripti bulunamadı: $TUNNEL_SCRIPT${NC}"
+        exit 1
     fi
-    echo -n "."
-done
+    bash "$TUNNEL_SCRIPT" backend > "${PROJECT_DIR}/tunnel.log" 2>&1 &
+    TUNNEL_PID=$!
+    echo -e "  PID: $TUNNEL_PID  (log: tail -f tunnel.log)"
 
-[ "$DJANGO_OK" != true ] && echo -e "${YELLOW}  ⚠️  Still starting... (tail -f django.log)${NC}"
+    echo -e "${YELLOW}  ⏳ Tunnel sağlık kontrolü (15 saniye)...${NC}"
+    TUNNEL_OK=false
+    for i in {1..15}; do
+        sleep 1
+        if curl -s "http://127.0.0.1:${TUNNEL_PORT}/api/health/" > /dev/null 2>&1; then
+            echo -e "${GREEN}  ✓ VPS backend tunnel hazır → http://127.0.0.1:${TUNNEL_PORT}${NC}"
+            TUNNEL_OK=true
+            break
+        fi
+        echo -n "."
+    done
+    if [ "$TUNNEL_OK" != true ]; then
+        echo -e "\n${YELLOW}  ⚠️  Tunnel henüz cevap vermiyor (VPS kapalı mı?). Devam ediliyor...${NC}"
+        echo -e "${YELLOW}     ssh anka-vps bağlantısını kontrol edin.${NC}"
+    fi
+    API_URL="http://127.0.0.1:${TUNNEL_PORT}"
+else
+    echo -e "\n${BLUE}📡 [1/3] Django Backend Kurulumu...${NC}"
+
+    BACKEND_DIR="${PROJECT_DIR}/services/backend"
+
+    # Venv oluştur veya aktifleştir
+    if [ ! -d "$BACKEND_DIR/venv" ]; then
+        echo -e "${YELLOW}  🐍 Virtual environment oluşturuluyor...${NC}"
+        cd "$BACKEND_DIR"
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install -U pip setuptools wheel
+        echo -e "${YELLOW}  📦 Dependencies yükleniyor...${NC}"
+        pip install -r requirements.txt
+    else
+        cd "$BACKEND_DIR"
+        source venv/bin/activate
+        echo -e "${GREEN}  ✓ Venv aktifleştirildi${NC}"
+    fi
+
+    # Migrations
+    echo -e "${YELLOW}  🔄 Database migrations...${NC}"
+    python manage.py migrate --noinput 2>&1 | grep -E "(Applying|OK|No migrations)" || true
+
+    # Django server
+    echo -e "${YELLOW}  🚀 Django server başlatılıyor (port 8000)...${NC}"
+    python manage.py runserver 0.0.0.0:8000 > "${PROJECT_DIR}/django.log" 2>&1 &
+    DJANGO_PID=$!
+
+    # Health check
+    echo -e "${YELLOW}  ⏳ API sağlık kontrolü (10 saniye)...${NC}"
+    for i in {1..10}; do
+        sleep 1
+        if curl -s http://localhost:8000/api/health/ > /dev/null 2>&1; then
+            echo -e "${GREEN}  ✓ Django API ready (PID: $DJANGO_PID)${NC}"
+            DJANGO_OK=true
+            break
+        elif curl -s http://localhost:8000/ > /dev/null 2>&1; then
+            echo -e "${GREEN}  ✓ Django ready (PID: $DJANGO_PID)${NC}"
+            DJANGO_OK=true
+            break
+        fi
+        echo -n "."
+    done
+
+    [ "$DJANGO_OK" != true ] && echo -e "${YELLOW}  ⚠️  Still starting... (tail -f django.log)${NC}"
+    API_URL="http://localhost:8000"
+fi
 
 # ==========================================
 # 2. FRONTEND SETUP
@@ -138,8 +190,10 @@ echo -e "${YELLOW}  🚀 Next.js dev server başlatılıyor (port 3000)...${NC}"
 cd "$FRONTEND_DIR"
 PORT=3000 \
 NEXT_PUBLIC_GOOGLE_CLIENT_ID="${NEXT_PUBLIC_GOOGLE_CLIENT_ID}" \
-NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL}" \
-NEXT_PUBLIC_API_BASE_URL="${NEXT_PUBLIC_API_BASE_URL}" \
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}" \
+NEXT_PUBLIC_API_URL="${API_URL}" \
+NEXT_PUBLIC_API_BASE_URL="${API_URL}/api" \
+NEXT_INTERNAL_BACKEND_URL="${API_URL}" \
 npm run dev > "${PROJECT_DIR}/nextjs.log" 2>&1 &
 NEXTJS_PID=$!
 
@@ -165,13 +219,18 @@ echo -e "${GREEN}╚════════════════════
 echo -e ""
 echo -e "${BLUE}📍 URLs:${NC}"
 echo -e "  🏠 Frontend:      http://localhost:3000"
-echo -e "  🔧 API:           http://localhost:8000/api"
-echo -e "  📊 Admin:         http://localhost:8000/admin"
-echo -e "  📖 Docs:          http://localhost:8000/api/docs"
+echo -e "  🔧 API:           ${API_URL}/api"
+echo -e "  📊 Admin:         ${API_URL}/admin"
+echo -e "  📖 Docs:          ${API_URL}/api/docs"
+if [ "$VPS_BACKEND" = true ]; then
+    echo -e ""
+    echo -e "${YELLOW}  ⚡ Mod: local frontend + VPS backend (SSH tunnel :${TUNNEL_PORT})${NC}"
+    echo -e "${YELLOW}  📋 Tunnel log: tail -f tunnel.log${NC}"
+fi
 echo -e ""
 echo -e "${BLUE}📋 Logs:${NC}"
-echo -e "  tail -f django.log"
 echo -e "  tail -f nextjs.log"
+[ "$VPS_BACKEND" != true ] && echo -e "  tail -f django.log"
 echo -e ""
 echo -e "${BLUE}🛑 Stop: Ctrl+C${NC}\n"
 

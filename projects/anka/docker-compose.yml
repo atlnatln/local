@@ -177,11 +177,14 @@ services:
     container_name: anka_frontend
     user: "0:0"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8100
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:8100/api
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8100}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8100/api}
       NEXT_PUBLIC_ENVIRONMENT: development
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
-      NEXT_INTERNAL_BACKEND_URL: http://backend:8000
+      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
+      NEXT_INTERNAL_BACKEND_URL: ${NEXT_INTERNAL_BACKEND_URL:-http://backend:8000}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "3100:3000"
     volumes:

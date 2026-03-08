@@ -10,6 +10,8 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 TARGET="${1:-all}"
+shift 2>/dev/null || true
+EXTRA_ARGS=("$@")
 PID_FILE="$ROOT_DIR/.dev-local.pids"
 
 command_exists() {
@@ -45,12 +47,12 @@ cleanup() {
 
 start_webimar() {
   echo -e "${BLUE}▶ Webimar (local) başlatılıyor...${NC}"
-  (cd "$ROOT_DIR/projects/webimar" && bash ./dev-local.sh --background)
+  (cd "$ROOT_DIR/projects/webimar" && bash ./dev-local.sh --background "${EXTRA_ARGS[@]}")
 }
 
 start_anka() {
   echo -e "${BLUE}▶ Anka (local) başlatılıyor...${NC}"
-  (cd "$ROOT_DIR/projects/anka" && bash ./dev-local.sh) &
+  (cd "$ROOT_DIR/projects/anka" && bash ./dev-local.sh "${EXTRA_ARGS[@]}") &
   echo "ANKA_DEV_PID=$!" >> "$PID_FILE"
 }
 
