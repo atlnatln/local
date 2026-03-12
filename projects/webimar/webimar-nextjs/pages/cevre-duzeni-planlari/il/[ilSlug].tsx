@@ -29,6 +29,8 @@ interface IlData {
   komsuIller: string[];
 }
 
+const PLACEHOLDER_IL_SLUG_VALUES = new Set(['[ilSlug]', '%5BilSlug%5D']);
+
 // Slug normalize (Unicode birleşik karakterleri ve Türkçe harfleri sadeleştir)
 function normalizeSlugValue(value: string): string {
   return value
@@ -65,6 +67,16 @@ function decodeLegacySlug(value: string): string {
   }
 
   return decodedValue;
+}
+
+function isPlaceholderIlSlug(value: string): boolean {
+  const decodedValue = decodeLegacySlug(value);
+  return (
+    PLACEHOLDER_IL_SLUG_VALUES.has(value) ||
+    PLACEHOLDER_IL_SLUG_VALUES.has(decodedValue) ||
+    decodedValue.includes('[') ||
+    decodedValue.includes(']')
+  );
 }
 
 // Tüm illeri ve planlarını eşleştir
@@ -489,6 +501,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<IlSayfasiProps> = async ({ params }: { params?: { ilSlug?: string } }) => {
   const ilSlug = params?.ilSlug as string;
+
+  if (!ilSlug || isPlaceholderIlSlug(ilSlug)) {
+    return {
+      redirect: {
+        destination: `/cevre-duzeni-planlari/`,
+        permanent: true
+      }
+    };
+  }
+
   const decodedSlug = decodeLegacySlug(ilSlug);
   const normalizedSlug = normalizeSlugValue(decodedSlug);
   const tumIller = getTumIller();

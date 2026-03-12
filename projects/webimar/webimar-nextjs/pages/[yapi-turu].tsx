@@ -16,6 +16,36 @@ interface YapiTuruPageProps {
   data: YapiTuruData;
 }
 
+const PLACEHOLDER_YAPI_TURU_VALUES = new Set(['[yapi-turu]', '%5Byapi-turu%5D']);
+
+function decodeRouteParam(value: string): string {
+  let decodedValue = value;
+
+  for (let index = 0; index < 2; index += 1) {
+    try {
+      const nextValue = decodeURIComponent(decodedValue);
+      if (nextValue === decodedValue) {
+        break;
+      }
+      decodedValue = nextValue;
+    } catch {
+      break;
+    }
+  }
+
+  return decodedValue;
+}
+
+function isPlaceholderYapiTuru(value: string): boolean {
+  const decodedValue = decodeRouteParam(value);
+  return (
+    PLACEHOLDER_YAPI_TURU_VALUES.has(value) ||
+    PLACEHOLDER_YAPI_TURU_VALUES.has(decodedValue) ||
+    decodedValue.includes('[') ||
+    decodedValue.includes(']')
+  );
+}
+
 export default function YapiTuruPage({ data }: YapiTuruPageProps) {
   const router = useRouter();
 
@@ -487,6 +517,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.['yapi-turu'] as string;
+
+  if (!slug || isPlaceholderYapiTuru(slug)) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: true,
+      },
+    };
+  }
+
   const data = await getYapiTuruData(slug);
 
   if (!data) {

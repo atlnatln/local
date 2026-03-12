@@ -29,6 +29,36 @@ interface PlanDetayProps {
   icerik: string;
 }
 
+const PLACEHOLDER_PLAN_ID_VALUES = new Set(['[planId]', '%5BplanId%5D']);
+
+function decodeRouteParam(value: string): string {
+  let decodedValue = value;
+
+  for (let index = 0; index < 2; index += 1) {
+    try {
+      const nextValue = decodeURIComponent(decodedValue);
+      if (nextValue === decodedValue) {
+        break;
+      }
+      decodedValue = nextValue;
+    } catch {
+      break;
+    }
+  }
+
+  return decodedValue;
+}
+
+function isPlaceholderPlanId(value: string): boolean {
+  const decodedValue = decodeRouteParam(value);
+  return (
+    PLACEHOLDER_PLAN_ID_VALUES.has(value) ||
+    PLACEHOLDER_PLAN_ID_VALUES.has(decodedValue) ||
+    decodedValue.includes('[') ||
+    decodedValue.includes(']')
+  );
+}
+
 // İl adı normalizasyonu
 function normalizeIlAdi(ilAdi: string): string {
   return ilAdi
@@ -434,6 +464,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<PlanDetayProps> = async ({ params }) => {
   const planId = params?.planId as string;
+
+  if (!planId || isPlaceholderPlanId(planId)) {
+    return {
+      redirect: {
+        destination: '/cevre-duzeni-planlari/',
+        permanent: true,
+      },
+    };
+  }
+
   const plan = planData.planlar.find(p => p.id === planId);
 
   if (!plan) {
