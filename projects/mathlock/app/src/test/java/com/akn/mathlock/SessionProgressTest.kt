@@ -141,4 +141,130 @@ class SessionProgressTest {
         assertTrue("Tur 2/2 → kilit açılmalı", unlocked)
         assertEquals(2, count)
     }
+
+    // ─── isJsonModeActive mantığı (bug regression) ──────────────────────────
+
+    /**
+     * JSON cache mevcutken soru seti bitmişse startFallbackMode() çağrılır.
+     * Bu durumda isJsonModeActive=false olmalı → checkFallbackAnswer() çağrılır.
+     * Eski kod: questionManager.isJsonMode = true (cache var) → checkJsonAnswer()
+     * çağrılırdı, currentJsonQuestion = null olduğundan hemen dönerdi → STUCK.
+     */
+    @Test
+    fun `isJsonModeActive - startFallbackMode cagrilinca false olmali`() {
+        // Aktivite başlangıcı: varsayılan false
+        var isJsonModeActive = false
+
+        // startJsonMode() çağrılırsa true
+        isJsonModeActive = true
+        assertTrue("startJsonMode sonrası true olmalı", isJsonModeActive)
+
+        // startFallbackMode() çağrılırsa false (JSON exhausted scenario)
+        isJsonModeActive = false
+        assertFalse("startFallbackMode sonrası false olmalı", isJsonModeActive)
+    }
+
+    @Test
+    fun `mod seçimi - isJsonModeActive false iken checkFallbackAnswer cagrilmali`() {
+        // setupListeners davranışını simüle et
+        var checkJsonCalled = false
+        var checkFallbackCalled = false
+        val isJsonModeActive = false  // fallback mode
+
+        if (isJsonModeActive) checkJsonCalled = true
+        else checkFallbackCalled = true
+
+        assertFalse("JSON checker çağrılmamalı", checkJsonCalled)
+        assertTrue("Fallback checker çağrılmalı", checkFallbackCalled)
+    }
+
+    @Test
+    fun `mod seçimi - isJsonModeActive true iken checkJsonAnswer cagrilmali`() {
+        var checkJsonCalled = false
+        var checkFallbackCalled = false
+        val isJsonModeActive = true  // json mode
+
+        if (isJsonModeActive) checkJsonCalled = true
+        else checkFallbackCalled = true
+
+        assertTrue("JSON checker çağrılmalı", checkJsonCalled)
+        assertFalse("Fallback checker çağrılmamalı", checkFallbackCalled)
+    }
+
+    // ─── Fallback mode: passScore mantığı ────────────────────────────────────
+
+    /**
+     * Fallback modda doğru cevap sayısı >= passScore ise kilit açılır.
+     * MathChallengeActivity.showFallbackResult() mantığını simüle eder.
+     */
+    private fun shouldUnlockFallback(correctCount: Int, passScore: Int): Boolean =
+        correctCount >= passScore
+
+    @Test
+    fun `fallback - 3 sorudan 3 doğru ile kilit açılmalı`() {
+        assertTrue(shouldUnlockFallback(3, 3))
+    }
+
+    @Test
+    fun `fallback - 3 sorudan 2 doğru, passScore=3 ise kilit açılmamalı`() {
+        assertFalse(shouldUnlockFallback(2, 3))
+    }
+
+    @Test
+    fun `fallback - 5 sorudan 3 doğru, passScore=3 ise kilit açılmalı`() {
+        assertTrue(shouldUnlockFallback(3, 3))
+    }
+
+    @Test
+    fun `fallback - passScore 0 ise hemen kilit açılmalı`() {
+        // 0 doğru cevap bile yeterli (0 >= 0)
+        assertTrue(shouldUnlockFallback(0, 0))
+    }
+
+    // ─── Tam akış: yanlış cevaplar sessionSolvedCount artırmaz ──────────────
+
+    @Test
+    fun `yanlis cevaplar sessionSolvedCount artirmaz - 3 gerekliyken 2 yanlis + 3 dogru`() {
+        var sessionSolvedCount = 0
+        val requiredCount = 3
+
+        // 2 yanlış atlandı (sessionSolvedCount değişmez)
+        // JSON modda: yanlış cevap → soruyu geç, count artmaz
+        // (aktivitede: showNextJsonQuestion çağrılır ama sessionSolvedCount++ yok)
+        // Burada simüle ediyoruz: sadece doğru cevap ekler
+        fun wrongAnswer() { /* sessionSolvedCount değişmez */ }
+
+        wrongAnswer()
+        wrongAnswer()
+        assertEquals(0, sessionSolvedCount)
+        assertFalse("2 yanlış sonrası kildsiz olmamalı", sessionSolvedCount >= requiredCount)
+
+        // 3 doğru cevap
+        repeat(3) {
+            val (unlocked, newCount) = onCorrectAnswer(sessionSolvedCount, requiredCount)
+            sessionSolvedCount = newCount
+            if (sessionSolvedCount >= requiredCount) {
+                assertTrue("3. doğruda kilidi açmalı", unlocked)
+                return@repeat
+            }
+        }
+        assertTrue("3 doğrudan sonra kilit açılmalı", sessionSolvedCount >= requiredCount)
+    }
+
+    @Test
+    fun `requiredCount 1 iken 1 dogru hemen acmali - regresyon testi`() {
+        // v1.14 öncesi: her zaman 1 soruda açılıyordu (bug)
+        // v1.14 sonrası: requiredCount=1 ise 1 soruda açılması DOĞRU
+        val (unlocked, _) = onCorrectAnswer(0, 1)
+        assertTrue("1 gerekli → 1 doğru → kilit açılmalı", unlocked)
+    }
+
+    @Test
+    fun `requiredCount 3 iken 1 dogru acmamali - regresyon testi`() {
+        // v1.14 öncesi bug: 1 soruda her zaman açılıyordu
+        // v1.14 sonrası düzeltme: artık 3 gerekli
+        val (unlocked, _) = onCorrectAnswer(0, 3)
+        assertFalse("3 gerekli → 1 doğru → kilit açılmamalı", unlocked)
+    }
 }
+

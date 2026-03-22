@@ -39,6 +39,12 @@ class MathChallengeActivity : AppCompatActivity() {
     // Bu kilit açma oturumunda kaç doğru cevap verildi / kaç gerekli
     private var sessionSolvedCount = 0
     private var requiredCount = 1
+    // Hangi mod çalışıyor: true=JSON, false=fallback
+    // questionManager.isJsonMode KULLANILMAZ — JSON cache varken set bitmişse
+    // isSetComplete()=true olup startFallbackMode() çağrılır ama _isJsonMode
+    // hâlâ true kalır; bu durumda checkJsonAnswer() çalışır ve currentJsonQuestion
+    // null olduğundan hemen döner → kullanıcı soruyu çözemez.
+    private var isJsonModeActive = false
 
     // Fallback mode state (eski sistem)
     private var fallbackQuestions = mutableListOf<com.akn.mathlock.util.MathQuestion>()
@@ -93,6 +99,7 @@ class MathChallengeActivity : AppCompatActivity() {
 
     private fun startJsonMode() {
         Log.d(TAG, "JSON mode başlatılıyor (v${questionManager.getVersion()})")
+        isJsonModeActive = true
         requiredCount = prefManager.questionCount.coerceAtLeast(1)
         sessionSolvedCount = 0
         showNextJsonQuestion()
@@ -280,6 +287,7 @@ class MathChallengeActivity : AppCompatActivity() {
 
     private fun startFallbackMode() {
         Log.d(TAG, "Fallback mode (random sorular)")
+        isJsonModeActive = false
         totalQuestions = prefManager.questionCount
         passScore = prefManager.passScore.coerceAtMost(totalQuestions)
         binding.tvHint.visibility = View.GONE
@@ -391,7 +399,7 @@ class MathChallengeActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.btnCheck.setOnClickListener {
-            if (questionManager.isJsonMode) {
+            if (isJsonModeActive) {
                 checkJsonAnswer()
             } else {
                 checkFallbackAnswer()
@@ -416,7 +424,7 @@ class MathChallengeActivity : AppCompatActivity() {
 
         binding.etAnswer.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (questionManager.isJsonMode) {
+                if (isJsonModeActive) {
                     checkJsonAnswer()
                 } else {
                     checkFallbackAnswer()
