@@ -11,8 +11,8 @@ android {
         applicationId = "com.akn.mathlock"
         minSdk = 26
         targetSdk = 34
-        versionCode = 8
-        versionName = "1.8"
+        versionCode = 10
+        versionName = "1.10"
     }
 
     buildTypes {
@@ -48,4 +48,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.lifecycle:lifecycle-service:2.7.0")
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")
 }

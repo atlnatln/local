@@ -13,6 +13,11 @@ object LockStateManager {
         unlockedApps[packageName] = System.currentTimeMillis()
     }
 
+    /** Test için: belirli bir zamanda unlock kaydı oluştur. */
+    fun notifyUnlockedAt(packageName: String, timestamp: Long) {
+        unlockedApps[packageName] = timestamp
+    }
+
     fun isUnlocked(packageName: String): Boolean {
         return unlockedApps.containsKey(packageName)
     }

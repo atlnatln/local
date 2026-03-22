@@ -69,6 +69,11 @@ class AppLockService : Service() {
     private var lastChallengeTime: Long = 0
     private val CHALLENGE_MIN_INTERVAL = 3_000L // ms
 
+    // UsageEvents son 5 saniyeye bakar — kullanıcı uygulamada uzun süre beklerse
+    // event gelmez ve getForegroundPackageName() null döner. Bu değişken son bilinen
+    // ön plan uygulamayı tutar; timer expire olduğunda check kaçırılmaz.
+    private var lastKnownForegroundPackage: String? = null
+
     private var pollingActive = false
     private var showingCountdown = false
     // "Kapat" modunda süre dolduktan sonra göründüğünde ana ekrana at
@@ -80,7 +85,11 @@ class AppLockService : Service() {
     private val checkRunnable = object : Runnable {
         override fun run() {
             if (!isRunning) return
-            val foregroundPackage = getForegroundPackageName()
+            // Yeni bir event varsa güncelle; yoksa son bilinen paketi kullan.
+            // Bu sayede kullanıcı uygulamada uzun süre kalırken de timer doğru çalışır.
+            val detected = getForegroundPackageName()
+            if (detected != null) lastKnownForegroundPackage = detected
+            val foregroundPackage = lastKnownForegroundPackage
             checkAndExpireTimers()
             checkForegroundApp(foregroundPackage)
             updateTimerNotification()
@@ -122,6 +131,7 @@ class AppLockService : Service() {
         isRunning = false
         pollingActive = false
         showingCountdown = false
+        lastKnownForegroundPackage = null
         pendingForceClose.clear()
         forceCloseCooldown.clear()
         handler.removeCallbacks(checkRunnable)
