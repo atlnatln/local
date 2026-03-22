@@ -76,11 +76,6 @@ class AppLockService : Service() {
 
     private var pollingActive = false
     private var showingCountdown = false
-    // "Kapat" modunda süre dolduktan sonra göründüğünde ana ekrana at
-    private val pendingForceClose = mutableSetOf<String>()
-    // Force-close sonrası challenge engelleme süresi (paket → zaman)
-    private val forceCloseCooldown = mutableMapOf<String, Long>()
-    private val FORCE_CLOSE_COOLDOWN_MS = 5_000L
 
     private val checkRunnable = object : Runnable {
         override fun run() {
@@ -132,8 +127,6 @@ class AppLockService : Service() {
         pollingActive = false
         showingCountdown = false
         lastKnownForegroundPackage = null
-        pendingForceClose.clear()
-        forceCloseCooldown.clear()
         handler.removeCallbacks(checkRunnable)
         hideTimerOverlay()
         super.onDestroy()
@@ -156,18 +149,18 @@ class AppLockService : Service() {
             if (elapsed >= durationMs) {
                 Log.d(TAG, "Timer doldu ($durationMinutes dk): $pkg")
                 LockStateManager.forceRelock(pkg)
+                LockStateManager.markTimerExpired(pkg)   // challenge ekranında banner gösterilecek
                 lastChallengePackage = null
 
                 if (prefManager.unlockExpiredAction == PreferenceManager.EXPIRE_ACTION_CLOSE) {
-                    pendingForceClose.add(pkg)
-                    forceCloseCooldown[pkg] = now
-                    // Her durumda hemen HOME gönder — UsageStats gecikmesi yüzünden foreground kontrolü güvenilmez
+                    // Uygulamayı kapat ve ana ekrana gönder.
+                    // pendingForceClose KULLANILMIYOR — challenge'ın açılmasını engeller.
                     forceUserHome()
                     killApp(pkg)
-                    // Gecikmeli ikinci HOME — ilk HOME etkisiz kalabilir
                     handler.postDelayed({ forceUserHome() }, 500)
                     Log.d(TAG, "Force-close: HOME gönderildi + süreç öldürüldü: $pkg")
                 }
+                // Her iki modda da: paketi normal servis döngüsü challenge başlatır.
             }
         }
     }
@@ -182,34 +175,10 @@ class AppLockService : Service() {
             return
         }
 
-        // Ebeveyn yeniden açtıysa (notifyUnlocked çağrıldıysa) — her türlü
-        // force-close durumunu temizle ve geçir. Bu kontrol her şeyden önce
-        // gelmelidir; aksi halde timer sonrası ebeveyn girişi de bloklanır.
+        // Ebeveyn yeniden açtıysa (notifyUnlocked çağrıldıysa) — geçir.
         if (LockStateManager.isUnlocked(currentPackage)) {
-            pendingForceClose.remove(currentPackage)
-            forceCloseCooldown.remove(currentPackage)
             lastChallengePackage = null
             return
-        }
-
-        // Pending force-close: süre dolmuş, uygulama tekrar görünürse at
-        if (currentPackage in pendingForceClose) {
-            forceUserHome()
-            killApp(currentPackage)
-            forceCloseCooldown[currentPackage] = System.currentTimeMillis()
-            Log.d(TAG, "Pending force-close tetiklendi: $currentPackage")
-            return
-        }
-
-        // Force-close cooldown: yakın zamanda kapatılan uygulamaya challenge başlatma
-        val cooldownEnd = forceCloseCooldown[currentPackage]
-        if (cooldownEnd != null) {
-            if (System.currentTimeMillis() - cooldownEnd < FORCE_CLOSE_COOLDOWN_MS) {
-                return  // Cooldown aktif — challenge engellendi
-            } else {
-                forceCloseCooldown.remove(currentPackage)
-                pendingForceClose.remove(currentPackage)
-            }
         }
 
         // Kilitli uygulama mı kontrol et
@@ -278,6 +247,8 @@ class AppLockService : Service() {
         }
         startActivity(homeIntent)
 
+        val timerExpired = LockStateManager.isTimerExpired(lockedPackage)
+
         // Hemen ardından challenge ekranını aç
         val intent = Intent(this, ChallengePickerActivity::class.java).apply {
             addFlags(
@@ -285,10 +256,11 @@ class AppLockService : Service() {
                 Intent.FLAG_ACTIVITY_CLEAR_TOP
             )
             putExtra("locked_package", lockedPackage)
+            putExtra("timer_expired", timerExpired)
         }
         try {
             startActivity(intent)
-            Log.d(TAG, "Challenge activity başlatıldı: $lockedPackage")
+            Log.d(TAG, "Challenge activity başlatıldı: $lockedPackage (timerExpired=$timerExpired)")
         } catch (e: Exception) {
             Log.w(TAG, "startActivity başarısız (MIUI kısıtlaması?): ${e.message}")
             showChallengeNotification(lockedPackage)

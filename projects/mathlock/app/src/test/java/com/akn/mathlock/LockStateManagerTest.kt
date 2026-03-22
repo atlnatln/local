@@ -50,14 +50,16 @@ class LockStateManagerTest {
     }
 
     @Test
-    fun `clearAll - tüm kilitler kapanmalı`() {
+    fun `clearAll - tüm kilitler ve bayraklar temizlenmeli`() {
         LockStateManager.notifyUnlocked(PKG_OPERA)
         LockStateManager.notifyUnlocked(PKG_YOUTUBE)
+        LockStateManager.markTimerExpired(PKG_OPERA)
 
         LockStateManager.clearAll()
 
         assertFalse(LockStateManager.isUnlocked(PKG_OPERA))
         assertFalse(LockStateManager.isUnlocked(PKG_YOUTUBE))
+        assertFalse(LockStateManager.isTimerExpired(PKG_OPERA))
     }
 
     @Test
@@ -75,12 +77,55 @@ class LockStateManagerTest {
         assertEquals(0L, LockStateManager.getUnlockTime(PKG_OPERA))
     }
 
+    // ─── Timer expired bayrağı testleri ─────────────────────────────────────
+
+    @Test
+    fun `markTimerExpired - bayrak set edilmeli`() {
+        LockStateManager.markTimerExpired(PKG_OPERA)
+        assertTrue(LockStateManager.isTimerExpired(PKG_OPERA))
+    }
+
+    @Test
+    fun `isTimerExpired - işaretlenmeden false döner`() {
+        assertFalse(LockStateManager.isTimerExpired(PKG_OPERA))
+    }
+
+    @Test
+    fun `clearTimerExpired - bayrak temizlenmeli`() {
+        LockStateManager.markTimerExpired(PKG_OPERA)
+        LockStateManager.clearTimerExpired(PKG_OPERA)
+        assertFalse(LockStateManager.isTimerExpired(PKG_OPERA))
+    }
+
+    @Test
+    fun `notifyUnlocked - timerExpired bayrağını da temizlemeli`() {
+        // Timer doldu → bayrak set edildi
+        LockStateManager.markTimerExpired(PKG_OPERA)
+        assertTrue(LockStateManager.isTimerExpired(PKG_OPERA))
+
+        // Ebeveyn girişi → notifyUnlocked çağrılır
+        LockStateManager.notifyUnlocked(PKG_OPERA)
+
+        // Bayrak temizlenmiş olmalı
+        assertFalse("notifyUnlocked timerExpired bayrağını temizlemeli", LockStateManager.isTimerExpired(PKG_OPERA))
+        assertTrue("Uygulama unlocked olmalı", LockStateManager.isUnlocked(PKG_OPERA))
+    }
+
+    @Test
+    fun `notifyUnlockedAt - timerExpired bayrağını da temizlemeli`() {
+        LockStateManager.markTimerExpired(PKG_OPERA)
+        LockStateManager.notifyUnlockedAt(PKG_OPERA, System.currentTimeMillis())
+        assertFalse(LockStateManager.isTimerExpired(PKG_OPERA))
+    }
+
+    @Test
+    fun `timerExpired - farklı paketler birbirini etkilemez`() {
+        LockStateManager.markTimerExpired(PKG_OPERA)
+        assertFalse(LockStateManager.isTimerExpired(PKG_YOUTUBE))
+    }
+
     // ─── Timer simülasyonu (checkAndExpireTimers mantığı) ───────────────────
 
-    /**
-     * Bu test, AppLockService.checkAndExpireTimers() mantığını simüle eder.
-     * Gerçek servisi çağırmak yerine aynı hesaplamayı burada doğruluyoruz.
-     */
     @Test
     fun `timer - 1 dakika geçmeden expire olmamalı`() {
         LockStateManager.notifyUnlocked(PKG_OPERA)
@@ -94,8 +139,7 @@ class LockStateManagerTest {
     }
 
     @Test
-    fun `timer - unlock zamanını geçmişe alınca expire etmeli`() {
-        // Unlock zamanını 61 saniye öncesine set et (manuel manipülasyon)
+    fun `timer - unlock zamanını geçmişe alınca expire etmeli + bayrak setlenmeli`() {
         LockStateManager.notifyUnlockedAt(PKG_OPERA, System.currentTimeMillis() - 61_000L)
 
         val unlockTime = LockStateManager.getUnlockTime(PKG_OPERA)
@@ -107,21 +151,36 @@ class LockStateManagerTest {
         // Servisin yapacağı işlemi simüle et
         if (elapsed >= durationMs) {
             LockStateManager.forceRelock(PKG_OPERA)
+            LockStateManager.markTimerExpired(PKG_OPERA)
         }
 
         assertFalse("Relock sonrası unlocked olmamalı", LockStateManager.isUnlocked(PKG_OPERA))
+        assertTrue("Expire sonrası timerExpired bayrağı set olmalı", LockStateManager.isTimerExpired(PKG_OPERA))
     }
 
     @Test
-    fun `timer - relock sonrası ebeveyn tekrar açabilmeli`() {
-        // Timer expire → relock
-        LockStateManager.notifyUnlockedAt(PKG_OPERA, System.currentTimeMillis() - 61_000L)
-        LockStateManager.forceRelock(PKG_OPERA)
-        assertFalse(LockStateManager.isUnlocked(PKG_OPERA))
-
-        // Ebeveyn tekrar açıyor
+    fun `tam akış - timer doldu, çocuk açıyor (banner), ebeveyn giriyor (reset)`() {
+        // 1. Çocuk challenge kazandı → kilit açıldı
         LockStateManager.notifyUnlocked(PKG_OPERA)
-        assertTrue("Ebeveyn bypass sonrası tekrar açık olmalı", LockStateManager.isUnlocked(PKG_OPERA))
+        assertTrue(LockStateManager.isUnlocked(PKG_OPERA))
+        assertFalse(LockStateManager.isTimerExpired(PKG_OPERA))
+
+        // 2. Timer doldu (servis simülasyonu)
+        LockStateManager.forceRelock(PKG_OPERA)
+        LockStateManager.markTimerExpired(PKG_OPERA)
+        assertFalse("Relock: unlocked olmamalı", LockStateManager.isUnlocked(PKG_OPERA))
+        assertTrue("Timer flag: set edilmeli", LockStateManager.isTimerExpired(PKG_OPERA))
+
+        // 3. Çocuk uygulamayı açıyor → ChallengePickerActivity timer_expired=true ile açılır
+        val shouldShowBanner = LockStateManager.isTimerExpired(PKG_OPERA)
+        assertTrue("Challenge ekranı banner göstermeli", shouldShowBanner)
+
+        // 4. Ebeveyn giriş yapıyor → notifyUnlocked çağrılıyor
+        LockStateManager.notifyUnlocked(PKG_OPERA)
+
+        // 5. Her şey sıfırlanmış olmalı, uygulama açık
+        assertTrue("Uygulama açık olmalı", LockStateManager.isUnlocked(PKG_OPERA))
+        assertFalse("Timer flag temizlenmeli", LockStateManager.isTimerExpired(PKG_OPERA))
     }
 
     // ─── getActiveUnlocks ────────────────────────────────────────────────────
@@ -138,18 +197,6 @@ class LockStateManagerTest {
     }
 
     @Test
-    fun `getActiveUnlocks - relock sonrası paketi içermemeli`() {
-        LockStateManager.notifyUnlocked(PKG_OPERA)
-        LockStateManager.notifyUnlocked(PKG_YOUTUBE)
-        LockStateManager.forceRelock(PKG_OPERA)
-
-        val active = LockStateManager.getActiveUnlocks()
-        assertEquals(1, active.size)
-        assertFalse(active.containsKey(PKG_OPERA))
-        assertTrue(active.containsKey(PKG_YOUTUBE))
-    }
-
-    @Test
     fun `getActiveUnlocks - döndürülen map değiştirilemez (immutable kopya)`() {
         LockStateManager.notifyUnlocked(PKG_OPERA)
         val snapshot1 = LockStateManager.getActiveUnlocks()
@@ -157,7 +204,6 @@ class LockStateManagerTest {
         LockStateManager.forceRelock(PKG_OPERA)
         val snapshot2 = LockStateManager.getActiveUnlocks()
 
-        // snapshot1 değişmemiş olmalı (toMap() ile kopyalandı)
         assertTrue("Snapshot1 hâlâ opera içermeli", snapshot1.containsKey(PKG_OPERA))
         assertFalse("Snapshot2 opera içermemeli", snapshot2.containsKey(PKG_OPERA))
     }

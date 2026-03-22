@@ -8,6 +8,55 @@
     android:gravity="center"
     android:padding="32dp">
 
+    <!-- Süre Doldu Banner (varsayılan GONE, timer_expired=true olunca VISIBLE) -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardTimerExpired"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="#FFF3E0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⏰"
+                android:textSize="28sp"
+                android:layout_marginEnd="12dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kullanım süresi doldu"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#E65100" />
+
+                <TextView
+                    android:id="@+id/tvTimerExpiredSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Görevi tamamla veya ebeveyn girişi yap"
+                    android:textSize="12sp"
+                    android:textColor="#BF360C" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <!-- Kilit İkonu -->
     <TextView
         android:layout_width="wrap_content"

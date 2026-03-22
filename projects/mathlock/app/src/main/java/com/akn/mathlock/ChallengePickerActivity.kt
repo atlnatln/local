@@ -2,7 +2,7 @@ package com.akn.mathlock
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.databinding.ActivityChallengePickerBinding
 
@@ -10,6 +10,7 @@ class ChallengePickerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChallengePickerBinding
     private var lockedPackage: String? = null
+    private var timerExpired: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,6 +18,7 @@ class ChallengePickerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         lockedPackage = intent.getStringExtra("locked_package")
+        timerExpired  = intent.getBooleanExtra("timer_expired", false)
 
         // Kilitli uygulamanın adını göster
         lockedPackage?.let { pkg ->
@@ -30,6 +32,11 @@ class ChallengePickerActivity : AppCompatActivity() {
             }
         }
 
+        // Süre doldu banneri
+        if (timerExpired) {
+            binding.cardTimerExpired.visibility = View.VISIBLE
+        }
+
         setupListeners()
     }
 
@@ -37,6 +44,7 @@ class ChallengePickerActivity : AppCompatActivity() {
         binding.cardMath.setOnClickListener {
             val intent = Intent(this, MathChallengeActivity::class.java).apply {
                 putExtra("locked_package", lockedPackage)
+                putExtra("timer_expired", timerExpired)
             }
             startActivity(intent)
             finish()
@@ -45,6 +53,7 @@ class ChallengePickerActivity : AppCompatActivity() {
         binding.cardGuess.setOnClickListener {
             val intent = Intent(this, NumberGuessActivity::class.java).apply {
                 putExtra("locked_package", lockedPackage)
+                putExtra("timer_expired", timerExpired)
             }
             startActivity(intent)
             finish()
@@ -53,6 +62,7 @@ class ChallengePickerActivity : AppCompatActivity() {
         binding.cardParent.setOnClickListener {
             val intent = Intent(this, ParentAuthActivity::class.java).apply {
                 putExtra("locked_package", lockedPackage)
+                putExtra("timer_expired", timerExpired)
             }
             startActivity(intent)
             finish()
