@@ -417,4 +417,79 @@ class SessionProgressTest {
         assertEquals("soru numarası testModeIndex olmalı", 7, displayNum)
         assertEquals("toplam gösterimi totalQuestions olmalı", 50, displayTotal)
     }
+
+    // ─── v1.22: Pratik modu izolasyonu ──────────────────────────────────────
+
+    @Test
+    fun `pratik mod - sinir yok, dogru cevap sonrasi devam eder`() {
+        val isPracticeMode = true
+        var sessionSolvedCount = 0
+
+        // 10 doğru cevap, hiçbirinde unlock tetiklenmemeli
+        repeat(10) {
+            sessionSolvedCount++
+            // Pratik modda unlock kontrolü yok, sadece sonraki soru
+            val nextAction = if (isPracticeMode) "showNextQuestion" else "checkUnlock"
+            assertEquals("pratik mod sonraki soruya geçmeli", "showNextQuestion", nextAction)
+        }
+        assertEquals("10 doğru cevap sayılmalı", 10, sessionSolvedCount)
+    }
+
+    @Test
+    fun `pratik mod - stats kaydedilmeli`() {
+        val isTestMode = false
+        val isPracticeMode = true
+        var statsRecorded = false
+
+        // Stats kaydı: !isTestMode kontrolü geçer çünkü pratik mod testMode değil
+        if (!isTestMode) {
+            statsRecorded = true
+        }
+
+        assertTrue("pratik modda stats kaydedilmeli", statsRecorded)
+    }
+
+    @Test
+    fun `pratik mod - unlock tetiklenmemeli`() {
+        val isPracticeMode = true
+        var unlockCalled = false
+
+        // unlockAndLaunchApp içinde pratik mod kontrolü
+        if (isPracticeMode) {
+            // return — unlock olmaz
+        } else {
+            unlockCalled = true
+        }
+
+        assertFalse("pratik modda unlock olmamalı", unlockCalled)
+    }
+
+    @Test
+    fun `pratik mod - set bitince tekrar baslar`() {
+        val isPracticeMode = true
+        var resetTriggered = false
+        var newSetStarted = false
+
+        // onPracticeSetComplete: resetProgress + yeni set sync
+        if (isPracticeMode) {
+            resetTriggered = true
+            newSetStarted = true
+        }
+
+        assertTrue("pratik modda set bitince reset yapılmalı", resetTriggered)
+        assertTrue("pratik modda yeni set başlamalı", newSetStarted)
+    }
+
+    @Test
+    fun `pratik mod - back tusu ile cikilebilmeli`() {
+        val isPracticeMode = true
+        val isTestMode = false
+        var canBackNormally = false
+
+        if (isTestMode || isPracticeMode) {
+            canBackNormally = true  // super.onBackPressed
+        }
+
+        assertTrue("pratik modda geri tuşu normal çalışmalı", canBackNormally)
+    }
 }

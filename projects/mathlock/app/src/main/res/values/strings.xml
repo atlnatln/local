@@ -40,6 +40,10 @@
     <string name="btn_next">Sonraki →</string>
     <string name="btn_skip">İleri →</string>
     <string name="btn_retry">Tekrar Dene</string>
+
+    <!-- Pratik Modu -->
+    <string name="practice_button_title">Soru Çöz! 🌟</string>
+    <string name="practice_button_subtitle">Matematik pratik yap, skorunu artır</string>
     <string name="hint_answer">Cevabını yaz…</string>
 
     <!-- Sayı Tahmin -->

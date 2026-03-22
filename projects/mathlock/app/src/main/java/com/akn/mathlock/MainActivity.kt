@@ -155,6 +155,14 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_AUTH_SETTINGS)
         }
 
+        // Pratik modu: çocuk istediğinde soru çözer
+        binding.cardPractice.setOnClickListener {
+            val intent = Intent(this, MathChallengeActivity::class.java).apply {
+                putExtra("practice_mode", true)
+            }
+            startActivity(intent)
+        }
+
         // Gizli ebeveyn girişi: logoya 5 kez hızlı tıklama (yedek)
         binding.tvLogo.setOnClickListener {
             val now = SystemClock.elapsedRealtime()

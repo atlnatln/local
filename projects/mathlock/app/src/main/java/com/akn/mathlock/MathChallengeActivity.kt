@@ -29,6 +29,7 @@ class MathChallengeActivity : AppCompatActivity() {
 
     private var lockedPackage: String? = null
     private var isTestMode = false
+    private var isPracticeMode = false
 
     // JSON mode state
     private var currentJsonQuestion: QuestionManager.JsonQuestion? = null
@@ -76,6 +77,7 @@ class MathChallengeActivity : AppCompatActivity() {
 
         lockedPackage = intent.getStringExtra("locked_package")
         isTestMode = intent.getBooleanExtra("test_mode", false)
+        isPracticeMode = intent.getBooleanExtra("practice_mode", false)
 
         // İpucu alanı başlangıçta gizli
         binding.tvHint.visibility = View.GONE
@@ -107,6 +109,10 @@ class MathChallengeActivity : AppCompatActivity() {
             // Ebeveyn önizleme: tüm soruları index 0'dan göster, unlock mekanizması yok
             testModeIndex = 0
             showNextJsonQuestion()
+        } else if (isPracticeMode) {
+            // Pratik mod: sınırsız soru, stats kaydedilir, unlock yok
+            sessionSolvedCount = 0
+            showNextJsonQuestion()
         } else {
             // Normal mod: passScore kadar doğru cevap → kilit açılır
             requiredCount = prefManager.passScore.coerceAtLeast(1)
@@ -125,6 +131,8 @@ class MathChallengeActivity : AppCompatActivity() {
         if (currentJsonQuestion == null) {
             if (isTestMode) {
                 onTestPreviewComplete()
+            } else if (isPracticeMode) {
+                onPracticeSetComplete()
             } else {
                 onSetComplete()
             }
@@ -148,6 +156,11 @@ class MathChallengeActivity : AppCompatActivity() {
             binding.tvScore.text = ""
             binding.progressBar.max = totalQ
             binding.progressBar.progress = testModeIndex
+        } else if (isPracticeMode) {
+            // Pratik mod: çözülen soru sayısını göster
+            binding.tvQuestionNum.text = "Soru ${sessionSolvedCount + 1}"
+            binding.tvScore.text = "⭐ $sessionSolvedCount doğru"
+            binding.progressBar.visibility = View.GONE
         } else {
             // Normal mod: "2/3" — oturum ilerleme
             binding.tvQuestionNum.text = getString(R.string.math_question_num, sessionSolvedCount + 1, requiredCount)
@@ -197,6 +210,12 @@ class MathChallengeActivity : AppCompatActivity() {
 
             if (isTestMode) {
                 // Ebeveyn önizleme: doğru cevap → 800ms sonra sonraki soru
+                binding.root.postDelayed({
+                    if (!isFinishing && !isDestroyed) showNextJsonQuestion()
+                }, 800)
+            } else if (isPracticeMode) {
+                // Pratik mod: doğru cevap → skoru artır, sonraki soru
+                sessionSolvedCount++
                 binding.root.postDelayed({
                     if (!isFinishing && !isDestroyed) showNextJsonQuestion()
                 }, 800)
@@ -300,6 +319,41 @@ class MathChallengeActivity : AppCompatActivity() {
         binding.root.postDelayed({
             if (!isFinishing && !isDestroyed) finish()
         }, 2000)
+    }
+
+    private fun onPracticeSetComplete() {
+        Log.d(TAG, "Pratik mod: set tamamlandı, stats yükleniyor...")
+        // Stats yükle ve progress sıfırla
+        Thread {
+            val uploaded = statsTracker.uploadStats(questionManager.getVersion())
+            if (uploaded) {
+                questionManager.resetProgress()
+                Log.d(TAG, "Pratik: stats yüklendi, progress sıfırlandı")
+            }
+        }.start()
+
+        // Tebrik mesajı göster, 2s sonra yeni set başlat
+        binding.tvQuestion.text = "🎉"
+        binding.tvResult.visibility = View.VISIBLE
+        binding.tvResult.text = "Üstbeyinsin! 🌟 Toplam $sessionSolvedCount doğru!\nYeni sorular geliyor..."
+        binding.tvResult.setTextColor(getColor(R.color.correct_green))
+        binding.btnCheck.visibility = View.GONE
+        binding.etAnswer.visibility = View.GONE
+        binding.tvHint.visibility = View.GONE
+
+        binding.root.postDelayed({
+            if (!isFinishing && !isDestroyed) {
+                binding.etAnswer.visibility = View.VISIBLE
+                binding.tvResult.visibility = View.GONE
+                // Yeni seti sync et ve devam et
+                Thread {
+                    questionManager.sync()
+                    runOnUiThread {
+                        if (!isFinishing && !isDestroyed) showNextJsonQuestion()
+                    }
+                }.start()
+            }
+        }, 2500)
     }
 
     private fun onSetComplete() {
@@ -442,6 +496,11 @@ class MathChallengeActivity : AppCompatActivity() {
             return
         }
 
+        if (isPracticeMode) {
+            // Pratik modda unlock yok — çıkmamalı, soru akışı devam eder
+            return
+        }
+
         lockedPackage?.let { pkg ->
             LockStateManager.notifyUnlocked(pkg)
             val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
@@ -498,7 +557,7 @@ class MathChallengeActivity : AppCompatActivity() {
 
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
-        if (isTestMode) {
+        if (isTestMode || isPracticeMode) {
             super.onBackPressed()
         } else {
             sendUserHome()
