@@ -100,7 +100,9 @@ class MathChallengeActivity : AppCompatActivity() {
     private fun startJsonMode() {
         Log.d(TAG, "JSON mode başlatılıyor (v${questionManager.getVersion()})")
         isJsonModeActive = true
-        requiredCount = prefManager.questionCount.coerceAtLeast(1)
+        // JSON modda kilit açmak için gereken doğru cevap sayısı = passScore
+        // (questionCount toplam soru sayısı, passScore gereken doğru cevap sayısı)
+        requiredCount = prefManager.passScore.coerceAtLeast(1)
         sessionSolvedCount = 0
         showNextJsonQuestion()
     }

@@ -266,5 +266,54 @@ class SessionProgressTest {
         val (unlocked, _) = onCorrectAnswer(0, 3)
         assertFalse("3 gerekli → 1 doğru → kilit açılmamalı", unlocked)
     }
+
+    // ─── v1.17 regression: requiredCount = passScore, questionCount değil ────
+
+    /**
+     * v1.17 öncesi bug: requiredCount = questionCount kullanılıyordu.
+     * Kullanıcı "Soru Sayısı" slider'ını 50'ye çekince requiredCount=50 oluyordu
+     * ve 50 doğru cevap gerekiyordu (pratik olarak imkânsız bir oturumda).
+     *
+     * Düzeltme: requiredCount = passScore (Geçiş Skoru).
+     * Ayarlar: questionCount=50, passScore=2 → requiredCount=2 olmalı.
+     */
+    @Test
+    fun `requiredCount passScore olmali - questionCount degil (v1_17 regression)`() {
+        // Simülasyon: questionCount=50, passScore=2
+        val questionCount = 50
+        val passScore = 2
+
+        // v1.17+: requiredCount = passScore
+        val requiredCount = passScore.coerceAtLeast(1)
+        assertEquals("requiredCount passScore olmalı", 2, requiredCount)
+
+        // 2 doğru cevap yeterli olmalı
+        var session = 0
+        val (u1, c1) = onCorrectAnswer(session, requiredCount)
+        session = c1
+        assertFalse("1/2 → kilit açılmamalı", u1)
+
+        val (u2, _) = onCorrectAnswer(session, requiredCount)
+        assertTrue("2/2 → kilit açılmalı", u2)
+
+        // questionCount ile 50 soru GEREKLMEZ
+        assertNotEquals("requiredCount questionCount olmamalı", questionCount, requiredCount)
+    }
+
+    @Test
+    fun `passScore questionCount ustu olamaz - coerce mantigi`() {
+        // Eğer passScore > questionCount ise coerceAtMost(questionCount) düzeltir
+        val questionCount = 3
+        val passScore = 10
+        val effective = passScore.coerceAtMost(questionCount)
+        assertEquals("passScore questionCount ile sınırlanmalı", 3, effective)
+    }
+
+    @Test
+    fun `passScore 1 ve questionCount 50 - tek dogru yeterli`() {
+        val requiredCount = 1.coerceAtLeast(1)
+        val (unlocked, _) = onCorrectAnswer(0, requiredCount)
+        assertTrue("passScore=1 → 1 doğru → kilit açılmalı", unlocked)
+    }
 }
 

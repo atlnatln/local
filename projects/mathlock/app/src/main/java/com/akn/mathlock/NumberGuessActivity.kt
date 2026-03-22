@@ -43,7 +43,8 @@ class NumberGuessActivity : AppCompatActivity() {
         prefManager = PreferenceManager(this)
         lockedPackage = intent.getStringExtra("locked_package")
         isTestMode = intent.getBooleanExtra("test_mode", false)
-        requiredCount = prefManager.questionCount.coerceAtLeast(1)
+        // Kilit açmak için gereken tur sayısı = passScore (geçiş skoru)
+        requiredCount = prefManager.passScore.coerceAtLeast(1)
         sessionSolvedCount = 0
 
         startNewGame()
