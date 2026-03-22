@@ -69,6 +69,9 @@ class AppLockService : Service() {
     private var lastChallengeTime: Long = 0
     private val CHALLENGE_MIN_INTERVAL = 3_000L // ms
 
+    // Ebeveyn bypass: uygulama arka plana geçince bypass temizlenir
+    private var previousForegroundPackage: String? = null
+
     // UsageEvents son 5 saniyeye bakar — kullanıcı uygulamada uzun süre beklerse
     // event gelmez ve getForegroundPackageName() null döner. Bu değişken son bilinen
     // ön plan uygulamayı tutar; timer expire olduğunda check kaçırılmaz.
@@ -127,6 +130,7 @@ class AppLockService : Service() {
         pollingActive = false
         showingCountdown = false
         lastKnownForegroundPackage = null
+        previousForegroundPackage = null
         handler.removeCallbacks(checkRunnable)
         hideTimerOverlay()
         super.onDestroy()
@@ -168,6 +172,14 @@ class AppLockService : Service() {
     private fun checkForegroundApp(foregroundPackage: String?) {
         val currentPackage = foregroundPackage ?: return
         Log.v(TAG, "Ön plan: $currentPackage")
+
+        // Ebeveyn bypass temizle: önceki paket parent-bypassed iken başka uygulamaya geçildi
+        val prev = previousForegroundPackage
+        if (prev != null && prev != currentPackage && LockStateManager.isParentBypassed(prev)) {
+            LockStateManager.clearParentBypass(prev)
+            Log.d(TAG, "Ebeveyn bypass temizlendi (arka plana geçti): $prev")
+        }
+        previousForegroundPackage = currentPackage
 
         // Kendi uygulamamızı kilitleme
         if (currentPackage == packageName) {

@@ -290,4 +290,61 @@ class LockStateManagerTest {
         assertFalse(LockStateManager.isUnlocked(PKG_YOUTUBE))
         assertFalse(LockStateManager.isParentBypassed(PKG_YOUTUBE))
     }
+
+    // ─── Ebeveyn bypass — arka plana geçince kilitlenmeli ───────────────────
+
+    /**
+     * AppLockService'in yaptığı davranışı birim düzeyinde simüle eder:
+     * prevForeground != currentForeground olduğunda bypass paketi clearParentBypass çağrılması.
+     * (Gerçek servis mantığı AppLockServiceTest kapsamında; burada LockStateManager davranışı test edilir.)
+     */
+    @Test
+    fun `clearParentBypass - bypass temizlendikten sonra isUnlocked false döner`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        assertTrue("Bypass sonrası isUnlocked true", LockStateManager.isUnlocked(PKG_OPERA))
+
+        // Servis bu çağrıyı yapar: uygulama arka plana geçti
+        LockStateManager.clearParentBypass(PKG_OPERA)
+
+        assertFalse("Bypass temizlendikten sonra isUnlocked false olmalı", LockStateManager.isUnlocked(PKG_OPERA))
+        assertFalse(LockStateManager.isParentBypassed(PKG_OPERA))
+    }
+
+    @Test
+    fun `ebeveyn bypass sonrası uygulama arka plana geçip tekrar açılınca kilitli olmalı (servis simülasyonu)`() {
+        // 1. Ebeveyn giriş yaptı → bypass set edildi
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        assertTrue(LockStateManager.isUnlocked(PKG_OPERA))
+
+        // 2. Farklı uygulama ön plana çıktı (AppLockService bunu algılar ve bypass temizler)
+        val previousForeground = PKG_OPERA
+        val currentForeground = PKG_YOUTUBE
+        if (previousForeground != currentForeground && LockStateManager.isParentBypassed(previousForeground)) {
+            LockStateManager.clearParentBypass(previousForeground)
+        }
+
+        // 3. Opera artık kilitli olmalı
+        assertFalse("Arka plana geçince bypass temizlenmeli", LockStateManager.isUnlocked(PKG_OPERA))
+        assertFalse(LockStateManager.isParentBypassed(PKG_OPERA))
+
+        // 4. Youtube'un durumu değişmedi
+        assertFalse(LockStateManager.isUnlocked(PKG_YOUTUBE))
+    }
+
+    @Test
+    fun `aynı uygulama ön plandayken clearParentBypass tetiklenmez (flood-safe)`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+
+        // Servis polling mantığı: aynı paket tekrar foreground geldi — bypass dokunulmaz
+        val previousForeground = PKG_OPERA
+        val currentForeground = PKG_OPERA
+        if (previousForeground != currentForeground && LockStateManager.isParentBypassed(previousForeground)) {
+            LockStateManager.clearParentBypass(previousForeground)
+        }
+
+        // Opera hâlâ açık
+        assertTrue("Aynı paket tekrar gelince bypass korunmalı", LockStateManager.isUnlocked(PKG_OPERA))
+        assertTrue(LockStateManager.isParentBypassed(PKG_OPERA))
+    }
 }
+
