@@ -23,6 +23,9 @@ class NumberGuessActivity : AppCompatActivity() {
     private var rangeMin = 0
     private var rangeMax = 100
     private var gameMax = 100
+    // Oturum: kaç tur çözüldü / kaç gerekli
+    private var sessionSolvedCount = 0
+    private var requiredCount = 1
 
     private fun sendUserHome() {
         val homeIntent = Intent(Intent.ACTION_MAIN).apply {
@@ -40,6 +43,8 @@ class NumberGuessActivity : AppCompatActivity() {
         prefManager = PreferenceManager(this)
         lockedPackage = intent.getStringExtra("locked_package")
         isTestMode = intent.getBooleanExtra("test_mode", false)
+        requiredCount = prefManager.questionCount.coerceAtLeast(1)
+        sessionSolvedCount = 0
 
         startNewGame()
         setupListeners()
@@ -52,7 +57,12 @@ class NumberGuessActivity : AppCompatActivity() {
         rangeMin = 0
         rangeMax = gameMax
 
-        binding.tvSubtitle.text = getString(R.string.guess_subtitle, gameMax)
+        // Birden fazla tur gerekliyse tur bilgisini göster
+        binding.tvSubtitle.text = if (requiredCount > 1) {
+            "Tur ${sessionSolvedCount + 1}/$requiredCount • " + getString(R.string.guess_subtitle, gameMax)
+        } else {
+            getString(R.string.guess_subtitle, gameMax)
+        }
         binding.tvAttempt.text = getString(R.string.guess_attempt, 0)
         binding.tvRange.text = getString(R.string.guess_range, rangeMin, rangeMax)
         binding.tvHint.text = ""
@@ -99,14 +109,29 @@ class NumberGuessActivity : AppCompatActivity() {
     }
 
     private fun onCorrectGuess() {
+        sessionSolvedCount++
         binding.tvHint.text = ""
-        binding.tvSuccess.visibility = View.VISIBLE
-        binding.tvSuccess.text = getString(R.string.guess_correct, attempts)
         binding.etGuess.isEnabled = false
         binding.btnGuess.isEnabled = false
 
-        // Kilit açma
-        binding.root.postDelayed({ unlockAndLaunchApp() }, 2000)
+        if (sessionSolvedCount >= requiredCount) {
+            // Yeterli tur tamamlandı — kilidi aç
+            binding.tvSuccess.visibility = View.VISIBLE
+            binding.tvSuccess.text = getString(R.string.guess_correct, attempts)
+            binding.root.postDelayed({ unlockAndLaunchApp() }, 2000)
+        } else {
+            // Daha tur var — kısa mesaj, sonra yeni oyun
+            binding.tvSuccess.visibility = View.VISIBLE
+            binding.tvSuccess.text = "✅ Doğru! ($sessionSolvedCount/$requiredCount) Sonraki tur..."
+            binding.root.postDelayed({
+                if (!isFinishing && !isDestroyed) {
+                    binding.tvSuccess.visibility = View.GONE
+                    binding.etGuess.isEnabled = true
+                    binding.btnGuess.isEnabled = true
+                    startNewGame()
+                }
+            }, 1500)
+        }
     }
 
     private fun unlockAndLaunchApp() {

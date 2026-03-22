@@ -36,6 +36,9 @@ class MathChallengeActivity : AppCompatActivity() {
     private var startTime = 0L
     private var sawHint = false
     private var sawTopic = false
+    // Bu kilit açma oturumunda kaç doğru cevap verildi / kaç gerekli
+    private var sessionSolvedCount = 0
+    private var requiredCount = 1
 
     // Fallback mode state (eski sistem)
     private var fallbackQuestions = mutableListOf<com.akn.mathlock.util.MathQuestion>()
@@ -90,6 +93,8 @@ class MathChallengeActivity : AppCompatActivity() {
 
     private fun startJsonMode() {
         Log.d(TAG, "JSON mode başlatılıyor (v${questionManager.getVersion()})")
+        requiredCount = prefManager.questionCount.coerceAtLeast(1)
+        sessionSolvedCount = 0
         showNextJsonQuestion()
     }
 
@@ -109,10 +114,11 @@ class MathChallengeActivity : AppCompatActivity() {
         startTime = System.currentTimeMillis()
 
         binding.tvQuestion.text = q.text
-        binding.tvQuestionNum.text = getString(R.string.math_question_num, questionManager.solvedCount(), questionManager.totalCount())
+        // Oturum ilerleme: ör. "2/3" (çözülmesi gereken) — global set sayısı değil
+        binding.tvQuestionNum.text = getString(R.string.math_question_num, sessionSolvedCount + 1, requiredCount)
         binding.tvScore.text = ""
-        binding.progressBar.max = questionManager.totalCount()
-        binding.progressBar.progress = questionManager.solvedCount() - 1
+        binding.progressBar.max = requiredCount
+        binding.progressBar.progress = sessionSolvedCount
 
         binding.etAnswer.setText("")
         binding.etAnswer.isEnabled = true
@@ -152,8 +158,16 @@ class MathChallengeActivity : AppCompatActivity() {
                 )
             }
 
-            // Kilidi aç ve uygulamayı başlat
-            unlockAndLaunchApp()
+            // Oturum ilerleme: gerekli sayıya ulaşıldıysa kilidi aç, yoksa sonraki soru
+            sessionSolvedCount++
+            if (sessionSolvedCount >= requiredCount) {
+                unlockAndLaunchApp()
+            } else {
+                // Daha soru var — kısa gecikmeyle sonrakini göster
+                binding.root.postDelayed({
+                    if (!isFinishing && !isDestroyed) showNextJsonQuestion()
+                }, 800)
+            }
         } else {
             // ❌ Yanlış cevap
             if (attempts == 1 && !sawHint) {
