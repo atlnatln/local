@@ -289,6 +289,7 @@ class MathChallengeActivity : AppCompatActivity() {
         binding.tvResult.text = "Önizleme tamamlandı — ${questionManager.totalCount()} soru incelendi"
         binding.tvResult.setTextColor(getColor(R.color.correct_green))
         binding.btnCheck.visibility = View.GONE
+        binding.btnSkip.visibility = View.GONE
         binding.btnNext.visibility = View.GONE
         binding.etAnswer.visibility = View.GONE
         binding.tvHint.visibility = View.GONE
@@ -307,6 +308,7 @@ class MathChallengeActivity : AppCompatActivity() {
         binding.tvResult.text = "Harika! 50 soruyu tamamladın! 🌟"
         binding.tvResult.setTextColor(getColor(R.color.correct_green))
         binding.btnCheck.visibility = View.GONE
+        binding.btnSkip.visibility = View.GONE
         binding.btnNext.visibility = View.GONE
         binding.etAnswer.visibility = View.GONE
         binding.tvHint.visibility = View.GONE
@@ -456,6 +458,13 @@ class MathChallengeActivity : AppCompatActivity() {
             } else {
                 checkFallbackAnswer()
             }
+        }
+
+        binding.btnSkip.setOnClickListener {
+            // Ebeveyn önizleme: soruyu atla, sonrakine geç
+            binding.btnSkip.visibility = View.GONE
+            binding.btnCheck.visibility = View.GONE
+            showNextJsonQuestion()
         }
 
         binding.btnNext.setOnClickListener {

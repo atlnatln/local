@@ -38,6 +38,7 @@
     <string name="math_fail">😔 Yeterli puan alamadın. Tekrar dene!</string>
     <string name="btn_check">Kontrol Et</string>
     <string name="btn_next">Sonraki →</string>
+    <string name="btn_skip">İleri →</string>
     <string name="btn_retry">Tekrar Dene</string>
     <string name="hint_answer">Cevabını yaz…</string>
 
