@@ -326,9 +326,11 @@ class MathChallengeActivity : AppCompatActivity() {
         // Stats yükle ve progress sıfırla
         Thread {
             val uploaded = statsTracker.uploadStats(questionManager.getVersion())
+            questionManager.resetProgress()
             if (uploaded) {
-                questionManager.resetProgress()
                 Log.d(TAG, "Pratik: stats yüklendi, progress sıfırlandı")
+            } else {
+                Log.w(TAG, "Pratik: stats yükleme başarısız, progress yine de sıfırlandı")
             }
         }.start()
 
