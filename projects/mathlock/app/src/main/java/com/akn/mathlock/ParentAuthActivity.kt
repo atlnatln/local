@@ -158,7 +158,7 @@ class ParentAuthActivity : AppCompatActivity() {
         }
 
         lockedPackage?.let { pkg ->
-            LockStateManager.notifyUnlocked(pkg)   // timerExpired bayrağını da temizler
+            LockStateManager.notifyParentUnlocked(pkg)  // timer YOK; geri sayım başlamaz
             val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
             if (launchIntent != null) {
                 startActivity(launchIntent)

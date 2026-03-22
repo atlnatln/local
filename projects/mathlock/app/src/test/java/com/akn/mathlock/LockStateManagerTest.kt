@@ -103,7 +103,7 @@ class LockStateManagerTest {
         LockStateManager.markTimerExpired(PKG_OPERA)
         assertTrue(LockStateManager.isTimerExpired(PKG_OPERA))
 
-        // Ebeveyn girişi → notifyUnlocked çağrılır
+        // Çocuk challenge → notifyUnlocked çağrılır
         LockStateManager.notifyUnlocked(PKG_OPERA)
 
         // Bayrak temizlenmiş olmalı
@@ -175,12 +175,14 @@ class LockStateManagerTest {
         val shouldShowBanner = LockStateManager.isTimerExpired(PKG_OPERA)
         assertTrue("Challenge ekranı banner göstermeli", shouldShowBanner)
 
-        // 4. Ebeveyn giriş yapıyor → notifyUnlocked çağrılıyor
-        LockStateManager.notifyUnlocked(PKG_OPERA)
+        // 4. Ebeveyn giriş yapıyor → notifyParentUnlocked çağrılıyor
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
 
-        // 5. Her şey sıfırlanmış olmalı, uygulama açık
+        // 5. Uygulama açık, timer YOK (getActiveUnlocks'ta yer almıyor)
         assertTrue("Uygulama açık olmalı", LockStateManager.isUnlocked(PKG_OPERA))
         assertFalse("Timer flag temizlenmeli", LockStateManager.isTimerExpired(PKG_OPERA))
+        assertTrue("Parent bypass olmalı", LockStateManager.isParentBypassed(PKG_OPERA))
+        assertFalse("getActiveUnlocks timer için çağrılmaz", LockStateManager.getActiveUnlocks().containsKey(PKG_OPERA))
     }
 
     // ─── getActiveUnlocks ────────────────────────────────────────────────────
@@ -206,5 +208,86 @@ class LockStateManagerTest {
 
         assertTrue("Snapshot1 hâlâ opera içermeli", snapshot1.containsKey(PKG_OPERA))
         assertFalse("Snapshot2 opera içermemeli", snapshot2.containsKey(PKG_OPERA))
+    }
+
+    // ─── Ebeveyn bypass testleri ─────────────────────────────────────────────
+
+    @Test
+    fun `notifyParentUnlocked - isUnlocked true döner`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        assertTrue("Ebeveyn bypass: isUnlocked true olmalı", LockStateManager.isUnlocked(PKG_OPERA))
+    }
+
+    @Test
+    fun `notifyParentUnlocked - isParentBypassed true döner`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        assertTrue(LockStateManager.isParentBypassed(PKG_OPERA))
+    }
+
+    @Test
+    fun `notifyParentUnlocked - getActiveUnlocks içinde YOK (timer başlamaz)`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        assertFalse(
+            "Ebeveyn bypass timer map'ine girmemeli",
+            LockStateManager.getActiveUnlocks().containsKey(PKG_OPERA)
+        )
+    }
+
+    @Test
+    fun `notifyParentUnlocked - timerExpired bayrağını temizler`() {
+        LockStateManager.markTimerExpired(PKG_OPERA)
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        assertFalse(LockStateManager.isTimerExpired(PKG_OPERA))
+    }
+
+    @Test
+    fun `notifyParentUnlocked - çocuk unlock varsa onu temizler`() {
+        LockStateManager.notifyUnlocked(PKG_OPERA)         // çocuk unlock
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)   // ebeveyn geçiyor
+
+        assertFalse("unlockedApps'ta kalmamalı", LockStateManager.getActiveUnlocks().containsKey(PKG_OPERA))
+        assertTrue("parentBypassApps'ta olmalı", LockStateManager.isParentBypassed(PKG_OPERA))
+        assertTrue("isUnlocked hâlâ true", LockStateManager.isUnlocked(PKG_OPERA))
+    }
+
+    @Test
+    fun `forceRelock - parent bypass da temizler`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        LockStateManager.forceRelock(PKG_OPERA)
+        assertFalse(LockStateManager.isUnlocked(PKG_OPERA))
+        assertFalse(LockStateManager.isParentBypassed(PKG_OPERA))
+    }
+
+    @Test
+    fun `clearParentBypass - sadece bypass bayrağını temizler`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        LockStateManager.clearParentBypass(PKG_OPERA)
+        assertFalse(LockStateManager.isParentBypassed(PKG_OPERA))
+        assertFalse(LockStateManager.isUnlocked(PKG_OPERA))
+    }
+
+    @Test
+    fun `clearAll - parent bypass da temizlenmeli`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        LockStateManager.clearAll()
+        assertFalse(LockStateManager.isUnlocked(PKG_OPERA))
+        assertFalse(LockStateManager.isParentBypassed(PKG_OPERA))
+    }
+
+    @Test
+    fun `notifyUnlocked - parent bypass varsa onu temizler (çocuk devraliyor)`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        assertTrue(LockStateManager.isParentBypassed(PKG_OPERA))
+
+        LockStateManager.notifyUnlocked(PKG_OPERA)  // çocuk challenge kazandı
+        assertFalse("Parent bypass temizlenmeli", LockStateManager.isParentBypassed(PKG_OPERA))
+        assertTrue("unlockedApps'ta olmalı (timer işleyecek)", LockStateManager.getActiveUnlocks().containsKey(PKG_OPERA))
+    }
+
+    @Test
+    fun `ebeveyn bypass - diğer uygulamayı etkilemez`() {
+        LockStateManager.notifyParentUnlocked(PKG_OPERA)
+        assertFalse(LockStateManager.isUnlocked(PKG_YOUTUBE))
+        assertFalse(LockStateManager.isParentBypassed(PKG_YOUTUBE))
     }
 }
