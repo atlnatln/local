@@ -185,18 +185,38 @@ if [ "$SKIP_VPS" = false ]; then
 
     log_success "APK yüklendi: ${VPS_DIST_PATH}/${APK_VERSIONED}"
 
-    # ─── Data dosyalarını sync et (questions.json, topics.json) ──────────────
+    # ─── Data dosyalarını akıllı sync et (öğrenci ilerlemesini koru) ─────────
     DATA_SYNC_DIR="$PROJECT_DIR/data"
     VPS_DATA_DIR="/home/akn/vps/projects/mathlock/data"
     if [ -d "$DATA_SYNC_DIR" ]; then
         ssh "$VPS_HOST" "mkdir -p ${VPS_DATA_DIR}"
-        if [ -f "$DATA_SYNC_DIR/questions.json" ]; then
+
+        # VPS'teki version'u kontrol et — AI tarafından üretilmiş daha yeni
+        # bir soru seti varsa yerel dosya ile ezme
+        VPS_Q_VERSION=$(ssh "$VPS_HOST" "python3 -c \"import json; print(json.load(open('${VPS_DATA_DIR}/questions.json'))['version'])\" 2>/dev/null || echo 0")
+        LOCAL_Q_VERSION=$(python3 -c "import json; print(json.load(open('$DATA_SYNC_DIR/questions.json'))['version'])" 2>/dev/null || echo 0)
+
+        if [ "$LOCAL_Q_VERSION" -gt "$VPS_Q_VERSION" ] 2>/dev/null; then
+            # Yerel daha yeni → yükle
             scp "$DATA_SYNC_DIR/questions.json" "${VPS_HOST}:${VPS_DATA_DIR}/questions.json"
-            log_success "questions.json VPS'e senkronize edildi"
+            log_success "questions.json VPS'e senkronize edildi (v${LOCAL_Q_VERSION} > v${VPS_Q_VERSION})"
+            if [ -f "$DATA_SYNC_DIR/topics.json" ]; then
+                scp "$DATA_SYNC_DIR/topics.json" "${VPS_HOST}:${VPS_DATA_DIR}/topics.json"
+                log_success "topics.json VPS'e senkronize edildi"
+            fi
+        else
+            # VPS aynı veya daha yeni → dokunma (AI üretmiş olabilir)
+            log_info "VPS veri korundu (VPS: v${VPS_Q_VERSION}, yerel: v${LOCAL_Q_VERSION})"
+            # Yerel'i VPS'ten güncelle (geliştiricinin de güncel kalması için)
+            scp "${VPS_HOST}:${VPS_DATA_DIR}/questions.json" "$DATA_SYNC_DIR/questions.json" 2>/dev/null && \
+                log_success "questions.json VPS'ten yerele çekildi (v${VPS_Q_VERSION})" || true
+            scp "${VPS_HOST}:${VPS_DATA_DIR}/topics.json" "$DATA_SYNC_DIR/topics.json" 2>/dev/null && \
+                log_success "topics.json VPS'ten yerele çekildi" || true
         fi
-        if [ -f "$DATA_SYNC_DIR/topics.json" ]; then
-            scp "$DATA_SYNC_DIR/topics.json" "${VPS_HOST}:${VPS_DATA_DIR}/topics.json"
-            log_success "topics.json VPS'e senkronize edildi"
+
+        # stats.json'a asla dokunma — öğrencinin aktif ilerleme verisi
+        if [ -f "$DATA_SYNC_DIR/stats.json" ]; then
+            log_warning "Yerel stats.json atlanıyor (öğrenci ilerlemesi VPS'te korunur)"
         fi
     fi
 

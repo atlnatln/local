@@ -1,62 +1,68 @@
 {
   "toplama": {
-    "title": "Toplama Nasıl Yapılır? ➕",
-    "explanation": "Toplama iki sayıyı birleştirmek demektir. Mesela 3 elma ve 2 elma varsa hepsini sayarsan 5 elma olur!",
-    "example": "3 + 2 = ?\n🍎🍎🍎 + 🍎🍎 = 🍎🍎🍎🍎🍎\nHepsini say: 5 tane! ✅",
+    "title": "➕ Toplama Nasıl Yapılır?",
+    "explanation": "Toplama, iki veya daha fazla sayıyı birleştirmektir. Örneğin 3 elma ile 2 elmayı bir araya getirersen, 5 elma olur. Parmaklarınızı kullanarak sayabilirsiniz.",
+    "example": "🍎🍎🍎 + 🍎🍎 = 🍎🍎🍎🍎🍎 (3 + 2 = 5)\n\nAdım 1: İlk sayıyı kafandan veya parmaklarınla söyle (3)\nAdım 2: Parmaklarınla diğer sayıyı sayarak ilerle (4, 5)\nAdım 3: Toplam sonuç (5)",
     "tips": [
-      "Büyük sayıdan başla, küçük sayıyı parmaklarınla say",
-      "5 + 3 için: 5'ten başla, 3 parmak aç → 6, 7, 8 ✅",
-      "10'a tamamla yöntemi: 8+5 = 8+2+3 = 10+3 = 13"
+      "Büyük sayıdan başla, küçük sayıyı saymaya devam et",
+      "Parmaklarını veya nesneleri kullan (elma, top, yıldız)",
+      "Aynı cevabı birkaç kez yap, böylece hatırlamaya başlarsın",
+      "Günlük hayatta toplamayı fark et: 2 kardeş + 3 arkadaş = 5 kişi"
     ]
   },
   "cikarma": {
-    "title": "Çıkarma Nasıl Yapılır? ➖",
-    "explanation": "Çıkarma, bir sayıdan bazılarını almak demektir. 5 elma var, 2 tanesini yersen kaç kalır?",
-    "example": "5 - 2 = ?\n🍎🍎🍎🍎🍎\n2 tanesini ye: ❌❌🍎🍎🍎\nKalan: 3 tane! ✅",
+    "title": "➖ Çıkarma Nasıl Yapılır?",
+    "explanation": "Çıkarma, bir sayıdan başka bir sayıyı ayırmaktır. Örneğin 7 şekeriniz varsa ve 3 tanesini yersen, 4 tane kalır. Çıkarma, toplamanın tersidir.",
+    "example": "🍬🍬🍬🍬🍬🍬🍬 - 🍬🍬🍬 = 🍬🍬🍬🍬 (7 - 3 = 4)\n\nAdım 1: Başlangıç sayısını söyle (7)\nAdım 2: Geri doğru say (6, 5, 4)\nAdım 3: Kaç kez sayıldı? (3 kez) O kadar çıkarttın\nAdım 4: Kalan sonuç (4)",
     "tips": [
-      "Büyük sayıdan geriye say",
-      "7 - 3 için: 7'den başla → 6, 5, 4 ✅",
-      "Toplama ile kontrol et: 5-2=3 çünkü 3+2=5"
+      "Büyük sayıdan başla, geri doğru say",
+      "Nesneler kullan ve her çıkardığında bir tane ayır",
+      "Çıkarma sonucu asla negatif olmaz (0 veya daha büyük)",
+      "Yakın sayılarda kolay: 10 - 9 = 1 (sadece 1 geri say)"
     ]
   },
   "carpma": {
-    "title": "Çarpma Nasıl Yapılır? ✖️",
-    "explanation": "Çarpma aynı sayıyı tekrar tekrar toplamaktır. 3 × 2 demek '3 tane 2' yani 2+2+2 demek!",
-    "example": "3 × 2 = ?\n⭐⭐ + ⭐⭐ + ⭐⭐ = ⭐⭐⭐⭐⭐⭐\n2'yi 3 kere topla: 2+2+2 = 6 ✅",
+    "title": "✖️ Çarpma Nasıl Yapılır?",
+    "explanation": "Çarpma, aynı sayıyı birkaç kez toplamanın kısayoludur. 3 x 2, '3'ü iki kez topla' anlamına gelir: 3 + 3 = 6. Çarpma tablosunu öğrenmek çok önemlidir!",
+    "example": "👦👦👦 x 2 = 👦👦👦👦👦👦 (3 x 2 = 3 + 3 = 6)\n\nAdım 1: İlk sayıyı söyle (3 erkek çocuk)\nAdım 2: Kaç kez var? (2 kez)\nAdım 3: Tekrar tekrar say (3 + 3)\nAdım 4: Cevap (6)",
     "tips": [
-      "Çarpma = tekrar tekrar toplama",
-      "4 × 3 = 3+3+3+3 = 12",
-      "2 ile çarpmak = iki katını almak: 5×2=10"
+      "Toplama ile düşün: a x 2 = a + a",
+      "Örneğin: 4 x 2 = 4 + 4 = 8",
+      "Gruplama yap: 2 sıra, her sırada 3 çocuk = 6 çocuk",
+      "Çarpım tablosunu şarkıyla veya oyunlarla öğren"
     ]
   },
   "bolme": {
-    "title": "Bölme Nasıl Yapılır? ➗",
-    "explanation": "Bölme, eşit gruplara ayırmak demektir. 6 elmayı 2 çocuğa eşit bölersen her birine 3 elma düşer!",
-    "example": "6 ÷ 2 = ?\n🍎🍎🍎🍎🍎🍎\nİki gruba ayır:\n👦: 🍎🍎🍎\n👧: 🍎🍎🍎\nHer birine 3 düşer! ✅",
+    "title": "➗ Bölme Nasıl Yapılır?",
+    "explanation": "Bölme, bir sayıyı eşit parçalara ayırmaktır. 8 şeker 2 çocuğa paylaştırırsan, her çocuğa 4 şeker düşer. Bölme çarpmanın tersidir.",
+    "example": "🍭🍭🍭🍭🍭🍭🍭🍭 ÷ 2 = 🍭🍭🍭🍭 ve 🍭🍭🍭🍭 (8 / 2 = 4)\n\nAdım 1: Toplam sayı (8 şeker)\nAdım 2: Kaç gruba böleceği? (2 çocuk)\nAdım 3: Her gruba eşit olarak dağıt\nAdım 4: Bir grupta kaç var? (4 şeker)",
     "tips": [
-      "Bölme çarpmanın tersidir: 6÷2=3 çünkü 3×2=6",
-      "Eşit gruplara ayır diye düşün",
-      "10÷2=5 çünkü 5+5=10"
+      "Eşit ikiye bölersen, yarısını bul",
+      "Nesneler kullan ve fiziksel olarak gruplara ayır",
+      "Hangi sayı ile çarpınca toplama ulaşırız? sorusunu sor",
+      "Örneğin: 10 / 2 = 5 çünkü 5 x 2 = 10"
     ]
   },
   "siralama": {
-    "title": "Sayıları Sıralama 🔢",
-    "explanation": "Sayıları küçükten büyüğe veya büyükten küçüğe dizmeye sıralama denir. Hangi sayı daha büyük bulmak için basamak değerlerine bak!",
-    "example": "3, 7, 1 → Küçükten büyüğe: 1, 3, 7\n\n📏 Sayı doğrusu düşün:\n1---3-------7\nSolda olan daha küçük! ✅",
+    "title": "📊 Sıralama Nasıl Yapılır?",
+    "explanation": "Sıralama, sayıları küçükten büyüğe veya büyükten küçüğe düzene koymaktır. Bu, sayıları karşılaştırmanın temelidir.",
+    "example": "5, 12, 3 sayılarını sırala:\nAdım 1: En küçüğü bul (3)\nAdım 2: Sonraki küçüğü bul (5)\nAdım 3: En büyüğü bul (12)\nSonuç: 3, 5, 12 (küçükten büyüğe)",
     "tips": [
-      "Sayı doğrusunda sağa gidince sayılar büyür",
-      "İki basamaklılarda önce onlar basamağına bak",
-      "Eşit olanları yan yana yaz"
+      "Sayı satırını kafanda veya kağıda çiz",
+      "En küçük sayı başa, en büyük sona gelir",
+      "İki sayıyı karşılaştırırken: hangi sayı daha fazla nesnedir?",
+      "Örneğin: 7 mi 12 mi? → 12 daha büyük → 12 seç"
     ]
   },
   "eksik_sayi": {
-    "title": "Eksik Sayıyı Bul 🔍",
-    "explanation": "Bazen işlemde bir sayı gizlenir. Onu bulmak için ters işlem yaparız. Toplama varsa çıkarma yap, çarpma varsa bölme yap!",
-    "example": "_ + 3 = 8\nDüşün: 8'den 3 çıkar → 8-3 = 5\nKontrol: 5+3 = 8 ✅",
+    "title": "❓ Eksik Sayı Nasıl Bulunur?",
+    "explanation": "Eksik sayı, denklemde kayıp olan numaradır. Örneğin _ + 3 = 7'de eksik sayıyı bulmalısınız. Bu, çözüm becerilerini geliştirir.",
+    "example": "_ + 3 = 7\nAdım 1: Sonuç nedir? (7)\nAdım 2: Bilinen sayı nedir? (3)\nAdım 3: 7'den 3'ü çıkar (7 - 3 = 4)\nAdım 4: Cevap 4'tür (4 + 3 = 7)\n\nProva: _ + 3 = 7 → 4 + 3 = 7 ✓",
     "tips": [
-      "Toplamada eksik = sonuçtan bilinen sayıyı çıkar",
-      "_ + 3 = 8 → 8 - 3 = 5",
-      "Kontrol et: bulduğun sayıyı yerine koy, doğru mu?"
+      "Sonucu ve bilinen sayıyı kullan",
+      "Toplama için: eksik = sonuç - bilinen",
+      "Çıkarma için: eksik = sonuç + bilinen",
+      "Her zaman cevabını prova et, doğru mu kontrol et"
     ]
   }
 }

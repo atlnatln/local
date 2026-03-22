@@ -238,8 +238,8 @@ class MathChallengeActivity : AppCompatActivity() {
                 binding.tvHint.text = "💡 ${q.hint}"
                 binding.tvHint.visibility = View.VISIBLE
                 binding.tvResult.visibility = View.VISIBLE
-                binding.tvResult.text = "❌ Tekrar dene!"
-                binding.tvResult.setTextColor(getColor(R.color.wrong_red))
+                binding.tvResult.text = "Neredeyse! Tekrar dene 🤔"
+                binding.tvResult.setTextColor(getColor(R.color.accent))
                 binding.etAnswer.setText("")
                 binding.etAnswer.requestFocus()
             } else if (attempts == 2 && !sawTopic) {
@@ -247,8 +247,8 @@ class MathChallengeActivity : AppCompatActivity() {
                 sawTopic = true
                 showTopicDialog(q.type)
                 binding.tvResult.visibility = View.VISIBLE
-                binding.tvResult.text = "❌ Bir daha dene!"
-                binding.tvResult.setTextColor(getColor(R.color.wrong_red))
+                binding.tvResult.text = "Bir ipucu daha var! 📚"
+                binding.tvResult.setTextColor(getColor(R.color.accent))
                 binding.etAnswer.setText("")
                 binding.etAnswer.requestFocus()
             } else {
@@ -372,7 +372,7 @@ class MathChallengeActivity : AppCompatActivity() {
         binding.progressBar.max = questionManager.totalCount()
         binding.progressBar.progress = questionManager.totalCount()
 
-        // Stats'ı arka planda yükle
+        // Stats yükle + sıradaki set için soruları arka planda hazırla
         Thread {
             val uploaded = statsTracker.uploadStats(questionManager.getVersion())
             if (uploaded) {
@@ -381,6 +381,9 @@ class MathChallengeActivity : AppCompatActivity() {
             } else {
                 Log.w(TAG, "Stats yükleme başarısız, sonra tekrar denenecek")
             }
+            // Soruları şimdi sync et — VPS'te yeni set hazır olunca sessizce çeker
+            questionManager.sync()
+            Log.d(TAG, "Sonraki set için sorular sync edildi")
         }.start()
 
         // Kilidi aç
@@ -476,10 +479,10 @@ class MathChallengeActivity : AppCompatActivity() {
             binding.progressBar.progress = totalQuestions
             binding.root.postDelayed({ unlockAndLaunchApp() }, 1500)
         } else {
-            binding.tvQuestion.text = "😔"
+            binding.tvQuestion.text = "�"
             binding.tvResult.visibility = View.VISIBLE
             binding.tvResult.text = getString(R.string.math_fail)
-            binding.tvResult.setTextColor(getColor(R.color.wrong_red))
+            binding.tvResult.setTextColor(getColor(R.color.accent))
             binding.btnCheck.visibility = View.GONE
             binding.btnNext.visibility = View.GONE
             binding.etAnswer.visibility = View.GONE

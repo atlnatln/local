@@ -54,7 +54,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun updateLockedAppCount() {
         val count = prefManager.getLockedApps().size
-        binding.tvLockedAppCount.text = "$count uygulama kilitli"
+        binding.tvLockedAppCount.text = "$count uygulama"
     }
 
     private fun loadSettings() {

@@ -10,7 +10,7 @@
 - **Kademeli zorluk**: 5 zorluk seviyesi, çocuğun performansına göre ayarlanır
 - **İpucu sistemi**: Yanlış cevapta önce ipucu, sonra konu anlatımı gösterilir
 - **İstatistik takibi**: Her cevap kaydedilir, 50 soru tamamlanınca VPS'e yüklenir
-- **AI soru üretimi**: Copilot (gpt-4.1) çocuğun performansına göre yeni set üretir
+- **AI soru üretimi**: Copilot (claude-haiku-4.5) çocuğun performansına göre yeni set üretir
 - **Otomatik döngü**: Çöz → istatistik yükle → AI yeni set üret → telefon indir
 - Hedef seviye: İlkokul 2. sınıf
 
@@ -145,7 +145,7 @@ deploy.sh                        # Build + OTA deploy
 
 ### AI Soru Pipeline
 - **Araç:** GitHub Copilot CLI (`gh copilot suggest --yolo`)
-- **Model:** gpt-4.1
+- **Model:** claude-haiku-4.5
 - **Kural dosyası:** `AGENTS.md` — sınıf seviyesi, soru tipleri, zorluk aralığı
 - **Doğrulama:** `validate-questions.py` — şema, matematik doğruluğu, sınırlar
 - **Otomasyon:** `ai-generate.sh` — üret → doğrula → retry → VPS sync → stats temizle

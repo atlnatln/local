@@ -21,8 +21,8 @@
     <string name="btn_test_guess">🎯 Sayı Tahmin Testi</string>
 
     <!-- Oyun Seçim -->
-    <string name="challenge_picker_title">Uygulama Kilitli! 🔒</string>
-    <string name="challenge_picker_subtitle">Bu uygulamayı açmak için bir görev seç:</string>
+    <string name="challenge_picker_title">Oyun Zamanı! 🎮</string>
+    <string name="challenge_picker_subtitle">Bir oyun seç ve kilidi aç!</string>
     <string name="pick_math">🧮 Matematik Soruları</string>
     <string name="pick_guess">🎯 Sayı Tahmin Oyunu</string>
     <string name="pick_parent">🔑 Ebeveyn Girişi</string>
@@ -32,10 +32,10 @@
     <string name="math_subtitle">Soruları doğru cevapla ve kilidi aç!</string>
     <string name="math_score">Skor: %1$d / %2$d</string>
     <string name="math_question_num">Soru %1$d / %2$d</string>
-    <string name="math_correct">✅ Doğru! Harika!</string>
-    <string name="math_wrong">❌ Yanlış! Doğru cevap: %1$d</string>
+    <string name="math_correct">Doğru! Harikasın! ⭐</string>
+    <string name="math_wrong">Doğru cevap %1$d — bir dahakine yakala! 💪</string>
     <string name="math_success">🎉 Tebrikler! Kilidi açtın!</string>
-    <string name="math_fail">😔 Yeterli puan alamadın. Tekrar dene!</string>
+    <string name="math_fail">Az kaldı! Bir daha dene, yapabilirsin! 💪</string>
     <string name="btn_check">Kontrol Et</string>
     <string name="btn_next">Sonraki →</string>
     <string name="btn_skip">İleri →</string>
@@ -49,8 +49,8 @@
     <!-- Sayı Tahmin -->
     <string name="guess_title">🎯 Sayı Tahmin Oyunu</string>
     <string name="guess_subtitle">0–%1$d arası bir sayı tuttum, tahmin et!</string>
-    <string name="guess_higher">📈 Daha BÜYÜK bir sayı dene!</string>
-    <string name="guess_lower">📉 Daha KÜÇÜK bir sayı dene!</string>
+    <string name="guess_higher">Daha büyük! ⬆️</string>
+    <string name="guess_lower">Daha küçük! ⬇️</string>
     <string name="guess_correct">🎉 BRAVO! %1$d denemede buldun!</string>
     <string name="guess_attempt">Deneme: %1$d</string>
     <string name="guess_range">Aralık: %1$d – %2$d</string>

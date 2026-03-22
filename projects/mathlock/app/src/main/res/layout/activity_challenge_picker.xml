@@ -41,7 +41,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kullanım süresi doldu"
+                    android:text="Süre bitti!"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="#E65100" />
@@ -50,18 +50,18 @@
                     android:id="@+id/tvTimerExpiredSub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Görevi tamamla veya ebeveyn girişi yap"
+                    android:text="Bir oyun seç veya ebeveyn girişi yap"
                     android:textSize="12sp"
                     android:textColor="#BF360C" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Kilit İkonu -->
+    <!-- Oyun İkonu -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🔒"
+        android:text="🎮"
         android:textSize="56sp"
         android:layout_marginBottom="8dp" />
 

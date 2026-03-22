@@ -4,13 +4,14 @@
 #
 # Bu script 50 soru çözüldükten sonra otomatik tetiklenir:
 #   1. stats.json analiz edilir
-#   2. Copilot (gpt-4.1) yeni 50 soru + konu anlatımları üretir
+#   2. Copilot (claude-haiku-4.5) yeni 50 soru + konu anlatımları üretir
 #   3. validate-questions.py ile doğrulanır (başarısızsa tekrar dener)
 #   4. VPS nginx'e data sync edilir
 #   5. Telefon yeni soruları indirir
 #
 # Kullanım:
-#   ./ai-generate.sh              # Tam otomasyon
+#   ./ai-generate.sh              # Yerel → VPS'e push (scp)
+#   ./ai-generate.sh --vps-mode   # VPS'te çalışır, scp yok (cron tetikler)
 #   ./ai-generate.sh --dry-run    # Sadece durumu göster
 #   ./ai-generate.sh --skip-sync  # VPS sync atla (local test)
 # ============================================================================
@@ -39,30 +40,54 @@ cd "$PROJECT_DIR"
 # ─── Argümanlar ─────────────────────────────────────────────────────────────
 DRY_RUN=false
 SKIP_SYNC=false
+VPS_MODE=false
 while [[ $# -gt 0 ]]; do
     case $1 in
         --dry-run)    DRY_RUN=true; shift ;;
         --skip-sync)  SKIP_SYNC=true; shift ;;
+        --vps-mode)   VPS_MODE=true; shift ;;
         --help)
-            echo "Kullanım: $0 [--dry-run] [--skip-sync]"
+            echo "Kullanım: $0 [--dry-run] [--skip-sync] [--vps-mode]"
             echo "  --dry-run    Analiz yap ama Copilot çalıştırma"
             echo "  --skip-sync  VPS sync atla"
+            echo "  --vps-mode   VPS'te çalıştır (scp yok, .env'den token)"
             exit 0
             ;;
         *) echo "Bilinmeyen: $1"; exit 1 ;;
     esac
 done
 
+# VPS modunda: ops-bot .env'den GITHUB_TOKEN yükle
+if [ "$VPS_MODE" = true ]; then
+    ENV_FILE="$(dirname "$(dirname "$PROJECT_DIR")")/ops-bot/.env"
+    if [ -f "$ENV_FILE" ]; then
+        set -a; source "$ENV_FILE"; set +a
+    fi
+    if [ -z "${GITHUB_TOKEN:-}" ] && [ -z "${GH_TOKEN:-}" ]; then
+        echo -e "${RED}[HATA]${NC} GITHUB_TOKEN bulunamadı — ops-bot/.env kontrol edin"
+        exit 1
+    fi
+fi
+
 echo -e "${CYAN}╔═══════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║       🧠 MathLock AI — Otomatik Soru Üretimi         ║${NC}"
 echo -e "${CYAN}╚═══════════════════════════════════════════════════════╝${NC}"
 
-# ─── 0. VPS'ten stats.json çek (telefon oraya yüklüyor) ────────────────────
-echo -e "\n${YELLOW}[0/5] 📥 VPS'ten stats.json çekiliyor...${NC}"
-if scp -q "${VPS_HOST}:${VPS_DATA_PATH}/stats.json" "$STATS_FILE" 2>/dev/null; then
-    echo -e "${GREEN}[OK]${NC} stats.json VPS'ten indirildi"
+# ─── 0. Stats.json hazırla ──────────────────────────────────────────────────
+if [ "$VPS_MODE" = true ]; then
+    echo -e "\n${YELLOW}[0/5] 📍 VPS modu — stats.json lokal dizinde aranıyor...${NC}"
+    if [ -f "$STATS_FILE" ]; then
+        echo -e "${GREEN}[OK]${NC} stats.json mevcut"
+    else
+        echo -e "${YELLOW}[INFO]${NC} stats.json yok — başlangıç seti üretilecek"
+    fi
 else
-    echo -e "${YELLOW}[INFO]${NC} VPS'te stats.json bulunamadı — başlangıç seti üretilecek"
+    echo -e "\n${YELLOW}[0/5] 📥 VPS'ten stats.json çekiliyor...${NC}"
+    if scp -q "${VPS_HOST}:${VPS_DATA_PATH}/stats.json" "$STATS_FILE" 2>/dev/null; then
+        echo -e "${GREEN}[OK]${NC} stats.json VPS'ten indirildi"
+    else
+        echo -e "${YELLOW}[INFO]${NC} VPS'te stats.json bulunamadı — başlangıç seti üretilecek"
+    fi
 fi
 
 # ─── 1. Mevcut Durumu Göster ─────────────────────────────────────────────────
@@ -115,18 +140,23 @@ find "$HISTORY_DIR" -name "*.json" -type f | sort | head -n -20 | xargs -r rm -f
 # ─── 3. Copilot Çalıştır ────────────────────────────────────────────────────
 echo -e "\n${YELLOW}[3/5] 🤖 Copilot ile yeni sorular üretiliyor...${NC}"
 
-PROMPT="Sen MathLock uygulaması için ilkokul 2. sınıf matematik sorusu üreten bir AI'sın.
+# Copilot CLI, CWD'deki AGENTS.md dosyasını otomatik okur (cd "$PROJECT_DIR" yapıldı)
+# (bkz: https://docs.github.com/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions)
+if [ -f "$PROJECT_DIR/AGENTS.md" ]; then
+    echo -e "${GREEN}[OK]${NC} AGENTS.md mevcut ($(wc -l < "$PROJECT_DIR/AGENTS.md") satır) — Copilot otomatik okuyacak"
+else
+    echo -e "${RED}[HATA]${NC} AGENTS.md bulunamadı! Copilot kurallar olmadan çalışacak."
+fi
 
-GÖREV: AGENTS.md dosyasındaki tüm kuralları oku ve uygula. data/stats.json varsa analiz et, yoksa başlangıç seti üret.
+PROMPT="AGENTS.md dosyasındaki tüm kuralları uygula.
 
 ADIMLAR:
-1. AGENTS.md dosyasını tamamen oku — şemaları, zorluk kurallarını, 2. sınıf prensiplerini öğren
-2. data/stats.json oku (varsa) — çocuğun performansını analiz et
-3. data/questions.json oku — mevcut version numarasını al
-4. data/topics.json oku — mevcut konu anlatımlarını gör
-5. Yeni 50 soru üret → data/questions.json'a yaz (üzerine yaz)
-6. Konu anlatımlarını güncelle → data/topics.json'a yaz (zayıf alanları detaylandır)
-7. Analiz raporunu stdout'a yazdır (AGENTS.md'deki formatta)
+1. data/stats.json oku (varsa) — çocuğun performansını analiz et
+2. data/questions.json oku — mevcut version numarasını al
+3. data/topics.json oku — mevcut konu anlatımlarını gör
+4. Yeni 50 soru üret → data/questions.json'a yaz (üzerine yaz)
+5. Konu anlatımlarını güncelle → data/topics.json'a yaz (zayıf alanları detaylandır)
+6. Analiz raporunu stdout'a yazdır
 
 KRİTİK KURALLAR:
 - Sadece data/questions.json ve data/topics.json değiştir, başka dosyaya dokunma
@@ -152,7 +182,7 @@ while [ $ATTEMPT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
         echo -e "${RED}[HATA]${NC} Copilot CLI bulunamadı!"
         exit 1
     fi
-    "$COPILOT_BIN" -p "$PROMPT" --model gpt-4.1 --allow-all --autopilot 2>&1
+    "$COPILOT_BIN" -p "$PROMPT" --model claude-haiku-4.5 --allow-all --autopilot 2>&1
 
     # ─── 4. Doğrulama ───────────────────────────────────────────────────────
     echo -e "\n${YELLOW}[4/5] 🔍 Doğrulama çalıştırılıyor...${NC}"
@@ -184,33 +214,38 @@ if [ "$SUCCESS" = false ]; then
     exit 1
 fi
 
-# ─── 5. VPS Sync ────────────────────────────────────────────────────────────
-if [ "$SKIP_SYNC" = false ]; then
+# ─── 5. Yayınla ─────────────────────────────────────────────────────────────
+if [ "$SKIP_SYNC" = true ]; then
+    echo -e "\n${YELLOW}[5/5] ⏭️  VPS sync atlandı${NC}"
+elif [ "$VPS_MODE" = true ]; then
+    echo -e "\n${YELLOW}[5/5] 📍 VPS modu — dosyalar zaten yerinde, stats temizleniyor...${NC}"
+    rm -f "$STATS_FILE"
+    echo -e "${GREEN}[OK]${NC} stats.json temizlendi (yeni 50 soru döngüsü başlıyor)"
+    sleep 1
+    HEALTH=$(curl -sf "http://89.252.152.222/mathlock/data/questions.json" 2>/dev/null | python3 -c 'import json,sys; d=json.load(sys.stdin); print(f"v{d[\"version\"]} — {len(d[\"questions\"])} soru")' 2>/dev/null || echo 'FAIL')
+    if [ "$HEALTH" != "FAIL" ]; then
+        echo -e "${GREEN}[OK]${NC} Endpoint çalışıyor: ${HEALTH}"
+    else
+        echo -e "${YELLOW}[UYARI]${NC} Endpoint yanıt vermedi"
+    fi
+else
     echo -e "\n${YELLOW}[5/5] 🚀 VPS'e senkronize ediliyor...${NC}"
-
-    # data/ dizinini VPS'e kopyala
     ssh "$VPS_HOST" "mkdir -p ${VPS_DATA_PATH}"
     scp "$QUESTIONS_FILE" "${VPS_HOST}:${VPS_DATA_PATH}/questions.json"
     scp "$TOPICS_FILE" "${VPS_HOST}:${VPS_DATA_PATH}/topics.json"
     echo -e "${GREEN}[OK]${NC} questions.json ve topics.json VPS'e yüklendi"
-
-    # stats.json'ı temizle (yeni döngü başlıyor)
     if [ -f "$STATS_FILE" ]; then
         rm "$STATS_FILE"
         ssh "$VPS_HOST" "rm -f ${VPS_DATA_PATH}/stats.json"
         echo -e "${GREEN}[OK]${NC} stats.json temizlendi (yeni 50 soru döngüsü başlıyor)"
     fi
-
-    # Sağlık kontrolü
     sleep 1
     HEALTH=$(ssh "$VPS_HOST" "curl -sf http://89.252.152.222/mathlock/data/questions.json 2>/dev/null | python3 -c 'import json,sys; d=json.load(sys.stdin); print(f\"v{d[\\\"version\\\"]} — {len(d[\\\"questions\\\"])} soru\")' 2>/dev/null || echo 'FAIL'")
     if [ "$HEALTH" != "FAIL" ]; then
         echo -e "${GREEN}[OK]${NC} VPS endpoint çalışıyor: ${HEALTH}"
     else
-        echo -e "${YELLOW}[UYARI]${NC} VPS endpoint yanıt vermedi — nginx config kontrol edin"
+        echo -e "${YELLOW}[UYARI]${NC} VPS endpoint yanıt vermedi"
     fi
-else
-    echo -e "\n${YELLOW}[5/5] ⏭️  VPS sync atlandı${NC}"
 fi
 
 # ─── Sonuç ───────────────────────────────────────────────────────────────────

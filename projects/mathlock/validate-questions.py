@@ -69,13 +69,26 @@ def validate_math(q):
             if a - b < 0:
                 err(f"Soru {q['id']}: Çıkarma sonucu negatif: {a}-{b}={a-b}")
                 return
+        # Üç sayılı çıkarma (d5)
+        m = re.match(r"^(\d+)\s*-\s*(\d+)\s*-\s*(\d+)\s*=\s*\?$", text)
+        if m:
+            a, b, c = int(m.group(1)), int(m.group(2)), int(m.group(3))
+            if a - b - c != answer:
+                err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {a-b-c}")
+                return
+            if a - b - c < 0:
+                err(f"Soru {q['id']}: Çıkarma sonucu negatif: {a}-{b}-{c}={a-b-c}")
+                return
 
     elif qtype == "carpma":
-        m = re.match(r"^(\d+)\s*[×x]\s*(\d+)\s*=\s*\?$", text)
+        m = re.match(r"^(\d+)\s*[×xX]\s*(\d+)\s*=\s*\?$", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
             if a * b != answer:
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {a*b}")
+                return
+            if a * b > 100:
+                err(f"Soru {q['id']}: Çarpma sonucu 100'ü aşıyor: {a}x{b}={a*b}")
                 return
 
     elif qtype == "bolme":
@@ -113,6 +126,26 @@ def validate_math(q):
             a, b = int(m.group(1)), int(m.group(2))
             if b + a != answer:
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {b+a}")
+                return
+        # a x _ = b → answer = b / a  (d4)
+        m = re.match(r"^(\d+)\s*[×xX]\s*_\s*=\s*(\d+)", text)
+        if m:
+            a, b = int(m.group(1)), int(m.group(2))
+            if a == 0:
+                err(f"Soru {q['id']}: Sıfıra bölme (a x _ = b, a=0)")
+                return
+            if b % a != 0:
+                err(f"Soru {q['id']}: {text} → tam bölünmüyor ({b}/{a})")
+                return
+            if b // a != answer:
+                err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {b//a}")
+                return
+        # _ / a = b → answer = a * b  (d5)
+        m = re.match(r"^_\s*[÷/]\s*(\d+)\s*=\s*(\d+)", text)
+        if m:
+            a, b = int(m.group(1)), int(m.group(2))
+            if a * b != answer:
+                err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {a*b}")
                 return
 
 
@@ -187,6 +220,12 @@ def validate_questions():
         # Hint boş olmamalı
         if not q.get("hint", "").strip():
             warn(f"Soru {qid}: Hint boş")
+        else:
+            hint_len = len(q["hint"].strip())
+            if hint_len < 10:
+                warn(f"Soru {qid}: Hint çok kısa ({hint_len} karakter)")
+            elif hint_len > 60:
+                warn(f"Soru {qid}: Hint çok uzun ({hint_len} karakter)")
 
         # Matematik doğrulaması
         validate_math(q)
@@ -210,6 +249,13 @@ def validate_questions():
 
     print(f"  📊 Tip dağılımı: {dict(sorted(type_counts.items()))}")
     print(f"  📊 Zorluk dağılımı: {dict(sorted(diff_counts.items()))}")
+
+    # Ardışık aynı tip kontrolü (max 3)
+    if len(questions) >= 4:
+        for i in range(len(questions) - 3):
+            types_window = [questions[i+j].get("type") for j in range(4)]
+            if len(set(types_window)) == 1:
+                warn(f"Soru {questions[i]['id']}-{questions[i+3]['id']}: Arka arkaya 4+ aynı tip ({types_window[0]})")
 
 
 def validate_topics():
