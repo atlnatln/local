@@ -16,6 +16,10 @@ services:
       - certbot_webroot:/var/www/certbot:ro
       # Default SSL certificates
       - ./ssl/default:/etc/nginx/ssl/default:ro
+      # MathLock OTA: APK ve version.json dosyaları
+      - /home/akn/vps/projects/mathlock/dist:/var/www/mathlock/dist:ro
+      # MathLock Data: questions.json, topics.json, stats.json
+      - /home/akn/vps/projects/mathlock/data:/var/www/mathlock/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/nginx-health"]

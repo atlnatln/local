@@ -1,0 +1,150 @@
+package com.akn.mathlock
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.akn.mathlock.databinding.ActivityNumberGuessBinding
+import com.akn.mathlock.util.PreferenceManager
+import kotlin.random.Random
+
+class NumberGuessActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityNumberGuessBinding
+    private lateinit var prefManager: PreferenceManager
+
+    private var lockedPackage: String? = null
+    private var isTestMode = false
+
+    private var secretNumber = 0
+    private var attempts = 0
+    private var rangeMin = 0
+    private var rangeMax = 100
+    private var gameMax = 100
+
+    private fun sendUserHome() {
+        val homeIntent = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        startActivity(homeIntent)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityNumberGuessBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        prefManager = PreferenceManager(this)
+        lockedPackage = intent.getStringExtra("locked_package")
+        isTestMode = intent.getBooleanExtra("test_mode", false)
+
+        startNewGame()
+        setupListeners()
+    }
+
+    private fun startNewGame() {
+        gameMax = prefManager.guessMaxNumber
+        secretNumber = Random.nextInt(0, gameMax + 1)
+        attempts = 0
+        rangeMin = 0
+        rangeMax = gameMax
+
+        binding.tvSubtitle.text = getString(R.string.guess_subtitle, gameMax)
+        binding.tvAttempt.text = getString(R.string.guess_attempt, 0)
+        binding.tvRange.text = getString(R.string.guess_range, rangeMin, rangeMax)
+        binding.tvHint.text = ""
+        binding.tvSuccess.visibility = View.GONE
+        binding.etGuess.setText("")
+        binding.etGuess.isEnabled = true
+        binding.btnGuess.isEnabled = true
+        binding.etGuess.requestFocus()
+    }
+
+    private fun makeGuess() {
+        val guessText = binding.etGuess.text.toString().trim()
+        if (guessText.isEmpty()) return
+
+        val guess = guessText.toIntOrNull()
+        if (guess == null || guess < 0 || guess > gameMax) {
+            binding.tvHint.text = getString(R.string.guess_invalid, gameMax)
+            binding.tvHint.setTextColor(getColor(R.color.wrong_red))
+            return
+        }
+
+        attempts++
+        binding.tvAttempt.text = getString(R.string.guess_attempt, attempts)
+        binding.etGuess.setText("")
+
+        when {
+            guess == secretNumber -> {
+                // Doğru tahmin!
+                onCorrectGuess()
+            }
+            guess < secretNumber -> {
+                rangeMin = maxOf(rangeMin, guess + 1)
+                binding.tvHint.text = getString(R.string.guess_higher)
+                binding.tvHint.setTextColor(getColor(R.color.hint_blue))
+                binding.tvRange.text = getString(R.string.guess_range, rangeMin, rangeMax)
+            }
+            else -> {
+                rangeMax = minOf(rangeMax, guess - 1)
+                binding.tvHint.text = getString(R.string.guess_lower)
+                binding.tvHint.setTextColor(getColor(R.color.accent))
+                binding.tvRange.text = getString(R.string.guess_range, rangeMin, rangeMax)
+            }
+        }
+    }
+
+    private fun onCorrectGuess() {
+        binding.tvHint.text = ""
+        binding.tvSuccess.visibility = View.VISIBLE
+        binding.tvSuccess.text = getString(R.string.guess_correct, attempts)
+        binding.etGuess.isEnabled = false
+        binding.btnGuess.isEnabled = false
+
+        // Kilit açma
+        binding.root.postDelayed({ unlockAndLaunchApp() }, 2000)
+    }
+
+    private fun unlockAndLaunchApp() {
+        if (isTestMode) {
+            Toast.makeText(this, "Test başarılı! Uygulama açılacaktı.", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        lockedPackage?.let { pkg ->
+            LockStateManager.notifyUnlocked(pkg)
+
+            val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
+            if (launchIntent != null) {
+                startActivity(launchIntent)
+            }
+        }
+        finish()
+    }
+
+    private fun setupListeners() {
+        binding.btnGuess.setOnClickListener { makeGuess() }
+
+        binding.etGuess.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                makeGuess()
+                true
+            } else false
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onBackPressed() {
+        if (isTestMode) {
+            finish()
+        } else {
+            sendUserHome()
+            finish()
+        }
+    }
+}

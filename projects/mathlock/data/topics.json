@@ -1,0 +1,62 @@
+{
+  "toplama": {
+    "title": "Toplama Nasıl Yapılır? ➕",
+    "explanation": "Toplama iki sayıyı birleştirmek demektir. Mesela 3 elma ve 2 elma varsa hepsini sayarsan 5 elma olur!",
+    "example": "3 + 2 = ?\n🍎🍎🍎 + 🍎🍎 = 🍎🍎🍎🍎🍎\nHepsini say: 5 tane! ✅",
+    "tips": [
+      "Büyük sayıdan başla, küçük sayıyı parmaklarınla say",
+      "5 + 3 için: 5'ten başla, 3 parmak aç → 6, 7, 8 ✅",
+      "10'a tamamla yöntemi: 8+5 = 8+2+3 = 10+3 = 13"
+    ]
+  },
+  "cikarma": {
+    "title": "Çıkarma Nasıl Yapılır? ➖",
+    "explanation": "Çıkarma, bir sayıdan bazılarını almak demektir. 5 elma var, 2 tanesini yersen kaç kalır?",
+    "example": "5 - 2 = ?\n🍎🍎🍎🍎🍎\n2 tanesini ye: ❌❌🍎🍎🍎\nKalan: 3 tane! ✅",
+    "tips": [
+      "Büyük sayıdan geriye say",
+      "7 - 3 için: 7'den başla → 6, 5, 4 ✅",
+      "Toplama ile kontrol et: 5-2=3 çünkü 3+2=5"
+    ]
+  },
+  "carpma": {
+    "title": "Çarpma Nasıl Yapılır? ✖️",
+    "explanation": "Çarpma aynı sayıyı tekrar tekrar toplamaktır. 3 × 2 demek '3 tane 2' yani 2+2+2 demek!",
+    "example": "3 × 2 = ?\n⭐⭐ + ⭐⭐ + ⭐⭐ = ⭐⭐⭐⭐⭐⭐\n2'yi 3 kere topla: 2+2+2 = 6 ✅",
+    "tips": [
+      "Çarpma = tekrar tekrar toplama",
+      "4 × 3 = 3+3+3+3 = 12",
+      "2 ile çarpmak = iki katını almak: 5×2=10"
+    ]
+  },
+  "bolme": {
+    "title": "Bölme Nasıl Yapılır? ➗",
+    "explanation": "Bölme, eşit gruplara ayırmak demektir. 6 elmayı 2 çocuğa eşit bölersen her birine 3 elma düşer!",
+    "example": "6 ÷ 2 = ?\n🍎🍎🍎🍎🍎🍎\nİki gruba ayır:\n👦: 🍎🍎🍎\n👧: 🍎🍎🍎\nHer birine 3 düşer! ✅",
+    "tips": [
+      "Bölme çarpmanın tersidir: 6÷2=3 çünkü 3×2=6",
+      "Eşit gruplara ayır diye düşün",
+      "10÷2=5 çünkü 5+5=10"
+    ]
+  },
+  "siralama": {
+    "title": "Sayıları Sıralama 🔢",
+    "explanation": "Sayıları küçükten büyüğe veya büyükten küçüğe dizmeye sıralama denir. Hangi sayı daha büyük bulmak için basamak değerlerine bak!",
+    "example": "3, 7, 1 → Küçükten büyüğe: 1, 3, 7\n\n📏 Sayı doğrusu düşün:\n1---3-------7\nSolda olan daha küçük! ✅",
+    "tips": [
+      "Sayı doğrusunda sağa gidince sayılar büyür",
+      "İki basamaklılarda önce onlar basamağına bak",
+      "Eşit olanları yan yana yaz"
+    ]
+  },
+  "eksik_sayi": {
+    "title": "Eksik Sayıyı Bul 🔍",
+    "explanation": "Bazen işlemde bir sayı gizlenir. Onu bulmak için ters işlem yaparız. Toplama varsa çıkarma yap, çarpma varsa bölme yap!",
+    "example": "_ + 3 = 8\nDüşün: 8'den 3 çıkar → 8-3 = 5\nKontrol: 5+3 = 8 ✅",
+    "tips": [
+      "Toplamada eksik = sonuçtan bilinen sayıyı çıkar",
+      "_ + 3 = 8 → 8 - 3 = 5",
+      "Kontrol et: bulduğun sayıyı yerine koy, doğru mu?"
+    ]
+  }
+}
