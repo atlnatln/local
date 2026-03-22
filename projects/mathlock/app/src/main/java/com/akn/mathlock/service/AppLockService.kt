@@ -172,6 +172,16 @@ class AppLockService : Service() {
             return
         }
 
+        // Ebeveyn yeniden açtıysa (notifyUnlocked çağrıldıysa) — her türlü
+        // force-close durumunu temizle ve geçir. Bu kontrol her şeyden önce
+        // gelmelidir; aksi halde timer sonrası ebeveyn girişi de bloklanır.
+        if (LockStateManager.isUnlocked(currentPackage)) {
+            pendingForceClose.remove(currentPackage)
+            forceCloseCooldown.remove(currentPackage)
+            lastChallengePackage = null
+            return
+        }
+
         // Pending force-close: süre dolmuş, uygulama tekrar görünürse at
         if (currentPackage in pendingForceClose) {
             forceUserHome()
@@ -194,9 +204,6 @@ class AppLockService : Service() {
 
         // Kilitli uygulama mı kontrol et
         if (!prefManager.isAppLocked(currentPackage)) return
-
-        // Kilit açık mı? (expire zaten checkAndExpireTimers'da yapıldı)
-        if (LockStateManager.isUnlocked(currentPackage)) return
 
         // Flood-launch önleme: aynı paket için minimum 3 saniye aralık
         val now = System.currentTimeMillis()
