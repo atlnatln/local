@@ -2,7 +2,7 @@
 
 ## Proje Özeti
 
-MathLock, ilkokul 2. sınıfa giden bir çocuk için tasarlanmış Android telefon kilidi
+MathLock, ilkokul 2. sınıfa giden ve ileride kodlama/yazılım becerileri kazanması amaçlanan bir çocuk için tasarlanmış Android telefon kilidi
 uygulamasıdır. Çocuk bir uygulamayı açmak istediğinde matematik sorusu çözer.
 Sistem **tamamen otomatik** çalışır:
 

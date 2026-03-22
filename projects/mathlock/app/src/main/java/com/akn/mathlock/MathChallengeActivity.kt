@@ -161,6 +161,7 @@ class MathChallengeActivity : AppCompatActivity() {
         binding.tvResult.visibility = View.GONE
         binding.tvHint.visibility = View.GONE
         binding.btnCheck.visibility = View.VISIBLE
+        binding.btnSkip.visibility = if (isTestMode) View.VISIBLE else View.GONE
         binding.btnNext.visibility = View.GONE
         binding.btnRetry.visibility = View.GONE
         binding.etAnswer.requestFocus()
