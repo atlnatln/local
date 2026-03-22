@@ -46,6 +46,9 @@ class MathChallengeActivity : AppCompatActivity() {
     // null olduğundan hemen döner → kullanıcı soruyu çözemez.
     private var isJsonModeActive = false
 
+    // Test modunda soru ilerlemesi için lokal index (questionManager.currentIndex ilerlemez)
+    private var testModeIndex = 0
+
     // Fallback mode state (eski sistem)
     private var fallbackQuestions = mutableListOf<com.akn.mathlock.util.MathQuestion>()
     private var currentIndex = 0
@@ -103,11 +106,20 @@ class MathChallengeActivity : AppCompatActivity() {
         // JSON modda kilit açmak için gereken doğru cevap sayısı = passScore
         requiredCount = prefManager.passScore.coerceAtLeast(1)
         sessionSolvedCount = 0
+        // Test modunda soru ilerlemesi currentIndex'ten başlar ama kaydetmez
+        if (isTestMode) testModeIndex = questionManager.solvedCount()
         showNextJsonQuestion()
     }
 
     private fun showNextJsonQuestion() {
-        currentJsonQuestion = questionManager.nextQuestion()
+        currentJsonQuestion = if (isTestMode) {
+            // Test modunda currentIndex ilerletme — ebeveyn önizlemesi istatistiklere yansımasın
+            val q = questionManager.peekQuestion(testModeIndex)
+            if (q != null) testModeIndex++
+            q
+        } else {
+            questionManager.nextQuestion()
+        }
 
         if (currentJsonQuestion == null) {
             // Set tamamlandı veya bitti
