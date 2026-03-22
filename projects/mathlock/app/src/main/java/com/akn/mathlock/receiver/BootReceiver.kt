@@ -8,11 +8,15 @@ import com.akn.mathlock.util.PreferenceManager
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            val prefManager = PreferenceManager(context)
-            if (prefManager.isServiceEnabled) {
-                AppLockService.start(context)
-            }
+        val trigger = when (intent.action) {
+            Intent.ACTION_BOOT_COMPLETED -> "BOOT"
+            Intent.ACTION_MY_PACKAGE_REPLACED -> "OTA_UPDATE"
+            else -> return
+        }
+        val prefManager = PreferenceManager(context)
+        if (prefManager.isServiceEnabled) {
+            android.util.Log.d("BootReceiver", "Servis başlatılıyor (tetikleyen: $trigger)")
+            AppLockService.start(context)
         }
     }
 }
