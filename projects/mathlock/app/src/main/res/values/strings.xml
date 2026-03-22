@@ -84,7 +84,6 @@
     <string name="settings_unlock_expired_title">Süre dolduğunda:</string>
     <string name="settings_relock">🔒 Yeni soru sor (tekrar kilitle)</string>
     <string name="settings_close_app">❌ Uygulamasını kapat</string>
-    <string name="settings_question_count">Soru Sayısı: %1$d</string>
     <string name="settings_pass_score">Geçiş Skoru: %1$d doğru</string>
     <string name="settings_difficulty">Zorluk Seviyesi</string>
     <string name="settings_auth_section">Kimlik Doğrulama</string>

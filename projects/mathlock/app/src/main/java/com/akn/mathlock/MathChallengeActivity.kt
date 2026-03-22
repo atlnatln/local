@@ -101,7 +101,6 @@ class MathChallengeActivity : AppCompatActivity() {
         Log.d(TAG, "JSON mode başlatılıyor (v${questionManager.getVersion()})")
         isJsonModeActive = true
         // JSON modda kilit açmak için gereken doğru cevap sayısı = passScore
-        // (questionCount toplam soru sayısı, passScore gereken doğru cevap sayısı)
         requiredCount = prefManager.passScore.coerceAtLeast(1)
         sessionSolvedCount = 0
         showNextJsonQuestion()
@@ -290,7 +289,8 @@ class MathChallengeActivity : AppCompatActivity() {
     private fun startFallbackMode() {
         Log.d(TAG, "Fallback mode (random sorular)")
         isJsonModeActive = false
-        totalQuestions = prefManager.questionCount
+        // totalQuestions: passScore'un 2 katı, minimum 5 (questionCount ayarı kaldırıldı)
+        totalQuestions = (prefManager.passScore * 2).coerceAtLeast(5)
         passScore = prefManager.passScore.coerceAtMost(totalQuestions)
         binding.tvHint.visibility = View.GONE
         generateFallbackQuestions()

@@ -14,7 +14,6 @@ class PreferenceManager(context: Context) {
         private const val KEY_PIN_HASH = "pin_hash"
         private const val KEY_PATTERN_HASH = "pattern_hash"
         private const val KEY_SERVICE_ENABLED = "service_enabled"
-        private const val KEY_QUESTION_COUNT = "question_count"
         private const val KEY_PASS_SCORE = "pass_score"
         private const val KEY_GUESS_MAX = "guess_max"
         private const val KEY_UNLOCK_DURATION = "unlock_duration_minutes"
@@ -24,7 +23,6 @@ class PreferenceManager(context: Context) {
         private const val KEY_PATTERN_ENABLED = "pattern_enabled"
         private const val KEY_FIRST_RUN = "first_run"
 
-        private const val DEFAULT_QUESTION_COUNT = 5
         private const val DEFAULT_PASS_SCORE = 3
         private const val DEFAULT_GUESS_MAX = 100
 
@@ -89,10 +87,6 @@ class PreferenceManager(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_SERVICE_ENABLED, value).apply()
 
     // --- Matematik Ayarları ---
-
-    var questionCount: Int
-        get() = prefs.getInt(KEY_QUESTION_COUNT, DEFAULT_QUESTION_COUNT)
-        set(value) = prefs.edit().putInt(KEY_QUESTION_COUNT, value).apply()
 
     var passScore: Int
         get() = prefs.getInt(KEY_PASS_SCORE, DEFAULT_PASS_SCORE)

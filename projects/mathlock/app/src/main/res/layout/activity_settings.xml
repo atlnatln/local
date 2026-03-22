@@ -286,23 +286,6 @@
                     android:layout_marginBottom="12dp" />
 
                 <TextView
-                    android:id="@+id/tvQuestionCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@color/on_surface"
-                    android:layout_marginBottom="4dp" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sliderQuestionCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:valueFrom="1"
-                    android:valueTo="50"
-                    android:stepSize="1"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
                     android:id="@+id/tvPassScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -315,7 +298,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:valueFrom="1"
-                    android:valueTo="50"
+                    android:valueTo="10"
                     android:stepSize="1" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

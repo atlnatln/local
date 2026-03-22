@@ -71,15 +71,10 @@ class SettingsActivity : AppCompatActivity() {
             }
         }.start()
 
-        // Matematik ayarları (fallback mod için)
-        val questionCount = prefManager.questionCount.toFloat()
+        // Geçiş skoru ayarı
         val passScore = prefManager.passScore.toFloat()
 
-        binding.sliderQuestionCount.value = questionCount
-        binding.sliderPassScore.value = passScore.coerceAtMost(questionCount)
-        binding.sliderPassScore.valueTo = questionCount
-
-        binding.tvQuestionCount.text = getString(R.string.settings_question_count, questionCount.toInt())
+        binding.sliderPassScore.value = passScore.coerceAtMost(10f)
         binding.tvPassScore.text = getString(R.string.settings_pass_score, passScore.toInt())
 
         // Sayı tahmin ayarları
@@ -160,19 +155,6 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra("mode", "set")
             }
             startActivityForResult(intent, REQUEST_SET_PATTERN)
-        }
-
-        // Soru sayısı slider
-        binding.sliderQuestionCount.addOnChangeListener { _, value, _ ->
-            val count = value.toInt()
-            prefManager.questionCount = count
-            binding.tvQuestionCount.text = getString(R.string.settings_question_count, count)
-
-            binding.sliderPassScore.valueTo = value
-            if (binding.sliderPassScore.value > value) {
-                binding.sliderPassScore.value = value
-                prefManager.passScore = count
-            }
         }
 
         // Geçiş skoru slider
