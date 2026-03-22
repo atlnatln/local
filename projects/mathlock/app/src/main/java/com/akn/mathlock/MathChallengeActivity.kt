@@ -103,29 +103,35 @@ class MathChallengeActivity : AppCompatActivity() {
     private fun startJsonMode() {
         Log.d(TAG, "JSON mode başlatılıyor (v${questionManager.getVersion()})")
         isJsonModeActive = true
-        // JSON modda kilit açmak için gereken doğru cevap sayısı = passScore
-        requiredCount = prefManager.passScore.coerceAtLeast(1)
-        sessionSolvedCount = 0
-        // Test modunda soru ilerlemesi currentIndex'ten başlar ama kaydetmez
-        if (isTestMode) testModeIndex = questionManager.solvedCount()
-        showNextJsonQuestion()
+        if (isTestMode) {
+            // Ebeveyn önizleme: tüm soruları index 0'dan göster, unlock mekanizması yok
+            testModeIndex = 0
+            showNextJsonQuestion()
+        } else {
+            // Normal mod: passScore kadar doğru cevap → kilit açılır
+            requiredCount = prefManager.passScore.coerceAtLeast(1)
+            sessionSolvedCount = 0
+            showNextJsonQuestion()
+        }
     }
 
     private fun showNextJsonQuestion() {
         currentJsonQuestion = if (isTestMode) {
-            // Test modunda currentIndex ilerletme — ebeveyn önizlemesi istatistiklere yansımasın
-            val q = questionManager.peekQuestion(testModeIndex)
-            if (q != null) testModeIndex++
-            q
+            questionManager.peekQuestion(testModeIndex)
         } else {
             questionManager.nextQuestion()
         }
 
         if (currentJsonQuestion == null) {
-            // Set tamamlandı veya bitti
-            onSetComplete()
+            if (isTestMode) {
+                onTestPreviewComplete()
+            } else {
+                onSetComplete()
+            }
             return
         }
+
+        if (isTestMode) testModeIndex++
 
         val q = currentJsonQuestion!!
         attempts = 0
@@ -134,11 +140,21 @@ class MathChallengeActivity : AppCompatActivity() {
         startTime = System.currentTimeMillis()
 
         binding.tvQuestion.text = q.text
-        // Oturum ilerleme: ör. "2/3" (çözülmesi gereken) — global set sayısı değil
-        binding.tvQuestionNum.text = getString(R.string.math_question_num, sessionSolvedCount + 1, requiredCount)
-        binding.tvScore.text = ""
-        binding.progressBar.max = requiredCount
-        binding.progressBar.progress = sessionSolvedCount
+
+        if (isTestMode) {
+            // Ebeveyn önizleme: "Soru 3/50" — toplam soru sayısını göster
+            val totalQ = questionManager.totalCount()
+            binding.tvQuestionNum.text = getString(R.string.math_question_num, testModeIndex, totalQ)
+            binding.tvScore.text = ""
+            binding.progressBar.max = totalQ
+            binding.progressBar.progress = testModeIndex
+        } else {
+            // Normal mod: "2/3" — oturum ilerleme
+            binding.tvQuestionNum.text = getString(R.string.math_question_num, sessionSolvedCount + 1, requiredCount)
+            binding.tvScore.text = ""
+            binding.progressBar.max = requiredCount
+            binding.progressBar.progress = sessionSolvedCount
+        }
 
         binding.etAnswer.setText("")
         binding.etAnswer.isEnabled = true
@@ -178,15 +194,21 @@ class MathChallengeActivity : AppCompatActivity() {
                 )
             }
 
-            // Oturum ilerleme: gerekli sayıya ulaşıldıysa kilidi aç, yoksa sonraki soru
-            sessionSolvedCount++
-            if (sessionSolvedCount >= requiredCount) {
-                unlockAndLaunchApp()
-            } else {
-                // Daha soru var — kısa gecikmeyle sonrakini göster
+            if (isTestMode) {
+                // Ebeveyn önizleme: doğru cevap → 800ms sonra sonraki soru
                 binding.root.postDelayed({
                     if (!isFinishing && !isDestroyed) showNextJsonQuestion()
                 }, 800)
+            } else {
+                // Normal mod: oturum ilerleme
+                sessionSolvedCount++
+                if (sessionSolvedCount >= requiredCount) {
+                    unlockAndLaunchApp()
+                } else {
+                    binding.root.postDelayed({
+                        if (!isFinishing && !isDestroyed) showNextJsonQuestion()
+                    }, 800)
+                }
             }
         } else {
             // ❌ Yanlış cevap
@@ -260,6 +282,24 @@ class MathChallengeActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun onTestPreviewComplete() {
+        Log.d(TAG, "Ebeveyn önizleme tamamlandı (${questionManager.totalCount()} soru)")
+        binding.tvQuestion.text = "✅"
+        binding.tvResult.visibility = View.VISIBLE
+        binding.tvResult.text = "Önizleme tamamlandı — ${questionManager.totalCount()} soru incelendi"
+        binding.tvResult.setTextColor(getColor(R.color.correct_green))
+        binding.btnCheck.visibility = View.GONE
+        binding.btnNext.visibility = View.GONE
+        binding.etAnswer.visibility = View.GONE
+        binding.tvHint.visibility = View.GONE
+        binding.progressBar.max = questionManager.totalCount()
+        binding.progressBar.progress = questionManager.totalCount()
+
+        binding.root.postDelayed({
+            if (!isFinishing && !isDestroyed) finish()
+        }, 2000)
+    }
+
     private fun onSetComplete() {
         Log.d(TAG, "50 soru tamamlandı! Stats yükleniyor...")
         binding.tvQuestion.text = "🎉"
@@ -273,18 +313,16 @@ class MathChallengeActivity : AppCompatActivity() {
         binding.progressBar.max = questionManager.totalCount()
         binding.progressBar.progress = questionManager.totalCount()
 
-        // Stats'ı arka planda yükle (test modunda yükleme)
-        if (!isTestMode) {
-            Thread {
-                val uploaded = statsTracker.uploadStats(questionManager.getVersion())
-                if (uploaded) {
-                    questionManager.resetProgress()
-                    Log.d(TAG, "Stats yüklendi, progress sıfırlandı")
-                } else {
-                    Log.w(TAG, "Stats yükleme başarısız, sonra tekrar denenecek")
-                }
-            }.start()
-        }
+        // Stats'ı arka planda yükle
+        Thread {
+            val uploaded = statsTracker.uploadStats(questionManager.getVersion())
+            if (uploaded) {
+                questionManager.resetProgress()
+                Log.d(TAG, "Stats yüklendi, progress sıfırlandı")
+            } else {
+                Log.w(TAG, "Stats yükleme başarısız, sonra tekrar denenecek")
+            }
+        }.start()
 
         // Kilidi aç
         binding.root.postDelayed({

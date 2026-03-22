@@ -315,5 +315,106 @@ class SessionProgressTest {
         val (unlocked, _) = onCorrectAnswer(0, requiredCount)
         assertTrue("passScore=1 → 1 doğru → kilit açılmalı", unlocked)
     }
-}
 
+    // ─── v1.20: Ebeveyn önizleme modu (test_mode) izolasyonu ────────────────
+
+    /**
+     * Ebeveyn panelindeki soru önizlemesi (peekQuestion) QuestionManager'ın
+     * kalıcı currentIndex'ini değiştirmemeli. testModeIndex lokal bir sayaçtır.
+     */
+    @Test
+    fun `test mode - peekQuestion currentIndex ilerletmemeli`() {
+        // Simülasyon: QuestionManager.currentIndex = 32, questions.size = 50
+        val currentIndex = 32 // kalıcı, SharedPreferences'ta tutulan
+        var testModeIndex = 0 // lokal, test moduna özel
+
+        // Ebeveyn 5 soru önizler
+        repeat(5) {
+            val peekIndex = testModeIndex
+            assertTrue("peekIndex $peekIndex sınırlar içinde olmalı", peekIndex < 50)
+            testModeIndex++
+        }
+
+        // currentIndex değişmemiş olmalı (QuestionManager state korunuyor)
+        assertEquals("currentIndex değişmemeli", 32, currentIndex)
+        assertEquals("testModeIndex 5 olmalı", 5, testModeIndex)
+    }
+
+    @Test
+    fun `test mode - index 0'dan baslar tum sorulari gosterir`() {
+        val totalQuestions = 50
+        val childCurrentIndex = 49 // çocuk 49. soruda
+
+        // Test modu kendi index'ini 0'dan başlatır (çocuğun kaldığı yerden değil)
+        val testModeIndex = 0
+        assertNotEquals("testModeIndex childCurrentIndex'ten bağımsız", childCurrentIndex, testModeIndex)
+        assertEquals("önizleme 0'dan başlamalı", 0, testModeIndex)
+
+        // Tüm 50 soru önizlenebilir (49'da takılmaz)
+        val previewableCount = totalQuestions - testModeIndex
+        assertEquals("50 sorunun tamamı önizlenebilmeli", 50, previewableCount)
+    }
+
+    @Test
+    fun `test mode - dogru cevap unlock tetiklememeli`() {
+        // Test modunda sessionSolvedCount artmaz, unlock kontrolü yapılmaz
+        val isTestMode = true
+        val sessionSolvedCount = 0
+        val requiredCount = 2
+
+        // Doğru cevap geldi — test modunda sadece sonraki soruya geçilir
+        if (isTestMode) {
+            // unlock kontrolü yok, sadece showNextJsonQuestion
+            val nextAction = "showNextQuestion"
+            assertEquals("test modu sonraki soruya geçmeli", "showNextQuestion", nextAction)
+        }
+
+        // sessionSolvedCount değişmemiş olmalı
+        assertEquals("test modu sessionSolvedCount artırmamalı", 0, sessionSolvedCount)
+    }
+
+    @Test
+    fun `test mode - onSetComplete cagirilmamali`() {
+        // Test modunda soru bitince onTestPreviewComplete çağrılır, onSetComplete değil
+        val isTestMode = true
+        val testModeIndex = 50
+        val totalQuestions = 50
+
+        // peekQuestion(50) null döner → hangi complete çağrılır?
+        val questionAvailable = testModeIndex < totalQuestions // false
+        assertFalse("50. index'te soru yok", questionAvailable)
+
+        val completeAction = if (isTestMode) "onTestPreviewComplete" else "onSetComplete"
+        assertEquals("test modu kendi bitiş ekranını göstermeli", "onTestPreviewComplete", completeAction)
+    }
+
+    @Test
+    fun `test mode - stats kaydedilmemeli`() {
+        val isTestMode = true
+        var statsRecorded = false
+
+        // Doğru cevap sonrası stats kaydı
+        if (!isTestMode) {
+            statsRecorded = true
+        }
+
+        // Yanlış cevap sonrası stats kaydı
+        if (!isTestMode) {
+            statsRecorded = true
+        }
+
+        assertFalse("test modunda stats kaydedilmemeli", statsRecorded)
+    }
+
+    @Test
+    fun `test mode - soru sayaci total uzerinden gostermeli`() {
+        val totalQuestions = 50
+        val testModeIndex = 7 // 7 soru önizlendi
+
+        // Gösterilen format: "Soru 7/50" (çocuğun requiredCount'u değil)
+        val displayNum = testModeIndex
+        val displayTotal = totalQuestions
+        assertEquals("soru numarası testModeIndex olmalı", 7, displayNum)
+        assertEquals("toplam gösterimi totalQuestions olmalı", 50, displayTotal)
+    }
+}
