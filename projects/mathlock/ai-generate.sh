@@ -182,7 +182,7 @@ while [ $ATTEMPT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
         echo -e "${RED}[HATA]${NC} Copilot CLI bulunamadı!"
         exit 1
     fi
-    "$COPILOT_BIN" -p "$PROMPT" --model claude-haiku-4.5 --allow-all --autopilot 2>&1
+    "$COPILOT_BIN" -p "$PROMPT" -s --no-ask-user --yolo --model claude-haiku-4.5 2>&1
 
     # ─── 4. Doğrulama ───────────────────────────────────────────────────────
     echo -e "\n${YELLOW}[4/5] 🔍 Doğrulama çalıştırılıyor...${NC}"

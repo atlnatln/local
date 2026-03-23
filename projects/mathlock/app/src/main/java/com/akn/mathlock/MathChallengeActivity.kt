@@ -147,7 +147,10 @@ class MathChallengeActivity : AppCompatActivity() {
         sawTopic = false
         startTime = System.currentTimeMillis()
 
+        // Ekran gösterimi için dönüşümler
         binding.tvQuestion.text = q.text
+            .replace(" / ", " ÷ ")
+            .replace("_", "?")
 
         if (isTestMode) {
             // Ebeveyn önizleme: "Soru 3/50" — toplam soru sayısını göster
@@ -173,11 +176,19 @@ class MathChallengeActivity : AppCompatActivity() {
         binding.etAnswer.isEnabled = true
         binding.tvResult.visibility = View.GONE
         binding.tvHint.visibility = View.GONE
-        binding.btnCheck.visibility = View.VISIBLE
         binding.btnSkip.visibility = if (isTestMode) View.VISIBLE else View.GONE
         binding.btnNext.visibility = View.GONE
         binding.btnRetry.visibility = View.GONE
-        binding.etAnswer.requestFocus()
+
+        // Sıralama tipinde seçenek butonları, diğer tiplerde yazı input
+        if (q.type == "siralama") {
+            setupOptionsForSiralama(q.text)
+        } else {
+            binding.tilAnswer.visibility = View.VISIBLE
+            binding.layoutOptions.visibility = View.GONE
+            binding.btnCheck.visibility = View.VISIBLE
+            binding.etAnswer.requestFocus()
+        }
     }
 
     private fun checkJsonAnswer() {
@@ -252,7 +263,7 @@ class MathChallengeActivity : AppCompatActivity() {
                 binding.etAnswer.setText("")
                 binding.etAnswer.requestFocus()
             } else {
-                // Üçüncü veya daha fazla yanlış → doğru cevabı göster, kaydet, devam et
+                // Üçüncü veya daha fazla yanlış → doğru cevabı göster, kaydet, çocuk hazır olunca geçsin
                 binding.etAnswer.isEnabled = false
                 binding.btnCheck.visibility = View.GONE
                 binding.tvResult.visibility = View.VISIBLE
@@ -269,12 +280,8 @@ class MathChallengeActivity : AppCompatActivity() {
                     )
                 }
 
-                // 1.5 saniye sonra sonraki soruya geç
-                binding.root.postDelayed({
-                    if (!isFinishing && !isDestroyed) {
-                        showNextJsonQuestion()
-                    }
-                }, 1500)
+                // Çocuk doğru cevabı okuyup hazır olunca gecer
+                binding.btnNext.visibility = View.VISIBLE
             }
         }
     }
@@ -300,6 +307,73 @@ class MathChallengeActivity : AppCompatActivity() {
             .setPositiveButton("Anladım! ✨", null)
             .setCancelable(false)
             .show()
+    }
+
+    // Sıralama tipinde soru metninden sayıları çıkarıp seçenek butonlarına ata
+    private fun setupOptionsForSiralama(text: String) {
+        val numbers = Regex("\\d+").findAll(text).map { it.value.toInt() }.toList()
+        if (numbers.size < 2) {
+            // Parse başarısız → normal input'a geri dön
+            binding.tilAnswer.visibility = View.VISIBLE
+            binding.layoutOptions.visibility = View.GONE
+            binding.btnCheck.visibility = View.VISIBLE
+            binding.etAnswer.requestFocus()
+            return
+        }
+        // Buton sırasını karıştır (büyük sayı hep sağda olmasın)
+        val opts = if (Math.random() > 0.5) listOf(numbers[0], numbers[1])
+                   else listOf(numbers[1], numbers[0])
+        binding.tilAnswer.visibility = View.GONE
+        binding.btnCheck.visibility = View.GONE
+        binding.layoutOptions.visibility = View.VISIBLE
+        binding.btnOption1.text = opts[0].toString()
+        binding.btnOption2.text = opts[1].toString()
+    }
+
+    // Seçenek butonundan gelen cevabı kontrol et
+    private fun checkOptionAnswer(selected: Int) {
+        val q = currentJsonQuestion ?: return
+        attempts++
+        val elapsed = (System.currentTimeMillis() - startTime) / 1000.0
+
+        binding.layoutOptions.visibility = View.GONE
+        binding.tvResult.visibility = View.VISIBLE
+
+        if (selected == q.answer) {
+            binding.tvResult.text = getString(R.string.math_correct)
+            binding.tvResult.setTextColor(getColor(R.color.correct_green))
+
+            if (!isTestMode) {
+                statsTracker.addResult(StatsTracker.QuestionResult(
+                    questionId = q.id, type = q.type, difficulty = q.difficulty,
+                    correct = true, attempts = attempts, timeSeconds = elapsed,
+                    sawHint = sawHint, sawTopic = sawTopic
+                ))
+            }
+
+            if (isTestMode) {
+                binding.root.postDelayed({ if (!isFinishing && !isDestroyed) showNextJsonQuestion() }, 800)
+            } else if (isPracticeMode) {
+                sessionSolvedCount++
+                binding.root.postDelayed({ if (!isFinishing && !isDestroyed) showNextJsonQuestion() }, 800)
+            } else {
+                sessionSolvedCount++
+                if (sessionSolvedCount >= requiredCount) unlockAndLaunchApp()
+                else binding.root.postDelayed({ if (!isFinishing && !isDestroyed) showNextJsonQuestion() }, 800)
+            }
+        } else {
+            binding.tvResult.text = getString(R.string.math_wrong, q.answer)
+            binding.tvResult.setTextColor(getColor(R.color.wrong_red))
+
+            if (!isTestMode) {
+                statsTracker.addResult(StatsTracker.QuestionResult(
+                    questionId = q.id, type = q.type, difficulty = q.difficulty,
+                    correct = false, attempts = attempts, timeSeconds = elapsed,
+                    sawHint = sawHint, sawTopic = sawTopic
+                ))
+            }
+            binding.btnNext.visibility = View.VISIBLE
+        }
     }
 
     private fun onTestPreviewComplete() {
@@ -533,9 +607,20 @@ class MathChallengeActivity : AppCompatActivity() {
         }
 
         binding.btnNext.setOnClickListener {
-            // Sadece fallback modda kullanılır
-            currentIndex++
-            showFallbackQuestion()
+            if (isJsonModeActive) {
+                showNextJsonQuestion()
+            } else {
+                currentIndex++
+                showFallbackQuestion()
+            }
+        }
+
+        binding.btnOption1.setOnClickListener {
+            checkOptionAnswer(binding.btnOption1.text.toString().toIntOrNull() ?: return@setOnClickListener)
+        }
+
+        binding.btnOption2.setOnClickListener {
+            checkOptionAnswer(binding.btnOption2.text.toString().toIntOrNull() ?: return@setOnClickListener)
         }
 
         binding.btnRetry.setOnClickListener {

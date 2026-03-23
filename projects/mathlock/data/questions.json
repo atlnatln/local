@@ -121,7 +121,7 @@
       "id": 14
     },
     {
-      "text": "_ + 4 = 9",
+      "text": "? + 4 = 9",
       "answer": 5,
       "type": "eksik_sayi",
       "difficulty": 1,
@@ -145,7 +145,7 @@
       "id": 17
     },
     {
-      "text": "Hangisi büyük: 8 mi 2 mi?",
+      "text": "Hangisi büyük: 8, 2?",
       "answer": 8,
       "type": "siralama",
       "difficulty": 1,
@@ -201,7 +201,7 @@
       "id": 24
     },
     {
-      "text": "6 / 2 = ?",
+      "text": "6 ÷ 2 = ?",
       "answer": 3,
       "type": "bolme",
       "difficulty": 1,
@@ -225,7 +225,7 @@
       "id": 27
     },
     {
-      "text": "8 / 2 = ?",
+      "text": "8 ÷ 2 = ?",
       "answer": 4,
       "type": "bolme",
       "difficulty": 1,
@@ -281,7 +281,7 @@
       "id": 34
     },
     {
-      "text": "2 / 2 = ?",
+      "text": "2 ÷ 2 = ?",
       "answer": 1,
       "type": "bolme",
       "difficulty": 1,
@@ -297,7 +297,7 @@
       "id": 36
     },
     {
-      "text": "Hangisi büyük: 2 mi 19 mi?",
+      "text": "Hangisi büyük: 2, 19?",
       "answer": 19,
       "type": "siralama",
       "difficulty": 1,
@@ -321,7 +321,7 @@
       "id": 39
     },
     {
-      "text": "4 / 2 = ?",
+      "text": "4 ÷ 2 = ?",
       "answer": 2,
       "type": "bolme",
       "difficulty": 1,

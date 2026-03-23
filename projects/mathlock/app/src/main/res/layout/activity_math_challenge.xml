@@ -91,6 +91,7 @@
 
             <!-- Cevap Girişi -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilAnswer"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -109,6 +110,41 @@
                     android:gravity="center"
                     android:imeOptions="actionDone" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Seçenek Butonları (siralama tipinde input yerine gösterilir) -->
+            <LinearLayout
+                android:id="@+id/layoutOptions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnOption1"
+                    android:layout_width="0dp"
+                    android:layout_height="72dp"
+                    android:layout_weight="1"
+                    android:text="A"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:cornerRadius="16dp"
+                    android:layout_marginEnd="12dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnOption2"
+                    android:layout_width="0dp"
+                    android:layout_height="72dp"
+                    android:layout_weight="1"
+                    android:text="B"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:cornerRadius="16dp"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
 
             <!-- Sonuç Mesajı -->
             <TextView
