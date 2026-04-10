@@ -1,0 +1,18 @@
+# Django
+db.sqlite3
+*.pyc
+__pycache__/
+staticfiles/
+
+# Güvenlik — ASLA commit etme
+google-service-account.json
+*.pem
+*.key
+
+# IDE
+.vscode/
+.idea/
+
+# Ortam
+.env
+.env.*

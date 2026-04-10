@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizlilik Politikası — MathLock</title>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --bg: #FAFAFA;
+            --surface: #FFFFFF;
+            --text: #212121;
+            --text-secondary: #616161;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        nav {
+            background: var(--primary);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        nav .logo { font-size: 28px; }
+        nav a { color: white; text-decoration: none; font-size: 18px; font-weight: 600; }
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        h1 { font-size: 28px; margin-bottom: 8px; }
+        .date { color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; }
+        h2 {
+            font-size: 20px;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #E8F5E9;
+        }
+        h3 { font-size: 16px; margin-top: 20px; margin-bottom: 8px; }
+        p, li { font-size: 15px; margin-bottom: 10px; }
+        ul { padding-left: 24px; }
+        .highlight {
+            background: #E8F5E9;
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #E0E0E0;
+            font-size: 14px;
+        }
+        th { background: #F5F5F5; font-weight: 600; }
+        footer {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            border-top: 1px solid #E0E0E0;
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <span class="logo">🔒</span>
+        <a href="/">MathLock</a>
+    </nav>
+
+    <div class="container">
+        <h1>Gizlilik Politikası</h1>
+        <p class="date">Son güncelleme: 25 Mart 2026</p>
+
+        <p>MathLock ("uygulama"), ebeveynlerin belirlediği uygulamalara erişimi matematik soruları ile koruyan bir ebeveyn denetim aracıdır. Bu gizlilik politikası, uygulamanın hangi verileri topladığını, nasıl kullandığını ve nasıl koruduğunu açıklar.</p>
+
+        <div class="highlight">
+            <strong>Temel ilkemiz:</strong> MathLock, işlevini yerine getirmek için gereken en az veriyi toplar. Çocuğun adı, soyadı, konumu veya kimliği hiçbir zaman toplanmaz.
+        </div>
+
+        <h2>1. Toplanan Veriler</h2>
+
+        <table>
+            <tr>
+                <th>Veri türü</th>
+                <th>Nerede işlenir</th>
+                <th>Sunucuya gönderilir mi?</th>
+                <th>Amaç</th>
+            </tr>
+            <tr>
+                <td>Yüklü uygulama listesi</td>
+                <td>Yalnızca cihazda</td>
+                <td>❌ Hayır</td>
+                <td>Ebeveynin kilitlenecek uygulamaları seçebilmesi</td>
+            </tr>
+            <tr>
+                <td>Ön plan uygulama bilgisi</td>
+                <td>Yalnızca cihazda</td>
+                <td>❌ Hayır</td>
+                <td>Kilitli uygulamanın açılıp açılmadığını tespit etme</td>
+            </tr>
+            <tr>
+                <td>Matematik performansı (doğru/yanlış, süre, deneme sayısı)</td>
+                <td>Cihaz + sunucu</td>
+                <td>✅ Evet (HTTPS)</td>
+                <td>Soru kalitesini iyileştirmek ve zorluğu ayarlamak</td>
+            </tr>
+            <tr>
+                <td>Ayarlar (geçiş skoru, süre limiti vb.)</td>
+                <td>Yalnızca cihazda</td>
+                <td>❌ Hayır</td>
+                <td>Ebeveyn tercihlerini saklamak</td>
+            </tr>
+            <tr>
+                <td>PIN / desen / parmak izi</td>
+                <td>Yalnızca cihazda (hash)</td>
+                <td>❌ Hayır</td>
+                <td>Ebeveyn kimlik doğrulaması</td>
+            </tr>
+        </table>
+
+        <h2>2. Toplanmayan Veriler</h2>
+        <ul>
+            <li>Çocuğun adı, soyadı veya kimlik bilgileri</li>
+            <li>Konum bilgisi</li>
+            <li>Kişi listesi veya mesajlar</li>
+            <li>Fotoğraf, video veya dosyalar</li>
+            <li>Reklam amaçlı tanımlayıcılar</li>
+            <li>Uygulama listesi (sunucuya hiç gönderilmez)</li>
+        </ul>
+
+        <h2>3. Uygulama Envanter Kullanımı</h2>
+        <p>MathLock, cihazdaki yüklü uygulamaları listeler. Bu, ebeveyn denetiminin çekirdek işlevidir — ebeveynin hangi uygulamaları kilitlemek istediğini seçebilmesi gerekir.</p>
+        <div class="highlight">
+            Uygulama envanteri yalnızca cihaz üzerinde işlenir, hiçbir sunucuya iletilmez, reklam veya analitik amacıyla kullanılmaz.
+        </div>
+
+        <h2>4. Matematik Performans Verisi</h2>
+        <p>Sunucuya gönderilen performans verisi şunları içerir:</p>
+        <ul>
+            <li>Soru kimliği ve türü</li>
+            <li>Doğru mu yanlış mı cevaplanmış</li>
+            <li>Deneme sayısı ve çözme süresi</li>
+            <li>İpucu ve konu açıklaması görüldü mü</li>
+        </ul>
+        <p>Bu verilerde <strong>kişisel tanımlayıcı yoktur</strong>. Cihaz bazlı rastgele bir kimlik kullanılır ve bu kimlik kişiyle ilişkilendirilemez.</p>
+
+        <h2>5. Veri Aktarımı ve Güvenlik</h2>
+        <ul>
+            <li>Tüm sunucu iletişimi <strong>HTTPS (TLS)</strong> üzerinden şifreli yapılır.</li>
+            <li>Veri yalnızca <code>mathlock.com.tr</code> adresine gönderilir.</li>
+            <li>Cleartext (HTTP) trafik tamamen engellenmiştir.</li>
+        </ul>
+
+        <h2>6. Veri Saklama ve Silme</h2>
+        <ul>
+            <li>Cihaz üzerindeki tüm veriler (ayarlar, PIN hash, kilitli uygulama listesi) uygulama kaldırıldığında otomatik silinir.</li>
+            <li>Sunucudaki performans verileri anonim ve toplu halde saklanır.</li>
+            <li>Veri silme talebi için <a href="mailto:support@mathlock.com.tr">support@mathlock.com.tr</a> adresine e-posta gönderebilirsiniz.</li>
+        </ul>
+
+        <h2>7. Çocuk Gizliliği</h2>
+        <p>MathLock bir ebeveyn denetim aracıdır. Doğrudan çocuklara yönelik pazarlama yapılmaz. Uygulama:</p>
+        <ul>
+            <li>Çocuklardan kişisel bilgi toplamaz</li>
+            <li>Reklam göstermez</li>
+            <li>Üçüncü taraf izleme veya analitik SDK'sı içermez</li>
+            <li>Veriyi üçüncü taraflarla paylaşmaz</li>
+        </ul>
+
+        <h2>8. Üçüncü Taraf Hizmetleri</h2>
+        <p>MathLock, üçüncü taraf analitik, reklam veya izleme hizmeti kullanmaz. Uygulama yalnızca kendi sunucusu (<code>mathlock.com.tr</code>) ile iletişim kurar.</p>
+
+        <h2>9. İzinler ve Amaçları</h2>
+        <table>
+            <tr>
+                <th>İzin</th>
+                <th>Amaç</th>
+            </tr>
+            <tr>
+                <td>PACKAGE_USAGE_STATS</td>
+                <td>Ön plandaki uygulamayı tespit etmek</td>
+            </tr>
+            <tr>
+                <td>QUERY_ALL_PACKAGES</td>
+                <td>Ebeveynin kilitlenecek uygulamaları seçebilmesi</td>
+            </tr>
+            <tr>
+                <td>SYSTEM_ALERT_WINDOW</td>
+                <td>Soru ekranı ve geri sayım göstergesi</td>
+            </tr>
+            <tr>
+                <td>FOREGROUND_SERVICE</td>
+                <td>Arka planda sürekli koruma sağlamak</td>
+            </tr>
+            <tr>
+                <td>RECEIVE_BOOT_COMPLETED</td>
+                <td>Cihaz yeniden başlatıldığında korumayı devam ettirmek</td>
+            </tr>
+            <tr>
+                <td>INTERNET</td>
+                <td>Matematik sorularını indirmek ve performans verisi göndermek</td>
+            </tr>
+        </table>
+
+        <h2>10. Değişiklikler</h2>
+        <p>Bu gizlilik politikası güncellenebilir. Önemli değişiklikler uygulama içinden bildirilir. Güncel sürüm her zaman bu sayfada yayınlanır.</p>
+
+        <h2>11. İletişim</h2>
+        <p>Sorularınız için:</p>
+        <ul>
+            <li>E-posta: <a href="mailto:support@mathlock.com.tr">support@mathlock.com.tr</a></li>
+            <li>Web: <a href="https://mathlock.com.tr/support">mathlock.com.tr/support</a></li>
+        </ul>
+    </div>
+
+    <footer>
+        <p>MathLock &copy; 2026 — <a href="/">Ana Sayfa</a> · <a href="/support">Destek</a></p>
+    </footer>
+</body>
+</html>

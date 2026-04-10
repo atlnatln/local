@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathLock — Eğitici Ebeveyn Denetimi</title>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --bg: #FAFAFA;
+            --surface: #FFFFFF;
+            --text: #212121;
+            --text-secondary: #616161;
+            --accent: #FF9800;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        nav {
+            background: var(--primary);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        nav .logo { font-size: 28px; }
+        nav .title { color: white; font-size: 20px; font-weight: 600; }
+        nav a { color: rgba(255,255,255,0.9); text-decoration: none; margin-left: auto; font-size: 14px; }
+        nav a:hover { color: white; }
+        .hero {
+            text-align: center;
+            padding: 64px 24px 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        .hero h1 { font-size: 36px; margin-bottom: 12px; }
+        .hero p { font-size: 18px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .container { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .feature {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .feature .icon { font-size: 32px; margin-bottom: 12px; }
+        .feature h3 { font-size: 16px; margin-bottom: 8px; }
+        .feature p { font-size: 13px; color: var(--text-secondary); }
+        footer {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            border-top: 1px solid #E0E0E0;
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <span class="logo">🔒</span>
+        <span class="title">MathLock</span>
+        <a href="/privacy">Gizlilik Politikası</a>
+        <a href="/support">Destek</a>
+    </nav>
+
+    <div class="hero">
+        <h1>🔒 MathLock</h1>
+        <p>Ebeveynlerin belirlediği uygulamalara erişimi matematik soruları ile koruyan eğitici ebeveyn denetim aracı.</p>
+    </div>
+
+    <div class="container">
+        <div class="features">
+            <div class="feature">
+                <div class="icon">🧮</div>
+                <h3>Matematik ile Kilit Açma</h3>
+                <p>Çocuğunuz seçtiğiniz uygulamaları açmak için yaşına uygun matematik sorularını çözer.</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🎯</div>
+                <h3>Sayı Tahmin Oyunu</h3>
+                <p>İkili arama mantığıyla çalışan eğlenceli bir sayı tahmin oyunu ile geometrik düşünme becerisini geliştirir.</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🛡️</div>
+                <h3>Ebeveyn Denetimi</h3>
+                <p>Parmak izi ile güvenli ebeveyn girişi. Hangi uygulamaların korunacağını siz belirlersiniz.</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🤖</div>
+                <h3>AI Destekli Sorular</h3>
+                <p>Müfredata uygun, zorluk seviyesi ayarlanabilir soru setleri sunucudan güvenli şekilde indirilir.</p>
+            </div>
+            <div class="feature">
+                <div class="icon">⏱️</div>
+                <h3>Zamanlı Erişim</h3>
+                <p>Uygulama kullanım süresini belirleyin. Süre dolduğunda kilit otomatik olarak devreye girer.</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🔐</div>
+                <h3>Gizlilik Öncelikli</h3>
+                <p>Uygulama listesi ve kullanım verisi asla sunucuya gönderilmez. Tüm veri aktarımı HTTPS üzerinden yapılır.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MathLock &copy; 2026 — <a href="/privacy">Gizlilik Politikası</a> · <a href="/support">Destek</a> · <a href="mailto:support@mathlock.com.tr">support@mathlock.com.tr</a></p>
+    </footer>
+</body>
+</html>

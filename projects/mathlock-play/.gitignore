@@ -1,0 +1,42 @@
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local properties (makineye özgü SDK path)
+local.properties
+
+# IDE
+.idea/
+*.iml
+.DS_Store
+
+# Kotlin/Java
+*.class
+*.jar
+*.aar
+*.ap_
+
+# Android generated
+gen/
+out/
+
+# Keystore (güvenlik - commit etme)
+*.jks
+*.keystore
+release/
+keystore.properties
+
+# Deploy artifacts
+dist/
+.deploy-tmp/
+
+# AI data (stats telefondan gelir, questions AI üretir — repo'da seed versiyonu var)
+data/stats.json
+data/history/
+
+# Proguard
+proguard/
+
+# NDK
+obj/

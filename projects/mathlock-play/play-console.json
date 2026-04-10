@@ -1,0 +1,20 @@
+{
+  "_comment": "Bu dosya, projeyi Google Play Console'da kaydetmek için gereken bilgileri içerir. Copilot bu dosyadan okuyarak play konsolda uygulamayı otomatik olarak oluşturur.",
+  "appName": "MathLock Play",
+  "defaultLanguage": "tr-TR",
+  "type": "app",
+  "pricing": "free",
+  "declarations": {
+    "developerPoliciesAccepted": true,
+    "exportLawsAccepted": true
+  },
+  "meta": {
+    "applicationId": "com.akn.mathlock.play",
+    "versionName": "1.0.0",
+    "versionCode": 1,
+    "developerId": "9071363965517112224",
+    "appId": "4973430330190022574",
+    "playConsoleUrl": "https://play.google.com/console/u/0/developers/9071363965517112224/app/4973430330190022574/app-dashboard",
+    "createdAt": "2026-03-28"
+  }
+}
