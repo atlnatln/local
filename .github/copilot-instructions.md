@@ -53,3 +53,13 @@
 ## Test/Doğrulama (keşfedilebilir olan)
 - Webimar Bağ Evi modülü testleri: `projects/webimar/webimar-api/calculations/tarimsal_yapilar/bag_evi/tests/`.
   - Not: `.../tests/run_tests.sh` bazı makinelere özgü hard-coded path içeriyor; genelde doğrudan `projects/webimar/webimar-api` içinde `pytest` çalıştırmak daha taşınabilir.
+
+## Google Play Console – Uygulama Oluşturma (uygulama-gelistir-play)
+- Kullanıcı `"[proje] uygulamasını play console'da oluştur"` dediğinde bu akışı uygula:
+  1. `projects/<proje>/play-console.json` dosyasını oku (yoksa oluştur).
+  2. Config'den URL parametrelerini oluştur (`ugpAutoFill=1`, `ugpName`, `ugpLang`, `ugpType`, `ugpPricing`, `ugpPolicy`, `ugpExport`, `ugpSubmit=1`).
+  3. Playwright-MCP ile `https://play.google.com/console/u/0/developers/9071363965517112224/create-new-app?<params>` URL'sine navigate et.
+  4. **Hiçbir form alanına dokunma** — Tampermonkey betiği (`uygulama-gelistir-play/tampermonkey/play-console-autofill.user.js`) formu kendi doldurur.
+  5. ~8 saniye bekle, yeni URL'den App ID'yi oku, `play-console.json`'a yaz.
+- Detaylı talimat: `uygulama-gelistir-play/docs/COPILOT_TALIMAT.md`
+- Developer ID: `9071363965517112224`

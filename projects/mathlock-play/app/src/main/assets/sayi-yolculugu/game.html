@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Sayı Yolculuğu</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f0f1a;
+  --surface: #1a1a2e;
+  --surface2: #16213e;
+  --primary: #e94560;
+  --secondary: #0f3460;
+  --accent: #533483;
+  --gold: #f5c518;
+  --green: #00d68f;
+  --blue: #3b82f6;
+  --text: #e8e8e8;
+  --text-dim: #8888aa;
+  --cell-size: 56px;
+  --radius: 12px;
+}
+html { font-size: 15px; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Game Layout ──────────────────────────────────────────── */
+#game { display: flex; flex-direction: column; min-height: 100vh; }
+
+.game-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; background: var(--surface);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.game-header .level-info { display: flex; align-items: center; gap: 10px; }
+.game-header .level-badge {
+  background: var(--accent); padding: 4px 12px; border-radius: 20px;
+  font-weight: 700; font-size: .85rem;
+}
+.game-header .level-title { font-size: .9rem; color: var(--text-dim); }
+.game-header .stars { font-size: 1.2rem; letter-spacing: 2px; }
+
+.game-main {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 14px; padding: 12px;
+}
+
+/* ── Grid ─────────────────────────────────────────────────── */
+.grid-container {
+  position: relative;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+.grid { display: grid; gap: 4px; }
+.cell {
+  width: var(--cell-size); height: var(--cell-size);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1rem; position: relative;
+  transition: all .3s ease;
+}
+.cell.empty { background: rgba(255,255,255,.04); }
+.cell.wall { background: #2a2a40; box-shadow: inset 0 2px 6px rgba(0,0,0,.5); }
+.cell.wall::after { content: '🧱'; font-size: 1.2rem; }
+.cell.target { background: rgba(0, 214, 143, .15); border: 2px dashed var(--green); }
+.cell.target .target-value {
+  position: absolute; font-size: .65rem; bottom: 2px; right: 4px;
+  color: var(--green); opacity: .8;
+}
+.cell.op-plus { background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.3); }
+.cell.op-minus { background: rgba(233,69,96,.12); border: 1px solid rgba(233,69,96,.3); }
+.cell.op-times { background: rgba(245,197,24,.12); border: 1px solid rgba(245,197,24,.3); }
+
+.player {
+  position: absolute;
+  width: var(--cell-size); height: var(--cell-size);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(233,69,96,.5);
+  transition: all .35s cubic-bezier(.4, 0, .2, 1);
+  z-index: 10;
+}
+.player.bump { animation: bump .3s ease; }
+@keyframes bump { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+.player.success { animation: successPulse .6s ease; }
+@keyframes successPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,214,143,.5); }
+  50% { box-shadow: 0 0 50px rgba(0,214,143,.9); transform: scale(1.2); }
+}
+
+/* ── Command Panel ────────────────────────────────────────── */
+.cmd-panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px; width: 100%; max-width: 560px;
+}
+.cmd-panel h3 { font-size: .8rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+.cmd-palette {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
+  padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.cmd-btn {
+  padding: 8px 14px; border-radius: 10px; border: 2px solid transparent;
+  font-size: .9rem; font-weight: 600; cursor: pointer;
+  transition: all .15s; user-select: none;
+}
+.cmd-btn:active { transform: scale(.94); }
+.cmd-btn.x-plus { background: rgba(59,130,246,.2); color: var(--blue); border-color: rgba(59,130,246,.4); }
+.cmd-btn.x-minus { background: rgba(59,130,246,.2); color: var(--blue); border-color: rgba(59,130,246,.4); }
+.cmd-btn.y-plus { background: rgba(0,214,143,.2); color: var(--green); border-color: rgba(0,214,143,.4); }
+.cmd-btn.y-minus { background: rgba(0,214,143,.2); color: var(--green); border-color: rgba(0,214,143,.4); }
+.cmd-btn.z-plus { background: rgba(245,197,24,.2); color: var(--gold); border-color: rgba(245,197,24,.3); }
+.cmd-btn.z-minus { background: rgba(233,69,96,.2); color: var(--primary); border-color: rgba(233,69,96,.3); }
+
+.cmd-queue-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.cmd-queue-label h3 { margin: 0; }
+.cmd-queue-label .cmd-count { font-size: .75rem; color: var(--text-dim); }
+.cmd-queue {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  min-height: 40px; padding: 8px;
+  background: rgba(0,0,0,.2); border-radius: 8px;
+  border: 2px dashed rgba(255,255,255,.08);
+  margin-bottom: 10px;
+}
+.cmd-chip {
+  padding: 5px 12px; border-radius: 8px;
+  font-size: .8rem; font-weight: 600; cursor: pointer;
+  transition: all .15s; position: relative;
+}
+.cmd-chip:hover { opacity: .7; }
+.cmd-chip.x-plus, .cmd-chip.x-minus { background: rgba(59,130,246,.25); color: var(--blue); }
+.cmd-chip.y-plus, .cmd-chip.y-minus { background: rgba(0,214,143,.25); color: var(--green); }
+.cmd-chip.z-plus { background: rgba(245,197,24,.25); color: var(--gold); }
+.cmd-chip.z-minus { background: rgba(233,69,96,.25); color: var(--primary); }
+.cmd-chip.running { animation: chipPulse .5s ease infinite; }
+@keyframes chipPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50% { box-shadow: 0 0 12px rgba(255,255,255,.3); }
+}
+
+.cmd-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.action-btn {
+  flex: 1; min-width: 80px; padding: 10px; border-radius: 10px; border: none;
+  font-size: .9rem; font-weight: 700; cursor: pointer; transition: all .15s;
+}
+.action-btn:active { transform: scale(.96); }
+.btn-run { background: linear-gradient(135deg, var(--green), #00b377); color: #000; }
+.btn-run:disabled { opacity: .4; cursor: not-allowed; }
+.btn-clear { background: rgba(233,69,96,.2); color: var(--primary); }
+.btn-undo { background: rgba(255,255,255,.08); color: var(--text-dim); }
+.btn-reset { background: rgba(59,130,246,.2); color: var(--blue); }
+
+/* ── Goal Bar ─────────────────────────────────────────────── */
+.goal-bar {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; max-width: 560px;
+}
+.goal-bar .goal-icon { font-size: 1.5rem; }
+.goal-bar .goal-text { flex: 1; }
+.goal-bar .goal-text strong { color: var(--green); }
+.goal-bar .goal-text .goal-desc { font-size: .8rem; color: var(--text-dim); }
+
+/* ── Overlays ─────────────────────────────────────────────── */
+#overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+}
+#overlay.active { display: flex; }
+.overlay-card {
+  background: var(--surface);
+  border-radius: 20px; padding: 32px; text-align: center;
+  max-width: 340px; animation: popIn .4s ease;
+}
+@keyframes popIn {
+  0% { transform: scale(.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.overlay-card h2 { font-size: 1.8rem; margin-bottom: 8px; }
+.overlay-card .overlay-stars { font-size: 2.2rem; margin-bottom: 10px; letter-spacing: 4px; }
+.overlay-card p { color: var(--text-dim); margin-bottom: 20px; }
+.overlay-card .overlay-btns { display: flex; gap: 10px; justify-content: center; }
+.overlay-card .overlay-btns button {
+  padding: 10px 24px; border-radius: 12px; border: none;
+  font-size: .95rem; font-weight: 700; cursor: pointer;
+}
+.overlay-card .btn-next { background: linear-gradient(135deg, var(--green), #00b377); color: #000; }
+.overlay-card .btn-retry { background: rgba(255,255,255,.1); color: var(--text); }
+
+/* ── Level Select ─────────────────────────────────────────── */
+#levelSelect {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+}
+#levelSelect.active { display: flex; }
+.level-select-card {
+  background: var(--surface); border-radius: 20px; padding: 24px;
+  max-width: 440px; width: 90%; animation: popIn .4s ease;
+}
+.level-select-card h2 { margin-bottom: 16px; text-align: center; }
+.level-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.level-cell {
+  aspect-ratio: 1; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.1rem; cursor: pointer;
+  background: rgba(255,255,255,.06); border: 2px solid transparent;
+  transition: all .2s;
+}
+.level-cell:hover { border-color: var(--accent); transform: scale(1.05); }
+.level-cell.completed { border-color: var(--green); background: rgba(0,214,143,.1); }
+.level-cell.current { border-color: var(--gold); background: rgba(245,197,24,.1); }
+.level-cell.locked { opacity: .3; cursor: not-allowed; }
+.level-cell .lc-stars { font-size: .6rem; margin-top: 2px; }
+.level-select-close {
+  display: block; margin: 16px auto 0; padding: 8px 24px;
+  border-radius: 10px; border: 1px solid var(--text-dim); background: none;
+  color: var(--text-dim); cursor: pointer; font-size: .85rem;
+}
+
+/* ── All Complete ─────────────────────────────────────────── */
+#allComplete {
+  position: fixed; inset: 0; z-index: 300;
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
+}
+#allComplete.active { display: flex; }
+#allComplete h1 { font-size: 2.4rem; margin-bottom: 12px; }
+#allComplete .total-stars { font-size: 2rem; margin-bottom: 8px; color: var(--gold); }
+#allComplete p { color: var(--text-dim); margin-bottom: 24px; }
+#allComplete button {
+  padding: 14px 36px; border-radius: 50px; border: none;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 400px) {
+  :root { --cell-size: 44px; }
+  .cmd-btn { padding: 6px 10px; font-size: .8rem; }
+}
+@media (min-width: 401px) and (max-width: 640px) {
+  :root { --cell-size: 52px; }
+}
+</style>
+</head>
+<body>
+
+<div id="game">
+  <div class="game-header">
+    <div class="level-info">
+      <span class="level-badge" id="levelBadge">Seviye 1</span>
+      <span class="level-title" id="levelTitle"></span>
+    </div>
+    <div class="stars" id="starsDisplay">⭐⭐⭐</div>
+    <button class="level-badge" id="btnLevels" style="cursor:pointer;background:var(--secondary);">📋</button>
+  </div>
+
+  <div class="game-main">
+    <div class="goal-bar">
+      <div class="goal-icon">🎯</div>
+      <div class="goal-text">
+        <div id="goalDesc" class="goal-desc"></div>
+        <div><strong id="goalDetail"></strong></div>
+      </div>
+      <div id="moveCounter" style="font-size:.8rem;color:var(--text-dim);">0 / 5</div>
+    </div>
+
+    <div class="grid-container">
+      <div class="grid" id="grid"></div>
+      <div class="player" id="player">3</div>
+    </div>
+
+    <div class="cmd-panel">
+      <h3>Komutlar</h3>
+      <div class="cmd-palette" id="cmdPalette"></div>
+      <div class="cmd-queue-label">
+        <h3>Programın</h3>
+        <span class="cmd-count" id="cmdCount">0 / 10</span>
+      </div>
+      <div class="cmd-queue" id="cmdQueue"></div>
+      <div class="cmd-actions">
+        <button class="action-btn btn-undo" id="btnUndo">↩</button>
+        <button class="action-btn btn-clear" id="btnClear">🗑</button>
+        <button class="action-btn btn-reset" id="btnReset">🔄</button>
+        <button class="action-btn btn-run" id="btnRun">▶ Çalıştır</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="overlay">
+  <div class="overlay-card">
+    <h2 id="overlayTitle">🎉 Tebrikler!</h2>
+    <div class="overlay-stars" id="overlayStars">⭐⭐⭐</div>
+    <p id="overlayMsg"></p>
+    <div class="overlay-btns">
+      <button class="btn-retry" id="btnRetry">🔄 Tekrar</button>
+      <button class="btn-next" id="btnNext">▶ Sonraki</button>
+    </div>
+  </div>
+</div>
+
+<div id="levelSelect">
+  <div class="level-select-card">
+    <h2>Seviye Seç</h2>
+    <div class="level-grid" id="levelGrid"></div>
+    <button class="level-select-close" id="btnCloseLevels">Kapat</button>
+  </div>
+</div>
+
+<div id="allComplete">
+  <h1>🏆 Harika!</h1>
+  <div class="total-stars" id="totalStarsText"></div>
+  <p>Tüm seviyeleri tamamladın!</p>
+  <button id="btnFinish">Tamam</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   Sayı Yolculuğu — WebView Game Engine
+   ═══════════════════════════════════════════════════════════ */
+
+const CMDS = {
+  'x+': { label: 'x →', css: 'x-plus',  dx: 1,  dy: 0,  dz: 0 },
+  'x-': { label: '← x', css: 'x-minus', dx: -1, dy: 0,  dz: 0 },
+  'y-': { label: 'y ↑', css: 'y-minus', dx: 0,  dy: -1, dz: 0 },
+  'y+': { label: '↓ y', css: 'y-plus',  dx: 0,  dy: 1,  dz: 0 },
+  'z+': { label: 'z +1', css: 'z-plus', dx: 0,  dy: 0,  dz: 1 },
+  'z-': { label: 'z -1', css: 'z-minus', dx: 0,  dy: 0,  dz: -1 },
+};
+
+// ── State ────────────────────────────────────────────────
+let levels = [];
+let state = {
+  levelIdx: 0,
+  playerX: 0, playerY: 0, playerVal: 0,
+  queue: [],
+  running: false,
+  progress: {},
+  startTime: 0,
+  attempts: 0,
+};
+
+// ── Android Bridge ───────────────────────────────────────
+// Android injects `Android` object via @JavascriptInterface
+function isAndroid() { return typeof Android !== 'undefined'; }
+
+function notifyAndroid(event, data) {
+  if (isAndroid()) {
+    try { Android.onGameEvent(event, JSON.stringify(data)); } catch(e) {}
+  }
+}
+
+// ── DOM refs ─────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const gridEl = $('grid');
+const playerEl = $('player');
+const cmdPalette = $('cmdPalette');
+const cmdQueue = $('cmdQueue');
+const cmdCount = $('cmdCount');
+const overlay = $('overlay');
+const levelSelect = $('levelSelect');
+const allComplete = $('allComplete');
+
+// ── Init: receive levels from Android or use fallback ────
+function initGame(levelsJson) {
+  try {
+    const data = typeof levelsJson === 'string' ? JSON.parse(levelsJson) : levelsJson;
+    levels = data.levels || data;
+  } catch(e) {
+    levels = [];
+  }
+  if (levels.length === 0) return;
+  state.levelIdx = 0;
+  state.progress = {};
+  loadLevel();
+}
+
+// Called from Android
+window.initGame = initGame;
+
+// ── Level loading ────────────────────────────────────────
+function getLevel() { return levels[state.levelIdx]; }
+
+function loadLevel() {
+  const lv = getLevel();
+  if (!lv) return;
+
+  state.playerX = lv.startX;
+  state.playerY = lv.startY;
+  state.playerVal = lv.startVal;
+  state.queue = [];
+  state.running = false;
+  state.startTime = Date.now();
+  state.attempts = 0;
+
+  $('levelBadge').textContent = 'Seviye ' + (state.levelIdx + 1);
+  $('levelTitle').textContent = lv.title || '';
+  updateStarsDisplay();
+
+  $('goalDesc').textContent = lv.desc || 'Hedefe ulaş!';
+  const valText = lv.targetVal != null ? ' = ' + lv.targetVal : '';
+  $('goalDetail').textContent = lv.startVal + valText + ' → 🎯';
+  $('moveCounter').textContent = '0 / ' + lv.maxCmds;
+
+  buildGrid(lv);
+  updatePlayerPos(false);
+  buildPalette(lv);
+  renderQueue();
+  $('btnRun').disabled = false;
+}
+
+function buildGrid(lv) {
+  gridEl.innerHTML = '';
+  gridEl.style.gridTemplateColumns = 'repeat(' + lv.cols + ', var(--cell-size))';
+
+  const wallSet = new Set((lv.walls || []).map(function(w) { return w[0] + ',' + w[1]; }));
+  const opMap = {};
+  (lv.ops || []).forEach(function(o) { opMap[o.x + ',' + o.y] = o; });
+
+  for (let r = 0; r < lv.rows; r++) {
+    for (let c = 0; c < lv.cols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      const key = c + ',' + r;
+
+      if (wallSet.has(key)) {
+        cell.classList.add('wall');
+      } else if (c === lv.targetX && r === lv.targetY) {
+        cell.classList.add('target');
+        if (lv.targetVal != null) {
+          const tv = document.createElement('span');
+          tv.className = 'target-value';
+          tv.textContent = '= ' + lv.targetVal;
+          cell.appendChild(tv);
+        }
+        cell.innerHTML = '🎯' + cell.innerHTML;
+      } else if (opMap[key]) {
+        const op = opMap[key];
+        if (op.type === '+') { cell.classList.add('op-plus'); cell.textContent = '+' + op.val; }
+        else if (op.type === '-') { cell.classList.add('op-minus'); cell.textContent = '-' + op.val; }
+        else if (op.type === '×' || op.type === '*') { cell.classList.add('op-times'); cell.textContent = '×' + op.val; }
+      } else {
+        cell.classList.add('empty');
+      }
+      gridEl.appendChild(cell);
+    }
+  }
+}
+
+function updatePlayerPos(animate) {
+  const gap = 4;
+  const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
+  const left = 14 + state.playerX * (cellSize + gap);
+  const top = 14 + state.playerY * (cellSize + gap);
+
+  playerEl.style.left = left + 'px';
+  playerEl.style.top = top + 'px';
+  playerEl.textContent = state.playerVal;
+
+  if (animate) {
+    playerEl.classList.remove('bump');
+    void playerEl.offsetWidth;
+    playerEl.classList.add('bump');
+  }
+}
+
+function buildPalette(lv) {
+  cmdPalette.innerHTML = '';
+  (lv.commands || []).forEach(function(cmdId) {
+    const cmd = CMDS[cmdId];
+    if (!cmd) return;
+    const btn = document.createElement('button');
+    btn.className = 'cmd-btn ' + cmd.css;
+    btn.textContent = cmd.label;
+    btn.addEventListener('click', function() { addCommand(cmdId); });
+    cmdPalette.appendChild(btn);
+  });
+}
+
+// ── Command queue ────────────────────────────────────────
+function addCommand(cmdId) {
+  const lv = getLevel();
+  if (state.running || state.queue.length >= lv.maxCmds) return;
+  state.queue.push(cmdId);
+  renderQueue();
+}
+
+function renderQueue() {
+  const lv = getLevel();
+  cmdQueue.innerHTML = '';
+  state.queue.forEach(function(cmdId, i) {
+    const cmd = CMDS[cmdId];
+    const chip = document.createElement('span');
+    chip.className = 'cmd-chip ' + cmd.css;
+    chip.textContent = cmd.label;
+    chip.addEventListener('click', function() {
+      if (state.running) return;
+      state.queue.splice(i, 1);
+      renderQueue();
+    });
+    cmdQueue.appendChild(chip);
+  });
+  cmdCount.textContent = state.queue.length + ' / ' + lv.maxCmds;
+}
+
+// ── Execution ────────────────────────────────────────────
+$('btnRun').addEventListener('click', runProgram);
+$('btnClear').addEventListener('click', function() { if (!state.running) { state.queue = []; renderQueue(); } });
+$('btnUndo').addEventListener('click', function() { if (!state.running) { state.queue.pop(); renderQueue(); } });
+$('btnReset').addEventListener('click', function() { if (!state.running) loadLevel(); });
+
+async function runProgram() {
+  if (state.running || state.queue.length === 0) return;
+  state.running = true;
+  state.attempts++;
+  $('btnRun').disabled = true;
+
+  const lv = getLevel();
+  state.playerX = lv.startX;
+  state.playerY = lv.startY;
+  state.playerVal = lv.startVal;
+  updatePlayerPos(false);
+
+  const chips = cmdQueue.querySelectorAll('.cmd-chip');
+
+  for (let i = 0; i < state.queue.length; i++) {
+    const cmdId = state.queue[i];
+    const cmd = CMDS[cmdId];
+    chips[i].classList.add('running');
+
+    if (cmd.dz !== 0) {
+      state.playerVal += cmd.dz;
+      updatePlayerPos(true);
+      await sleep(300);
+      chips[i].classList.remove('running');
+      continue;
+    }
+
+    const nx = state.playerX + cmd.dx;
+    const ny = state.playerY + cmd.dy;
+
+    if (nx < 0 || nx >= lv.cols || ny < 0 || ny >= lv.rows) {
+      chips[i].classList.remove('running');
+      await sleep(200);
+      continue;
+    }
+
+    const isWall = (lv.walls || []).some(function(w) { return w[0] === nx && w[1] === ny; });
+    if (isWall) {
+      chips[i].classList.remove('running');
+      await sleep(200);
+      continue;
+    }
+
+    state.playerX = nx;
+    state.playerY = ny;
+
+    const op = (lv.ops || []).find(function(o) { return o.x === nx && o.y === ny; });
+    if (op) {
+      if (op.type === '+') state.playerVal += op.val;
+      else if (op.type === '-') state.playerVal -= op.val;
+      else if (op.type === '×' || op.type === '*') state.playerVal *= op.val;
+    }
+
+    updatePlayerPos(true);
+    await sleep(300);
+    chips[i].classList.remove('running');
+  }
+
+  await sleep(200);
+  checkWin();
+}
+
+function checkWin() {
+  const lv = getLevel();
+  const posOk = state.playerX === lv.targetX && state.playerY === lv.targetY;
+  const valOk = lv.targetVal == null || state.playerVal === lv.targetVal;
+
+  if (posOk && valOk) {
+    const usedCmds = state.queue.length;
+    let stars = 1;
+    if (usedCmds <= lv.stars[0]) stars = 3;
+    else if (usedCmds <= lv.stars[1]) stars = 2;
+
+    playerEl.classList.add('success');
+    setTimeout(function() {
+      playerEl.classList.remove('success');
+      showWinOverlay(stars);
+    }, 500);
+
+    const prev = state.progress[state.levelIdx];
+    if (!prev || prev.stars < stars) {
+      state.progress[state.levelIdx] = {
+        completed: true, stars: stars,
+        commandsUsed: usedCmds,
+        attempts: state.attempts,
+        timeSeconds: Math.round((Date.now() - state.startTime) / 1000)
+      };
+    }
+
+    notifyAndroid('levelComplete', {
+      levelId: lv.id || (state.levelIdx + 1),
+      stars: stars,
+      commandsUsed: usedCmds,
+      attempts: state.attempts,
+      timeSeconds: Math.round((Date.now() - state.startTime) / 1000)
+    });
+  } else {
+    $('overlayTitle').textContent = '😕 Hedefine ulaşamadın';
+    $('overlayStars').textContent = '';
+    $('overlayMsg').textContent = posOk && !valOk
+      ? 'Sayın ' + state.playerVal + ' — ama hedef ' + lv.targetVal + ' olmalıydı.'
+      : 'Doğru konuma ulaşamadın. Tekrar dene!';
+    $('btnNext').style.display = 'none';
+    overlay.classList.add('active');
+  }
+
+  state.running = false;
+  $('btnRun').disabled = false;
+}
+
+function showWinOverlay(stars) {
+  $('overlayTitle').textContent = '🎉 Tebrikler!';
+  $('overlayStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+  var msgs = ['İyi iş! 💪', 'Harika! 🌟', 'Mükemmel! 🏆'];
+  $('overlayMsg').textContent = msgs[stars - 1];
+  $('btnNext').style.display = state.levelIdx < levels.length - 1 ? '' : 'none';
+  overlay.classList.add('active');
+}
+
+$('btnRetry').addEventListener('click', function() {
+  overlay.classList.remove('active');
+  loadLevel();
+});
+
+$('btnNext').addEventListener('click', function() {
+  overlay.classList.remove('active');
+  if (state.levelIdx < levels.length - 1) {
+    state.levelIdx++;
+    loadLevel();
+  } else {
+    showAllComplete();
+  }
+});
+
+function updateStarsDisplay() {
+  var prog = state.progress[state.levelIdx];
+  var s = prog ? prog.stars : 0;
+  $('starsDisplay').textContent = '⭐'.repeat(s) + '☆'.repeat(3 - s);
+}
+
+// ── Level Select ─────────────────────────────────────────
+$('btnLevels').addEventListener('click', showLevelSelect);
+$('btnCloseLevels').addEventListener('click', function() { levelSelect.classList.remove('active'); });
+
+function showLevelSelect() {
+  var grid = $('levelGrid');
+  grid.innerHTML = '';
+  levels.forEach(function(lv, i) {
+    var cell = document.createElement('div');
+    cell.className = 'level-cell';
+
+    var unlocked = i === 0 || (state.progress[i - 1] && state.progress[i - 1].completed);
+    if (!unlocked) cell.classList.add('locked');
+    if (state.progress[i] && state.progress[i].completed) cell.classList.add('completed');
+    if (i === state.levelIdx) cell.classList.add('current');
+
+    cell.innerHTML = '<span>' + (i + 1) + '</span>';
+    if (state.progress[i]) {
+      cell.innerHTML += '<span class="lc-stars">' + '⭐'.repeat(state.progress[i].stars) + '☆'.repeat(3 - state.progress[i].stars) + '</span>';
+    }
+
+    if (unlocked) {
+      cell.addEventListener('click', function() {
+        state.levelIdx = i;
+        levelSelect.classList.remove('active');
+        loadLevel();
+      });
+    }
+    grid.appendChild(cell);
+  });
+  levelSelect.classList.add('active');
+}
+
+// ── All Complete ─────────────────────────────────────────
+function showAllComplete() {
+  var totalStars = 0;
+  var maxStars = levels.length * 3;
+  for (var k in state.progress) {
+    if (state.progress[k].stars) totalStars += state.progress[k].stars;
+  }
+  $('totalStarsText').textContent = '⭐ ' + totalStars + ' / ' + maxStars;
+  allComplete.classList.add('active');
+
+  notifyAndroid('allComplete', {
+    totalLevels: levels.length,
+    totalCompleted: Object.keys(state.progress).length,
+    totalStars: totalStars,
+    maxStars: maxStars,
+    byLevel: state.progress
+  });
+}
+
+$('btnFinish').addEventListener('click', function() {
+  allComplete.classList.remove('active');
+  notifyAndroid('finish', {});
+});
+
+// ── Utility ──────────────────────────────────────────────
+function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+</script>
+</body>
+</html>

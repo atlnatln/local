@@ -54,7 +54,24 @@ const getStructureDescription = (structureType: StructureType, structureTypeLabe
     'hara': 'At yetiştiriciliği için hara tesisi hesaplamalarını yapın.',
     'ipek-bocekciligi': 'İpek böceği yetiştiriciliği tesisleri için hesaplamalar.',
     'evcil-hayvan': 'Evcil hayvan ve bilimsel araştırma hayvanı üretim tesisleri için hesaplamalar.',
-    'besi-sigirciligi': 'Besi sığırı yetiştiriciliği tesisleri için yapı hesaplamalarını yapın.'
+    'besi-sigirciligi': 'Besi sığırı yetiştiriciliği tesisleri için yapı hesaplamalarını yapın.',
+    
+    // 2025 Yeni Yapılar (ID: 29-43)
+    'fide-uretim': 'Fide üretim tesisleri için yapı hesaplamalarını yapın.',
+    'fidan-uretim': 'Fidan üretim tesisleri için yapı hesaplamalarını yapın.',
+    'sahipsiz-hayvan': 'Sahipsiz hayvan barınakları için yapı hesaplamalarını yapın.',
+    'sundurma': 'Tarımsal amaçlı sundurma tesisleri için yapı hesaplamalarını yapın.',
+    'ciftlik-atolyesi': 'Çiftlik atölyeleri için yapı hesaplamalarını yapın.',
+    'su-urunleri': 'Su ürünleri üretim tesisleri için yapı hesaplamalarını yapın.',
+    'deve-kusu': 'Deve kuşu üretim tesisleri için yapı hesaplamalarını yapın.',
+    'gubre-deposu': 'Gübre depolama tesisleri için yapı hesaplamalarını yapın.',
+    'mandira': 'Mandıra (süt sağım ve soğutma) tesisleri için yapı hesaplamalarını yapın.',
+    'un-degirmeni': 'Un değirmeni tesisleri için yapı hesaplamalarını yapın.',
+    'teleferik': 'Tarımsal amaçlı teleferik sistemleri için hesaplamalar.',
+    'golet': 'Hayvan içme suyu göletleri için yapı hesaplamalarını yapın.',
+    'islim': 'İslim ünitesi tesisleri için yapı hesaplamalarını yapın.',
+    'muz-sarartma': 'Muz sarartma üniteleri için yapı hesaplamalarını yapın.',
+    'tarimsal-arge': 'Tarımsal AR-GE tesisleri için yapı hesaplamalarını yapın.'
   };
   
   return descriptions[structureType] || `${structureTypeLabels[structureType]} için yapı hesaplamalarını yapın.`;

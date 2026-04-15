@@ -72,8 +72,8 @@ def _olustur_html_mesaj_sera(sonuc_data: dict, toplam_proje_alani_m2: float, pla
             <p style="margin-bottom: 10px;"><strong>Sera/örtü altı alanınız 3.000 m² ve üzerinde olduğu için bağ evi yapma hakkınız bulunmaktadır.</strong></p>
             <p style="margin-bottom: 10px;">Bağ evi özellikleri:</p>
             <ul style="margin-bottom: 10px;">
-                <li>Maksimum taban alanı: 75 m²</li>
-                <li>Maksimum toplam alan: 150 m² (2 katlı yapılabilir)</li>
+                <li>Maksimum taban alanı: 30 m²</li>
+                <li>Maksimum toplam alan: 60 m² (2 katlı yapılabilir)</li>
                 <li>Örtü altı tarım ve sera alanları için minimum 3.000 m² alan gereklidir</li>
             </ul>
             <p style="margin-bottom: 0; font-size: 14px; color: #495057;">
@@ -133,9 +133,14 @@ def sera_projesi_bilgilendirme(
 
     sonuclar["ges_bilgisi_metin"] = (
         "Güneş Enerjisi Santrali (GES) Hakkında Genel Bilgi:\n"
-        "- Sera üzerine GES kurulması: Bitkisel üretim tekniği açısından uygun olmaması ve serada yapılan bitkisel üretime olumsuz etkisi nedeniyle genellikle uygun görülmemektedir.\n"
-        "- Zemine GES Kurulumu: Eğer arazinizin sınıfı 'marjinal tarım arazisi (TA)' ise, talep edilmesi durumunda proje alanınızın en fazla "
-        f"%{SERA_GES_ZEMINE_PROJE_ALANINA_ORANI_MAX*100:.1f}'ine zemine GES kurulmasına izin verilebilir. Bu durum, arazinizin resmi sınıflandırmasına bağlıdır."
+        "- Sera üzerine GES kurulması: Bitkisel üretim tekniği açısından uygun olmaması ve serada yapılan bitkisel üretime olumsuz etkisi nedeniyle uygun görülmemektedir.\n"
+        "- Mutlak tarım, özel ürün ve dikili arazilerde: Tesisin kendi enerji ihtiyacı için SADECE çatı üzerine GES kurulabilir. Zemine GES kesinlikle kurulmamalıdır.\n"
+        "- Marjinal tarım arazilerinde: Öncelikle çatıya GES kurulmalıdır. Çatı yetersiz kalırsa, proje alanının en fazla "
+        f"%{SERA_GES_ZEMINE_PROJE_ALANINA_ORANI_MAX*100:.1f}'i kadar zemine GES kurulmasına izin verilebilir.\n"
+        "- Sulama amaçlı GES: Şebeke dışı (off-grid) olması zorunludur. Sulayabildiği toplam arazinin en fazla "
+        f"%{SERA_GES_ZEMINE_PROJE_ALANINA_ORANI_MAX*100:.1f}'i kadar alana kurulabilir. "
+        "Mutlak/özel ürün/dikili arazilerde ek olarak talep sahibinin aynı il sınırları içinde toplam 20 hektar ve üzeri tarım arazisi bulunması gerekmektedir.\n"
+        "- GES kuran işletmeler, ürettikleri enerjinin ulusal şebekeye verilmeyeceğine dair EPDK'ya taahhütname vermek zorundadır."
     )
     
     # Özet mesaj artık _olustur_html_mesaj_sera tarafından oluşturulacak.

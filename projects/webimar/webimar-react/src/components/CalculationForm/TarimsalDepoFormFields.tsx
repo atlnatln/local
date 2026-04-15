@@ -28,6 +28,25 @@ const TarimsalDepoFormFields: React.FC<TarimsalDepoFormFieldsProps> = ({
 
   return (
     <FormGrid>
+      {/* İlçe içi toplam arazi varlığı - her zaman göster */}
+      <FormField
+        label="İlçe İçi Toplam Arazi Varlığı (m²)"
+        name="toplam_arazi_varligi"
+        type="number"
+        value={formData.toplam_arazi_varligi || ''}
+        onChange={onInputChange}
+        placeholder="Örn: 110000 (110 dekar)"
+        min="1"
+        max="10000000"
+        step="1"
+        required
+        error={validationErrors.toplam_arazi_varligi}
+        helpText="İlçe genelinde sahip olduğunuz toplam tarım arazisi. Kiralama/sözleşmeli araziler dahil edilmez. Depo yapma hakkınız bu alanın %1'i kadardır."
+        {...commonFieldProps}
+      >
+        {renderSmartDetectionFeedback('toplam_arazi_varligi')}
+      </FormField>
+
       {/* Alan bilgileri - sadece belirli arazi tiplerinde göster */}
       {(formData.arazi_vasfi === 'Ham toprak, taşlık, kıraç, palamutluk, koruluk gibi diğer vasıflı' ||
         formData.arazi_vasfi === 'Tarla' ||

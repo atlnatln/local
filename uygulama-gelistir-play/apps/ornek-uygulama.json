@@ -1,0 +1,37 @@
+{
+  "_comment": "Bu dosya örnek uygulama şablonudur. Yeni bir uygulama için kopyalayıp düzenleyin.",
+
+  "id": "ornek-uygulama",
+  "appName": "Örnek Uygulama",
+  "defaultLanguage": "tr-TR",
+  "type": "app",
+  "pricing": "free",
+  "declarations": {
+    "developerPoliciesAccepted": true,
+    "exportLawsAccepted": true
+  },
+
+  "storeListing": {
+    "tr-TR": {
+      "title": "",
+      "shortDescription": "",
+      "fullDescription": ""
+    }
+  },
+
+  "contact": {
+    "email": "",
+    "website": "",
+    "phone": ""
+  },
+
+  "assets": {
+    "icon": "assets/icon/icon.png",
+    "featureGraphic": "assets/feature-graphic/feature-graphic.png",
+    "screenshots": {
+      "phone": "assets/screenshots/phone/",
+      "tablet7inch": "assets/screenshots/tablet-7inch/",
+      "tablet10inch": "assets/screenshots/tablet-10inch/"
+    }
+  }
+}

@@ -57,15 +57,15 @@ export default function TarimArazileriKullanimiGenelgesiPage() {
                 <div className={styles.highlight}>
                   <h4>📏 Arazi Büyüklüğü Koşulları</h4>
                   <ul>
-                    <li>Yüzölçümü <strong>2 hektar ve üzeri</strong> olan mutlak, özel ürün ve marjinal tarım arazisi</li>
-                    <li>Yüzölçümü <strong>0,5 hektar ve üzeri</strong> olan dikili tarım arazisi</li>
+                    <li>Yüzölçümü <strong>5 hektar ve üzeri</strong> olan mutlak, özel ürün ve marjinal tarım arazisi</li>
+                    <li>Yüzölçümü <strong>1 hektar ve üzeri</strong> olan dikili tarım arazisi</li>
                     <li><strong>0,3 hektar ve üzeri</strong> örtüaltı tarım arazisi</li>
                   </ul>
                   
                   <h4>🏘️ Yapılaşma Koşulları</h4>
                   <ul>
-                    <li>Taban alanı: <strong>En fazla 75 metrekare</strong></li>
-                    <li>Toplam inşaat alanı: <strong>En fazla 150 metrekare</strong></li>
+                    <li>Taban alanı: <strong>En fazla 30 metrekare</strong></li>
+                    <li>Toplam inşaat alanı: <strong>En fazla 60 metrekare</strong></li>
                   </ul>
 
                   <h4>⚠️ Sınırlamalar ve Özel Durumlar</h4>
@@ -73,7 +73,7 @@ export default function TarimArazileriKullanimiGenelgesiPage() {
                     <li>Kiralanan arazilere kiracılar tarafından bağ evi talebi yapılamaz</li>
                     <li>Her aile için aynı ilçe sınırları içerisinde <strong>sadece bir adet</strong> bağ evi izni verilebilir</li>
                     <li>Parselin hisseli olması durumunda diğer hissedarlardan muvafakatname alınması zorunludur</li>
-                    <li>Alt katı tarımsal amaçlı depo üstü bağ evi taleplerinde, toplam arazi varlığının %1'i kadar tarımsal amaçlı depo üstü 75 metrekare bağ evi yapılabilir</li>
+                    <li>Alt katı tarımsal amaçlı depo üstü bağ evi taleplerinde, toplam arazi varlığının %1'i kadar tarımsal amaçlı depo üstü 30 metrekare bağ evi yapılabilir</li>
                   </ul>
                 </div>
               </div>
@@ -136,6 +136,12 @@ export default function TarimArazileriKullanimiGenelgesiPage() {
                   <ul>
                     <li>Tesis alanı 450-900 m² arasında: Taban alanı <strong>75 m²</strong>, toplam inşaat alanı <strong>150 m²</strong></li>
                     <li>Tesis alanı 900 m²'den büyük: Taban alanı <strong>150 m²</strong>, toplam inşaat alanı <strong>300 m²</strong></li>
+                  </ul>
+
+                  <h4>Kanatlı Tesisler İçin:</h4>
+                  <ul>
+                    <li>Tesis alanı 750-1500 m² arasında: Taban alanı <strong>75 m²</strong>, toplam inşaat alanı <strong>150 m²</strong></li>
+                    <li>Tesis alanı 1500 m²'den büyük: Taban alanı <strong>150 m²</strong>, toplam inşaat alanı <strong>300 m²</strong></li>
                   </ul>
 
                   <div className={styles.warning}>

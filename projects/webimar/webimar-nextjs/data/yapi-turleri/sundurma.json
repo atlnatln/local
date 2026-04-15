@@ -1,0 +1,108 @@
+{
+  "slug": "sundurma",
+  "id": 32,
+  "name": "Sundurma",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Tarımsal Amaçlı Sundurma Yapımı | Tarım İmar",
+    "description": "Tarımsal amaçlı sundurma yapımı, alan hesaplama ve mevzuat bilgileri.",
+    "keywords": [
+      "sundurma",
+      "tarımsal sundurma",
+      "çiftlik sundurma",
+      "açık depo"
+    ],
+    "canonical": "/sundurma/"
+  },
+  "hero": {
+    "title": "Tarımsal Amaçlı Sundurma",
+    "subtitle": "Tarımsal araç, gereç ve ürünlerin korunması için sundurma yapımı",
+    "icon": "🏚️"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Sundurma</strong>, tarımsal araç, gereç ve ürünlerin hava koşullarından korunması amacıyla yapılan üstü kapalı, yanları açık veya yarı açık yapılardır.</p>",
+    "purpose": "<p>Tarımsal ekipman ve ürünlerin korunması amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Tarımsal arazi sahipleri sundurma yapabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "Basit Yapı",
+      "description": "Hızlı ve ekonomik kurulum",
+      "icon": "⚡"
+    },
+    {
+      "title": "Koruma",
+      "description": "Araç ve gereçlerin hava koşullarından korunması",
+      "icon": "🛡️"
+    },
+    {
+      "title": "Esnek Kullanım",
+      "description": "Farklı tarımsal amaçlarla kullanılabilir",
+      "icon": "🔄"
+    },
+    {
+      "title": "Ekonomik",
+      "description": "Düşük maliyetli yapı çözümü",
+      "icon": "💰"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "Çelik veya ahşap taşıyıcı sistem",
+        "Çatı kaplama malzemesi",
+        "Zemin düzenlemesi"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Sundurma Alanı Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, sundurma alanınızı hesaplayın",
+    "ctaText": "Sundurma Alanı Hesapla",
+    "ctaLink": "/hesaplama/sundurma"
+  },
+  "faq": [
+    {
+      "question": "Sundurma için izin gerekir mi?",
+      "answer": "Evet, tarımsal yapı izni kapsamında başvuru yapılmalıdır."
+    },
+    {
+      "question": "Sundurma ne kadar alan kaplayabilir?",
+      "answer": "Arazi büyüklüğüne ve mevzuata göre hesaplanır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Tarımsal Depo",
+      "url": "/tarimsal-depo",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Tarımsal Amaçlı Sundurma Yapımı",
+    "description": "Tarımsal amaçlı sundurma yapımı, alan hesaplama ve mevzuat bilgileri.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

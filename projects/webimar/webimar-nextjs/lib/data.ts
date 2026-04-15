@@ -16,6 +16,11 @@ export const structureCategories = {
     name: 'Hayvancılık Tesisleri',
     icon: '🐄',
     types: []
+  },
+  new_2025: {
+    name: '2025 Yeni Yapı Türleri',
+    icon: '🆕',
+    types: []
   }
 };
 
@@ -48,7 +53,23 @@ export const urlStructureTypeMap: Record<number, string> = {
   25: 'ipek-bocekciligi',
   26: 'evcil-hayvan',
   27: 'besi-sigirciligi',
-  28: 'zeytinyagi-uretim-tesisi'
+  28: 'zeytinyagi-uretim-tesisi',
+  // 2025 Yönetmelik: Yeni eklenen yapı türleri
+  29: 'fide-uretim',
+  30: 'fidan-uretim',
+  31: 'sahipsiz-hayvan',
+  32: 'sundurma',
+  33: 'ciftlik-atolyesi',
+  34: 'su-urunleri',
+  35: 'deve-kusu',
+  36: 'gubre-deposu',
+  37: 'mandira',
+  38: 'un-degirmeni',
+  39: 'teleferik',
+  40: 'golet',
+  41: 'islim',
+  42: 'muz-sarartma',
+  43: 'tarimsal-arge'
 };
 
 // Kategorilere göre yapı türlerini gruplandır
@@ -67,6 +88,11 @@ export const categorizeStructureTypes = (yapiTurleri: any[]) => {
     livestock: {
       name: 'Hayvancılık Tesisleri',
       icon: '🐄',
+      types: [] as any[]
+    },
+    new_2025: {
+      name: '2025 Yeni Yapı Türleri',
+      icon: '🆕',
       types: [] as any[]
     }
   };
@@ -89,6 +115,12 @@ export const categorizeStructureTypes = (yapiTurleri: any[]) => {
       });
     } else if (yapiTuru.id >= 17 && yapiTuru.id <= 27) {
       categories.livestock.types.push({
+        id: yapiTuru.id,
+        name: yapiTuru.ad,
+        url: structureType
+      });
+    } else if (yapiTuru.id >= 29 && yapiTuru.id <= 43) {
+      categories.new_2025.types.push({
         id: yapiTuru.id,
         name: yapiTuru.ad,
         url: structureType

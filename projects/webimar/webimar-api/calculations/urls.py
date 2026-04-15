@@ -18,6 +18,15 @@ from calculations.views.tesisler import (
     calculate_bag_evi, calculate_zeytinyagi_uretim_tesisi, calculate_soguk_hava_deposu
 )
 
+# 2025 Yönetmelik: Yeni yapılar modülü importları
+from calculations.views.yeni_yapilar import (
+    calculate_fide_uretim, calculate_fidan_uretim, calculate_sahipsiz_hayvan,
+    calculate_sundurma, calculate_ciftlik_atolyesi, calculate_su_urunleri,
+    calculate_deve_kusu, calculate_gubre_deposu, calculate_mandira,
+    calculate_un_degirmeni, calculate_teleferik, calculate_golet,
+    calculate_islim, calculate_muz_sarartma, calculate_tarimsal_arge
+)
+
 # Ayrılmış Bağ Evi Modülü (yeni modular endpoint)
 from calculations.tarimsal_yapilar.bag_evi.views import calculate_bag_evi_view
 
@@ -85,6 +94,23 @@ urlpatterns = [
     path('ipek-bocekciligi/', calculate_ipek_bocekciligi, name='calculate_ipek_bocekciligi'),   # ID: 25 (UX-optimize)
     path('evcil-hayvan/', calculate_evcil_hayvan, name='calculate_evcil_hayvan'),               # ID: 26 (UX-optimize)
     path('besi-sigirciligi/', calculate_besi_sigirciligi, name='calculate_besi_sigirciligi'), # ID: 27
+    
+    # ID: 29-43 - 2025 Yönetmelik: Yeni Yapı Türleri
+    path('fide-uretim/', calculate_fide_uretim, name='calculate_fide_uretim'),                 # ID: 29
+    path('fidan-uretim/', calculate_fidan_uretim, name='calculate_fidan_uretim'),               # ID: 30
+    path('sahipsiz-hayvan/', calculate_sahipsiz_hayvan, name='calculate_sahipsiz_hayvan'),       # ID: 31
+    path('sundurma/', calculate_sundurma, name='calculate_sundurma'),                           # ID: 32
+    path('ciftlik-atolyesi/', calculate_ciftlik_atolyesi, name='calculate_ciftlik_atolyesi'),   # ID: 33
+    path('su-urunleri/', calculate_su_urunleri, name='calculate_su_urunleri'),                 # ID: 34
+    path('deve-kusu/', calculate_deve_kusu, name='calculate_deve_kusu'),                       # ID: 35
+    path('gubre-deposu/', calculate_gubre_deposu, name='calculate_gubre_deposu'),              # ID: 36
+    path('mandira/', calculate_mandira, name='calculate_mandira'),                             # ID: 37
+    path('un-degirmeni/', calculate_un_degirmeni, name='calculate_un_degirmeni'),               # ID: 38
+    path('teleferik/', calculate_teleferik, name='calculate_teleferik'),                       # ID: 39
+    path('golet/', calculate_golet, name='calculate_golet'),                                   # ID: 40
+    path('islim/', calculate_islim, name='calculate_islim'),                                   # ID: 41
+    path('muz-sarartma/', calculate_muz_sarartma, name='calculate_muz_sarartma'),               # ID: 42
+    path('tarimsal-arge/', calculate_tarimsal_arge, name='calculate_tarimsal_arge'),            # ID: 43
     
     # Static dosya servisleri
     path('static/yonetmelikler/', get_yonetmelikler, name='get_yonetmelikler'),

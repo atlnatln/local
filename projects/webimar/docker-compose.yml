@@ -73,6 +73,8 @@ services:
       - ./webimar-nextjs/pages:/app/pages
       - ./webimar-nextjs/components:/app/components
       - ./webimar-nextjs/public:/app/public
+      - ./webimar-nextjs/lib:/app/lib
+      - ./webimar-nextjs/data:/app/data
     restart: unless-stopped
 
   # PostgreSQL - Production

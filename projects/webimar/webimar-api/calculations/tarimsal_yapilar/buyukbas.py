@@ -442,80 +442,7 @@ class BuyukbasHesaplama:
                 "tip": "bakici_evi"
             })
         
-        # 2025/2 Nolu Tarımsal Üretim Planlaması Kurulu Kararı - Büyük Ova Sınırlaması
-        orijinal_hesaplanan_kapasite = final_hayvan_kapasitesi  # Sınırlama öncesi orijinal kapasite
-        if buyuk_ova_alaninda_mi and final_hayvan_kapasitesi > 5:
-            # Büyük ova alanında 5 baştan fazla hesaplandıysa, kapasiteyi 5 başa düşür ve hesaplamaları yeniden yap
-            yapilar_listesi = []
-            
-            # 5 baş için ahır alanı hesapla
-            ahir_alani_final = 5 * self.ahir_yem_deposu_alani_hayvan_basina
-            
-            # 5 baş için zorunlu müştemilatları yeniden hesapla
-            zorunlu_mustemilat_detaylari_5bas = []
-            toplam_zorunlu_must_5bas = 0
-            for key, tanim in self.mustemilat_tanimlari.items():
-                if tanim["grup"] == "zorunlu" and hayvan_tipi in tanim["hayvan_tipi_gecerli"]:
-                    alan = self._hesapla_mustemilat_alani(tanim, 5, hayvan_tipi)
-                    if alan > 0:
-                        zorunlu_mustemilat_detaylari_5bas.append({"isim": tanim["isim"], "alan_m2": alan, "kod": key})
-                        toplam_zorunlu_must_5bas += alan
-            
-            # Minimum kural kontrolü (5 baş için)
-            min_kural_5bas = max(ahir_alani_final * 0.40, self.min_zorunlu_mustemilat_alani)
-            if toplam_zorunlu_must_5bas < min_kural_5bas:
-                farki_kapatma = min_kural_5bas - toplam_zorunlu_must_5bas
-                zorunlu_mustemilat_detaylari_5bas.append({
-                    "isim": "Ek Zorunlu Müştemilat Alanı (Yasal Minimum İçin)", 
-                    "alan_m2": farki_kapatma, 
-                    "kod": "diger_zorunlu"
-                })
-                toplam_zorunlu_must_5bas = min_kural_5bas
-            
-            # Yapılar listesini 5 baş için oluştur
-            for z_must in zorunlu_mustemilat_detaylari_5bas:
-                yapilar_listesi.append({
-                    "isim": z_must["isim"], 
-                    "taban_alani": z_must["alan_m2"], 
-                    "toplam_alan": z_must["alan_m2"], 
-                    "tip": "zorunlu_mustemilat"
-                })
-            
-            # Bakıcı evi 5 baş için yapılamaz (eşikler: süt=25, besi=50)
-            bakici_evi_yapildi_final = False
-            bakici_evi_taban_alani_final = 0
-            bakici_evi_toplam_insaat_alani_final = 0
-            bakici_evi_hakki_kazanildi_raporlama = False
-            
-            # Opsiyonel müştemilatlar için kalan alan
-            kullanilan_alan_5bas = ahir_alani_final + toplam_zorunlu_must_5bas
-            kalan_emsal_opsiyonel_icin = emsal - kullanilan_alan_5bas
-            
-            # Opsiyonel müştemilatları ekle (alan varsa)
-            sirali_opsiyonel_mustemilatlar = sorted(
-                [v for k, v in self.mustemilat_tanimlari.items() if v["grup"] == "opsiyonel" and hayvan_tipi in v["hayvan_tipi_gecerli"]],
-                key=lambda x: x["oncelik"]
-            )
-            
-            for ops_tanim in sirali_opsiyonel_mustemilatlar:
-                ops_alan = self._hesapla_mustemilat_alani(ops_tanim, 5, hayvan_tipi)
-                ops_toplam_insaat = ops_tanim.get("toplam_insaat_alan_m2", ops_alan)
-                
-                if ops_alan > 0 and kalan_emsal_opsiyonel_icin >= ops_alan:
-                    yapilar_listesi.append({
-                        "isim": ops_tanim["isim"], 
-                        "taban_alani": ops_alan, 
-                        "toplam_alan": ops_toplam_insaat,
-                        "tip": "opsiyonel_mustemilat"
-                    })
-                    kalan_emsal_opsiyonel_icin -= ops_alan
-            
-            # Final değerleri 5 baş için güncelle
-            final_hayvan_kapasitesi = 5
-            zorunlu_mustemilat_detaylari_final = sorted(zorunlu_mustemilat_detaylari_5bas, 
-                                                      key=lambda x: self.mustemilat_tanimlari.get(x["kod"], {"oncelik": 99}).get("oncelik", 99))
-        
-        # Raporlama için bakıcı evi hakkı durumu (sınırlama sonrası kontrol)
+        # Raporlama için bakıcı evi hakkı durumu
         bakici_evi_hakki_kazanildi_raporlama = final_hayvan_kapasitesi >= bakici_evi_esigi
 
         sonuc_mesaji_str = ""
@@ -527,10 +454,6 @@ class BuyukbasHesaplama:
                 sonuc_mesaji_str = f"TESİS YAPILABİLİR ({final_hayvan_kapasitesi} BAŞ {hayvan_tipi_metni} KAPASİTELİ), BAKICI EVİ HAKKI KAZANILIR ANCAK YAPILAMAZ (Yetersiz emsal veya yapı alanı kriteri sağlanmıyor)"
             else: # bakıcı evi hakkı kazanılmadı
                 sonuc_mesaji_str = f"TESİS YAPILABİLİR ({final_hayvan_kapasitesi} BAŞ {hayvan_tipi_metni} KAPASİTELİ, BAKICI EVİ HAK DOĞMAZ)"
-            
-            # 2025/2 Nolu Planlaması Kurulu Kararı Uyarısı (orijinal kapasiteye göre)
-            if orijinal_hesaplanan_kapasite > 5 and buyuk_ova_alaninda_mi:
-                sonuc_mesaji_str += f" - DİKKAT: Büyük ova alanında mevzuat gereği {orijinal_hesaplanan_kapasite} baştan 5 başa sınırlandırılmıştır!"
         else:
             sonuc_mesaji_str = "TESİS YAPILAMAZ"
             # Açıklama zaten ilk kontrollerde veya iterasyon sonrası 'if final_hayvan_kapasitesi == 0' bloğunda set edilmiş olmalı.
@@ -560,18 +483,6 @@ class BuyukbasHesaplama:
             if arazi_alani_m2 < (emsal + hesaplama_sonucu["gezinti_alani_m2_gerekli"]):
                  hesaplama_sonucu["uyari_gezinti_alani"] = f"Dikkat: {final_hayvan_kapasitesi} baş süt sığırı için gereken {hesaplama_sonucu['gezinti_alani_m2_gerekli']:.2f} m² gezinti alanını karşılamak için toplam arazi büyüklüğü yetersiz olabilir."
 
-        # 2025/2 Nolu Tarımsal Üretim Planlaması Kurulu Kararı Kontrolü (sadece büyük ova alanlarında)
-        if orijinal_hesaplanan_kapasite > 5 and buyuk_ova_alaninda_mi:
-            hesaplama_sonucu["planlamai_kurulu_uyari"] = {
-                "durum": True,
-                "mesaj": "12.06.2025 tarihli ve 2025/2 nolu Tarımsal Üretim Planlaması Kurulu Hayvansal Üretim Planlaması Kararı gereği, süt ve besi planlama bölgesi illeri dışındaki büyük ovalarda yeni büyükbaş işletme kurulumuna izin verilmemektedir. Ancak ailelerin zati ihtiyaçlarının karşılanmasında tüm illerde geçerli olmak üzere büyükbaş hayvancılıkta 5 başa (5 baş dahil) kadar olan işletmeler üretim planlaması kararı dışında tutulmaktadır.",
-                "kritik_seviye": "yuksek",
-                "kapasite_limiti": 5,
-                "orijinal_kapasite": orijinal_hesaplanan_kapasite,
-                "sinirli_kapasite": final_hayvan_kapasitesi,
-                "buyuk_ova_alaninda": True
-            }
-        
         return hesaplama_sonucu
 
 
@@ -692,24 +603,6 @@ def _olustur_html_mesaj_buyukbas(sonuc: dict, baslik_ek: str, emsal_orani: float
         # Sonuç mesajı
         mesaj += f'<div class="basarili"><b>SONUÇ: {sonuc.get("sonuc_mesaji","")}</b></div>'
         
-        # 2025/2 Nolu Tarımsal Üretim Planlaması Kurulu Kararı Uyarısı
-        if sonuc.get("planlamai_kurulu_uyari", {}).get("durum", False):
-            uyari_bilgi = sonuc["planlamai_kurulu_uyari"]
-            mesaj += f'''
-            <div class="hata" style="border-left: 4px solid #dc3545; margin: 15px 0;">
-                <h4 style="color: #721c24; margin-top: 0;">⚠️ ÖNEMLI MEVZUAT UYARISI</h4>
-                <p style="margin-bottom: 10px;"><strong>Orijinal Hesaplanan Kapasite:</strong> {uyari_bilgi["orijinal_kapasite"]} baş</p>
-                <p style="margin-bottom: 10px;"><strong>Sınırlandırılmış Kapasite:</strong> {uyari_bilgi["sinirli_kapasite"]} baş (Limit: {uyari_bilgi["kapasite_limiti"]} baş)</p>
-                <p style="margin-bottom: 10px; font-weight: bold; color: #721c24;">
-                    {uyari_bilgi["mesaj"]}
-                </p>
-                <p style="margin-bottom: 0; font-size: 14px; color: #6c757d;">
-                    <em>Not: Bu hesaplama teknik olarak mümkün olsa da mevzuat gereği kısıtlama bulunmaktadır. 
-                    Lütfen il/ilçe tarım müdürlüğünden güncel mevzuat bilgisi alınız.</em>
-                </p>
-            </div>
-            '''
-        
         if sonuc.get("aciklama") and "Detaylı değerlendirme" not in sonuc.get("aciklama"):
              mesaj += f'<div class="notlar"><b>Açıklama:</b> {sonuc.get("aciklama")}</div>'
 
@@ -770,7 +663,6 @@ def sut_sigiri_degerlendir(arazi_bilgileri: dict, yapi_bilgileri: dict, emsal_or
         "ana_mesaj": html_mesaj,  # decision_logic.py'de kullanım için eklendi
         "kapasite": hesap_sonucu.get("hayvan_kapasitesi", 0),
         "bakici_evi_hakki": hesap_sonucu.get("bakici_evi_hakki", False),
-        "planlamai_kurulu_uyari": hesap_sonucu.get("planlamai_kurulu_uyari"),  # Mevzuat uyarısı eklendi
         # Frontend için arazi bilgilerini ekle
         "arazi_alani_m2": arazi_buyuklugu_m2,
         "arazi_buyuklugu_m2": arazi_buyuklugu_m2,
@@ -829,7 +721,6 @@ def besi_sigiri_degerlendir(arazi_bilgileri: dict, yapi_bilgileri: dict, emsal_o
         "ana_mesaj": html_mesaj,
         "kapasite": hesap_sonucu.get("hayvan_kapasitesi", 0),
         "bakici_evi_hakki": hesap_sonucu.get("bakici_evi_hakki", False),
-        "planlamai_kurulu_uyari": hesap_sonucu.get("planlamai_kurulu_uyari"),  # Mevzuat uyarısı eklendi
         # Frontend için arazi bilgilerini ekle
         "arazi_alani_m2": arazi_buyuklugu_m2,
         "arazi_buyuklugu_m2": arazi_buyuklugu_m2,

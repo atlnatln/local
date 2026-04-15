@@ -1,0 +1,114 @@
+{
+  "slug": "un-degirmeni",
+  "id": 38,
+  "name": "Un Değirmeni",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Un Değirmeni Yapımı | Tarım İmar",
+    "description": "Un değirmeni kurulumu, alan hesaplama ve mevzuat bilgileri. Tarımsal arazilerde un değirmeni yapılaşma koşulları.",
+    "keywords": [
+      "un değirmeni",
+      "değirmen",
+      "tahıl öğütme",
+      "un üretimi"
+    ],
+    "canonical": "/un-degirmeni/"
+  },
+  "hero": {
+    "title": "Un Değirmeni",
+    "subtitle": "Tarımsal amaçlı un değirmeni tesisi kurulumu",
+    "icon": "🌾"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Un değirmeni</strong>, buğday ve diğer tahılların öğütülerek una dönüştürüldüğü tarımsal üretim tesisleridir.</p>",
+    "purpose": "<p>Tarımsal ürünlerin yerinde işlenerek katma değer kazanması amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Tarımsal arazi sahipleri un değirmeni kurabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "Katma Değer",
+      "description": "Tahılın yerinde işlenmesi",
+      "icon": "💰"
+    },
+    {
+      "title": "Taze Ürün",
+      "description": "Taze öğütülmüş un üretimi",
+      "icon": "🍞"
+    },
+    {
+      "title": "Geleneksel",
+      "description": "Taş değirmen ile doğal üretim",
+      "icon": "⚙️"
+    },
+    {
+      "title": "Yerel Ekonomi",
+      "description": "Bölge halkına hizmet",
+      "icon": "🏘️"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "Öğütme ünitesi",
+        "Tahıl depolama silosu",
+        "Paketleme alanı",
+        "Elektrik bağlantısı"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Un Değirmeni Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, değirmen alanınızı hesaplayın",
+    "ctaText": "Değirmen Alanı Hesapla",
+    "ctaLink": "/hesaplama/un-degirmeni"
+  },
+  "faq": [
+    {
+      "question": "Un değirmeni kurmak için ne kadar arazi gerekir?",
+      "answer": "Kapasiteye göre değişir. Hesaplama aracımızı kullanabilirsiniz."
+    },
+    {
+      "question": "Un değirmeni hangi tahılları işleyebilir?",
+      "answer": "Buğday, arpa, çavdar, mısır gibi tahıllar öğütülebilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Hububat Silo",
+      "url": "/hububat-silo",
+      "icon": "📋"
+    },
+    {
+      "title": "Tarımsal Depo",
+      "url": "/tarimsal-depo",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Un Değirmeni Yapımı",
+    "description": "Un değirmeni kurulumu, alan hesaplama ve mevzuat bilgileri. Tarımsal arazilerde un değirmeni yapılaşma koşulları.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

@@ -35,7 +35,8 @@ import {
 export interface TarimsalDepoFormData {
   calculationType: string;
   arazi_vasfi: string;
-  depo_alani: number; // Ana fark: depo alanı gerekli
+  depo_alani: number; // Legacy — kullanılmıyor ama uyumluluk için
+  toplam_arazi_varligi?: number; // İlçe geneli toplam arazi varlığı (m²)
   alan_m2?: number;
   tarla_alani?: number;
   dikili_alani?: number;
@@ -60,19 +61,19 @@ export function validateTarimsalDepoForm(formData: TarimsalDepoFormData): Tarims
   const errors: TarimsalDepoValidationError[] = [];
   const warnings: TarimsalDepoValidationError[] = [];
 
-  // Depo alanı kontrolü (en önemli alan)
-  if (!formData.depo_alani || formData.depo_alani <= 0) {
+  // Toplam arazi varlığı kontrolü (depo hakkı hesabı için zorunlu)
+  if (!formData.toplam_arazi_varligi || formData.toplam_arazi_varligi <= 0) {
     errors.push({
-      field: 'depo_alani',
-      message: 'Depo alanı girilmesi zorunludur ve 0\'dan büyük olmalıdır.',
+      field: 'toplam_arazi_varligi',
+      message: 'İlçe içi toplam arazi varlığı girilmesi zorunludur.',
       severity: 'error'
     });
   }
 
-  if (formData.depo_alani && formData.depo_alani > 50000) {
+  if (formData.toplam_arazi_varligi && formData.toplam_arazi_varligi > 10000000) {
     warnings.push({
-      field: 'depo_alani',
-      message: 'Depo alanı çok büyük görünüyor. Lütfen kontrol ediniz.',
+      field: 'toplam_arazi_varligi',
+      message: 'Toplam arazi varlığı çok büyük görünüyor. Lütfen kontrol ediniz.',
       severity: 'warning'
     });
   }
@@ -189,18 +190,6 @@ export function validateTarimsalDepoForm(formData: TarimsalDepoFormData): Tarims
     });
   }
 
-  // Depo alan oranı kontrolü
-  if (formData.depo_alani && toplamAlan) {
-    const depoOrani = (formData.depo_alani / toplamAlan) * 100;
-    if (depoOrani > 10) {
-      warnings.push({
-        field: 'depo_alani',
-        message: `Depo alanı toplam arazinin %${depoOrani.toFixed(1)}'ini oluşturuyor. Bu oran yüksek olabilir.`,
-        severity: 'warning'
-      });
-    }
-  }
-
   return {
     isValid: errors.length === 0,
     errors,
@@ -210,7 +199,8 @@ export function validateTarimsalDepoForm(formData: TarimsalDepoFormData): Tarims
 }
 
 /**
- * Tarımsal depo yeterlilik hesaplaması - Bağ evi mantığına benzer ama depo alanı ile
+ * Tarımsal depo yeterlilik hesaplaması — Talimat Madde 7.1
+ * %1 = depo yapma HAKKI (toplam arazi varlığına göre). Emsal DEĞİL.
  */
 export function calculateTarimsalDepoYeterlilik(formData: TarimsalDepoFormData): YeterlilikSonucu {
   const araziVasfi = formData.arazi_vasfi;
@@ -218,7 +208,7 @@ export function calculateTarimsalDepoYeterlilik(formData: TarimsalDepoFormData):
   let dikiliAlan = 0;
   let tarlaAlan = 0;
 
-  // Alan hesaplamaları
+  // Parsel alan hesaplamaları
   switch (araziVasfi) {
     case 'Ham toprak, taşlık, kıraç, palamutluk, koruluk gibi diğer vasıflı':
     case 'Tarla':
@@ -255,31 +245,15 @@ export function calculateTarimsalDepoYeterlilik(formData: TarimsalDepoFormData):
       break;
   }
 
-  // Emsal hesaplamaları (bağ evi mantığı)
-  let emsalOrani = 0;
-  const depoAlani = formData.depo_alani || 0;
-
-  if (araziVasfi === 'Ham toprak, taşlık, kıraç, palamutluk, koruluk gibi diğer vasıflı') {
-    emsalOrani = 0.01; // %1
-  } else if (araziVasfi === 'Tarla' || araziVasfi === 'Sera') {
-    emsalOrani = 0.02; // %2
-  } else if (araziVasfi.includes('Dikili') || araziVasfi.includes('Zeytin')) {
-    emsalOrani = 0.05; // %5
-  } else {
-    // Karma araziler için ağırlıklı ortalama
-    const tarlaEmsal = (tarlaAlan / toplamAlan) * 0.02;
-    const dikiliEmsal = (dikiliAlan / toplamAlan) * 0.05;
-    emsalOrani = tarlaEmsal + dikiliEmsal;
-  }
-
-  const izinVerilenMaksAlan = toplamAlan * emsalOrani;
-  const yeterli = depoAlani <= izinVerilenMaksAlan;
-  const oran = toplamAlan > 0 ? (depoAlani / toplamAlan) * 100 : 0;
+  // Depo hakkı hesabı: toplam arazi varlığının %1'i
+  const toplamAraziVarligi = formData.toplam_arazi_varligi || 0;
+  const depoHakkiM2 = toplamAraziVarligi * 0.01;
+  const yeterli = toplamAlan >= 1000 && toplamAraziVarligi > 0;
 
   return {
     yeterli,
-    oran,
-    minimumOran: emsalOrani * 100,
+    oran: toplamAraziVarligi > 0 ? 1 : 0, // %1 sabit hak oranı
+    minimumOran: 1, // %1
     dikiliAlanYeterli: toplamAlan >= 1000
   };
 }
@@ -303,21 +277,18 @@ export function calculateTarimsalDepoWithMessage(formData: TarimsalDepoFormData)
   }
 
   const yeterlilik = calculateTarimsalDepoYeterlilik(formData);
-  const depoAlani = formData.depo_alani || 0;
+  const toplamAraziVarligi = formData.toplam_arazi_varligi || 0;
+  const depoHakkiM2 = toplamAraziVarligi * 0.01;
 
   let message = '';
   let type: 'success' | 'error' = 'success';
 
   if (yeterlilik.yeterli) {
-    const kalanAlan = ((yeterlilik.minimumOran / 100) * (formData.alan_m2 || 0)) - depoAlani;
-    message = `✅ Tarımsal depo yapımına izin verilir. ${depoAlani} m² depo alanı mevzuata uygundur. `;
-    if (kalanAlan > 0) {
-      message += `${kalanAlan.toFixed(0)} m² daha yapı alanı hakkınız bulunmaktadır.`;
-    }
+    message = `✅ Toplam arazi varlığınız: ${toplamAraziVarligi.toLocaleString('tr-TR')} m². `;
+    message += `Depo yapma hakkınız (%1): ${depoHakkiM2.toLocaleString('tr-TR', { maximumFractionDigits: 1 })} m². `;
+    message += `Fiili yapım alanı belediye plan notlarındaki emsal oranına göre belirlenir.`;
   } else {
-    const fazlaAlan = depoAlani - ((yeterlilik.minimumOran / 100) * (formData.alan_m2 || 0));
-    message = `❌ Tarımsal depo yapımına izin verilemez. ${depoAlani} m² depo alanı mevzuata uygun değil. `;
-    message += `${fazlaAlan.toFixed(0)} m² fazla alan bulunmaktadır.`;
+    message = `❌ Parsel minimum alan şartını karşılamıyor veya toplam arazi varlığı bilgisi eksik.`;
     type = 'error';
   }
 

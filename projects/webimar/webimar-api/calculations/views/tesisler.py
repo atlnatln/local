@@ -220,6 +220,7 @@ def calculate_tarimsal_amacli_depo(request):
     # Request verilerini al
     alan_m2 = request.data.get('alan_m2') or request.data.get('alan', 0)
     arazi_vasfi = request.data.get('arazi_vasfi', 'Tarla')  # Varsayılan Tarla
+    toplam_arazi_varligi = request.data.get('toplam_arazi_varligi', 0)  # İlçe geneli toplam arazi
     
     # MD dokümantasyonu için alan kontrolü - Arazi vasfına göre esnek kontrol
     alan_mevcut = False
@@ -256,6 +257,7 @@ def calculate_tarimsal_amacli_depo(request):
         "buyukluk_m2": toplam_alan,
         "ana_vasif": arazi_vasfi,
         "buyuk_ova_icinde": location_info.get('buyuk_ova_icerisinde', False) if location_info else False,
+        "toplam_arazi_varligi": float(toplam_arazi_varligi) if toplam_arazi_varligi else 0,
         # Tüm form verilerini aktar
         "alan_m2": request.data.get('alan_m2', toplam_alan),
         "tarla_alani": request.data.get('tarla_alani', 0),

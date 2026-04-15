@@ -1,0 +1,35 @@
+{
+  "_comment": "MathLock Play - Play Console Mağaza Girişi bilgileri.",
+
+  "appId": "4973430330190022574",
+  "defaultLanguage": "tr-TR",
+
+  "storeListing": {
+    "tr-TR": {
+      "title": "MathLock Play",
+      "shortDescription": "",
+      "fullDescription": ""
+    },
+    "en-US": {
+      "title": "MathLock Play",
+      "shortDescription": "",
+      "fullDescription": ""
+    }
+  },
+
+  "contact": {
+    "email": "",
+    "website": "",
+    "phone": ""
+  },
+
+  "assets": {
+    "icon": "assets/icon/icon.png",
+    "featureGraphic": "assets/feature-graphic/feature-graphic.png",
+    "screenshots": {
+      "phone": "assets/screenshots/phone/",
+      "tablet7inch": "assets/screenshots/tablet-7inch/",
+      "tablet10inch": "assets/screenshots/tablet-10inch/"
+    }
+  }
+}

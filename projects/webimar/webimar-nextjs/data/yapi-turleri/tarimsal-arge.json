@@ -1,0 +1,115 @@
+{
+  "slug": "tarimsal-arge",
+  "id": 43,
+  "name": "Tarımsal AR-GE Tesisi",
+  "category": "Özel Üretim Tesisleri",
+  "seo": {
+    "title": "Tarımsal AR-GE Tesisi Nasıl Kurulur? | Tarım İmar",
+    "description": "Tarımsal AR-GE tesisi kurulumu, alan hesaplama ve mevzuat bilgileri. Tarımsal araştırma-geliştirme tesisi yapılaşma koşulları.",
+    "keywords": [
+      "tarımsal AR-GE",
+      "araştırma geliştirme",
+      "tarımsal araştırma",
+      "tarım AR-GE tesisi"
+    ],
+    "canonical": "/tarimsal-arge/"
+  },
+  "hero": {
+    "title": "Tarımsal AR-GE Tesisi",
+    "subtitle": "Tarımsal araştırma ve geliştirme tesisi kurulumu",
+    "icon": "🔬"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Tarımsal AR-GE tesisi</strong>, tarımsal üretim yöntemlerinin geliştirilmesi, yeni çeşitlerin denenmesi ve tarımsal inovasyonun sağlanması amacıyla kurulan tesislerdir.</p>",
+    "purpose": "<p>Tarımsal verimliliğin artırılması ve sürdürülebilir tarım yöntemlerinin geliştirilmesi amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Üniversiteler, araştırma kuruluşları, kooperatifler ve tarımsal işletmeler kurabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "İnovasyon",
+      "description": "Yeni tarım teknikleri geliştirme",
+      "icon": "💡"
+    },
+    {
+      "title": "Çeşit Geliştirme",
+      "description": "Yeni bitki ve hayvan çeşitleri",
+      "icon": "🧬"
+    },
+    {
+      "title": "Verimlilik",
+      "description": "Tarımsal verimliliği artırma",
+      "icon": "📈"
+    },
+    {
+      "title": "Sürdürülebilirlik",
+      "description": "Çevre dostu üretim yöntemleri",
+      "icon": "♻️"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir",
+        "Araştırma izinleri gerekli olabilir"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "Laboratuvar alanı",
+        "Deneme parselleri",
+        "Sera veya örtüaltı alan",
+        "Veri toplama ve izleme sistemleri"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "AR-GE Tesisi Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, AR-GE tesisi alanınızı hesaplayın",
+    "ctaText": "AR-GE Tesisi Hesapla",
+    "ctaLink": "/hesaplama/tarimsal-arge"
+  },
+  "faq": [
+    {
+      "question": "Tarımsal AR-GE tesisi için ne kadar arazi gerekir?",
+      "answer": "Araştırma türüne ve kapasiteye göre değişir."
+    },
+    {
+      "question": "AR-GE tesisi kimler kurabilir?",
+      "answer": "Üniversiteler, araştırma kuruluşları, kooperatifler ve tarımsal işletmeler kurabilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Sera Hesaplama",
+      "url": "/sera",
+      "icon": "📋"
+    },
+    {
+      "title": "Fide Üretim Tesisi",
+      "url": "/fide-uretim",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Tarımsal AR-GE Tesisi Nasıl Kurulur?",
+    "description": "Tarımsal AR-GE tesisi kurulumu, alan hesaplama ve mevzuat bilgileri. Tarımsal araştırma-geliştirme tesisi yapılaşma koşulları.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

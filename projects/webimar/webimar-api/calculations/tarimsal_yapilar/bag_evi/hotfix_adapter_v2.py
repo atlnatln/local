@@ -37,11 +37,11 @@ def calculate_bag_evi_fixed(
         
         # Bug fix artık gerekli değil - clean core doğru field mapping kullanıyor
         # Field mapping bug: alan_m2 = 0 okuyor ama tarla_alani veya buyukluk_m2 doğru
-        if (tarla_alani >= 20000 or buyukluk_m2 >= 20000) and result['izin_durumu'] == 'izin_verilemez':
+        if (tarla_alani >= 50000 or buyukluk_m2 >= 50000) and result['izin_durumu'] == 'izin_verilemez':
             logger.warning("🔧 HOTFIX: Legacy bug still occurred, fixing...")
             result['izin_durumu'] = 'izin_verilebilir_varsayimsal'
             result['hotfix_applied'] = True
-        elif buyukluk_m2 >= 20000 and result['izin_durumu'].startswith('izin_verilebilir'):
+        elif buyukluk_m2 >= 50000 and result['izin_durumu'].startswith('izin_verilebilir'):
             logger.info("✅ CLEAN CORE: No hotfix needed - working correctly!")
             result['clean_core_working'] = True
     

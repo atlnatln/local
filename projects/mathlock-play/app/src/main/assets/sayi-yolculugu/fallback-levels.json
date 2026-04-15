@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "generatedAt": "2026-04-12T10:00:00Z",
+  "generatedBy": "manual",
+  "ageGroup": "7-8",
+  "difficultyProfile": {
+    "overall": "beginner",
+    "avgDifficulty": 1.5,
+    "adjustmentReason": "İlk set. Temel x/y hareketi, z değişimi ve basit operasyonlarla tanıştırma."
+  },
+  "levels": [
+    {
+      "id": 1, "title": "İlk Adım", "desc": "Sayıyı sağa taşı!",
+      "difficulty": 1, "cols": 3, "rows": 1,
+      "startX": 0, "startY": 0, "startVal": 3,
+      "targetX": 2, "targetY": 0, "targetVal": null,
+      "walls": [], "ops": [],
+      "commands": ["x+"], "maxCmds": 4, "stars": [2, 3]
+    },
+    {
+      "id": 2, "title": "Aşağı İn", "desc": "Sayıyı aşağı götür!",
+      "difficulty": 1, "cols": 1, "rows": 3,
+      "startX": 0, "startY": 0, "startVal": 5,
+      "targetX": 0, "targetY": 2, "targetVal": null,
+      "walls": [], "ops": [],
+      "commands": ["y+"], "maxCmds": 4, "stars": [2, 3]
+    },
+    {
+      "id": 3, "title": "Köşeye Git", "desc": "Sağ alta ulaş!",
+      "difficulty": 1, "cols": 3, "rows": 3,
+      "startX": 0, "startY": 0, "startVal": 7,
+      "targetX": 2, "targetY": 2, "targetVal": null,
+      "walls": [], "ops": [],
+      "commands": ["x+", "y+"], "maxCmds": 6, "stars": [4, 5]
+    },
+    {
+      "id": 4, "title": "Geri Dön", "desc": "Sola doğru ilerle!",
+      "difficulty": 1, "cols": 4, "rows": 1,
+      "startX": 3, "startY": 0, "startVal": 9,
+      "targetX": 0, "targetY": 0, "targetVal": null,
+      "walls": [], "ops": [],
+      "commands": ["x-"], "maxCmds": 5, "stars": [3, 4]
+    },
+    {
+      "id": 5, "title": "Dört Yön", "desc": "Her yöne gidebilirsin!",
+      "difficulty": 1, "cols": 3, "rows": 3,
+      "startX": 2, "startY": 0, "startVal": 4,
+      "targetX": 0, "targetY": 2, "targetVal": null,
+      "walls": [], "ops": [],
+      "commands": ["x+", "x-", "y+", "y-"], "maxCmds": 6, "stars": [4, 5]
+    },
+    {
+      "id": 6, "title": "İlk Duvar", "desc": "Duvarın etrafından dolaş!",
+      "difficulty": 2, "cols": 3, "rows": 3,
+      "startX": 0, "startY": 0, "startVal": 6,
+      "targetX": 2, "targetY": 0, "targetVal": null,
+      "walls": [[1, 0]], "ops": [],
+      "commands": ["x+", "x-", "y+", "y-"], "maxCmds": 6, "stars": [4, 5]
+    },
+    {
+      "id": 7, "title": "Değer Değiştir", "desc": "Sayını 5 yap ve hedefe git!",
+      "difficulty": 2, "cols": 3, "rows": 1,
+      "startX": 0, "startY": 0, "startVal": 3,
+      "targetX": 2, "targetY": 0, "targetVal": 5,
+      "walls": [], "ops": [],
+      "commands": ["x+", "z+", "z-"], "maxCmds": 6, "stars": [4, 5]
+    },
+    {
+      "id": 8, "title": "Toplama Yolu", "desc": "Sayını büyüterek ilerle!",
+      "difficulty": 2, "cols": 4, "rows": 1,
+      "startX": 0, "startY": 0, "startVal": 1,
+      "targetX": 3, "targetY": 0, "targetVal": 4,
+      "walls": [], "ops": [],
+      "commands": ["x+", "z+"], "maxCmds": 8, "stars": [6, 7]
+    },
+    {
+      "id": 9, "title": "Duvar Labirenti", "desc": "Duvarlardan kaçarak ilerle!",
+      "difficulty": 2, "cols": 4, "rows": 3,
+      "startX": 0, "startY": 0, "startVal": 8,
+      "targetX": 3, "targetY": 2, "targetVal": null,
+      "walls": [[1, 0], [2, 1]], "ops": [],
+      "commands": ["x+", "x-", "y+", "y-"], "maxCmds": 8, "stars": [5, 7]
+    },
+    {
+      "id": 10, "title": "Toplama Hücresi", "desc": "Özel hücreden geç, sayın artsın!",
+      "difficulty": 3, "cols": 4, "rows": 3,
+      "startX": 0, "startY": 0, "startVal": 2,
+      "targetX": 3, "targetY": 2, "targetVal": 5,
+      "walls": [[1, 1]], "ops": [{"x": 2, "y": 0, "type": "+", "val": 3}],
+      "commands": ["x+", "x-", "y+", "y-"], "maxCmds": 8, "stars": [5, 7]
+    },
+    {
+      "id": 11, "title": "Karma Bulmaca", "desc": "Hem taşı hem değerini ayarla!",
+      "difficulty": 3, "cols": 4, "rows": 4,
+      "startX": 0, "startY": 0, "startVal": 2,
+      "targetX": 3, "targetY": 3, "targetVal": 6,
+      "walls": [[1, 1], [2, 2]], "ops": [{"x": 1, "y": 0, "type": "+", "val": 2}],
+      "commands": ["x+", "x-", "y+", "y-", "z+", "z-"], "maxCmds": 12, "stars": [8, 10]
+    },
+    {
+      "id": 12, "title": "Büyük Macera", "desc": "Tüm becerilerin burada!",
+      "difficulty": 2, "cols": 4, "rows": 4,
+      "startX": 0, "startY": 0, "startVal": 3,
+      "targetX": 3, "targetY": 3, "targetVal": null,
+      "walls": [[2, 0], [0, 2]], "ops": [],
+      "commands": ["x+", "x-", "y+", "y-"], "maxCmds": 10, "stars": [6, 8]
+    }
+  ]
+}

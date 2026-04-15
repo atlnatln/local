@@ -20,6 +20,8 @@ services:
       - /home/akn/vps/projects/mathlock/dist:/var/www/mathlock/dist:ro
       # MathLock Data: questions.json, topics.json, stats.json
       - /home/akn/vps/projects/mathlock/data:/var/www/mathlock/data
+      # MathLock Play: Website (landing, privacy, support)
+      - /home/akn/vps/projects/mathlock-play/website:/var/www/mathlock/website:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/nginx-health"]

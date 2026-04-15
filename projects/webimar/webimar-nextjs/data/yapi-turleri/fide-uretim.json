@@ -1,0 +1,116 @@
+{
+  "slug": "fide-uretim",
+  "id": 29,
+  "name": "Fide Üretim Tesisi",
+  "category": "Özel Üretim Tesisleri",
+  "seo": {
+    "title": "Fide Üretim Tesisi Nasıl Kurulur? | Tarım İmar",
+    "description": "Fide üretim tesisi kurulumu, alan hesaplama ve mevzuat bilgileri. Tarımsal arazilerde fide üretim tesisi yapılaşma koşulları.",
+    "keywords": [
+      "fide üretim",
+      "fide tesisi",
+      "fide yetiştirme",
+      "tarımsal fide",
+      "fide üretim tesisi"
+    ],
+    "canonical": "/fide-uretim/"
+  },
+  "hero": {
+    "title": "Fide Üretim Tesisi",
+    "subtitle": "Tarımsal fide üretimi için tesis kurulumu ve alan hesaplaması",
+    "icon": "🌿"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Fide üretim tesisi</strong>, tarımsal üretimde kullanılacak fidelerin profesyonel ortamda yetiştirildiği tesislerdir.</p>",
+    "purpose": "<p>Kaliteli ve sertifikalı fide üretimi ile tarımsal verimliliğin artırılması amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Tarımsal arazi sahipleri, kooperatifler ve tarımsal işletmeler fide üretim tesisi kurabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "Kontrollü Üretim",
+      "description": "Seralarda kontrollü ortamda fide üretimi",
+      "icon": "🌱"
+    },
+    {
+      "title": "Yüksek Verim",
+      "description": "Profesyonel üretim ile yüksek tutma oranı",
+      "icon": "📈"
+    },
+    {
+      "title": "Sertifikalı Üretim",
+      "description": "Bakanlık onaylı sertifikalı fide üretimi",
+      "icon": "📋"
+    },
+    {
+      "title": "Çeşitlilik",
+      "description": "Sebze, meyve ve süs bitkileri fideleri",
+      "icon": "🌺"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir",
+        "İlgili mevzuata uygun üretim yapılmalıdır"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "Sera veya örtüaltı üretim alanı",
+        "Fide yetiştirme tezgahları",
+        "Sulama ve havalandırma sistemi",
+        "Depolama alanı"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Fide Üretim Tesisi Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, fide üretim tesisi alanınızı hesaplayın",
+    "ctaText": "Fide Üretim Tesisi Hesapla",
+    "ctaLink": "/hesaplama/fide-uretim"
+  },
+  "faq": [
+    {
+      "question": "Fide üretim tesisi için ne kadar arazi gerekir?",
+      "answer": "Arazi büyüklüğü üretim kapasitesine göre değişir. Mevzuata uygun alan hesaplaması için hesaplama aracımızı kullanabilirsiniz."
+    },
+    {
+      "question": "Fide üretim tesisi hangi arazilerde kurulabilir?",
+      "answer": "Tarımsal arazilerde mevzuata uygun olarak kurulabilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Sera Hesaplama",
+      "url": "/sera",
+      "icon": "📋"
+    },
+    {
+      "title": "Fidan Üretim Tesisi",
+      "url": "/fidan-uretim",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Fide Üretim Tesisi Nasıl Kurulur?",
+    "description": "Fide üretim tesisi kurulumu, alan hesaplama ve mevzuat bilgileri. Tarımsal arazilerde fide üretim tesisi yapılaşma koşulları.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

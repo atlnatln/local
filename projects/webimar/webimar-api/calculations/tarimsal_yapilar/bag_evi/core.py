@@ -34,6 +34,17 @@ def bag_evi_universal_degerlendir(
     logger.debug("🏠 bag_evi_var_mi: %s", bag_evi_var_mi)
     logger.debug("🗺️ manuel_kontrol_sonucu: %s", manuel_kontrol_sonucu)
     
+    # Aynı ilçede mevcut bağ evi kontrolü
+    if bag_evi_var_mi:
+        return {
+            'success': False,
+            'izin_durumu': 'izin_verilemez',
+            'alan_detaylari': {},
+            'agac_detaylari': {},
+            'detay_mesaji': "Tarım Arazilerinde Yapılaşma Şartları Genelgesi'ne göre, her aile için aynı ilçe sınırları içerisinde sadece bir adet bağ evi izni verilebilir.",
+            'ana_mesaj': "Tarım Arazilerinde Yapılaşma Şartları Genelgesi'ne göre, her aile için aynı ilçe sınırları içerisinde sadece bir adet bağ evi izni verilebilir."
+        }
+
     # Arazi vasfını al
     arazi_vasfi = arazi_bilgileri.get('ana_vasif', arazi_bilgileri.get('arazi_tipi', 'dikili_vasifli'))
     print(f"🔍 DEBUG - RAW arazi_vasfi from data: '{arazi_vasfi}'")
@@ -107,8 +118,11 @@ def bag_evi_universal_degerlendir(
         # Dikili validasyon OK + Manuel kontrol var
         # Manuel kontrol sonucu dict ise dikili validasyon sonucuna göre karar ver
         if isinstance(manuel_kontrol_sonucu, dict):
+            # Alan kontrolü her zaman önce değerlendirilir — hiçbir manuel onay bunu geçersiz kılamaz
+            if not alan_kontrol_sonucu['yeterli']:
+                manuel_kontrol_normalized = 'IZIN_VERILEMEZ'
             # Dict formatında eklenenAgaclar varsa ve dikili validasyon başarılıysa başarılı
-            if dikili_validasyon_sonucu and dikili_validasyon_sonucu.get('gecerli', False):
+            elif dikili_validasyon_sonucu and dikili_validasyon_sonucu.get('gecerli', False):
                 manuel_kontrol_normalized = 'IZIN_VERILEBILIR'
             elif manuel_kontrol_sonucu.get('type') == 'success':
                 manuel_kontrol_normalized = 'IZIN_VERILEBILIR'
@@ -334,9 +348,11 @@ def _universal_alan_kontrolleri(arazi_bilgileri: Dict[str, Any], config: Dict[st
 
 def _universal_mevcut_yapi_kontrolleri(yapi_bilgileri: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, Any]:
     """Mevcut yapı kontrolü - tüm arazi tipleri için"""
+    if not yapi_bilgileri:
+        yapi_bilgileri = {}
     
     mevcut_yapi_alani = float(yapi_bilgileri.get('mevcut_yapi_alani', 0))
-    max_taban_alani = config.get('max_taban_alani', 75)  # Default 75m²
+    max_taban_alani = config.get('max_taban_alani', 30)  # Default 30m² (2025 güncellemesi)
     
     yapi_yeterli = mevcut_yapi_alani <= max_taban_alani
     

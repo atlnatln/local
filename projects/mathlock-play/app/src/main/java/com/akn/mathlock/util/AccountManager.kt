@@ -127,9 +127,16 @@ class AccountManager(private val context: Context) {
             conn.disconnect()
 
             if (code in 200..299) {
-                prefs.edit().putString(KEY_EMAIL, email.trim().lowercase()).apply()
-                Log.d(TAG, "Email kaydedildi: $email")
-                RegisterEmailResult.Success
+                val response = try { JSONObject(responseText) } catch (_: Exception) { JSONObject() }
+                val recovered = response.optBoolean("recovered", false)
+                val credits = response.optInt("credits", -1)
+                prefs.edit().apply {
+                    putString(KEY_EMAIL, email.trim().lowercase())
+                    if (credits >= 0) putInt(KEY_CREDITS, credits)
+                }.apply()
+                Log.d(TAG, "Email kaydedildi: $email, recovered=$recovered, credits=$credits")
+                if (recovered) RegisterEmailResult.Recovered(credits)
+                else RegisterEmailResult.Success
             } else {
                 val error = try {
                     JSONObject(responseText).optString("error", "Kayıt başarısız")
@@ -183,6 +190,7 @@ class AccountManager(private val context: Context) {
 
     sealed class RegisterEmailResult {
         object Success : RegisterEmailResult()
+        data class Recovered(val credits: Int) : RegisterEmailResult()
         data class Error(val message: String) : RegisterEmailResult()
     }
 }

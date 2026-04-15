@@ -91,6 +91,22 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Pratik modu: çocuk bulmaca oynar
+        binding.cardPracticePuzzle.setOnClickListener {
+            val intent = Intent(this, SayiYolculuguActivity::class.java).apply {
+                putExtra("practice_mode", true)
+            }
+            startActivity(intent)
+        }
+
+        // Pratik modu: çocuk kodlama oynuyor
+        binding.cardPracticeRobotopia.setOnClickListener {
+            val intent = Intent(this, RobotopiaActivity::class.java).apply {
+                putExtra("practice_mode", true)
+            }
+            startActivity(intent)
+        }
+
         // Gizli ebeveyn girişi: logoya 5 kez hızlı tıklama (yedek)
         binding.tvLogo.setOnClickListener {
             val now = SystemClock.elapsedRealtime()

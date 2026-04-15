@@ -37,8 +37,9 @@ export interface DetailedCalculationInput extends BaseCalculationInput {
   zeytinlik_alani?: number; // Tarla + Zeytinlik arazi tipi için
   zeytin_agac_sayisi?: number; // Zeytin ağaçlı + tarla arazi tipi için (zeytin ağacı sayısı)
   
-  // Tarımsal depo için özel alan
-  depo_alani?: number; // Tarımsal depo taban alanı
+  // Tarımsal depo için özel alanlar
+  depo_alani?: number; // Tarımsal depo taban alanı (legacy)
+  toplam_arazi_varligi?: number; // İlçe içi toplam arazi varlığı (m²) — depo hakkı hesabı için
   
   // "… Adetli Zeytin Ağacı bulunan tarla" arazi tipi için özel alanlar
   tapu_zeytin_agac_adedi?: number; // Tapu senesinde yazılan zeytin ağacı sayısı
@@ -137,7 +138,24 @@ export type StructureType =
   | 'hara'                      // ID: 24 - "Hara (at üretimi/yetiştiriciliği tesisi)"
   | 'ipek-bocekciligi'          // ID: 25 - "İpek böcekçiliği tesisi"
   | 'evcil-hayvan'              // ID: 26 - "Evcil hayvan ve bilimsel araştırma hayvanı üretim tesisi"
-  | 'besi-sigirciligi';         // ID: 27 - "Besi Sığırcılığı Tesisi"
+  | 'besi-sigirciligi'           // ID: 27 - "Besi Sığırcılığı Tesisi"
+
+  // 2025 Yeni Yapılar - ID: 29-43
+  | 'fide-uretim'               // ID: 29 - "Fide üretim tesisi"
+  | 'fidan-uretim'              // ID: 30 - "Fidan üretim tesisi"
+  | 'sahipsiz-hayvan'           // ID: 31 - "Sahipsiz hayvan barınağı"
+  | 'sundurma'                  // ID: 32 - "Sundurma"
+  | 'ciftlik-atolyesi'          // ID: 33 - "Çiftlik atölyesi"
+  | 'su-urunleri'               // ID: 34 - "Su ürünleri üretim tesisi"
+  | 'deve-kusu'                 // ID: 35 - "Deve kuşu üretim tesisi"
+  | 'gubre-deposu'              // ID: 36 - "Gübre deposu"
+  | 'mandira'                   // ID: 37 - "Mandıra"
+  | 'un-degirmeni'              // ID: 38 - "Un değirmeni"
+  | 'teleferik'                 // ID: 39 - "Tarımsal amaçlı teleferik"
+  | 'golet'                     // ID: 40 - "Hayvan içme suyu göleti"
+  | 'islim'                     // ID: 41 - "İslim ünitesi"
+  | 'muz-sarartma'              // ID: 42 - "Muz sarartma ünitesi"
+  | 'tarimsal-arge';            // ID: 43 - "Tarımsal AR-GE tesisi"
 
 // Backend constants.py ile uyumlu ID mapping (1-27) - YAPI_TURU_ID_MAPPING ile tam uyum
 export const STRUCTURE_TYPE_MAPPING: Record<number, StructureType> = {
@@ -167,7 +185,23 @@ export const STRUCTURE_TYPE_MAPPING: Record<number, StructureType> = {
   25: 'ipek-bocekciligi',
   26: 'evcil-hayvan',
   27: 'besi-sigirciligi',
-  28: 'zeytinyagi-uretim-tesisi'
+  28: 'zeytinyagi-uretim-tesisi',
+  // 2025 Yeni Yapılar
+  29: 'fide-uretim',
+  30: 'fidan-uretim',
+  31: 'sahipsiz-hayvan',
+  32: 'sundurma',
+  33: 'ciftlik-atolyesi',
+  34: 'su-urunleri',
+  35: 'deve-kusu',
+  36: 'gubre-deposu',
+  37: 'mandira',
+  38: 'un-degirmeni',
+  39: 'teleferik',
+  40: 'golet',
+  41: 'islim',
+  42: 'muz-sarartma',
+  43: 'tarimsal-arge'
 };
 
 // Ters mapping - frontend type'dan backend ID'ye

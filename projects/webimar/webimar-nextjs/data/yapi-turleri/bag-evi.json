@@ -42,7 +42,7 @@
     },
     {
       "title": "Belirli Alan Sınırları",
-      "description": "Maksimum 75 m² taban alanı, 150 m² toplam inşaat alanı ile sınırlı, doğaya saygılı yapılaşma",
+      "description": "Maksimum 30 m² taban alanı, 60 m² toplam inşaat alanı (2 katlı) ile sınırlı, doğaya saygılı yapılaşma",
       "icon": "📐"
     },
     {
@@ -53,32 +53,33 @@
   ],
   "requirements": {
     "legal": {
-      "minArea": 5000,
-      "minAreaUnit": "m² (0,5 hektar - dikili alan)",
-      "maxFloorArea": 75,
-      "maxBuildingArea": 150,
+      "minArea": 10000,
+      "minAreaUnit": "m² (1 hektar - dikili alan)",
+      "maxFloorArea": 30,
+      "maxBuildingArea": 60,
       "restrictions": [
         "Kiralanan arazilere kiracılar tarafından bağ evi talebi yapılamaz",
-        "Her aile için aynı ilçe sınırları içerisinde sadece bir adet bağ evi izni verilebilir",
+        "Her bir aile için aynı ilçe sınırları içerisinde sadece bir adet bağ evi izni verilebilir",
+        "Her bir parsel üzerinde sadece bir tane bağ evi yapılmasına izin verilebilir",
         "Parselin hisseli olması durumunda diğer hissedarlardan muvafakatname alınması zorunludur",
-        "Parsel üzerinde bina tespit edilmesi durumunda izin verilmez",
+        "Parsel üzerinde bina tespit edilmesi durumunda gereğinin yapılması için il müdürlüğüne gönderilir",
         "Zeytinlik vasıflı arazilerde bağ evi yapılamaz (Zeytinciliğin Islahı Kanunu)"
       ],
       "genelge": [
-        "Yüzölçümü 2 hektar (20.000 m²) ve üzeri olan mutlak, özel ürün ve marjinal tarım arazisi",
-        "Yüzölçümü 0,5 hektar (5.000 m²) ve üzeri olan dikili tarım arazisi",
+        "Yüzölçümü 5 hektar (50.000 m²) ve üzeri olan mutlak, özel ürün ve marjinal tarım arazisi",
+        "Yüzölçümü 1 hektar (10.000 m²) ve üzeri olan dikili tarım arazisi",
         "0,3 hektar (3.000 m²) ve üzeri örtüaltı tarım arazisi",
-        "Taban alanı: En fazla 75 metrekare",
-        "Toplam inşaat alanı: En fazla 150 metrekare",
-        "Alt katı tarımsal amaçlı depo üstü bağ evi taleplerinde, parsel büyüklüğünün asgari tarımsal arazi büyüklüğünde olması şartıyla, toplam arazi varlığının %1'i kadar tarımsal amaçlı depo üstü 75 metrekare bağ evi yapılabilir",
+        "Taban alanı: En fazla 30 metrekare (2 katlı yapı)",
+        "Toplam inşaat alanı: En fazla 60 metrekare",
+        "Her bir parsel üzerinde sadece bir tane bağ evi yapılmasına izin verilebilir",
         "Dikili veya örtü altı tarım arazisinin hâlihazır kullanımı tespit edilir"
       ],
       "specialConditions": [
-        "Mutlak tarım arazisi için minimum 2 hektar (20.000 m²)",
-        "Dikili tarım arazisi için minimum 0,5 hektar (5.000 m²)",
+        "Mutlak tarım arazisi için minimum 5 hektar (50.000 m²)",
+        "Dikili tarım arazisi için minimum 1 hektar (10.000 m²)",
         "Örtüaltı tarım arazisi için minimum 0,3 hektar (3.000 m²)",
-        "Özel ürün arazisi için minimum 2 hektar (20.000 m²)",
-        "Marjinal tarım arazisi için minimum 2 hektar (20.000 m²)"
+        "Özel ürün arazisi için minimum 5 hektar (50.000 m²)",
+        "Marjinal tarım arazisi için minimum 5 hektar (50.000 m²)"
       ]
     }
   },
@@ -91,7 +92,7 @@
   "faq": [
     {
       "question": "En az kaç dekarda bağ evi yapılır?",
-      "answer": "Dikili tarım arazisi için minimum 5 dekar (0,5 hektar), mutlak tarım arazisi için minimum 20 dekar (2 hektar), örtüaltı tarım için minimum 3 dekar (0,3 hektar) gereklidir."
+      "answer": "Dikili tarım arazisi için minimum 10 dekar (1 hektar), mutlak/özel ürün/marjinal tarım arazisi için minimum 50 dekar (5 hektar), örtüaltı tarım için minimum 3 dekar (0,3 hektar) gereklidir."
     },
     {
       "question": "Kiralık araziye bağ evi yapılabilir mi?",
@@ -107,7 +108,7 @@
     },
     {
       "question": "Bağ evi kaç katlı olabilir?",
-      "answer": "Bağ evi maksimum 2 katlı olabilir (zemin + 1. kat). Toplam inşaat alanı 150 m²'yi, taban alanı 75 m²'yi geçemez."
+      "answer": "Bağ evi maksimum 2 katlı olabilir (zemin + 1. kat). Taban alanı en fazla 30 m², toplam inşaat alanı en fazla 60 m² olabilir."
     },
     {
       "question": "Hisseli parselde bağ evi yapılabilir mi?",
@@ -115,11 +116,11 @@
     },
     {
       "question": "Tarla + dikili vasıflı arazide bağ evi için hangi alan dikkate alınır?",
-      "answer": "Bu durumda ya dikili alan minimum 5.000 m² olmalı ya da tarla alanı minimum 20.000 m² olmalıdır. İkisinden biri yeterlidir."
+      "answer": "Bu durumda dikili alan minimum 10.000 m² (1 hektar) ya da tarla/mutlak arazi minimum 50.000 m² (5 hektar) olmalıdır. İkisinden biri yeterlidir."
     },
     {
       "question": "Bağ evi altında tarımsal depo yapılabilir mi?",
-      "answer": "Evet, parsel büyüklüğünün asgari tarımsal arazi büyüklüğünde olması şartıyla, toplam arazi varlığının %1'i kadar tarımsal amaçlı depo üstü 75 metrekare bağ evi yapılabilir."
+      "answer": "Evet, parsel büyüklüğünün asgari tarımsal arazi büyüklüğünde olması şartıyla, toplam arazi varlığının %1'i kadar tarımsal amaçlı depo yapılabilir; üstüne 30 metrekare bağ evi eklenebilir."
     },
     {
       "question": "Bağ evi için hangi belgeler gerekir?",
@@ -173,7 +174,7 @@
           "name": "En az kaç dekarda bağ evi yapılır?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Dikili tarım arazisi için minimum 5 dekar (0,5 hektar), mutlak tarım arazisi için minimum 20 dekar (2 hektar), örtüaltı tarım için minimum 3 dekar (0,3 hektar) gereklidir."
+            "text": "Dikili tarım arazisi için minimum 10 dekar (1 hektar), mutlak/özel ürün/marjinal tarım arazisi için minimum 50 dekar (5 hektar), örtüaltı tarım için minimum 3 dekar (0,3 hektar) gereklidir."
           }
         },
         {
@@ -205,7 +206,7 @@
           "name": "Bağ evi kaç katlı olabilir?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Bağ evi maksimum 2 katlı olabilir (zemin + 1. kat). Toplam inşaat alanı 150 m²'yi, taban alanı 75 m²'yi geçemez."
+            "text": "Bağ evi maksimum 2 katlı olabilir (zemin + 1. kat). Taban alanı en fazla 30 m², toplam inşaat alanı en fazla 60 m² olabilir."
           }
         },
         {
@@ -255,7 +256,7 @@
     "genelge": true,
     "pythonModule": true,
     "webScraping": false,
-    "lastUpdated": "2024-11-15T00:00:00.000Z",
-    "notes": "Genelge (Tarım Arazileri Kullanımı Genelgesi) ve bag_evi.py Python modülünden derlendi. Tüm bilgiler güncel mevzuata uygun."
+    "lastUpdated": "2026-04-12T00:00:00.000Z",
+    "notes": "Tarımsal Amaçlı Yapıların Kriterleri Talimatı (2025) Madde 6 ve bag_evi Python modülünden derlendi. Dikili min 1 ha, mutlak/özel/marjinal min 5 ha, taban alanı 30 m², toplam 60 m²."
   }
 }

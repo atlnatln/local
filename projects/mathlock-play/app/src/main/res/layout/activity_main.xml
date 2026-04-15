@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp"
+        android:padding="20dp"
         android:gravity="center_horizontal">
 
         <!-- Logo — 5 kez hızlı tıklayınca ebeveyn paneline gider -->
@@ -19,8 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="🔒"
-            android:textSize="64sp"
-            android:layout_marginTop="32dp"
+            android:textSize="48sp"
+            android:layout_marginTop="12dp"
             android:clickable="true"
             android:focusable="true" />
 
@@ -28,18 +28,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textSize="32sp"
+            android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@color/primary"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="4dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_subtitle"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textColor="@color/on_surface_secondary"
-            android:layout_marginBottom="32dp" />
+            android:layout_marginBottom="16dp" />
 
         <!-- Koruma Durumu Kartı -->
         <com.google.android.material.card.MaterialCardView
@@ -47,13 +47,13 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp"
+                android:padding="16dp"
                 android:gravity="center">
 
                 <TextView
@@ -82,29 +82,29 @@
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
             app:cardBackgroundColor="@color/card_math"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
-                android:gravity="center">
+                android:orientation="horizontal"
+                android:padding="14dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="📚"
-                    android:textSize="40sp" />
+                    android:textSize="28sp"
+                    android:layout_marginEnd="12dp" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Bazı uygulamaları açmak için\nmatematik sorularını çözmen gerekiyor!"
-                    android:textSize="15sp"
-                    android:textColor="@color/on_surface"
-                    android:gravity="center"
-                    android:layout_marginTop="8dp" />
+                    android:layout_weight="1"
+                    android:text="Bazı uygulamaları açmak için matematik sorularını çözmen gerekiyor!"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="12dp">
 
             <!-- Matematik Soruları Pratik -->
             <com.google.android.material.card.MaterialCardView
@@ -211,6 +211,124 @@
 
         </LinearLayout>
 
+        <!-- Bulmaca Pratik -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardPracticePuzzle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/card_puzzle"
+            android:layout_marginBottom="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:rippleColor="#66000000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="18dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔢"
+                    android:textSize="36sp"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sayı Yolculuğu"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_surface" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bulmaca çöz"
+                        android:textSize="11sp"
+                        android:textColor="@color/on_surface_secondary"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="→"
+                    android:textSize="20sp"
+                    android:textColor="@color/on_surface_secondary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Robotopia (Kodlama) Pratik -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardPracticeRobotopia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/card_robotopia"
+            android:layout_marginBottom="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:rippleColor="#66000000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="18dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🤖"
+                    android:textSize="36sp"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Robotopia"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_surface" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Robotları programla"
+                        android:textSize="11sp"
+                        android:textColor="@color/on_surface_secondary"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="→"
+                    android:textSize="20sp"
+                    android:textColor="@color/on_surface_secondary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Ebeveyn erişim butonu: küçük, soluk, ekranın altında -->
         <TextView
             android:id="@+id/btnParentAccess"
@@ -219,7 +337,7 @@
             android:text="🔑"
             android:textSize="22sp"
             android:alpha="0.35"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:clickable="true"
             android:focusable="true"

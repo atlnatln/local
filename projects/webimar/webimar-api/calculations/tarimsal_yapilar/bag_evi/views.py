@@ -201,8 +201,8 @@ def _normalize_for_hotfix_adapter(request_data: dict) -> tuple:
         arazi_bilgileri['tarla_alani'] = float(tarla_alani)
     
     yapi_bilgileri = {
-        'taban_alani_m2': 75,  # Maksimum taban alanı
-        'toplam_alan_m2': 150  # Maksimum toplam alan
+        'taban_alani_m2': 30,  # Maksimum taban alanı (2025 güncellemesi, eski: 75)
+        'toplam_alan_m2': 60  # Maksimum toplam alan - 30 m² x 2 kat (2025, eski: 150)
     }
     
     return arazi_bilgileri, yapi_bilgileri

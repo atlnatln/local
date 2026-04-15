@@ -136,9 +136,10 @@ GOOGLE_PLAY_SERVICE_ACCOUNT_JSON = os.environ.get(
 
 # Kredi sistemi
 CREDITS_PER_PURCHASE = {
-    'kredi_1': 1,      # 1 kredi = 50 soru
-    'kredi_5': 5,      # 5 kredi = 250 soru
-    'kredi_10': 10,    # 10 kredi = 500 soru
+    'kredi_1': 1,      # 1 kredi — ₺10
+    'kredi_3': 3,      # 3 kredi — ₺25
+    'kredi_5': 5,      # 5 kredi — ₺40
+    'kredi_10': 10,    # 10 kredi (ileride)
 }
 FREE_QUESTION_COUNT = 50
 QUESTIONS_PER_CREDIT = 50

@@ -65,7 +65,23 @@ const createStructureTypeFromUrl = (yapiTuru: YapiTuru): StructureType => {
     25: 'ipek-bocekciligi',
     26: 'evcil-hayvan',
     27: 'besi-sigirciligi',
-    28: 'zeytinyagi-uretim-tesisi'
+    28: 'zeytinyagi-uretim-tesisi',
+    // 2025 Yeni Yapılar
+    29: 'fide-uretim',
+    30: 'fidan-uretim',
+    31: 'sahipsiz-hayvan',
+    32: 'sundurma',
+    33: 'ciftlik-atolyesi',
+    34: 'su-urunleri',
+    35: 'deve-kusu',
+    36: 'gubre-deposu',
+    37: 'mandira',
+    38: 'un-degirmeni',
+    39: 'teleferik',
+    40: 'golet',
+    41: 'islim',
+    42: 'muz-sarartma',
+    43: 'tarimsal-arge'
   };
   
   return urlMap[yapiTuru.id] || 'sera'; // fallback
@@ -88,6 +104,11 @@ const categorizeStructureTypes = (yapiTurleri: YapiTuru[]): Record<string, Struc
       name: 'Hayvancılık Tesisleri',
       icon: '🐄',
       types: []
+    },
+    new_2025: {
+      name: '2025 Yeni Yapılar',
+      icon: '🆕',
+      types: []
     }
   };
 
@@ -101,6 +122,8 @@ const categorizeStructureTypes = (yapiTurleri: YapiTuru[]): Record<string, Struc
       categories.storage_processing.types.push(structureType);
     } else if (yapiTuru.id >= 17 && yapiTuru.id <= 27) {
       categories.livestock.types.push(structureType);
+    } else if (yapiTuru.id >= 29 && yapiTuru.id <= 43) {
+      categories.new_2025.types.push(structureType);
     }
   });
 

@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sayı Yolculuğu</title>
+<style>
+/* ── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f0f1a;
+  --surface: #1a1a2e;
+  --surface2: #16213e;
+  --primary: #e94560;
+  --secondary: #0f3460;
+  --accent: #533483;
+  --gold: #f5c518;
+  --green: #00d68f;
+  --blue: #3b82f6;
+  --text: #e8e8e8;
+  --text-dim: #8888aa;
+  --cell-size: 64px;
+  --radius: 12px;
+}
+html { font-size: 16px; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Intro / Splash ───────────────────────────────────────── */
+#splash {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+  transition: opacity .6s;
+}
+#splash.hidden { opacity: 0; pointer-events: none; }
+#splash h1 { font-size: 3rem; margin-bottom: .25rem; }
+#splash h1 span { color: var(--gold); }
+#splash p { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 2rem; }
+.age-select { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem; }
+.age-btn {
+  padding: 12px 22px; border-radius: var(--radius); border: 2px solid var(--accent);
+  background: transparent; color: var(--text); font-size: 1rem; cursor: pointer;
+  transition: all .2s;
+}
+.age-btn:hover, .age-btn.active { background: var(--accent); border-color: var(--primary); transform: scale(1.05); }
+.start-btn {
+  padding: 16px 48px; border-radius: 50px; border: none;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff; font-size: 1.2rem; font-weight: 700; cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.start-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(233,69,96,.4); }
+
+/* ── Game Layout ──────────────────────────────────────────── */
+#game { display: none; }
+#game.active { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* Header */
+.game-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; background: var(--surface);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.game-header .level-info { display: flex; align-items: center; gap: 12px; }
+.game-header .level-badge {
+  background: var(--accent); padding: 4px 14px; border-radius: 20px;
+  font-weight: 700; font-size: .9rem;
+}
+.game-header .level-title { font-size: 1rem; color: var(--text-dim); }
+.game-header .stars { font-size: 1.4rem; letter-spacing: 2px; }
+.game-header .btn-back {
+  background: none; border: 1px solid var(--text-dim); color: var(--text-dim);
+  padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: .85rem;
+}
+.game-header .btn-back:hover { border-color: var(--primary); color: var(--primary); }
+
+/* Main area */
+.game-main {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 20px; padding: 16px;
+}
+
+/* ── Grid ─────────────────────────────────────────────────── */
+.grid-container {
+  position: relative;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+.grid {
+  display: grid;
+  gap: 4px;
+}
+.cell {
+  width: var(--cell-size); height: var(--cell-size);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.1rem; position: relative;
+  transition: all .3s ease;
+}
+.cell.empty { background: rgba(255,255,255,.04); }
+.cell.wall { background: #2a2a40; box-shadow: inset 0 2px 6px rgba(0,0,0,.5); }
+.cell.wall::after { content: '🧱'; font-size: 1.4rem; }
+.cell.target {
+  background: rgba(0, 214, 143, .15); border: 2px dashed var(--green);
+}
+.cell.target .target-value {
+  position: absolute; font-size: .7rem; bottom: 2px; right: 4px;
+  color: var(--green); opacity: .8;
+}
+.cell.op-plus { background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.3); }
+.cell.op-minus { background: rgba(233,69,96,.12); border: 1px solid rgba(233,69,96,.3); }
+.cell.op-times { background: rgba(245,197,24,.12); border: 1px solid rgba(245,197,24,.3); }
+
+/* Player number */
+.player {
+  position: absolute;
+  width: var(--cell-size); height: var(--cell-size);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(233,69,96,.5);
+  transition: all .35s cubic-bezier(.4, 0, .2, 1);
+  z-index: 10;
+}
+.player.bump { animation: bump .3s ease; }
+@keyframes bump {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.player.success { animation: successPulse .6s ease; }
+@keyframes successPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,214,143,.5); }
+  50% { box-shadow: 0 0 50px rgba(0,214,143,.9); transform: scale(1.2); }
+}
+
+/* Axis labels */
+.axis-labels-x, .axis-labels-y { display: flex; }
+.axis-labels-x {
+  justify-content: center; gap: 4px; margin-top: 6px; padding-left: 0;
+}
+.axis-labels-y {
+  flex-direction: column; gap: 4px; position: absolute; left: -24px; top: 16px;
+}
+.axis-label {
+  width: var(--cell-size); height: var(--cell-size);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; color: var(--text-dim);
+}
+.axis-labels-y .axis-label { width: 20px; }
+
+/* ── Command Panel ────────────────────────────────────────── */
+.cmd-panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px; width: 100%; max-width: 600px;
+}
+.cmd-panel h3 { font-size: .85rem; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+.cmd-palette {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+  padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.cmd-btn {
+  padding: 10px 18px; border-radius: 10px; border: 2px solid transparent;
+  font-size: .95rem; font-weight: 600; cursor: pointer;
+  transition: all .15s; user-select: none;
+}
+.cmd-btn:active { transform: scale(.94); }
+.cmd-btn.x-plus { background: rgba(59,130,246,.2); color: var(--blue); border-color: rgba(59,130,246,.4); }
+.cmd-btn.x-minus { background: rgba(59,130,246,.2); color: var(--blue); border-color: rgba(59,130,246,.4); }
+.cmd-btn.y-plus { background: rgba(0,214,143,.2); color: var(--green); border-color: rgba(0,214,143,.4); }
+.cmd-btn.y-minus { background: rgba(0,214,143,.2); color: var(--green); border-color: rgba(0,214,143,.4); }
+.cmd-btn.z-plus { background: rgba(245,197,24,.2); color: var(--gold); border-color: rgba(245,197,24,.3); }
+.cmd-btn.z-minus { background: rgba(233,69,96,.2); color: var(--primary); border-color: rgba(233,69,96,.3); }
+
+.cmd-queue-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cmd-queue-label h3 { margin: 0; }
+.cmd-queue-label .cmd-count { font-size: .8rem; color: var(--text-dim); }
+
+.cmd-queue {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  min-height: 48px; padding: 10px;
+  background: rgba(0,0,0,.2); border-radius: 8px;
+  border: 2px dashed rgba(255,255,255,.08);
+  margin-bottom: 14px;
+}
+.cmd-queue .cmd-chip {
+  padding: 6px 14px; border-radius: 8px;
+  font-size: .85rem; font-weight: 600; cursor: pointer;
+  transition: all .15s; position: relative;
+}
+.cmd-chip:hover { opacity: .7; }
+.cmd-chip.x-plus, .cmd-chip.x-minus { background: rgba(59,130,246,.25); color: var(--blue); }
+.cmd-chip.y-plus, .cmd-chip.y-minus { background: rgba(0,214,143,.25); color: var(--green); }
+.cmd-chip.z-plus { background: rgba(245,197,24,.25); color: var(--gold); }
+.cmd-chip.z-minus { background: rgba(233,69,96,.25); color: var(--primary); }
+.cmd-chip.running { animation: chipPulse .5s ease infinite; }
+@keyframes chipPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50% { box-shadow: 0 0 12px rgba(255,255,255,.3); }
+}
+
+.cmd-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.action-btn {
+  flex: 1; min-width: 100px; padding: 12px; border-radius: 10px; border: none;
+  font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .15s;
+}
+.action-btn:active { transform: scale(.96); }
+.btn-run { background: linear-gradient(135deg, var(--green), #00b377); color: #000; }
+.btn-run:hover { box-shadow: 0 0 20px rgba(0,214,143,.4); }
+.btn-run:disabled { opacity: .4; cursor: not-allowed; }
+.btn-clear { background: rgba(233,69,96,.2); color: var(--primary); }
+.btn-clear:hover { background: rgba(233,69,96,.35); }
+.btn-undo { background: rgba(255,255,255,.08); color: var(--text-dim); }
+.btn-undo:hover { background: rgba(255,255,255,.12); }
+.btn-reset { background: rgba(59,130,246,.2); color: var(--blue); }
+.btn-reset:hover { background: rgba(59,130,246,.35); }
+
+/* ── Goal indicator ───────────────────────────────────────── */
+.goal-bar {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 16px;
+  width: 100%; max-width: 600px;
+}
+.goal-bar .goal-icon { font-size: 1.8rem; }
+.goal-bar .goal-text { flex: 1; }
+.goal-bar .goal-text strong { color: var(--green); }
+.goal-bar .goal-text .goal-desc { font-size: .85rem; color: var(--text-dim); }
+
+/* ── Level Complete Overlay ───────────────────────────────── */
+#overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+}
+#overlay.active { display: flex; }
+.overlay-card {
+  background: var(--surface);
+  border-radius: 20px; padding: 40px; text-align: center;
+  max-width: 380px; animation: popIn .4s ease;
+}
+@keyframes popIn {
+  0% { transform: scale(.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.overlay-card h2 { font-size: 2rem; margin-bottom: 8px; }
+.overlay-card .overlay-stars { font-size: 2.5rem; margin-bottom: 12px; letter-spacing: 4px; }
+.overlay-card p { color: var(--text-dim); margin-bottom: 24px; }
+.overlay-card .overlay-btns { display: flex; gap: 12px; justify-content: center; }
+.overlay-card .overlay-btns button {
+  padding: 12px 28px; border-radius: 12px; border: none;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+}
+.overlay-card .btn-next { background: linear-gradient(135deg, var(--green), #00b377); color: #000; }
+.overlay-card .btn-retry { background: rgba(255,255,255,.1); color: var(--text); }
+
+/* Level select modal */
+#levelSelect {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+}
+#levelSelect.active { display: flex; }
+.level-select-card {
+  background: var(--surface); border-radius: 20px; padding: 30px;
+  max-width: 500px; width: 90%; animation: popIn .4s ease;
+}
+.level-select-card h2 { margin-bottom: 20px; text-align: center; }
+.level-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+}
+.level-cell {
+  aspect-ratio: 1; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.2rem; cursor: pointer;
+  background: rgba(255,255,255,.06); border: 2px solid transparent;
+  transition: all .2s;
+}
+.level-cell:hover { border-color: var(--accent); transform: scale(1.05); }
+.level-cell.completed { border-color: var(--green); background: rgba(0,214,143,.1); }
+.level-cell.current { border-color: var(--gold); background: rgba(245,197,24,.1); }
+.level-cell.locked { opacity: .3; cursor: not-allowed; }
+.level-cell .lc-stars { font-size: .65rem; margin-top: 2px; }
+.level-select-close {
+  display: block; margin: 20px auto 0; padding: 10px 30px;
+  border-radius: 10px; border: 1px solid var(--text-dim); background: none;
+  color: var(--text-dim); cursor: pointer; font-size: .9rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  :root { --cell-size: 48px; }
+  .cmd-btn { padding: 8px 12px; font-size: .8rem; }
+  .overlay-card { padding: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── SPLASH SCREEN ─────────────────────────────────────── -->
+<div id="splash">
+  <h1>🔢 <span>Sayı Yolculuğu</span></h1>
+  <p>Sayıları hareket ettir, bulmacayı çöz!</p>
+
+  <p style="color:var(--text-dim); font-size:.9rem; margin-bottom:8px;">Yaş grubunu seç:</p>
+  <div class="age-select" id="ageSelect">
+    <button class="age-btn" data-age="5-6">5-6</button>
+    <button class="age-btn active" data-age="7-8">7-8</button>
+    <button class="age-btn" data-age="9-10">9-10</button>
+    <button class="age-btn" data-age="11-12">11-12</button>
+  </div>
+
+  <button class="start-btn" id="btnStart">🚀 Başla!</button>
+</div>
+
+<!-- ─── GAME SCREEN ───────────────────────────────────────── -->
+<div id="game">
+  <div class="game-header">
+    <div class="level-info">
+      <span class="level-badge" id="levelBadge">Seviye 1</span>
+      <span class="level-title" id="levelTitle">İlk Adım</span>
+    </div>
+    <div class="stars" id="starsDisplay">⭐⭐⭐</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-back" id="btnLevels">📋 Seviyeler</button>
+      <button class="btn-back" id="btnHome">🏠</button>
+    </div>
+  </div>
+
+  <div class="game-main">
+    <!-- Goal bar -->
+    <div class="goal-bar">
+      <div class="goal-icon">🎯</div>
+      <div class="goal-text">
+        <div id="goalDesc" class="goal-desc">Sayıyı hedef noktaya taşı</div>
+        <div><strong id="goalDetail">3 → yeşil kare</strong></div>
+      </div>
+      <div id="moveCounter" style="font-size:.85rem;color:var(--text-dim);">0 / 5</div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-container">
+      <div class="grid" id="grid"></div>
+      <div class="player" id="player">3</div>
+      <!-- axis labels rendered dynamically -->
+    </div>
+
+    <!-- Command Panel -->
+    <div class="cmd-panel">
+      <h3>Komutlar</h3>
+      <div class="cmd-palette" id="cmdPalette"></div>
+
+      <div class="cmd-queue-label">
+        <h3>Programın</h3>
+        <span class="cmd-count" id="cmdCount">0 / 10</span>
+      </div>
+      <div class="cmd-queue" id="cmdQueue"></div>
+
+      <div class="cmd-actions">
+        <button class="action-btn btn-undo" id="btnUndo">↩ Geri Al</button>
+        <button class="action-btn btn-clear" id="btnClear">🗑 Temizle</button>
+        <button class="action-btn btn-reset" id="btnReset">🔄 Sıfırla</button>
+        <button class="action-btn btn-run" id="btnRun">▶ Çalıştır</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LEVEL COMPLETE OVERLAY ────────────────────────────── -->
+<div id="overlay">
+  <div class="overlay-card">
+    <h2 id="overlayTitle">🎉 Tebrikler!</h2>
+    <div class="overlay-stars" id="overlayStars">⭐⭐⭐</div>
+    <p id="overlayMsg">Harika! Bulmacayı çözdün!</p>
+    <div class="overlay-btns">
+      <button class="btn-retry" id="btnRetry">🔄 Tekrar</button>
+      <button class="btn-next" id="btnNext">▶ Sonraki</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── LEVEL SELECT ──────────────────────────────────────── -->
+<div id="levelSelect">
+  <div class="level-select-card">
+    <h2>Seviye Seç</h2>
+    <div class="level-grid" id="levelGrid"></div>
+    <button class="level-select-close" id="btnCloseLevels">Kapat</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   Sayı Yolculuğu — Game Engine
+   ═══════════════════════════════════════════════════════════ */
+
+// ── Command definitions ──────────────────────────────────
+const CMDS = {
+  'x+': { label: 'x →', css: 'x-plus',  dx: 1,  dy: 0,  dz: 0 },
+  'x-': { label: '← x', css: 'x-minus', dx: -1, dy: 0,  dz: 0 },
+  'y-': { label: 'y ↑', css: 'y-minus', dx: 0,  dy: -1, dz: 0 },
+  'y+': { label: '↓ y', css: 'y-plus',  dx: 0,  dy: 1,  dz: 0 },
+  'z+': { label: 'z +1', css: 'z-plus', dx: 0,  dy: 0,  dz: 1 },
+  'z-': { label: 'z -1', css: 'z-minus', dx: 0,  dy: 0,  dz: -1 },
+};
+
+// ── Level data ───────────────────────────────────────────
+// Each level: { title, desc, cols, rows, startX, startY, startVal,
+//               targetX, targetY, targetVal (null = any),
+//               walls:[[x,y],...], ops:[{x,y,type,val},...],
+//               commands:['x+','y+', ...], maxCmds, stars:[s3,s2] }
+//
+// stars: [max commands for 3 stars, max for 2 stars]; above = 1 star
+
+const LEVELS_BY_AGE = {
+
+// ────── 5-6 Yaş: Sadece x/y hareketi, küçük grid, çok kolay ──
+'5-6': [
+  {
+    title: 'İlk Adım', desc: 'Sayıyı sağa taşı!',
+    cols: 3, rows: 1, startX: 0, startY: 0, startVal: 1,
+    targetX: 2, targetY: 0, targetVal: null,
+    walls: [], ops: [],
+    commands: ['x+'], maxCmds: 4, stars: [2, 3]
+  },
+  {
+    title: 'Aşağı İn', desc: 'Sayıyı aşağı götür!',
+    cols: 1, rows: 3, startX: 0, startY: 0, startVal: 2,
+    targetX: 0, targetY: 2, targetVal: null,
+    walls: [], ops: [],
+    commands: ['y+'], maxCmds: 4, stars: [2, 3]
+  },
+  {
+    title: 'Köşeye Git', desc: 'Sağ alta ulaş!',
+    cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3,
+    targetX: 2, targetY: 2, targetVal: null,
+    walls: [], ops: [],
+    commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5]
+  },
+  {
+    title: 'Geri Dön', desc: 'Sol tarafa git!',
+    cols: 3, rows: 1, startX: 2, startY: 0, startVal: 5,
+    targetX: 0, targetY: 0, targetVal: null,
+    walls: [], ops: [],
+    commands: ['x-'], maxCmds: 4, stars: [2, 3]
+  },
+  {
+    title: 'Yukarı Çık', desc: 'Yukarıya git!',
+    cols: 1, rows: 3, startX: 0, startY: 2, startVal: 4,
+    targetX: 0, targetY: 0, targetVal: null,
+    walls: [], ops: [],
+    commands: ['y-'], maxCmds: 4, stars: [2, 3]
+  },
+  {
+    title: 'L Yolu', desc: 'L şeklinde ilerle!',
+    cols: 3, rows: 3, startX: 0, startY: 0, startVal: 6,
+    targetX: 2, targetY: 2, targetVal: null,
+    walls: [[1,0],[2,0],[2,1]], ops: [],
+    commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5]
+  },
+  {
+    title: 'Zigzag', desc: 'Duvarlardan kaç!',
+    cols: 4, rows: 3, startX: 0, startY: 0, startVal: 7,
+    targetX: 3, targetY: 2, targetVal: null,
+    walls: [[1,0],[2,1]], ops: [],
+    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [5, 7]
+  },
+  {
+    title: 'Kestirme', desc: 'En kısa yoldan git!',
+    cols: 4, rows: 4, startX: 0, startY: 0, startVal: 8,
+    targetX: 3, targetY: 3, targetVal: null,
+    walls: [[1,1],[2,2]], ops: [],
+    commands: ['x+', 'y+', 'x-', 'y-'], maxCmds: 10, stars: [6, 8]
+  },
+],
+
+// ────── 7-8 Yaş: x/y + z ile değer değiştirme ──────────
+'7-8': [
+  {
+    title: 'Sayı Taşı', desc: 'Sayıyı hedefe götür!',
+    cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3,
+    targetX: 2, targetY: 2, targetVal: null,
+    walls: [], ops: [],
+    commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5]
+  },
+  {
+    title: 'Duvar Aşma', desc: 'Duvarın etrafından dolaş!',
+    cols: 4, rows: 3, startX: 0, startY: 0, startVal: 5,
+    targetX: 3, targetY: 0, targetVal: null,
+    walls: [[2,0],[2,1]], ops: [],
+    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [6, 7]
+  },
+  {
+    title: 'Değer Değiştir', desc: 'Sayını 5 yap ve hedefe götür!',
+    cols: 3, rows: 1, startX: 0, startY: 0, startVal: 3,
+    targetX: 2, targetY: 0, targetVal: 5,
+    walls: [], ops: [],
+    commands: ['x+', 'z+', 'z-'], maxCmds: 6, stars: [4, 5]
+  },
+  {
+    title: 'Toplama Yolu', desc: 'Sayıyı büyüt ve hedefe ulaş!',
+    cols: 4, rows: 1, startX: 0, startY: 0, startVal: 1,
+    targetX: 3, targetY: 0, targetVal: 4,
+    walls: [], ops: [],
+    commands: ['x+', 'z+'], maxCmds: 8, stars: [6, 7]
+  },
+  {
+    title: 'Çıkarma Yolu', desc: 'Sayıyı küçült!',
+    cols: 3, rows: 1, startX: 0, startY: 0, startVal: 8,
+    targetX: 2, targetY: 0, targetVal: 5,
+    walls: [], ops: [],
+    commands: ['x+', 'z-'], maxCmds: 6, stars: [5, 6]
+  },
+  {
+    title: 'Toplama Hücreleri', desc: 'Özel hücreler sayını değiştirir!',
+    cols: 4, rows: 3, startX: 0, startY: 0, startVal: 2,
+    targetX: 3, targetY: 2, targetVal: 5,
+    walls: [[1,1]], ops: [{x:2,y:0,type:'+',val:1},{x:3,y:1,type:'+',val:2}],
+    commands: ['x+', 'y+', 'y-'], maxCmds: 8, stars: [5, 7]
+  },
+  {
+    title: 'Labirent', desc: 'Duvarların arasından geç!',
+    cols: 5, rows: 4, startX: 0, startY: 0, startVal: 7,
+    targetX: 4, targetY: 3, targetVal: null,
+    walls: [[1,0],[1,1],[3,2],[3,3],[2,2]], ops: [],
+    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 12, stars: [7, 10]
+  },
+  {
+    title: 'Karma Bulmaca', desc: 'Hem taşı hem değiştir!',
+    cols: 4, rows: 4, startX: 0, startY: 0, startVal: 2,
+    targetX: 3, targetY: 3, targetVal: 6,
+    walls: [[1,1],[2,2]], ops: [{x:1,y:0,type:'+',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 12, stars: [8, 10]
+  },
+  {
+    title: 'Büyük Macera', desc: 'Her şeyi kullan!',
+    cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1,
+    targetX: 4, targetY: 4, targetVal: 10,
+    walls: [[2,0],[0,2],[3,3]], ops: [{x:1,y:1,type:'+',val:3},{x:3,y:2,type:'+',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 16, stars: [10, 14]
+  },
+],
+
+// ────── 9-10 Yaş: Daha büyük grid, çarpma hücreleri ────
+'9-10': [
+  {
+    title: 'Çarpma Kapısı', desc: 'x2 hücresinden geçerek hedefe ulaş!',
+    cols: 5, rows: 3, startX: 0, startY: 1, startVal: 3,
+    targetX: 4, targetY: 1, targetVal: 6,
+    walls: [[2,0],[2,2]], ops: [{x:2,y:1,type:'×',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [4, 6]
+  },
+  {
+    title: 'Sayı Fabrikası', desc: 'Doğru değerle bitir!',
+    cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1,
+    targetX: 4, targetY: 4, targetVal: 12,
+    walls: [[1,1],[3,1],[1,3],[3,3]],
+    ops: [{x:2,y:0,type:'+',val:2},{x:4,y:2,type:'×',val:2},{x:2,y:4,type:'+',val:3}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [8, 12]
+  },
+  {
+    title: 'Çift Duvar', desc: 'Labirentin derinliklerine in!',
+    cols: 6, rows: 5, startX: 0, startY: 0, startVal: 5,
+    targetX: 5, targetY: 4, targetVal: null,
+    walls: [[1,0],[1,1],[1,2],[3,2],[3,3],[3,4],[5,0],[5,1]],
+    ops: [],
+    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 15, stars: [9, 13]
+  },
+  {
+    title: 'Hesap Makinesi', desc: 'Topla, çık, ilerle!',
+    cols: 5, rows: 4, startX: 0, startY: 3, startVal: 2,
+    targetX: 4, targetY: 0, targetVal: 10,
+    walls: [[2,1],[3,2]],
+    ops: [{x:1,y:3,type:'+',val:3},{x:3,y:0,type:'×',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [8, 12]
+  },
+  {
+    title: 'Karar Noktası', desc: 'Hangi yoldan gideceksin?',
+    cols: 5, rows: 5, startX: 2, startY: 0, startVal: 4,
+    targetX: 2, targetY: 4, targetVal: 8,
+    walls: [[0,1],[4,1],[1,2],[3,2],[0,3],[4,3]],
+    ops: [{x:2,y:1,type:'+',val:1},{x:2,y:3,type:'×',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 12, stars: [6, 10]
+  },
+  {
+    title: 'Spiral', desc: 'Spiral yoldan geç!',
+    cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1,
+    targetX: 2, targetY: 2, targetVal: null,
+    walls: [[1,0],[1,1],[1,2],[1,3],[3,1],[3,2],[3,3],[3,4],[2,4],[0,2]],
+    ops: [],
+    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 16, stars: [12, 14]
+  },
+  {
+    title: 'Değer Avcısı', desc: 'Tam değerle bitir!',
+    cols: 6, rows: 4, startX: 0, startY: 0, startVal: 1,
+    targetX: 5, targetY: 3, targetVal: 15,
+    walls: [[2,0],[4,1],[1,2],[3,3]],
+    ops: [{x:1,y:0,type:'×',val:3},{x:5,y:1,type:'+',val:5},{x:3,y:2,type:'×',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 18, stars: [10, 15]
+  },
+  {
+    title: 'Usta Seviye', desc: 'Tüm becerilerin gerekli!',
+    cols: 6, rows: 6, startX: 0, startY: 0, startVal: 2,
+    targetX: 5, targetY: 5, targetVal: 20,
+    walls: [[1,0],[3,0],[4,0],[1,2],[2,2],[4,2],[4,3],[0,4],[1,4],[3,4]],
+    ops: [{x:2,y:0,type:'+',val:3},{x:5,y:2,type:'×',val:2},{x:2,y:4,type:'+',val:5}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [12, 17]
+  },
+],
+
+// ────── 11-12 Yaş: Büyük grid, karmaşık ─────────────────
+'11-12': [
+  {
+    title: 'Mühendis Köprüsü', desc: 'Karmaşık yoldan geç!',
+    cols: 7, rows: 5, startX: 0, startY: 0, startVal: 3,
+    targetX: 6, targetY: 4, targetVal: null,
+    walls: [[1,0],[1,1],[3,1],[3,2],[3,3],[5,2],[5,3],[5,4]],
+    ops: [],
+    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 16, stars: [11, 14]
+  },
+  {
+    title: 'Formül Oluştur', desc: 'Sayını tam 24 yap!',
+    cols: 6, rows: 5, startX: 0, startY: 2, startVal: 2,
+    targetX: 5, targetY: 2, targetVal: 24,
+    walls: [[1,1],[2,0],[4,3],[4,4]],
+    ops: [{x:1,y:2,type:'×',val:3},{x:3,y:2,type:'×',val:2},{x:5,y:0,type:'+',val:5}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [7, 11]
+  },
+  {
+    title: 'Çoklu İşlem', desc: 'Her adım önemli!',
+    cols: 7, rows: 5, startX: 0, startY: 0, startVal: 1,
+    targetX: 6, targetY: 4, targetVal: 30,
+    walls: [[2,0],[2,1],[4,2],[4,3],[6,0],[6,1]],
+    ops: [{x:1,y:0,type:'×',val:2},{x:3,y:1,type:'+',val:4},{x:5,y:3,type:'×',val:3}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 18, stars: [10, 15]
+  },
+  {
+    title: 'Mega Labirent', desc: 'Büyük labirentten çık!',
+    cols: 7, rows: 7, startX: 0, startY: 0, startVal: 5,
+    targetX: 6, targetY: 6, targetVal: null,
+    walls: [[1,0],[1,1],[3,0],[5,0],[5,1],[5,2],[1,3],[2,3],[3,3],[3,4],[1,5],[1,6],[3,6],[5,4],[5,5]],
+    ops: [],
+    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 24, stars: [12, 20]
+  },
+  {
+    title: 'Denklem Yolu', desc: 'Sayıyı 50 yap!',
+    cols: 7, rows: 6, startX: 0, startY: 0, startVal: 2,
+    targetX: 6, targetY: 5, targetVal: 50,
+    walls: [[2,1],[4,0],[4,1],[0,3],[1,3],[5,3],[6,3],[2,4]],
+    ops: [{x:1,y:0,type:'×',val:5},{x:3,y:2,type:'+',val:10},{x:6,y:2,type:'×',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [10, 16]
+  },
+  {
+    title: 'Strateji Oyunu', desc: 'Doğru rota çok önemli!',
+    cols: 7, rows: 7, startX: 3, startY: 0, startVal: 1,
+    targetX: 3, targetY: 6, targetVal: 36,
+    walls: [[1,1],[5,1],[0,3],[2,3],[4,3],[6,3],[1,5],[5,5]],
+    ops: [{x:3,y:1,type:'×',val:3},{x:1,y:3,type:'+',val:6},{x:5,y:3,type:'×',val:2},{x:3,y:5,type:'+',val:3}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [10, 16]
+  },
+  {
+    title: 'Hacker Challenge', desc: 'En az komutla bitir!',
+    cols: 8, rows: 6, startX: 0, startY: 0, startVal: 1,
+    targetX: 7, targetY: 5, targetVal: 100,
+    walls: [[2,0],[2,1],[4,1],[4,2],[6,2],[6,3],[0,3],[0,4],[2,4],[2,5]],
+    ops: [{x:1,y:0,type:'×',val:5},{x:3,y:2,type:'×',val:2},{x:5,y:3,type:'+',val:10},{x:7,y:4,type:'×',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 24, stars: [12, 20]
+  },
+  {
+    title: 'Büyük Final', desc: 'Tüm bilgilerini kullan!',
+    cols: 8, rows: 8, startX: 0, startY: 0, startVal: 1,
+    targetX: 7, targetY: 7, targetVal: 64,
+    walls: [[1,0],[1,1],[3,0],[5,1],[5,2],[7,0],[7,1],[0,3],[2,3],[2,4],[4,3],[4,4],[6,4],[6,5],[0,6],[1,6],[3,6],[3,7],[5,6]],
+    ops: [{x:2,y:0,type:'×',val:2},{x:6,y:2,type:'×',val:2},{x:1,y:4,type:'×',val:2},{x:5,y:5,type:'×',val:2},{x:2,y:7,type:'×',val:2}],
+    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 28, stars: [14, 22]
+  },
+],
+};
+
+// ── State ────────────────────────────────────────────────
+let state = {
+  ageGroup: '7-8',
+  levelIdx: 0,
+  playerX: 0,
+  playerY: 0,
+  playerVal: 0,
+  queue: [],      // command ids
+  running: false,
+  progress: {},   // { '7-8': { 0: {completed:true, stars:3}, ... } }
+};
+
+// ── DOM refs ─────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const splash = $('splash');
+const gameEl = $('game');
+const gridEl = $('grid');
+const playerEl = $('player');
+const cmdPalette = $('cmdPalette');
+const cmdQueue = $('cmdQueue');
+const cmdCount = $('cmdCount');
+const overlay = $('overlay');
+const levelSelect = $('levelSelect');
+
+// ── Helpers ──────────────────────────────────────────────
+function getLevels() { return LEVELS_BY_AGE[state.ageGroup] || []; }
+function getLevel() { return getLevels()[state.levelIdx]; }
+
+function loadProgress() {
+  try { state.progress = JSON.parse(localStorage.getItem('sy_progress') || '{}'); } catch { state.progress = {}; }
+}
+function saveProgress() {
+  localStorage.setItem('sy_progress', JSON.stringify(state.progress));
+}
+
+// ── Splash ───────────────────────────────────────────────
+document.querySelectorAll('.age-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.ageGroup = btn.dataset.age;
+  });
+});
+
+$('btnStart').addEventListener('click', () => {
+  loadProgress();
+  state.levelIdx = 0;
+  splash.classList.add('hidden');
+  gameEl.classList.add('active');
+  setTimeout(() => splash.style.display = 'none', 600);
+  loadLevel();
+});
+
+$('btnHome').addEventListener('click', () => {
+  gameEl.classList.remove('active');
+  splash.style.display = '';
+  splash.classList.remove('hidden');
+});
+
+// ── Level loading ────────────────────────────────────────
+function loadLevel() {
+  const lv = getLevel();
+  if (!lv) return;
+
+  // Reset state
+  state.playerX = lv.startX;
+  state.playerY = lv.startY;
+  state.playerVal = lv.startVal;
+  state.queue = [];
+  state.running = false;
+
+  // Header
+  $('levelBadge').textContent = `Seviye ${state.levelIdx + 1}`;
+  $('levelTitle').textContent = lv.title;
+  updateStarsDisplay(0);
+
+  // Goal
+  $('goalDesc').textContent = lv.desc;
+  const valText = lv.targetVal != null ? ` = ${lv.targetVal}` : '';
+  $('goalDetail').textContent = `${lv.startVal}${valText} → 🎯`;
+  $('moveCounter').textContent = `0 / ${lv.maxCmds}`;
+
+  // Grid
+  buildGrid(lv);
+  updatePlayerPos(false);
+  buildPalette(lv);
+  renderQueue();
+  $('btnRun').disabled = false;
+}
+
+function buildGrid(lv) {
+  gridEl.innerHTML = '';
+  gridEl.style.gridTemplateColumns = `repeat(${lv.cols}, var(--cell-size))`;
+
+  const wallSet = new Set(lv.walls.map(w => `${w[0]},${w[1]}`));
+  const opMap = {};
+  lv.ops.forEach(o => { opMap[`${o.x},${o.y}`] = o; });
+
+  for (let r = 0; r < lv.rows; r++) {
+    for (let c = 0; c < lv.cols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.x = c;
+      cell.dataset.y = r;
+
+      const key = `${c},${r}`;
+
+      if (wallSet.has(key)) {
+        cell.classList.add('wall');
+      } else if (c === lv.targetX && r === lv.targetY) {
+        cell.classList.add('target');
+        if (lv.targetVal != null) {
+          const tv = document.createElement('span');
+          tv.className = 'target-value';
+          tv.textContent = `= ${lv.targetVal}`;
+          cell.appendChild(tv);
+        }
+        cell.innerHTML = '🎯' + cell.innerHTML;
+      } else if (opMap[key]) {
+        const op = opMap[key];
+        if (op.type === '+') { cell.classList.add('op-plus'); cell.textContent = `+${op.val}`; }
+        else if (op.type === '-') { cell.classList.add('op-minus'); cell.textContent = `-${op.val}`; }
+        else if (op.type === '×') { cell.classList.add('op-times'); cell.textContent = `×${op.val}`; }
+      } else {
+        cell.classList.add('empty');
+      }
+
+      gridEl.appendChild(cell);
+    }
+  }
+}
+
+function updatePlayerPos(animate = true) {
+  const lv = getLevel();
+  const gap = 4;
+  const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
+  const left = 16 + state.playerX * (cellSize + gap);
+  const top = 16 + state.playerY * (cellSize + gap);
+
+  playerEl.style.left = left + 'px';
+  playerEl.style.top = top + 'px';
+  playerEl.textContent = state.playerVal;
+
+  if (animate) {
+    playerEl.classList.remove('bump');
+    void playerEl.offsetWidth;
+    playerEl.classList.add('bump');
+  }
+}
+
+function buildPalette(lv) {
+  cmdPalette.innerHTML = '';
+  lv.commands.forEach(cmdId => {
+    const cmd = CMDS[cmdId];
+    const btn = document.createElement('button');
+    btn.className = `cmd-btn ${cmd.css}`;
+    btn.textContent = cmd.label;
+    btn.addEventListener('click', () => addCommand(cmdId));
+    cmdPalette.appendChild(btn);
+  });
+}
+
+// ── Command queue ────────────────────────────────────────
+function addCommand(cmdId) {
+  const lv = getLevel();
+  if (state.running || state.queue.length >= lv.maxCmds) return;
+  state.queue.push(cmdId);
+  renderQueue();
+}
+
+function renderQueue() {
+  const lv = getLevel();
+  cmdQueue.innerHTML = '';
+  state.queue.forEach((cmdId, i) => {
+    const cmd = CMDS[cmdId];
+    const chip = document.createElement('span');
+    chip.className = `cmd-chip ${cmd.css}`;
+    chip.textContent = cmd.label;
+    chip.dataset.index = i;
+    chip.addEventListener('click', () => {
+      if (state.running) return;
+      state.queue.splice(i, 1);
+      renderQueue();
+    });
+    cmdQueue.appendChild(chip);
+  });
+  cmdCount.textContent = `${state.queue.length} / ${lv.maxCmds}`;
+}
+
+// ── Execution ────────────────────────────────────────────
+$('btnRun').addEventListener('click', runProgram);
+$('btnClear').addEventListener('click', () => { if (!state.running) { state.queue = []; renderQueue(); } });
+$('btnUndo').addEventListener('click', () => { if (!state.running) { state.queue.pop(); renderQueue(); } });
+$('btnReset').addEventListener('click', () => { if (!state.running) loadLevel(); });
+
+async function runProgram() {
+  if (state.running || state.queue.length === 0) return;
+  state.running = true;
+  $('btnRun').disabled = true;
+
+  // Reset player position
+  const lv = getLevel();
+  state.playerX = lv.startX;
+  state.playerY = lv.startY;
+  state.playerVal = lv.startVal;
+  updatePlayerPos(false);
+
+  const chips = cmdQueue.querySelectorAll('.cmd-chip');
+
+  for (let i = 0; i < state.queue.length; i++) {
+    const cmdId = state.queue[i];
+    const cmd = CMDS[cmdId];
+    chips[i].classList.add('running');
+
+    const nx = state.playerX + cmd.dx;
+    const ny = state.playerY + cmd.dy;
+
+    // Z operations don't move
+    if (cmd.dz !== 0) {
+      state.playerVal += cmd.dz;
+      updatePlayerPos(true);
+      await sleep(350);
+      chips[i].classList.remove('running');
+      continue;
+    }
+
+    // Check bounds
+    if (nx < 0 || nx >= lv.cols || ny < 0 || ny >= lv.rows) {
+      // hit boundary — brief shake
+      playerEl.style.animation = 'none';
+      void playerEl.offsetWidth;
+      chips[i].classList.remove('running');
+      await sleep(250);
+      continue;
+    }
+
+    // Check walls
+    const isWall = lv.walls.some(w => w[0] === nx && w[1] === ny);
+    if (isWall) {
+      chips[i].classList.remove('running');
+      await sleep(250);
+      continue;
+    }
+
+    // Move
+    state.playerX = nx;
+    state.playerY = ny;
+
+    // Check operation cell
+    const op = lv.ops.find(o => o.x === nx && o.y === ny);
+    if (op) {
+      if (op.type === '+') state.playerVal += op.val;
+      else if (op.type === '-') state.playerVal -= op.val;
+      else if (op.type === '×') state.playerVal *= op.val;
+    }
+
+    updatePlayerPos(true);
+    await sleep(350);
+    chips[i].classList.remove('running');
+  }
+
+  // Check win
+  await sleep(200);
+  checkWin();
+}
+
+function checkWin() {
+  const lv = getLevel();
+  const posOk = state.playerX === lv.targetX && state.playerY === lv.targetY;
+  const valOk = lv.targetVal == null || state.playerVal === lv.targetVal;
+
+  if (posOk && valOk) {
+    // Calculate stars
+    const usedCmds = state.queue.length;
+    let stars = 1;
+    if (usedCmds <= lv.stars[0]) stars = 3;
+    else if (usedCmds <= lv.stars[1]) stars = 2;
+
+    playerEl.classList.add('success');
+    setTimeout(() => {
+      playerEl.classList.remove('success');
+      showWinOverlay(stars);
+    }, 600);
+
+    // Save progress
+    const prog = state.progress[state.ageGroup] || {};
+    const prev = prog[state.levelIdx];
+    if (!prev || prev.stars < stars) {
+      prog[state.levelIdx] = { completed: true, stars };
+      state.progress[state.ageGroup] = prog;
+      saveProgress();
+    }
+  } else {
+    // Fail
+    $('overlayTitle').textContent = '😕 Hedefine ulaşamadın';
+    $('overlayStars').textContent = '';
+    $('overlayMsg').textContent = posOk && !valOk
+      ? `Sayın ${state.playerVal} — ama hedef ${lv.targetVal} olmalıydı.`
+      : 'Doğru konuma ulaşamadın. Tekrar dene!';
+    $('btnNext').style.display = 'none';
+    overlay.classList.add('active');
+  }
+
+  state.running = false;
+  $('btnRun').disabled = false;
+}
+
+function showWinOverlay(stars) {
+  const levels = getLevels();
+  $('overlayTitle').textContent = '🎉 Tebrikler!';
+  $('overlayStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+  const msgs = [
+    'İyi iş! Devam et! 💪',
+    'Harika! Çok iyi gidiyorsun! 🌟',
+    'Mükemmel! Tam puan! 🏆'
+  ];
+  $('overlayMsg').textContent = msgs[stars - 1];
+  $('btnNext').style.display = state.levelIdx < levels.length - 1 ? '' : 'none';
+  overlay.classList.add('active');
+}
+
+$('btnRetry').addEventListener('click', () => {
+  overlay.classList.remove('active');
+  loadLevel();
+});
+
+$('btnNext').addEventListener('click', () => {
+  overlay.classList.remove('active');
+  if (state.levelIdx < getLevels().length - 1) {
+    state.levelIdx++;
+    loadLevel();
+  }
+});
+
+function updateStarsDisplay(stars) {
+  const prog = (state.progress[state.ageGroup] || {})[state.levelIdx];
+  const s = prog ? prog.stars : 0;
+  $('starsDisplay').textContent = '⭐'.repeat(s) + '☆'.repeat(3 - s);
+}
+
+// ── Level Select ─────────────────────────────────────────
+$('btnLevels').addEventListener('click', showLevelSelect);
+$('btnCloseLevels').addEventListener('click', () => levelSelect.classList.remove('active'));
+
+function showLevelSelect() {
+  const levels = getLevels();
+  const prog = state.progress[state.ageGroup] || {};
+  const grid = $('levelGrid');
+  grid.innerHTML = '';
+
+  levels.forEach((lv, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'level-cell';
+
+    const unlocked = i === 0 || (prog[i - 1] && prog[i - 1].completed);
+    if (!unlocked) cell.classList.add('locked');
+    if (prog[i] && prog[i].completed) cell.classList.add('completed');
+    if (i === state.levelIdx) cell.classList.add('current');
+
+    cell.innerHTML = `<span>${i + 1}</span>`;
+    if (prog[i]) {
+      cell.innerHTML += `<span class="lc-stars">${'⭐'.repeat(prog[i].stars)}${'☆'.repeat(3 - prog[i].stars)}</span>`;
+    }
+
+    if (unlocked) {
+      cell.addEventListener('click', () => {
+        state.levelIdx = i;
+        levelSelect.classList.remove('active');
+        loadLevel();
+      });
+    }
+
+    grid.appendChild(cell);
+  });
+
+  levelSelect.classList.add('active');
+}
+
+// ── Utility ──────────────────────────────────────────────
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+</body>
+</html>

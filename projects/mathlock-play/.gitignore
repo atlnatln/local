@@ -33,7 +33,11 @@ dist/
 
 # AI data (stats telefondan gelir, questions AI üretir — repo'da seed versiyonu var)
 data/stats.json
+data/level-stats.json
 data/history/
+
+# AGENTS.md — scriptler tarafından geçici olarak oluşturulur (agents/ altındaki kaynak dosyalardan)
+/AGENTS.md
 
 # Proguard
 proguard/

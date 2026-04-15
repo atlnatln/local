@@ -46,6 +46,23 @@ const apiService = {
     evcil_hayvan: createCalculator('evcil-hayvan'),
     besi_sigirciligi: createCalculator('besi-sigirciligi'),
     
+    // 2025 Yeni Yapılar (ID 29-43)
+    fide_uretim: createCalculator('fide-uretim'),
+    fidan_uretim: createCalculator('fidan-uretim'),
+    sahipsiz_hayvan: createCalculator('sahipsiz-hayvan'),
+    sundurma: createCalculator('sundurma'),
+    ciftlik_atolyesi: createCalculator('ciftlik-atolyesi'),
+    su_urunleri: createCalculator('su-urunleri'),
+    deve_kusu: createCalculator('deve-kusu'),
+    gubre_deposu: createCalculator('gubre-deposu'),
+    mandira: createCalculator('mandira'),
+    un_degirmeni: createCalculator('un-degirmeni'),
+    teleferik: createCalculator('teleferik'),
+    golet: createCalculator('golet'),
+    islim: createCalculator('islim'),
+    muz_sarartma: createCalculator('muz-sarartma'),
+    tarimsal_arge: createCalculator('tarimsal-arge'),
+    
     // Legacy/Fallback keys if needed
     gübreli_alan: calculateDepoAmbar, 
   }
@@ -123,6 +140,7 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
   const [formData, setFormData] = useState<DetailedCalculationInput & {
     dut_bahcesi_alani?: number;
     dut_agaci_sayisi?: number;
+    toplam_arazi_varligi?: number;
   }>({
     alan_m2: 0,
     arazi_vasfi: '', // Başlangıçta boş olacak ki placeholder görünsün
@@ -465,6 +483,7 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
         dut_agaci_sayisi: 0,
         // Depo/sera özel alanları
         depo_alani: 0,
+        toplam_arazi_varligi: 0,
         sera_alani_m2: 0,
         silo_taban_alani_m2: 0,
         // Manuel kontrol sonucu ve eklenen ağaç listesi temizlenir
@@ -1044,7 +1063,8 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
         const tarimsalDepoFormData = {
           calculationType,
           arazi_vasfi: formData.arazi_vasfi,
-          depo_alani: formData.depo_alani, // Ana fark: depo alanı
+          depo_alani: formData.depo_alani, // Legacy uyumluluk
+          toplam_arazi_varligi: formData.toplam_arazi_varligi, // İlçe geneli toplam arazi
           alan_m2: formData.alan_m2,
           tarla_alani: formData.tarla_alani,
           dikili_alani: formData.dikili_alani,
@@ -1066,8 +1086,11 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
         
         console.log('🏪 Tarımsal depo için bağ evi mantığı kullanıldı');
         console.log('🔄 Arazi vasfı:', formData.arazi_vasfi);
-        console.log('📦 Depo alanı:', formData.depo_alani);
+        console.log('📦 Toplam arazi varlığı:', formData.toplam_arazi_varligi);
         console.log('📊 Hazırlanan veriler:', preparedData);
+
+        // Toplam arazi varlığını finalFormData'ya ekle (prepareFormDataForBackend bunu bilmez)
+        finalFormData.toplam_arazi_varligi = formData.toplam_arazi_varligi || 0;
       }
 
       // Seçilen koordinat bilgisini form dataya ekle
@@ -1092,7 +1115,6 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
         'hububat-silo',
         'tarimsal-silo',
         'solucan-tesisi',
-        'tarimsal-depo',
         'lisansli-depo',
         'kurutma-tesisi',
         'meyve-sebze-kurutma',
@@ -1110,7 +1132,16 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
         'hara',
         /* 'ipek-bocekciligi', */
         'evcil-hayvan',
-        'besi-sigirciligi'
+        'besi-sigirciligi',
+        'deve-kusu',
+        // Yeni eklenen tesisler - dinamik emsal
+        'fide-uretim',
+        'fidan-uretim',
+        'sahipsiz-hayvan',
+        'gubre-deposu',
+        'su-urunleri',
+        'sundurma',
+        'ciftlik-atolyesi',
       ];
       if (dynamicEmsalTypes.includes(calculationType)) {
         // emsal_turu 'marjinal' ise 0.20, 'mutlak_dikili' ise 0.05

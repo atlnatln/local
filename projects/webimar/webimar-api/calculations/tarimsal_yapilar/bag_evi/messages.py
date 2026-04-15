@@ -244,6 +244,10 @@ def render_manuel_kontrol_detay(manuel_kontrol_sonucu: Dict[str, Any]) -> str:
     """
     parts = []
 
+    # String olarak gelen manuel kontrol sonuçlarını atla
+    if not isinstance(manuel_kontrol_sonucu, dict):
+        return ""
+
     # Eklenen ağaç bilgilerini göster
     eklenen_agaclar = manuel_kontrol_sonucu.get('eklenenAgaclar', [])
     if eklenen_agaclar:
@@ -284,7 +288,7 @@ def render_manuel_kontrol_detay(manuel_kontrol_sonucu: Dict[str, Any]) -> str:
     return "".join(parts).replace(",", ".")
 
 
-def render_izin_verilebilir_footer(max_taban_alani: int = 75, max_toplam_alan: int = 150) -> str:
+def render_izin_verilebilir_footer(max_taban_alani: int = 30, max_toplam_alan: int = 60) -> str:
     """Başarılı sonuç için footer HTML"""
     return f"""
     <b>🏠 Bağ Evi İzni VERİLEBİLİR:</b><br>

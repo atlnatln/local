@@ -1,0 +1,116 @@
+{
+  "slug": "fidan-uretim",
+  "id": 30,
+  "name": "Fidan Üretim Tesisi",
+  "category": "Özel Üretim Tesisleri",
+  "seo": {
+    "title": "Fidan Üretim Tesisi Nasıl Kurulur? | Tarım İmar",
+    "description": "Fidan üretim tesisi kurulumu, alan hesaplama ve mevzuat bilgileri. Tarımsal arazilerde fidan üretim tesisi yapılaşma koşulları.",
+    "keywords": [
+      "fidan üretim",
+      "fidan tesisi",
+      "fidanlık",
+      "meyve fidanı",
+      "fidan üretim tesisi"
+    ],
+    "canonical": "/fidan-uretim/"
+  },
+  "hero": {
+    "title": "Fidan Üretim Tesisi",
+    "subtitle": "Meyve, süs ve orman fidanları üretimi için tesis kurulumu",
+    "icon": "🌲"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Fidan üretim tesisi</strong>, meyve ağaçları, süs bitkileri ve orman ağaçları fidanlarının üretildiği tesislerdir.</p>",
+    "purpose": "<p>Sertifikalı ve kaliteli fidan üretimi ile tarımsal üretimin desteklenmesi amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Tarımsal arazi sahipleri ve fidancılık işletmeleri fidan üretim tesisi kurabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "Sertifikalı Üretim",
+      "description": "Bakanlık onaylı sertifikalı fidan üretimi",
+      "icon": "📋"
+    },
+    {
+      "title": "Çeşitlilik",
+      "description": "Meyve, süs ve orman fidanları",
+      "icon": "🌳"
+    },
+    {
+      "title": "Aşılama",
+      "description": "Profesyonel aşılama ve çoğaltma teknikleri",
+      "icon": "✂️"
+    },
+    {
+      "title": "Dayanıklı Fidanlar",
+      "description": "Bölgeye uygun anaç seçimi",
+      "icon": "💪"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir",
+        "Sertifikalı üretim zorunluluğu"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "Açık alan fidanlık alanı",
+        "Aşılama ve çoğaltma ünitesi",
+        "Sulama sistemi",
+        "Soğuk hava deposu (opsiyonel)"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Fidan Üretim Tesisi Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, fidan üretim tesisi alanınızı hesaplayın",
+    "ctaText": "Fidan Üretim Tesisi Hesapla",
+    "ctaLink": "/hesaplama/fidan-uretim"
+  },
+  "faq": [
+    {
+      "question": "Fidan üretim tesisi için ne kadar arazi gerekir?",
+      "answer": "Arazi büyüklüğü üretim kapasitesine göre değişir. Hesaplama aracımızı kullanarak ihtiyacınızı belirleyebilirsiniz."
+    },
+    {
+      "question": "Hangi fidan türleri üretilebilir?",
+      "answer": "Meyve fidanları, süs bitkileri fidanları ve orman ağacı fidanları üretilebilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Fide Üretim Tesisi",
+      "url": "/fide-uretim",
+      "icon": "📋"
+    },
+    {
+      "title": "Sera Hesaplama",
+      "url": "/sera",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Fidan Üretim Tesisi Nasıl Kurulur?",
+    "description": "Fidan üretim tesisi kurulumu, alan hesaplama ve mevzuat bilgileri. Tarımsal arazilerde fidan üretim tesisi yapılaşma koşulları.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

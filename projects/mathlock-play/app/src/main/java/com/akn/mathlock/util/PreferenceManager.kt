@@ -23,6 +23,10 @@ class PreferenceManager(context: Context) {
         private const val KEY_PATTERN_ENABLED = "pattern_enabled"
         private const val KEY_FIRST_RUN = "first_run"
         private const val KEY_DISCLOSURE_ACCEPTED = "disclosure_accepted"
+        private const val KEY_PUZZLE_ENABLED = "challenge_puzzle_enabled"
+        private const val KEY_MATH_ENABLED  = "challenge_math_enabled"
+        private const val KEY_GUESS_ENABLED  = "challenge_guess_enabled"
+        private const val KEY_ROBOTOPIA_ENABLED = "challenge_robotopia_enabled"
 
         private const val DEFAULT_PASS_SCORE = 3
         private const val DEFAULT_GUESS_MAX = 100
@@ -132,6 +136,24 @@ class PreferenceManager(context: Context) {
     var isDisclosureAccepted: Boolean
         get() = prefs.getBoolean(KEY_DISCLOSURE_ACCEPTED, false)
         set(value) = prefs.edit().putBoolean(KEY_DISCLOSURE_ACCEPTED, value).apply()
+
+    // --- Oyun Görünürlük Ayarları (kilit ekranı) ---
+
+    var isMathEnabled: Boolean
+        get() = prefs.getBoolean(KEY_MATH_ENABLED, true)
+        set(value) = prefs.edit().putBoolean(KEY_MATH_ENABLED, value).apply()
+
+    var isGuessEnabled: Boolean
+        get() = prefs.getBoolean(KEY_GUESS_ENABLED, true)
+        set(value) = prefs.edit().putBoolean(KEY_GUESS_ENABLED, value).apply()
+
+    var isPuzzleEnabled: Boolean
+        get() = prefs.getBoolean(KEY_PUZZLE_ENABLED, true)
+        set(value) = prefs.edit().putBoolean(KEY_PUZZLE_ENABLED, value).apply()
+
+    var isRobotopiaEnabled: Boolean
+        get() = prefs.getBoolean(KEY_ROBOTOPIA_ENABLED, true)
+        set(value) = prefs.edit().putBoolean(KEY_ROBOTOPIA_ENABLED, value).apply()
 
     // --- Hash Yardımcısı ---
 

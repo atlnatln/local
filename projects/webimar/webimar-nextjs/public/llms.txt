@@ -1,6 +1,6 @@
 # Tarım İmar - LLMs Site Guide
 
-Last updated: 2026-02-27
+Last updated: 2026-04-12
 Primary domain: https://tarimimar.com.tr
 Language: Turkish (tr-TR)
 Scope: Agricultural land-use legislation, agricultural construction eligibility, capacity and support calculation tools, legal reference content.
@@ -72,6 +72,21 @@ NOT: Bu bölüm `npm run sync-llms` scripti tarafından sitemap.xml'den otomatik
 - https://tarimimar.com.tr/yikama-tesisi/
 - https://tarimimar.com.tr/zeytinyagi-fabrikasi/
 - https://tarimimar.com.tr/zeytinyagi-uretim-tesisi/
+- https://tarimimar.com.tr/ciftlik-atolyesi/
+- https://tarimimar.com.tr/sundurma/
+- https://tarimimar.com.tr/fide-uretim/
+- https://tarimimar.com.tr/fidan-uretim/
+- https://tarimimar.com.tr/sahipsiz-hayvan/
+- https://tarimimar.com.tr/deve-kusu/
+- https://tarimimar.com.tr/gubre-deposu/
+- https://tarimimar.com.tr/mandira/
+- https://tarimimar.com.tr/un-degirmeni/
+- https://tarimimar.com.tr/su-urunleri/
+- https://tarimimar.com.tr/teleferik/
+- https://tarimimar.com.tr/golet/
+- https://tarimimar.com.tr/islim/
+- https://tarimimar.com.tr/muz-sarartma/
+- https://tarimimar.com.tr/tarimsal-arge/
 
 ### 4.2) Çiftlik/Hayvancılık ve Karar Destek Araçları
 - https://tarimimar.com.tr/aricilik-planlama/
@@ -85,7 +100,8 @@ NOT: Bu bölüm `npm run sync-llms` scripti tarafından sitemap.xml'den otomatik
 
 ### 4.4) Mevzuat ve Referans Belgeleri
 - https://tarimimar.com.tr/documents/toprak-koruma-kanunu/
-- https://tarimimar.com.tr/documents/tarim-arazileri-kullanimi-genelgesi/
+- https://tarimimar.com.tr/documents/tarim-arazileri-koruma-yonetmeligi/
+- https://tarimimar.com.tr/documents/tarimsal-yapi-kriterleri/
 - https://tarimimar.com.tr/documents/zeytincilik-islahi-kanunu/
 - https://tarimimar.com.tr/documents/zeytincilik-islahi-yonetmeligi/
 - https://tarimimar.com.tr/documents/izmir-buyuksehir-plan-notlari/

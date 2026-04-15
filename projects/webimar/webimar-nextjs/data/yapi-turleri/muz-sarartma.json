@@ -1,0 +1,114 @@
+{
+  "slug": "muz-sarartma",
+  "id": 42,
+  "name": "Muz Sarartma Ünitesi",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Muz Sarartma Ünitesi Yapımı | Tarım İmar",
+    "description": "Muz sarartma ünitesi kurulumu, alan hesaplama ve mevzuat bilgileri.",
+    "keywords": [
+      "muz sarartma",
+      "muz olgunlaştırma",
+      "muz sarartma ünitesi",
+      "muz işleme"
+    ],
+    "canonical": "/muz-sarartma/"
+  },
+  "hero": {
+    "title": "Muz Sarartma Ünitesi",
+    "subtitle": "Muz olgunlaştırma ve sarartma tesisi kurulumu",
+    "icon": "🍌"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Muz sarartma ünitesi</strong>, yeşil olarak hasat edilen muzların kontrollü ortamda olgunlaştırılarak tüketime hazır hale getirildiği tesislerdir.</p>",
+    "purpose": "<p>Muzların kaliteli şekilde olgunlaştırılması ve pazara sunulması amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Muz üreticileri ve tarımsal arazi sahipleri kurabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "Kontrollü Olgunlaştırma",
+      "description": "Sıcaklık ve nem kontrollü ortam",
+      "icon": "🌡️"
+    },
+    {
+      "title": "Kaliteli Ürün",
+      "description": "Homojen olgunlaşma ve renk",
+      "icon": "⭐"
+    },
+    {
+      "title": "Uzun Raf Ömrü",
+      "description": "Kontrollü süreç ile uzun raf ömrü",
+      "icon": "📅"
+    },
+    {
+      "title": "Yüksek Katma Değer",
+      "description": "Pazara uygun ürün sunumu",
+      "icon": "💰"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "İzole olgunlaştırma odası",
+        "Sıcaklık ve nem kontrol sistemi",
+        "Havalandırma sistemi",
+        "Etilen gaz uygulaması"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Muz Sarartma Ünitesi Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, muz sarartma ünitesi alanınızı hesaplayın",
+    "ctaText": "Muz Sarartma Ünitesi Hesapla",
+    "ctaLink": "/hesaplama/muz-sarartma"
+  },
+  "faq": [
+    {
+      "question": "Muz sarartma ünitesi nasıl çalışır?",
+      "answer": "Yeşil muzlar kontrollü sıcaklık ve etilen gazı ile olgunlaştırılarak sarartılır."
+    },
+    {
+      "question": "Muz sarartma ünitesi nerede kurulabilir?",
+      "answer": "Özellikle Mersin, Antalya gibi muz üretim bölgelerinde tarımsal arazilerde kurulabilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Soğuk Hava Deposu",
+      "url": "/soguk-hava-deposu",
+      "icon": "📋"
+    },
+    {
+      "title": "Tarımsal Depo",
+      "url": "/tarimsal-depo",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Muz Sarartma Ünitesi Yapımı",
+    "description": "Muz sarartma ünitesi kurulumu, alan hesaplama ve mevzuat bilgileri.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

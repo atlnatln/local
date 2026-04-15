@@ -3,12 +3,12 @@ Bağ Evi yapılaşma kuralları ve değerlendirme fonksiyonları
 Genişletilebilir yapı - diğer arazi tipleri için de kullanılabilir
 """
 
-# Sabitler ve yapılandırma değerleri
-BAG_EVI_MIN_ARAZI_BUYUKLUGU_DIKILI = 5000  # 0.5 hektar - Dikili alan minimum
-BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK = 20000  # 2 hektar - Tarla alanı minimum
-BAG_EVI_MIN_ARAZI_BUYUKLUGU_ORTU_ALTI = 3000  # 0.3 hektar - Örtüaltı minimum
-BAG_EVI_MAX_TABAN_ALANI = 75  # metrekare
-BAG_EVI_MAX_TOPLAM_ALAN = 150  # metrekare
+# Sabitler ve yapılandırma değerleri - 2025 Yönetmelik güncellemesi
+BAG_EVI_MIN_ARAZI_BUYUKLUGU_DIKILI = 10000  # 1 hektar - Dikili alan minimum (eski: 0.5 ha)
+BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK = 50000  # 5 hektar - Mutlak/Özel/Marjinal minimum (eski: 2 ha)
+BAG_EVI_MIN_ARAZI_BUYUKLUGU_ORTU_ALTI = 3000  # 0.3 hektar - Örtüaltı minimum (değişmedi)
+BAG_EVI_MAX_TABAN_ALANI = 30  # metrekare (eski: 75 m²)
+BAG_EVI_MAX_TOPLAM_ALAN = 60  # metrekare - 30 m² x 2 kat (eski: 150 m²)
 
 # Bağ evi kuralları sözlüğü (diğer modüllerle uyumluluk için)
 BAG_EVI_KURALLARI = {
@@ -22,7 +22,7 @@ BAG_EVI_KURALLARI = {
 # Arazi tipi konfigürasyonları - Optimizasyon için
 ARAZI_TIPI_KONFIGURASYONLARI = {
     "Dikili vasıflı": {
-        "min_dikili_alan": 5000,
+        "min_dikili_alan": 10000,
         "min_tarla_alan": None,
         "min_toplam_alan": None,
         "zeytin_agac_kontrolu": False,  # ✅ Dikili vasıflı normalde ağaç kontrolü yapılmaz
@@ -32,7 +32,7 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
     },
     "Tarla": {
         "min_dikili_alan": None,
-        "min_tarla_alan": 20000,
+        "min_tarla_alan": 50000,
         "min_toplam_alan": None,
         "zeytin_agac_kontrolu": False,
         "max_zeytin_yogunlugu": None,
@@ -58,8 +58,8 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
         "kriter_mesaji": "Sera alanı kontrolü"
     },
     "Tarla + herhangi bir dikili vasıflı": {
-        "min_dikili_alan": 5000,
-        "min_tarla_alan": 20000,
+        "min_dikili_alan": 10000,
+        "min_tarla_alan": 50000,
         "min_toplam_alan": None,
         "zeytin_agac_kontrolu": False,
         "max_zeytin_yogunlugu": None,
@@ -71,8 +71,8 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
     },
     "Tarla + Zeytinlik": {
         "min_dikili_alan": None,
-        "min_tarla_alan": 20000,
-        "min_toplam_alan": 20001,
+        "min_tarla_alan": 50000,
+        "min_toplam_alan": 50001,
         "min_zeytinlik_alan": 1,
         "zeytin_agac_kontrolu": False,
         "max_zeytin_yogunlugu": None,
@@ -84,7 +84,7 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
     },
     "Zeytin ağaçlı + tarla": {
         "min_dikili_alan": None,
-        "min_tarla_alan": 20000,
+        "min_tarla_alan": 50000,
         "min_toplam_alan": None,
         "zeytin_agac_kontrolu": True,
         "max_zeytin_yogunlugu": 10,
@@ -96,7 +96,7 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
         "manuel_fonksiyon": "bag_evi_degerlendir_zeytin_tarla_manuel"
     },
     "Zeytin ağaçlı + herhangi bir dikili vasıf": {
-        "min_dikili_alan": 5000,
+        "min_dikili_alan": 10000,
         "min_tarla_alan": None,
         "min_toplam_alan": None,
         "zeytin_agac_kontrolu": True,
@@ -111,7 +111,7 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
     # Yeni arazi tipleri ekleniyor
     "… Adetli Zeytin Ağacı bulunan tarla": {
         "min_dikili_alan": None,
-        "min_tarla_alan": 20000,
+        "min_tarla_alan": 50000,
         "min_toplam_alan": None,
         "zeytin_agac_kontrolu": True,
         "max_zeytin_yogunlugu": 10,
@@ -122,7 +122,7 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
         "universal_function": True
     },
     "… Adetli Zeytin Ağacı bulunan + herhangi bir dikili vasıf": {
-        "min_dikili_alan": 5000,
+        "min_dikili_alan": 10000,
         "min_tarla_alan": None,
         "min_toplam_alan": None,
         "zeytin_agac_kontrolu": True,
@@ -134,7 +134,7 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
         "universal_function": True
     },
     "Bağ vasfı": {
-        "min_dikili_alan": 5000,
+        "min_dikili_alan": 10000,
         "min_tarla_alan": None,
         "min_toplam_alan": None,
         "zeytin_agac_kontrolu": False,
@@ -147,33 +147,33 @@ ARAZI_TIPI_KONFIGURASYONLARI = {
     "Ham toprak, taşlık, kıraç, palamutluk, koruluk gibi diğer vasıflı": {
         "min_dikili_alan": None,
         "min_tarla_alan": None,
-        "min_toplam_alan": 20000,  # Ham toprak için 20.000 m² minimum alan şartı
+        "min_toplam_alan": 50000,  # Ham toprak için 50.000 m² minimum alan şartı
         "zeytin_agac_kontrolu": False,
         "max_zeytin_yogunlugu": None,
         "alan_tipleri": ["alan_m2"],  # Toplam alan kontrolü
-        "kriter_mesaji": "Ham toprak arazi alan kontrolü (min 20.000 m²)",
+        "kriter_mesaji": "Ham toprak arazi alan kontrolü (min 50.000 m²)",
         "dual_function": False,
         "universal_function": True
     },
     "Tarla": {
         "min_dikili_alan": None,
         "min_tarla_alan": None,
-        "min_toplam_alan": 20000,  # Tarla için 20.000 m² minimum alan şartı
+        "min_toplam_alan": 50000,  # Tarla için 50.000 m² minimum alan şartı
         "zeytin_agac_kontrolu": False,
         "max_zeytin_yogunlugu": None,
         "alan_tipleri": ["alan_m2"],  # Toplam alan kontrolü
-        "kriter_mesaji": "Tarla arazi alan kontrolü (min 20.000 m²)",
+        "kriter_mesaji": "Tarla arazi alan kontrolü (min 50.000 m²)",
         "dual_function": False,
         "universal_function": True
     },
     "Sera": {
         "min_dikili_alan": None,
         "min_tarla_alan": None,
-        "min_toplam_alan": 5000,  # Sera için 5.000 m² minimum alan şartı
+        "min_toplam_alan": 5000,  # Sera için 5.000 m² minimum alan şartı (sera alanı, bağ evi için farklı)
         "zeytin_agac_kontrolu": False,
         "max_zeytin_yogunlugu": None,
         "alan_tipleri": ["alan_m2"],  # Toplam alan kontrolü
-        "kriter_mesaji": "Sera arazi alan kontrolü (min 5.000 m²)",
+        "kriter_mesaji": "Sera arazi alan kontrolü (min 10.000 m²)",
         "dual_function": False,
         "universal_function": True
     }
@@ -947,7 +947,7 @@ def bag_evi_degerlendir_varsayimsal(arazi_bilgileri, yapi_bilgileri, bag_evi_var
     dikili_alani = arazi_bilgileri.get('dikili_alani', 0)
     toplam_arazi = tarla_alani + dikili_alani
     
-    # Varsayımsal kontrol: Dikili alan >= 5000 veya tarla alanı >= 20000
+    # Varsayımsal kontrol: Dikili alan >= 10000 veya tarla alanı >= 50000
     dikili_yeterli = dikili_alani >= BAG_EVI_MIN_ARAZI_BUYUKLUGU_DIKILI
     tarla_yeterli = tarla_alani >= BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK
     
@@ -1197,13 +1197,13 @@ def bag_evi_degerlendir_tarla_zeytinlik_varsayimsal(arazi_bilgileri, yapi_bilgil
     toplam_arazi = tarla_alani + zeytinlik_alani
     
     # "Tarla + Zeytinlik" kriterleri:
-    # 1. Tarla alanı >= 20000 m² (2.0 hektar)
+    # 1. Tarla alanı >= 50000 m² (5.0 hektar)
     # 2. Zeytinlik alanı >= 1 m² (minimal zeytinlik varlığı)
     # 3. Toplam alan >= 20001 m² (2.0001 hektar)
     
-    tarla_yeterli = tarla_alani >= 20000
+    tarla_yeterli = tarla_alani >= BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK
     zeytinlik_yeterli = zeytinlik_alani >= 1
-    toplam_yeterli = toplam_arazi >= 20001
+    toplam_yeterli = toplam_arazi >= (BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK + 1)
     
     # Tüm şartların sağlanması gerekiyor
     if tarla_yeterli and zeytinlik_yeterli and toplam_yeterli:
@@ -1213,7 +1213,7 @@ def bag_evi_degerlendir_tarla_zeytinlik_varsayimsal(arazi_bilgileri, yapi_bilgil
         
         <b>📋 Girilen Bilgiler:</b><br>
         • Toplam Arazi: {toplam_arazi:,} m² ({toplam_arazi/10000:.2f} hektar)<br>
-        • Tarla Alanı: {tarla_alani:,} m² (minimum 20.000 m² gerekli) {"✅" if tarla_yeterli else "❌"}<br>
+        • Tarla Alanı: {tarla_alani:,} m² (minimum 50.000 m² gerekli) {"✅" if tarla_yeterli else "❌"}<br>
         • Zeytinlik Alanı: {zeytinlik_alani:,} m² (minimum 1 m² gerekli) {"✅" if zeytinlik_yeterli else "❌"}<br><br>
         
         <b>✅ Değerlendirme:</b><br>
@@ -1240,12 +1240,12 @@ def bag_evi_degerlendir_tarla_zeytinlik_varsayimsal(arazi_bilgileri, yapi_bilgil
         
         <b>📋 Girilen Bilgiler:</b><br>
         • Toplam Arazi: {toplam_arazi:,} m² (minimum 20.001 m² gerekli) {"✅" if toplam_yeterli else "❌"}<br>
-        • Tarla Alanı: {tarla_alani:,} m² (minimum 20.000 m² gerekli) {"✅" if tarla_yeterli else "❌"}<br>
+        • Tarla Alanı: {tarla_alani:,} m² (minimum 50.000 m² gerekli) {"✅" if tarla_yeterli else "❌"}<br>
         • Zeytinlik Alanı: {zeytinlik_alani:,} m² (minimum 1 m² gerekli) {"✅" if zeytinlik_yeterli else "❌"}<br><br>
         
         <b>❌ Değerlendirme:</b><br>
         Girilen bilgilere göre bağ evi şartları sağlanamamaktadır:<br>
-        {"• Tarla alanı yetersiz (min 20.000 m²)<br>" if not tarla_yeterli else ""}
+        {"• Tarla alanı yetersiz (min 50.000 m²)<br>" if not tarla_yeterli else ""}
         {"• Zeytinlik alanı yetersiz (min 1 m²)<br>" if not zeytinlik_yeterli else ""}
         {"• Toplam alan yetersiz (min 20.001 m²)<br>" if not toplam_yeterli else ""}
         <br>Tüm şartların sağlanması gerekmektedir.
@@ -1315,7 +1315,7 @@ def bag_evi_degerlendir_tarla_zeytinlik_manuel(arazi_bilgileri, yapi_bilgileri, 
     # Normal manuel kontrol değerlendirmesi
     tarla_yeterli = tarla_alani >= BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK
     zeytinlik_yeterli = zeytinlik_alani >= 1
-    toplam_yeterli = toplam_arazi >= 20001
+    toplam_yeterli = toplam_arazi >= (BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK + 1)
     
     if tarla_yeterli and zeytinlik_yeterli:
         sonuc["izin_durumu"] = "izin_verilebilir"
@@ -1324,7 +1324,7 @@ def bag_evi_degerlendir_tarla_zeytinlik_manuel(arazi_bilgileri, yapi_bilgileri, 
         
         <b>📋 Arazi Bilgileri:</b><br>
         • Toplam Arazi: {toplam_arazi:,} m² ({toplam_arazi/10000:.2f} hektar)<br>
-        • Tarla Alanı: {tarla_alani:,} m² (min 20.000 m²) {"✅" if tarla_yeterli else "❌"}<br>
+        • Tarla Alanı: {tarla_alani:,} m² (min 50.000 m²) {"✅" if tarla_yeterli else "❌"}<br>
         • Zeytinlik Alanı: {zeytinlik_alani:,} m² (min 1 m²) {"✅" if zeytinlik_yeterli else "❌"}<br><br>
         
         <b>✅ Değerlendirme:</b><br>
@@ -1343,12 +1343,12 @@ def bag_evi_degerlendir_tarla_zeytinlik_manuel(arazi_bilgileri, yapi_bilgileri, 
         
         <b>📋 Arazi Bilgileri:</b><br>
         • Toplam Arazi: {toplam_arazi:,} m² (min 20.001 m²) {"✅" if toplam_yeterli else "❌"}<br>
-        • Tarla Alanı: {tarla_alani:,} m² (min 20.000 m²) {"✅" if tarla_yeterli else "❌"}<br>
+        • Tarla Alanı: {tarla_alani:,} m² (min 50.000 m²) {"✅" if tarla_yeterli else "❌"}<br>
         • Zeytinlik Alanı: {zeytinlik_alani:,} m² (min 1 m²) {"✅" if zeytinlik_yeterli else "❌"}<br><br>
         
         <b>❌ Değerlendirme:</b><br>
         Manuel kontrol sonucunda şartlar sağlanamamaktadır:<br>
-        {"• Tarla alanı yetersiz (min 20.000 m²)<br>" if not tarla_yeterli else ""}
+        {"• Tarla alanı yetersiz (min 50.000 m²)<br>" if not tarla_yeterli else ""}
         {"• Zeytinlik alanı yetersiz (min 1 m²)<br>" if not zeytinlik_yeterli else ""}
         {"• Toplam alan yetersiz (min 20.001 m²)<br>" if not toplam_yeterli else ""}
         <br>Tüm şartların sağlanması gerekmektedir.
@@ -1360,7 +1360,7 @@ def bag_evi_degerlendir_tarla_zeytinlik_manuel(arazi_bilgileri, yapi_bilgileri, 
 def bag_evi_degerlendir_zeytin_dikili_varsayimsal(arazi_bilgileri, yapi_bilgileri, bag_evi_var_mi=False):
     """
     "Zeytin ağaçlı + herhangi bir dikili vasıf" arazi tipi için varsayımsal değerlendirme
-    - Dikili alan kontrolü (≥5000 m²)
+    - Dikili alan kontrolü (≥10000 m²)
     - Zeytin ağacı yoğunluğu kontrolü (dekara <10 ağaç)
     - Harita kontrolü mevcut (varsayımsal sonuç verir)
     
@@ -1395,7 +1395,7 @@ def bag_evi_degerlendir_zeytin_dikili_varsayimsal(arazi_bilgileri, yapi_bilgiler
     dekara_agac_adedi = zeytin_agac_adedi / dekar_sayisi if dekar_sayisi > 0 else 0
     
     # "Zeytin ağaçlı + herhangi bir dikili vasıf" kriterleri:
-    # 1. Dikili alan >= 5000 m² (0.5 hektar) 
+    # 1. Dikili alan >= 10000 m² (1.0 hektar) 
     # 2. Dekara zeytin ağacı adedi < 10 (10 veya üstü ret)
     
     dikili_yeterli = dikili_alani >= BAG_EVI_MIN_ARAZI_BUYUKLUGU_DIKILI
@@ -1440,7 +1440,7 @@ def bag_evi_degerlendir_zeytin_dikili_varsayimsal(arazi_bilgileri, yapi_bilgiler
         
         <b>❌ Değerlendirme:</b><br>
         Bağ evi şartları sağlanamamaktadır:<br>
-        {"• Dikili alan yetersiz (min 5.000 m² gerekli)<br>" if not dikili_yeterli else ""}
+        {"• Dikili alan yetersiz (min 10.000 m² gerekli)<br>" if not dikili_yeterli else ""}
         {"• Zeytin ağacı yoğunluğu fazla (dekara 10+ ağaç)<br>" if not agac_yogunlugu_uygun else ""}
         <br>Tüm şartların sağlanması gerekmektedir.
         """.replace(",", ".")
@@ -1559,7 +1559,7 @@ def bag_evi_degerlendir_zeytin_dikili_manuel(arazi_bilgileri, yapi_bilgileri, ma
             
             <b>✅ Değerlendirme:</b><br>
             Manuel kontrol sonucuna göre tüm şartlar sağlanmaktadır:<br>
-            • Dikili alan yeterli (min 5.000 m²) ✅<br>
+            • Dikili alan yeterli (min 10.000 m²) ✅<br>
             • Zeytin ağacı yoğunluğu uygun (dekara 10'dan az) ✅<br><br>
             
             <b>🏠 Bağ Evi İzni VERİLEBİLİR:</b><br>
@@ -1592,7 +1592,7 @@ def bag_evi_degerlendir_zeytin_dikili_manuel(arazi_bilgileri, yapi_bilgileri, ma
             
             <b>❌ Değerlendirme:</b><br>
             Manuel kontrol sonucu - şartlar sağlanamamaktadır:<br>
-            {"• Dikili alan yetersiz (min 5.000 m²)<br>" if not dikili_yeterli else ""}
+            {"• Dikili alan yetersiz (min 10.000 m²)<br>" if not dikili_yeterli else ""}
             {"• Zeytin ağacı yoğunluğu fazla (dekara 10+ ağaç)<br>" if not agac_yogunlugu_uygun else ""}
             <br><b>Bağ evi yapılamaz.</b>
             """.replace(",", ".")
@@ -1629,7 +1629,7 @@ def bag_evi_degerlendir_zeytin_dikili_manuel(arazi_bilgileri, yapi_bilgileri, ma
         
         <b>✅ Değerlendirme:</b><br>
         Manuel kontrol sonucuna göre tüm şartlar sağlanmaktadır:<br>
-        • Dikili alan yeterli (min 5.000 m²) ✅<br>
+        • Dikili alan yeterli (min 10.000 m²) ✅<br>
         • Zeytin ağacı yoğunluğu uygun (dekara 10'dan az) ✅<br><br>
         
         <b>🏠 Bağ Evi İzni VERİLEBİLİR:</b><br>
@@ -1662,7 +1662,7 @@ def bag_evi_degerlendir_zeytin_dikili_manuel(arazi_bilgileri, yapi_bilgileri, ma
         
         <b>❌ Değerlendirme:</b><br>
         Manuel kontrol sonucunda şartlar sağlanamamaktadır:<br>
-        {"• Dikili alan yetersiz (min 5.000 m²)<br>" if not dikili_yeterli else ""}
+        {"• Dikili alan yetersiz (min 10.000 m²)<br>" if not dikili_yeterli else ""}
         {"• Zeytin ağacı yoğunluğu fazla (dekara 10+ ağaç)<br>" if not agac_yogunlugu_uygun else ""}
         {"• Zeytin ağacı yoğunluğu fazla (dekara 10+ ağaç)<br>" if not agac_yogunlugu_uygun else ""}
         <br><b>Bağ evi yapılamaz.</b>
@@ -1674,7 +1674,7 @@ def bag_evi_degerlendir_zeytin_dikili_manuel(arazi_bilgileri, yapi_bilgileri, ma
 def bag_evi_degerlendir_tarla_zeytin_varsayimsal(arazi_bilgileri, yapi_bilgileri, bag_evi_var_mi=False):
     """
     "Zeytin ağaçlı + tarla" arazi tipi için varsayımsal değerlendirme
-    - Tarla alanı kontrolü (≥20000 m²)
+    - Tarla alanı kontrolü (≥50000 m²)
     - Zeytin ağacı yoğunluğu kontrolü (dekara <10 ağaç)
     - Kesin sonuç (varsayımsal etiketi YOK)
     
@@ -1712,10 +1712,10 @@ def bag_evi_degerlendir_tarla_zeytin_varsayimsal(arazi_bilgileri, yapi_bilgileri
         dekara_agac_adedi = 0
     
     # "Zeytin ağaçlı + tarla" kriterleri:
-    # 1. Tarla alanı >= 20000 m² (2.0 hektar)
+    # 1. Tarla alanı >= 50000 m² (5.0 hektar)
     # 2. Zeytin ağacı yoğunluğu < 10 ağaç/dekar
     
-    tarla_yeterli = tarla_alani >= 20000
+    tarla_yeterli = tarla_alani >= BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK
     agac_yogunlugu_uygun = dekara_agac_adedi < 10
     
     # Her iki şartın da sağlanması gerekiyor
@@ -1731,7 +1731,7 @@ def bag_evi_degerlendir_tarla_zeytin_varsayimsal(arazi_bilgileri, yapi_bilgileri
         
         <b>✅ Değerlendirme:</b><br>
         Girilen bilgilere göre tüm şartlar sağlanmaktadır:<br>
-        • Tarla alanı yeterli (min 20.000 m²) ✅<br>
+        • Tarla alanı yeterli (min 50.000 m²) ✅<br>
         • Zeytin ağacı yoğunluğu uygun (dekara 10'dan az) ✅<br><br>
         
         <b>🏠 Bağ Evi İzni:</b><br>
@@ -1755,7 +1755,7 @@ def bag_evi_degerlendir_tarla_zeytin_varsayimsal(arazi_bilgileri, yapi_bilgileri
         
         <b>❌ Değerlendirme:</b><br>
         Girilen bilgilere göre bağ evi şartları sağlanamamaktadır:<br>
-        {"• Tarla alanı yetersiz (min 20.000 m²)<br>" if not tarla_yeterli else ""}
+        {"• Tarla alanı yetersiz (min 50.000 m²)<br>" if not tarla_yeterli else ""}
         {"• Zeytin ağacı yoğunluğu fazla (dekara 10+ ağaç, max 9.9 adet/dekar)<br>" if not agac_yogunlugu_uygun else ""}
         <br><b>Bağ evi yapılamaz.</b>
         """.replace(",", ".")
@@ -1819,10 +1819,10 @@ def bag_evi_degerlendir_zeytin_tarla_manuel(arazi_bilgileri, yapi_bilgileri, man
         dekara_agac_adedi = 0
     
     # "Zeytin ağaçlı + tarla" kriterleri:
-    # 1. Tarla alanı >= 20000 m² (2.0 hektar)  
+    # 1. Tarla alanı >= 50000 m² (5.0 hektar)  
     # 2. Zeytin ağacı yoğunluğu < 10 ağaç/dekar
     
-    tarla_yeterli = tarla_alani >= 20000
+    tarla_yeterli = tarla_alani >= BAG_EVI_MIN_ARAZI_BUYUKLUGU_MUTLAK
     agac_yogunlugu_uygun = dekara_agac_adedi < 10
     
     # Her iki şartın da sağlanması gerekiyor
@@ -1839,7 +1839,7 @@ def bag_evi_degerlendir_zeytin_tarla_manuel(arazi_bilgileri, yapi_bilgileri, man
         
         <b>✅ Değerlendirme:</b><br>
         Zeytin ağaçlı tarla için gerekli şartlar sağlanmaktadır:<br>
-        • Tarla alanı yeterli (≥20.000 m²)<br>
+        • Tarla alanı yeterli (≥50.000 m²)<br>
         • Zeytin ağacı yoğunluğu uygun (<10 adet/dekar)<br><br>
         
         <b>Bağ evi yapılabilir.</b>
@@ -1857,7 +1857,7 @@ def bag_evi_degerlendir_zeytin_tarla_manuel(arazi_bilgileri, yapi_bilgileri, man
         
         <b>❌ Değerlendirme:</b><br>
         Girilen bilgilere göre bağ evi şartları sağlanamamaktadır:<br>
-        {"• Tarla alanı yetersiz (min 20.000 m²)<br>" if not tarla_yeterli else ""}
+        {"• Tarla alanı yetersiz (min 50.000 m²)<br>" if not tarla_yeterli else ""}
         {"• Zeytin ağacı yoğunluğu fazla (dekara 10+ ağaç, max 9.9 adet/dekar)<br>" if not agac_yogunlugu_uygun else ""}
         <br><b>Bağ evi yapılamaz.</b>
         """.replace(",", ".")

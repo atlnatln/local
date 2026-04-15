@@ -12,7 +12,14 @@ services:
     volumes:
       - ./backend:/app
       - mathlock_db:/app/db
+    networks:
+      - default
+      - vps_infrastructure_network
     restart: unless-stopped
 
 volumes:
   mathlock_db:
+
+networks:
+  vps_infrastructure_network:
+    external: true

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Ağ güvenlik konfigürasyonu.
+    VPS'deki OTA güncelleme sunucusuna HTTP ile erişime izin verir.
+    İleride VPS'e SSL eklendiğinde bu istisna kaldırılabilir.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- VPS IP adresi — SSL sertifikası alındığında kaldır -->
+        <domain includeSubdomains="false">89.252.152.222</domain>
+    </domain-config>
+    <!-- Diğer tüm bağlantılarda cleartext yasak -->
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

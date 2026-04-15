@@ -17,37 +17,60 @@ ARAZI_TIPLERI = [
     {"id": 11, "ad": "Sera"},
 ]
 
-# Yapı türleri tanımı (eski projeden taşınan - ID ile birlikte)
+# Yapı türleri tanımı
+# aktif: True = kullanımda, False = yönetmelik değişikliğiyle pasife alınmış (2025 güncellemesi)
 YAPI_TURLERI = [
-    {"id": 1, "ad": "Solucan ve solucan gübresi"}, 
-    {"id": 2, "ad": "Mantar üretim"}, 
-    {"id": 3, "ad": "Sera"},
-    {"id": 4, "ad": "Arıcılık"},
-    {"id": 5, "ad": "Hububat ve yem depolama silosu"},
-    {"id": 6, "ad": "Tarımsal amaçlı depo"},
-    {"id": 7, "ad": "Lisanslı depolar"},
-    {"id": 8, "ad": "Tarımsal ürün yıkama"},
-    {"id": 9, "ad": "Hububat, çeltik, ayçiçeği kurutma"},
-    {"id": 10, "ad": "Açıkta meyve/sebze kurutma"},
-    {"id": 11, "ad": "Zeytinyağı fabrikası"},
-    {"id": 12, "ad": "Su depolama"},
-    {"id": 13, "ad": "Su kuyuları"},
-    {"id": 14, "ad": "Bağ evi"},
-    {"id": 15, "ad": "Su depolama ve pompaj sistemi"},
-    {"id": 16, "ad": "Soğuk hava deposu"},
-    {"id": 17, "ad": "Süt Sığırcılığı"},
-    {"id": 18, "ad": "Ağıl (küçükbaş)"},
-    {"id": 19, "ad": "Kümes (yumurtacı tavuk)"},
-    {"id": 20, "ad": "Kümes (etçi tavuk)"},
-    {"id": 21, "ad": "Kümes (gezen tavuk)"},
-    {"id": 22, "ad": "Kümes (hindi)"},
-    {"id": 23, "ad": "Kaz Ördek çiftliği"},
-    {"id": 24, "ad": "Hara (at üretimi)"},
-    {"id": 25, "ad": "İpek böcekçiliği"}, 
-    {"id": 26, "ad": "Evcil hayvan ve bilimsel araştırma hayvanı üretim"},
-    {"id": 27, "ad": "Besi Sığırcılığı"},
-    {"id": 28, "ad": "Zeytinyağı üretim tesisi"},
+    {"id": 1, "ad": "Solucan ve solucan gübresi", "aktif": True},
+    {"id": 2, "ad": "Mantar üretim", "aktif": False},  # 2025: Yeni yönetmelikte tarımsal yapı olarak tanımlı değil
+    {"id": 3, "ad": "Sera", "aktif": True},
+    {"id": 4, "ad": "Arıcılık", "aktif": True},
+    {"id": 5, "ad": "Hububat ve yem depolama silosu", "aktif": False},  # 2025: Silo olarak tanımlı değil (depo/kurutma ayrı)
+    {"id": 6, "ad": "Tarımsal amaçlı depo", "aktif": True},
+    {"id": 7, "ad": "Lisanslı depolar", "aktif": False},  # 2025: Yeni yönetmelikte tanımlı değil
+    {"id": 8, "ad": "Tarımsal ürün yıkama", "aktif": True},
+    {"id": 9, "ad": "Hububat, çeltik, ceviz ve ayçiçeği kurutma", "aktif": True},  # 2025: "ceviz" eklendi
+    {"id": 10, "ad": "Açıkta meyve/sebze kurutma", "aktif": False},  # 2025: Yeni yönetmelikte tanımlı değil
+    {"id": 11, "ad": "Zeytinyağı fabrikası", "aktif": False},  # 2025: Entegre tesis sayılır, tarımsal yapı değil
+    {"id": 12, "ad": "Su depolama", "aktif": True},
+    {"id": 13, "ad": "Su kuyuları", "aktif": True},
+    {"id": 14, "ad": "Bağ evi", "aktif": True},
+    {"id": 15, "ad": "Su depolama ve pompaj sistemi", "aktif": True},
+    {"id": 16, "ad": "Soğuk hava deposu", "aktif": False},  # 2025: Yeni yönetmelikte tanımlı değil
+    {"id": 17, "ad": "Süt Sığırcılığı", "aktif": True},
+    {"id": 18, "ad": "Ağıl (küçükbaş)", "aktif": True},
+    {"id": 19, "ad": "Kümes (yumurtacı tavuk)", "aktif": True},
+    {"id": 20, "ad": "Kümes (etçi tavuk)", "aktif": True},
+    {"id": 21, "ad": "Kümes (gezen tavuk)", "aktif": True},
+    {"id": 22, "ad": "Kümes (hindi)", "aktif": True},
+    {"id": 23, "ad": "Kaz Ördek çiftliği", "aktif": True},
+    {"id": 24, "ad": "Hara (at üretimi)", "aktif": True},
+    {"id": 25, "ad": "İpek böcekçiliği", "aktif": True},
+    {"id": 26, "ad": "Evcil hayvan ve bilimsel araştırma hayvanı üretim", "aktif": False},  # 2025: Yeni yönetmelikte tanımlı değil
+    {"id": 27, "ad": "Besi Sığırcılığı", "aktif": True},
+    {"id": 28, "ad": "Zeytinyağı üretim tesisi", "aktif": False},  # 2025: Entegre tesis sayılır, tarımsal yapı değil
+    # 2025 Yönetmelik: Yeni eklenen yapı türleri
+    {"id": 29, "ad": "Fide üretim tesisi", "aktif": True},
+    {"id": 30, "ad": "Fidan üretim tesisi", "aktif": True},
+    {"id": 31, "ad": "Sahipsiz hayvan barınağı", "aktif": True},
+    {"id": 32, "ad": "Sundurma", "aktif": True},
+    {"id": 33, "ad": "Çiftlik atölyesi", "aktif": True},
+    {"id": 34, "ad": "Su ürünleri üretim tesisi", "aktif": True},
+    {"id": 35, "ad": "Deve kuşu üretim tesisi", "aktif": True},
+    {"id": 36, "ad": "Gübre deposu", "aktif": True},
+    {"id": 37, "ad": "Mandıra", "aktif": True},
+    {"id": 38, "ad": "Un değirmeni", "aktif": True},
+    {"id": 39, "ad": "Tarımsal amaçlı teleferik", "aktif": True},
+    {"id": 40, "ad": "Hayvan içme suyu göleti", "aktif": True},
+    {"id": 41, "ad": "İslim ünitesi", "aktif": True},
+    {"id": 42, "ad": "Muz sarartma ünitesi", "aktif": True},
+    {"id": 43, "ad": "Tarımsal AR-GE tesisi", "aktif": True},
 ]
+
+# Pasif yapı ID'leri (hızlı erişim için)
+PASIF_YAPI_IDLERI = {yapi["id"] for yapi in YAPI_TURLERI if not yapi["aktif"]}
+
+# Aktif yapı türleri listesi (API ve frontend için)
+AKTIF_YAPI_TURLERI = [yapi for yapi in YAPI_TURLERI if yapi["aktif"]]
 
 # Arazi tipi ID'lerinden adlarına mapping
 ARAZI_TIPI_ID_TO_AD = {arazi["id"]: arazi["ad"] for arazi in ARAZI_TIPLERI}
@@ -70,6 +93,9 @@ EMSAL_ORANI_MUTLAK_DIKILI = 0.05  # Mutlak tarım arazisi, dikili tarım arazisi
 
 # Genel yapı türleri listesi - YAPI_TURLERI'nden dinamik olarak oluşturulan
 GENEL_YAPI_TURLERI_LISTESI = [yapi["ad"] for yapi in YAPI_TURLERI]
+
+# Aktif yapı türleri listesi (sadece aktif olanlar)
+AKTIF_YAPI_TURLERI_LISTESI = [yapi["ad"] for yapi in YAPI_TURLERI if yapi["aktif"]]
 
 # Özel arazi tipi filtreleme kuralları
 YAPI_ARAZI_FILTRELEME = {

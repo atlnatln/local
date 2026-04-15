@@ -1,0 +1,115 @@
+{
+  "slug": "golet",
+  "id": 40,
+  "name": "Hayvan İçme Suyu Göleti",
+  "category": "Hayvancılık Tesisleri",
+  "seo": {
+    "title": "Hayvan İçme Suyu Göleti Yapımı | Tarım İmar",
+    "description": "Hayvan içme suyu göleti yapımı, alan hesaplama ve mevzuat bilgileri.",
+    "keywords": [
+      "hayvan içme suyu",
+      "gölet",
+      "hayvan göleti",
+      "su kaynağı",
+      "hayvancılık su"
+    ],
+    "canonical": "/golet/"
+  },
+  "hero": {
+    "title": "Hayvan İçme Suyu Göleti",
+    "subtitle": "Hayvancılık işletmeleri için içme suyu göleti yapımı",
+    "icon": "💧"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Hayvan içme suyu göleti</strong>, hayvancılık işletmelerinde hayvanların su ihtiyacını karşılamak amacıyla yapılan yapay su biriktirme yapılarıdır.</p>",
+    "purpose": "<p>Hayvancılık işletmelerinin su ihtiyacının sürdürülebilir şekilde karşılanması amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Hayvancılık işletmecileri ve tarımsal arazi sahipleri kurabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "Su Güvenliği",
+      "description": "Kesintisiz su temini",
+      "icon": "💧"
+    },
+    {
+      "title": "Doğal Yöntem",
+      "description": "Yağmur suyu toplama",
+      "icon": "🌧️"
+    },
+    {
+      "title": "Ekonomik",
+      "description": "Düşük işletme maliyeti",
+      "icon": "💰"
+    },
+    {
+      "title": "Çok Amaçlı",
+      "description": "Sulama ve yangın söndürme",
+      "icon": "🔄"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "Kazı ve dolgu işleri",
+        "Su yalıtımı",
+        "Drenaj sistemi",
+        "Hayvan erişim noktaları"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Gölet Alanı Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, gölet alanınızı hesaplayın",
+    "ctaText": "Gölet Alanı Hesapla",
+    "ctaLink": "/hesaplama/golet"
+  },
+  "faq": [
+    {
+      "question": "Gölet yapmak için ne kadar arazi gerekir?",
+      "answer": "Hayvan sayısına ve su ihtiyacına göre değişir."
+    },
+    {
+      "question": "Gölet yapımı için izin gerekir mi?",
+      "answer": "Evet, tarımsal yapı izni kapsamında başvuru yapılmalıdır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Su Depolama",
+      "url": "/su-depolama",
+      "icon": "📋"
+    },
+    {
+      "title": "Süt Sığırcılığı",
+      "url": "/sut-sigirciligi",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Hayvan İçme Suyu Göleti Yapımı",
+    "description": "Hayvan içme suyu göleti yapımı, alan hesaplama ve mevzuat bilgileri.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

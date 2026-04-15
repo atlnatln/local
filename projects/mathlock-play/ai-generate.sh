@@ -37,6 +37,7 @@ HEALTH_URL="https://mathlock.com.tr/mathlock/data/questions.json"
 MAX_RETRIES=2
 
 cd "$PROJECT_DIR"
+source agents/swap-helper.sh
 
 # ─── Argümanlar ─────────────────────────────────────────────────────────────
 DRY_RUN=false
@@ -141,12 +142,8 @@ find "$HISTORY_DIR" -name "*.json" -type f | sort | head -n -20 | xargs -r rm -f
 # ─── 3. Copilot Çalıştır ────────────────────────────────────────────────────
 echo -e "\n${YELLOW}[3/5] 🤖 Copilot ile yeni sorular üretiliyor...${NC}"
 
-# Copilot CLI, CWD'deki AGENTS.md dosyasını otomatik okur (cd "$PROJECT_DIR" yapıldı)
-if [ -f "$PROJECT_DIR/AGENTS.md" ]; then
-    echo -e "${GREEN}[OK]${NC} AGENTS.md mevcut ($(wc -l < "$PROJECT_DIR/AGENTS.md") satır) — Copilot otomatik okuyacak"
-else
-    echo -e "${RED}[HATA]${NC} AGENTS.md bulunamadı! Copilot kurallar olmadan çalışacak."
-fi
+# Copilot CLI, CWD'deki AGENTS.md dosyasını otomatik okur — swap ile yerleştiriyoruz
+agents_swap_in "agents/questions.agents.md"
 
 PROMPT="AGENTS.md dosyasındaki tüm kuralları uygula.
 

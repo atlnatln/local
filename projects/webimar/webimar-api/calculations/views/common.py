@@ -418,19 +418,23 @@ def get_yapi_turleri(request):
     try:
         # Cache key based on query parameters
         arazi_vasfi = request.GET.get('arazi_vasfi', None)
-        cache_key = f"yapi_turleri_{arazi_vasfi or 'all'}"
+        include_pasif = request.GET.get('include_pasif', 'false').lower() == 'true'
+        cache_key = f"yapi_turleri_{arazi_vasfi or 'all'}_{'all' if include_pasif else 'aktif'}"
         
         # Try to get from cache first (GSC response time optimization)
         cached_result = cache.get(cache_key)
         if cached_result:
             return Response(cached_result)
         
+        # Temel kaynak: pasif dahil mi değil mi
+        kaynak_liste = constants.YAPI_TURLERI if include_pasif else constants.AKTIF_YAPI_TURLERI
+        
         # Arazi vasıfına göre filtreleme yapılabilir
         if arazi_vasfi:
             # Arazi vasfına göre yapı türlerini filtrele
             filtered_yapi_turleri = []
             
-            for yapi in constants.YAPI_TURLERI:
+            for yapi in kaynak_liste:
                 yapi_adi = yapi["ad"]
                 
                 # Zeytinlik vasıfları için sadece zeytinyağı tesisleri
@@ -448,10 +452,10 @@ def get_yapi_turleri(request):
                 'detail': f'{arazi_vasfi} vasıfı için yapı türleri başarıyla getirildi'
             }
         else:
-            # Filtreleme yoksa tüm yapı türlerini döndür
+            # Filtreleme yoksa yapı türlerini döndür
             result = {
                 'success': True,
-                'data': constants.YAPI_TURLERI,
+                'data': list(kaynak_liste),
                 'detail': 'Yapı türleri başarıyla getirildi'
             }
         

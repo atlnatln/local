@@ -25,8 +25,8 @@ def calculate_bag_evi_fixed(arazi_bilgileri, yapi_bilgileri, bag_evi_var_mi=Fals
         # Alan kontrolü detayını kontrol et
         alan_m2 = arazi_bilgileri.get("alan_m2", 0) or arazi_bilgileri.get("buyukluk_m2", 0)
         
-        # Tarla için minimum 20000 m² kontrolü
-        if alan_m2 >= 20000:
+        # Tarla için minimum 50000 m² kontrolü (2025 yönetmelik)
+        if alan_m2 >= 50000:
             # Override result for Tarla
             result["izin_durumu"] = "izin_verilebilir_varsayimsal"
             result["ana_mesaj"] = result["ana_mesaj"].replace(

@@ -1,0 +1,69 @@
+{
+  "toplama": {
+    "title": "➕ Toplama Nasıl Yapılır?",
+    "explanation": "Toplama, iki veya daha fazla sayıyı bir araya getirmektir. Örneğin 3 elma ile 2 elmayı birleştirirsen, 5 elma olur. Şimdi biraz daha büyük sayılara çıkıyoruz! 10'dan daha büyük sayıları toplamanın püf noktası, onluk ve birlikleri ayrı toplamanın.",
+    "example": "🍎🍎🍎 + 🍎🍎 = 🍎🍎🍎🍎🍎 (3 + 2 = 5) — Kolay\n\n12 + 7 = ?\nAdım 1: 12 = 10 + 2 (onluk + birlik)\nAdım 2: 10 + 2 + 7 = 10 + (2+7) = 10 + 9 = 19\nVeya: 12 + 7 = 12 + (5 + 2) = 17 + 2 = 19",
+    "tips": [
+      "Büyük sayıdan başla, küçük sayıyı saymaya devam et",
+      "Onlukları ayrı topla: 10 + 10 = 20",
+      "Birlikleri topla: 2 + 7 = 9",
+      "Sonra ikisini birleştir: 20 + 9 = 29",
+      "Veya kolay sayılara yakınlaştır: 12 + 8 = 20, sonra -1 yapabilir misin?"
+    ]
+  },
+  "cikarma": {
+    "title": "➖ Çıkarma Nasıl Yapılır?",
+    "explanation": "Çıkarma, bir sayıdan başka bir sayıyı ayırmaktır. Örneğin 7 şekeriniz varsa ve 3 tanesini yersen, 4 tane kalır. Harika gidiyor, çıkarmayı çok iyi yapıyorsun!",
+    "example": "🍬🍬🍬🍬🍬🍬🍬 - 🍬🍬🍬 = 🍬🍬🍬🍬 (7 - 3 = 4)\n\nAdım 1: Başlangıç sayısını söyle (7)\nAdım 2: Geri doğru say (6, 5, 4)\nAdım 3: Kaç kez sayıldı? (3 kez) O kadar çıkarttın\nAdım 4: Kalan sonuç (4)",
+    "tips": [
+      "Büyük sayıdan başla, geriye doğru say",
+      "Çıkarılan sayı kadar parmak kıvır",
+      "Çıkarma sonucu asla negatif olmaz",
+      "Yakın sayılarda: 10 - 9 = 1 (sadece 1 geri say)"
+    ]
+  },
+  "carpma": {
+    "title": "✖️ Çarpma Nasıl Yapılır?",
+    "explanation": "Çarpma, aynı sayıyı birkaç kez toplamanın kısayoludur. 3 x 2, '3'ü iki kez topla' anlamına gelir: 3 + 3 = 6. Çarpım tablosunu çok iyi öğrendin!",
+    "example": "👦👦👦 x 2 = 👦👦👦👦👦👦 (3 x 2 = 3 + 3 = 6)\n\nAdım 1: İlk sayıyı söyle (3 erkek çocuk)\nAdım 2: Kaç kez var? (2 kez)\nAdım 3: Tekrar tekrar say (3 + 3)\nAdım 4: Cevap (6)",
+    "tips": [
+      "Toplama ile düşün: 4 x 2 = 4 + 4 = 8",
+      "Nesnelerle gruplama yap: 2 sıra, her sırada 3 çocuk = 6 çocuk",
+      "Çarpım tablosunu şarkıyla veya oyunlarla pekiştir",
+      "10 ile çarpmak kolay: 5 x 10 = 50"
+    ]
+  },
+  "bolme": {
+    "title": "➗ Bölme Nasıl Yapılır?",
+    "explanation": "Bölme, bir sayıyı eşit parçalara ayırmaktır. 8 şeker 2 çocuğa paylaştırırsan, her çocuğa 4 şeker düşer. Çok iyi öğrendin! Şimdi daha büyük sayıları bölmeyi deniyoruz.",
+    "example": "Basit (zorluk 1):\n8 ÷ 2 = 4 (8 tane şeker, 2 çocuğa, her biri 4)\n\nBiraz zorluk (zorluk 2):\n15 ÷ 3 = 5 (hangisi 3 ile çarpınca 15 olur? → 5 x 3 = 15, cevap 5)\n\nÇarpma tablosunu ters çevir: 3 x ? = 15 → ? = 5",
+    "tips": [
+      "Eşit ikiye bölersen, yarısını bul",
+      "Hangi sayı ile çarpınca toplama ulaşırız sorusunu sor",
+      "Örneğin: 10 / 2 = 5 çünkü 5 x 2 = 10",
+      "Çarpma tablosunu tersten öğrendin artık!"
+    ]
+  },
+  "siralama": {
+    "title": "📊 Sıralama Nasıl Yapılır?",
+    "explanation": "Sıralama, sayıları küçükten büyüğe veya büyükten küçüğe düzene koymaktır. Şu ana kadar mükemmel yapıyorsun!",
+    "example": "5, 12, 3 sayılarını sırala:\nAdım 1: En küçüğü bul (3)\nAdım 2: Sonraki küçüğü bul (5)\nAdım 3: En büyüğü bul (12)\nSonuç: 3, 5, 12 (küçükten büyüğe)",
+    "tips": [
+      "Sayı satırını kafanda veya kağıda çiz",
+      "En küçük sayı başa, en büyük sona gelir",
+      "İki sayıyı karşılaştırırken: hangi biri daha fazla nesnedir?",
+      "Örneğin: 7 mi 12 mi? → 12 daha büyük → 12 seç"
+    ]
+  },
+  "eksik_sayi": {
+    "title": "❓ Eksik Sayı Nasıl Bulunur?",
+    "explanation": "Eksik sayı, denklemde kayıp olan rakamı bulma oyunudur. Örneğin _ + 3 = 7'de, çıkarma yaparak eksik sayıyı buluruz: 7 - 3 = 4. Bunu da çok iyi yapıyorsun!",
+    "example": "Örnek 1: _ + 3 = 7\n  Adım 1: Sonuç = 7\n  Adım 2: Bilinen = 3\n  Adım 3: 7 - 3 = 4\n  Cevap: 4 (çünkü 4 + 3 = 7)\n\nÖrnek 2: 8 - _ = 5\n  Adım 1: Sonuç = 5\n  Adım 2: Bilinen = 8\n  Adım 3: 8 - 5 = 3\n  Cevap: 3 (çünkü 8 - 3 = 5)",
+    "tips": [
+      "Sonucu ve bilinen sayıyı kullan",
+      "Toplama için: eksik = sonuç - bilinen",
+      "Çıkarma için: eksik = sonuç + bilinen",
+      "Ters işlem yap: toplama → çıkarma, çarpma → bölme"
+    ]
+  }
+}

@@ -14,6 +14,12 @@ import sys  # sys modülünü ekleyelim
 # Kanatlı hayvancılık için sabitler - PHASE 2 DİNAMİK EMSAL SİSTEMİ
 DEFAULT_EMSAL_ORANI = 0.20  # %20 varsayılan (dinamik sistem için)
 
+# Bakıcı evi büyüklükleri (kapalı alana göre kademeli)
+BAKICI_EVI_BUYUKLUKLERI = {
+    "750-1500": {"taban_alani": 75, "toplam_alan": 150},
+    ">1500": {"taban_alani": 150, "toplam_alan": 300}
+}
+
 # Yeni Gübre Çukuru Hesaplamaları (1000 adet için m²)
 GUBRE_CUKURU_ALANLARI = {
     "etçi_tavuk": 7.3528 / 4,        # 7.3528 m² / 4m derinlik = 1.8382 m²
@@ -55,7 +61,7 @@ class KanatlıHesaplama:
         }
         
         # Yapı büyüklükleri
-        self.bakıcı_evi_alanı = 75.0
+        self.bakıcı_evi_büyüklükleri = BAKICI_EVI_BUYUKLUKLERI
         self.bekçi_kulübesi_alanı = 15.0
         self.idari_bina_alanı = 75.0
         
@@ -133,6 +139,14 @@ class KanatlıHesaplama:
             "toplam_alan_m2": round(toplam_alan, 2)
         }
         
+    def _belirle_bakici_evi_boyutu(self, kapali_alan_m2):
+        """Kapalı alan büyüklüğüne göre bakıcı evi taban ve toplam inşaat alanını belirler."""
+        if kapali_alan_m2 > 1500:
+            return self.bakıcı_evi_büyüklükleri[">1500"]["taban_alani"], self.bakıcı_evi_büyüklükleri[">1500"]["toplam_alan"]
+        elif kapali_alan_m2 >= 750:
+            return self.bakıcı_evi_büyüklükleri["750-1500"]["taban_alani"], self.bakıcı_evi_büyüklükleri["750-1500"]["toplam_alan"]
+        return 0, 0
+
     def hesapla(self, arazi_alanı, hayvan_tipi="yumurtacı_tavuk"):
         """Ana hesaplama fonksiyonu"""
         # Emsal hesabı
@@ -212,15 +226,22 @@ class KanatlıHesaplama:
         
         sonuç_yapılar = []
         bakıcı_evi_yapıldı = False
+        bakıcı_evi_taban_alanı = 0
+        bakıcı_evi_toplam_inşaat = 0
+
+        # Kapalı alan bazlı bakıcı evi boyutu belirle
+        kapali_alan = kümes_alanı_final + müştemilat_alanı_final
+        if bakıcı_evi_hakkı_calc:
+            bakıcı_evi_taban_alanı, bakıcı_evi_toplam_inşaat = self._belirle_bakici_evi_boyutu(kapali_alan)
 
         # Opsiyonel yapılar için kalan emsal hesabı
         emsal_kullanılan_KM = kümes_alanı_final + müştemilat_alanı_final
         kalan_emsal_opsiyonel_icin = emsal - emsal_kullanılan_KM
 
-        if bakıcı_evi_hakkı_calc and kalan_emsal_opsiyonel_icin >= self.bakıcı_evi_alanı:
+        if bakıcı_evi_hakkı_calc and bakıcı_evi_taban_alanı > 0 and kalan_emsal_opsiyonel_icin >= bakıcı_evi_taban_alanı:
             bakıcı_evi_yapıldı = True
-            sonuç_yapılar.append({"isim": "Bakıcı evi", "alan": self.bakıcı_evi_alanı})
-            kalan_emsal_opsiyonel_icin -= self.bakıcı_evi_alanı
+            sonuç_yapılar.append({"isim": "Bakıcı evi", "alan": bakıcı_evi_taban_alanı, "toplam_insaat": bakıcı_evi_toplam_inşaat})
+            kalan_emsal_opsiyonel_icin -= bakıcı_evi_taban_alanı
         
         if kalan_emsal_opsiyonel_icin >= self.bekçi_kulübesi_alanı:
             sonuç_yapılar.append({"isim": "Bekçi kulübesi", "alan": self.bekçi_kulübesi_alanı})
@@ -280,6 +301,13 @@ class KanatlıHesaplama:
         
         bakıcı_evi_hakkı_calc = kapasite_opt1 >= bakıcı_evi_eşiği
         
+        # Kapalı alan bazlı bakıcı evi boyutu belirle
+        kapali_alan_opt1 = kümes_opt1 + müştemilat_opt1
+        bakıcı_evi_taban_alanı = 0
+        bakıcı_evi_toplam_inşaat = 0
+        if bakıcı_evi_hakkı_calc:
+            bakıcı_evi_taban_alanı, bakıcı_evi_toplam_inşaat = self._belirle_bakici_evi_boyutu(kapali_alan_opt1)
+        
         # Başlangıçta final değerleri Opsiyon 1'e göre ayarla
         kümes_final = kümes_opt1
         müştemilat_final = müştemilat_opt1
@@ -287,9 +315,9 @@ class KanatlıHesaplama:
         bakıcı_evi_yapıldı = False
         sonuç_yapılar = []
         
-        if bakıcı_evi_hakkı_calc:
+        if bakıcı_evi_hakkı_calc and bakıcı_evi_taban_alanı > 0:
             # Opsiyon 2: Bakıcı evi ile birlikte kapasite
-            emsal_for_opt2 = emsal - self.bakıcı_evi_alanı
+            emsal_for_opt2 = emsal - bakıcı_evi_taban_alanı
             if emsal_for_opt2 >= (self.min_zorunlu_müştemilat_alanı + self.min_işlevsel_kümes_alanı):
                 # Bakıcı evi yapılabilir, kümes ve müştemilatı kalan emsale göre yeniden hesapla
                 bakıcı_evi_yapıldı = True
@@ -308,8 +336,8 @@ class KanatlıHesaplama:
                 kümes_final = kümes_opt2
                 müştemilat_final = müştemilat_opt2
                 kapasite_final = kapasite_opt2
-                sonuç_yapılar.append({"isim": "Bakıcı evi", "alan": self.bakıcı_evi_alanı})
-            # else: Bakıcı evi hakkı var ama (emsal - bakıcı_evi_alanı) yetersiz. Yapılamaz.
+                sonuç_yapılar.append({"isim": "Bakıcı evi", "alan": bakıcı_evi_taban_alanı, "toplam_insaat": bakıcı_evi_toplam_inşaat})
+            # else: Bakıcı evi hakkı var ama (emsal - bakıcı_evi_taban_alanı) yetersiz. Yapılamaz.
             # Bu durumda final değerler Opsiyon 1 olarak kalır.
             
         # Müştemilat detaylarını hesapla
@@ -328,7 +356,7 @@ class KanatlıHesaplama:
         # Diğer opsiyonel yapıları (bekçi, idari) kalan emsale göre ekle
         emsal_kullanılan_ana_yapılar = kümes_final + müştemilat_final
         if bakıcı_evi_yapıldı:
-            emsal_kullanılan_ana_yapılar += self.bakıcı_evi_alanı
+            emsal_kullanılan_ana_yapılar += bakıcı_evi_taban_alanı
         
         kalan_emsal_for_diger_opsiyonel = emsal - emsal_kullanılan_ana_yapılar
 

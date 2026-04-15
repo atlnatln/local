@@ -58,11 +58,16 @@ class AppLockService : Service() {
 
         fun start(context: Context) {
             if (isRunning) return  // Zaten çalışıyorsa tekrar başlatma
-            val intent = Intent(context, AppLockService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent)
-            } else {
-                context.startService(intent)
+            try {
+                val intent = Intent(context, AppLockService::class.java)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent)
+                } else {
+                    context.startService(intent)
+                }
+            } catch (e: Exception) {
+                // Android 12+: arka plandan foreground service başlatma kısıtlaması
+                Log.e(TAG, "Servis başlatılamadı: ${e.message}")
             }
         }
 
@@ -82,10 +87,17 @@ class AppLockService : Service() {
     private var blockingOverlayView: View? = null
     private var blockingOverlayPackage: String? = null
 
+    // Launcher paketlerini cache'le — polling her 800ms'de çağrılıyor
+    private var launcherPackages: Set<String>? = null
+
     // Son challenge başlatılan paket ve zaman — flood-launch önleme
     private var lastChallengePackage: String? = null
     private var lastChallengeTime: Long = 0
     private val CHALLENGE_MIN_INTERVAL = 3_000L // ms
+
+    // Challenge süreci aktif mi — overlay gösterildi, activity açılmayı bekliyor
+    // Bu flag true iken aynı paket için launchChallenge tekrar tetiklenmez
+    private var challengeActive = false
 
     // Ekran kapandığında ebeveyn bypass'larını temizleyen receiver
     private val screenOffReceiver = object : BroadcastReceiver() {
@@ -137,11 +149,18 @@ class AppLockService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand: servis başlıyor (pollingActive=$pollingActive)")
         // Android 14 (API 34) zorunluluğu: startForeground tip parametresiyle çağrılmalı
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(NOTIFICATION_ID, buildNotification(),
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
-        } else {
-            startForeground(NOTIFICATION_ID, buildNotification())
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(NOTIFICATION_ID, buildNotification(),
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+            } else {
+                startForeground(NOTIFICATION_ID, buildNotification())
+            }
+        } catch (e: Exception) {
+            // Android 12+: arka plandan foreground service başlatılamıyor olabilir
+            Log.e(TAG, "startForeground başarısız: ${e.message}")
+            stopSelf()
+            return START_NOT_STICKY
         }
         isRunning = true
         // Polling zaten aktifse tekrar başlatma — duplicate runnable önleme
@@ -158,6 +177,7 @@ class AppLockService : Service() {
         isRunning = false
         pollingActive = false
         showingCountdown = false
+        challengeActive = false
         lastKnownForegroundPackage = null
         try { unregisterReceiver(screenOffReceiver) } catch (_: Exception) {}
         handler.removeCallbacks(checkRunnable)
@@ -208,6 +228,7 @@ class AppLockService : Service() {
         // Kendi uygulamamızı kilitleme — challenge açıksa overlay'ı kaldır
         if (currentPackage == packageName) {
             lastChallengePackage = null
+            challengeActive = false
             hideBlockingOverlay()
             return
         }
@@ -220,12 +241,18 @@ class AppLockService : Service() {
         }
 
         // Ön plandaki uygulama kilitli paket değilse overlay'ı kaldır
+        // Ancak: launchChallenge() HOME'a gönderdiği için launcher ön plandaysa overlay'ı koru
         if (currentPackage != blockingOverlayPackage && blockingOverlayView != null) {
-            hideBlockingOverlay()
+            if (!isLauncherApp(currentPackage)) {
+                hideBlockingOverlay()
+            }
         }
 
         // Kilitli uygulama mı kontrol et
         if (!prefManager.isAppLocked(currentPackage)) return
+
+        // Challenge zaten aktifse (overlay gösterildi, activity bekleniyor) tekrar tetikleme
+        if (challengeActive) return
 
         // Flood-launch önleme: aynı paket için minimum 3 saniye aralık
         val now = System.currentTimeMillis()
@@ -274,57 +301,59 @@ class AppLockService : Service() {
     }
 
     private fun launchChallenge(lockedPackage: String) {
-        // Ana ekrana gönder — kilitli uygulamayı ön plandan düşür.
-        val homeIntent = Intent(Intent.ACTION_MAIN).apply {
-            addCategory(Intent.CATEGORY_HOME)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        startActivity(homeIntent)
+        challengeActive = true
 
-        val timerExpired = LockStateManager.isTimerExpired(lockedPackage)
+        // 1) Ana ekrana gönder — kilitli uygulamayı ön plandan düşür
+        forceUserHome()
 
-        // Hemen ardından challenge ekranını aç
-        val intent = Intent(this, ChallengePickerActivity::class.java).apply {
-            addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK or
-                Intent.FLAG_ACTIVITY_CLEAR_TOP
-            )
-            putExtra("locked_package", lockedPackage)
-            putExtra("timer_expired", timerExpired)
-        }
-        try {
-            startActivity(intent)
-            Log.d(TAG, "Challenge activity başlatıldı: $lockedPackage (timerExpired=$timerExpired)")
-            // 1.5 saniye sonra kontrol: challenge hala açılmadıysa overlay göster
-            // (MIUI gibi ROM'lar exception fırlatmadan sessizce engelleyebilir)
-            handler.postDelayed({
-                val fg = getForegroundPackageName()
-                if (fg == lockedPackage && blockingOverlayView == null) {
-                    Log.w(TAG, "Challenge görünmedi, overlay fallback: $lockedPackage")
-                    showBlockingOverlay(lockedPackage)
-                    showChallengeNotification(lockedPackage)
-                }
-            }, 1500)
-        } catch (e: Exception) {
-            Log.w(TAG, "startActivity başarısız — overlay fallback devreye alındı: ${e.message}")
-            showBlockingOverlay(lockedPackage)
-            showChallengeNotification(lockedPackage)
-        }
+        // 2) Overlay'ı hemen göster — kilitli uygulama görsel olarak engellenir
+        handler.postDelayed({
+            if (blockingOverlayView == null) {
+                showBlockingOverlay(lockedPackage)
+            }
+        }, 100)
+
+        // 3) 500ms sonra ChallengePickerActivity'yi otomatik aç (buton beklemeden)
+        //    Overlay yarım saniye görünür, ardından activity ön plana gelir.
+        //    Activity ön plana gelince checkForegroundApp overlay'ı kaldırır.
+        handler.postDelayed({
+            val timerExpired = LockStateManager.isTimerExpired(lockedPackage)
+            val intent = Intent(this, ChallengePickerActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                putExtra("locked_package", lockedPackage)
+                putExtra("timer_expired", timerExpired)
+            }
+            try {
+                startActivity(intent)
+                Log.d(TAG, "Challenge activity otomatik başlatıldı: $lockedPackage")
+            } catch (e: Exception) {
+                Log.w(TAG, "Activity başlatılamadı, overlay kalacak: ${e.message}")
+                // Overlay zaten gösteriliyor, kullanıcı butona basabilir
+            }
+        }, 500)
+
+        Log.d(TAG, "Challenge tetiklendi: $lockedPackage")
     }
 
     private fun showChallengeNotification(lockedPackage: String) {
+        val timerExpired = LockStateManager.isTimerExpired(lockedPackage)
         val intent = Intent(this, ChallengePickerActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             putExtra("locked_package", lockedPackage)
+            putExtra("timer_expired", timerExpired)
         }
         val pendingIntent = PendingIntent.getActivity(
             this, lockedPackage.hashCode(), intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        val appName = try {
+            val ai = packageManager.getApplicationInfo(lockedPackage, 0)
+            packageManager.getApplicationLabel(ai).toString()
+        } catch (_: Exception) { lockedPackage }
         val nm = getSystemService(NotificationManager::class.java)
         val notification = NotificationCompat.Builder(this, ALERT_CHANNEL_ID)
-            .setContentTitle("🔒 Uygulama Kilitli")
-            .setContentText("İçeri girmek için buraya dokun ve görevi tamamla")
+            .setContentTitle("🔒 $appName kilitli")
+            .setContentText("Görevi tamamlamak için buraya dokun")
             .setSmallIcon(android.R.drawable.ic_lock_lock)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -346,6 +375,7 @@ class AppLockService : Service() {
                 setShowBadge(true)
                 enableLights(true)
                 enableVibration(true)
+                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             }
             val manager = getSystemService(NotificationManager::class.java)
             manager?.createNotificationChannel(channel)
@@ -604,6 +634,8 @@ class AppLockService : Service() {
                     startActivity(intent)
                 } catch (e: Exception) {
                     Log.w(TAG, "Overlay'dan challenge başlatılamadı: ${e.message}")
+                    // Fallback: tam ekran bildirim üzerinden aç
+                    showChallengeNotification(lockedPackage)
                 }
             }
         }
@@ -639,6 +671,22 @@ class AppLockService : Service() {
         }
     }
 
+    /**
+     * Verilen paketin bir launcher (ana ekran) uygulaması olup olmadığını kontrol eder.
+     * launchChallenge() HOME'a gönderdiğinde, launcher'ı tanıyıp overlay'ı korumak için kullanılır.
+     */
+    private fun isLauncherApp(pkg: String): Boolean {
+        if (launcherPackages == null) {
+            val intent = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_HOME)
+            }
+            launcherPackages = packageManager.queryIntentActivities(intent, 0)
+                .mapNotNull { it.activityInfo?.packageName }
+                .toSet()
+        }
+        return pkg in launcherPackages!!
+    }
+
     private fun hideBlockingOverlay() {
         val view = blockingOverlayView ?: return
         try {
@@ -647,5 +695,6 @@ class AppLockService : Service() {
         } catch (_: Exception) {}
         blockingOverlayView = null
         blockingOverlayPackage = null
+        challengeActive = false
     }
 }

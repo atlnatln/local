@@ -11,8 +11,8 @@ android {
         applicationId = "com.akn.mathlock.play"
         minSdk = 26
         targetSdk = 35
-        versionCode = 7
-        versionName = "1.0.5"
+        versionCode = 34
+        versionName = "1.0.34"
     }
 
     signingConfigs {
@@ -59,6 +59,9 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.lifecycle:lifecycle-service:2.7.0")
+
+    // Google Play Billing
+    implementation("com.android.billingclient:billing:7.1.1")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")

@@ -4,69 +4,84 @@
   "name": "Tarımsal Amaçlı Depo",
   "category": "Depolama ve İşleme Tesisleri",
   "seo": {
-    "title": "Tarımsal Depo Nasıl Yapılır? Alan Hesabı ve Şartlar | Tarım İmar",
-  "description": "Tarımsal amaçlı depo kurulumu. Minimum alan şartları arazi vasfına göre değişir.",
+    "title": "Tarımsal Amaçlı Depo Yapma Şartları ve Alan Hesabı | Tarım İmar",
+    "description": "Üreticinin bitkisel üretimden elde ettiği ürün için tarımsal amaçlı depo kurulumu: dikili arazide min 1 hektar, mutlak/marjinal arazide min 2 hektar, örtüaltında 0,3 hektar. İlçe içi arazi varlığının %1'i kadar alan hesaplama.",
     "keywords": [
-      "tarımsal depo",
-      "ürün deposu",
-      "tarım deposu",
+      "tarımsal amaçlı depo",
+      "tarım deposu şartları",
+      "tarım deposu izni",
       "dikili arazi depo",
-      "Marjinal deposu"
+      "tarla arazisi depo",
+      "tarımsal depo alan hesaplama",
+      "arazi varlığı yüzde bir depo",
+      "5403 sayılı kanun tarımsal depo"
     ],
-    "canonical": "/tarimsal-depo/"
+    "canonical": "https://tarimimar.com.tr/tarimsal-depo/"
   },
   "hero": {
-    "title": "Tarımsal Amaçlı Depo Kurulumu",
-  "subtitle": "Tarımsal ürün deposu. Minimum alan şartları arazi vasfına göre değişir.",
-    "icon": "🏭"
+    "title": "Tarımsal Amaçlı Depo Kurulumu ve Alan Hesaplama",
+    "subtitle": "Üreticinin bitkisel üretimden elde ettiği ürün için ihtiyaccı olan depoyu ilk hesaplayın — Talimat Madde 7.1",
+    "icon": "🏬"
   },
   "introduction": {
-    "whatIs": "<p><strong>Tarımsal amaçlı depo</strong>, tarımsal ürünlerin depolandığı yapılardır.</p>",
-    "purpose": "<p>Depoların amaçları:</p><ul><li>Hasat ürünlerini saklama</li>",
-    "whoCanBuild": "<p>Tarımsal depo yapabilmek için:</p><ul><li>Dikili arazi: Min 5000 m²</li><li>Marjinal: Min 20000 m²</li><li>Sera/örtüaltı: Min 3000 m²</li></ul>"
+    "whatIs": "<p><strong>Tarımsal amaçlı depo</strong>, üreticinin bitkisel üretimden elde ettiği ürün için ihtiyaç duyduğu, yeterli boyut ve hacimde yapılan depodur. Bakanlık tarafından tarımsal amaçlı olduğu kabul edilen entegre nitelikte olmayan yapılar arasında yer alır.</p>",
+    "purpose": "<p>Tarımsal depoların temel amaçları:</p><ul><li>Hasat edilen ürünlerin güvenli şekilde depolanması</li><li>Ürün kalite kayıplarının önlenmesi</li><li>Mevsimlik ürünlerin satış dönemine kadar muhafazası</li><li>Tarımsal işletmenin verimliliğini artırması</li></ul>",
+    "whoCanBuild": "<p>Tarımsal depo yaptırabilmek için (Talimat Madde 7.1):</p><ul><li>Dikili tarım arazisi: İlçe sınırları içinde min <strong>1 hektar (10.000 m²)</strong> dikili arazi varlığı</li><li>Mutlak, özel ürün ve marjinal tarım arazisi: min <strong>2 hektar (20.000 m²)</strong></li><li>Örtüaltı tarım arazisi: min <strong>0,3 hektar (3.000 m²)</strong></li><li>Kiralama ve sözleşmeli üretim arazileri ile hisseli parsellerin hisse oranları hesaba dahil edilmez/dahil edilir (Md. 7.2-7.3)</li><li>Depo alanı: toplam arazi varlığının <strong>%1'i</strong> kadar</li></ul>"
   },
   "features": [
     {
-      "title": "Esnek Emsal",
-      "description": "Arazi tipine göre değişir",
+      "title": "%1 Depo Yapma Hakkı",
+      "description": "İlçe içindeki toplam tarım arazisi varlığının %1'i kadar depo yapma hakkınız var. Bu bir emsal değil, mevzuatın tanıdığı yapı hakkıdır.",
       "icon": "📊"
     },
     {
-      "title": "Düşük Eşik (Dikili)",
-      "description": "Örtüaltı arazide sadece 3000 m² yeterli",
-      "icon": "🌳"
+      "title": "Arazi Tipine Göre Minimum Alan",
+      "description": "Dikili 1 ha, mutlak/marjinal/özel ürün 2 ha, örtüaltı 0,3 ha — parselin bu eşikleri karşılaması gerekir.",
+      "icon": "🌾"
     },
     {
-      "title": "Zeytinlik Uygun Değil",
-      "description": "Zeytin ağaçlı arazilerde yapı yapılması uygun değildir",
-      "icon": "🫒"
+      "title": "Kiralık Arazi Dahil Değil",
+      "description": "Kiralama ve sözleşmeli üretim arazileri depo hakkı hesabında dikkate alınmaz (Md. 7.2)",
+      "icon": "⚠️"
+    },
+    {
+      "title": "Üretici Örgütlerine Özel Kural",
+      "description": "Üretici örgütleri üye çiftçilerin toplam arazi varlığının %1'i kadar kolektif depo kurabilir (Md. 7 ek)",
+      "icon": "🤝"
     }
   ],
   "requirements": {
     "legal": {
       "restrictions": [
-          "Dikili, mutlak ve özel ürün arazisi: Min 5000 m²",
-          "Marjinal tarım arazisi: Min 20000 m²",
-        "Örtüaltı/sera arazisi: Min 3000 m²"
+        "Kiralama ve sözleşmeli üretim yapılan araziler depo alanı hesabında dikkate alınmaz",
+        "Hisseli parsellerde hisse oranı arazi varlığı hesabına dahil edilir",
+        "Proje teknik raporu il müdürlüğünce incelenerek ihtiyaç belirlenir",
+        "Üretici örgütleri için izin verilen üyeler, ayrıca bireysel talepte bulunamaz"
       ],
       "genelge": [
-        "Tarımsal depo minimum alan şartları arazi tipine göre değişir",
-        "Dikili arazide emsal uygulanır; Marjinal arazide emsal uygulanır"
+        "Dikili tarım arazisi: İlçe sınırları içinde min 1 hektar (10.000 m²) — depo hakkı varlığın %1'i",
+        "Mutlak, özel ürün ve marjinal tarım arazisi: min 2 hektar (20.000 m²) — depo hakkı varlığın %1'i",
+        "Örtüaltı tarım arazisi: min 0,3 hektar (3.000 m²) — depo hakkı varlığın %1'i",
+        "Depo yapma hakkı: ilçe sınırları içindeki toplam arazi varlığının %1'i (emsal değil, yapı hakkı)"
       ]
     },
     "technical": {
       "capacity": {
         "unit": "m²",
-        "minAreaDikili": 5000,
-        "minAreaTarla": 20000,
-        "minAreaSera": 3000
+        "hakOrani": 0.01,
+        "minAlanDikili": 10000,
+        "minAlanMutlak": 20000,
+        "minAlanMarjinal": 20000,
+        "minAlanOzelUrun": 20000,
+        "minAlanSera": 3000,
+        "minAlanOrtuAlti": 3000
       },
       "specifications": [
-        "Depo: Ürün için",
         "Havalandırma sistemi önerilir",
-        "Nem kontrolü (ürün depoları için)",
+        "Nem ve sıcaklık kontrolü (ürün özelliğine göre)",
         "Güvenlik ve yangın önlemleri",
-        "Yükleme rampaları"
+        "Yükleme rampaları",
+        "Sadece üreticinin kendi ürünü için kullanılabilir"
       ]
     }
   },
@@ -78,14 +93,29 @@
   },
   "faq": [
     {
-      "question": "Dikili arazide kaç m² tarımsal depo?",
-      "answer": "Minimum 5000 m² dikili arazi gerekir. Emsal uygulaması arazi tipine göre belirlenir."
+      "question": "Tarımsal depo yapmak için minimum kaç dekar arazi gerekir?",
+      "answer": "Arazi tipine göre değişir: dikili tarım arazisi için en az 10 dekar (1 hektar), mutlak/özel ürün/marjinal tarım arazisi için en az 20 dekar (2 hektar), örtüaltı/sera için en az 3 dekar (0,3 hektar) ilçe içi arazi varlığı gerekir."
     },
     {
-      "question": "Marjinal arazide şartlar nedir?",
-      "answer": "Minimum 20000 m² Marjinal arazi gerekir. Emsal uygulaması arazi tipine göre belirlenir."
+      "question": "Tarımsal depo kaç m² yapılabilir?",
+      "answer": "Aynı ilçe sınırları içindeki toplam tarım arazisi varlığının %1'i kadar depo yapma hakkınız bulunur. Örneğin 110 dekar toplam arazi varlığınız varsa, 1,1 dekar (1.100 m²) depo yapma hakkınız var. Ancak fiilen yapabileceğiniz alan, belediye plan notlarındaki emsal oranına göre belirlenir."
+    },
+    {
+      "question": "Kiraladığım araziyi depo hesabına katabilir miyim?",
+      "answer": "Hayır, kiralama ve sözleşmeli üretim yapılan araziler tarımsal amaçlı depo alanı hesabında dikkate alınmaz (Talimat Madde 7.2)."
+    },
+    {
+      "question": "Hisseli parselde payım kadar mı hesaplanır?",
+      "answer": "Evet, arazi varlığı hesabında hisseli parsellerdeki hisse oranı hesaba dahil edilir. Örneğin 10 dekarlık bir parselde ½ hisseniz varsa 5 dekar sayılır."
+    },
+    {
+      "question": "Üretici örgütü ortak depo kurabilir mi?",
+      "answer": "Evet, üretici örgütleri üye çiftçilerin toplam arazi varlığının %1'ine ortak depo kurabilir. Ancak bu depoya katkı sağlayan üyeler ayrıca bireysel depo talebi yapamaz."
+    },
+    {
+      "question": "Tarımsal depoda hangi ürünler depolanabilir?",
+      "answer": "Sadece üreticinin kendi bitkisel üretımi yoluyla elde ettiği ürünler depolanabilir. Ticari amaçlı başkalarının ürünleri kabul edilmez."
     }
-
   ],
   "relatedPages": [
     {
@@ -102,8 +132,8 @@
   "structuredData": {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "Tarımsal Depo Nasıl Yapılır? Alan Hesabı ve Şartlar | Tarım İmar",
-          "description": "Tarımsal amaçlı depo kurulumu. Minimum alan şartları arazi vasfına göre değişir.",
+    "headline": "Tarımsal Amaçlı Depo Yapma Şartları ve Alan Hesabı",
+    "description": "Üreticinin bitkisel üretimden elde ettiği ürün için tarımsal depo kurulumu. İlçe arazi varlığının %1'i kadar alan, arazi tipine göre minimum eşik.",
     "image": "https://tarimimar.com.tr/og-image.svg",
     "publisher": {
       "@type": "Organization",
@@ -118,26 +148,26 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Dikili arazide kaç m² tarımsal depo?",
+          "name": "Tarımsal depo yapmak için minimum kaç dekar arazi gerekir?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Minimum 5000 m² dikili arazi gerekir. Emsal uygulaması arazi tipine göre belirlenir."
+            "text": "Arazi tipine göre değişir: dikili tarım arazisi için en az 10 dekar (1 hektar), mutlak/özel ürün/marjinal tarım arazisi için en az 20 dekar (2 hektar), örtüaltı/sera için en az 3 dekar (0,3 hektar) ilçe içi arazi varlığı gerekir."
           }
         },
         {
           "@type": "Question",
-          "name": "Marjinal arazide şartlar nedir?",
+          "name": "Tarımsal depo kaç m² yapılabilir?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Minimum 20000 m² Marjinal arazi gerekir. Emsal uygulaması arazi tipine göre belirlenir."
+            "text": "Aynı ilçe sınırları içindeki toplam tarım arazisi varlığının %1'i kadar alanında depo yapılabilir."
           }
         },
         {
           "@type": "Question",
-          "name": "Zeytinlikte depo yapılır mı?",
+          "name": "Kiraladığım araziyi depo hesabına katabilir miyim?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Zeytinliklerde yapılaşma koşulları farklılık gösterir; detaylı değerlendirme gereklidir."
+            "text": "Hayır, kiralama ve sözleşmeli üretim yapılan araziler tarımsal amaçlı depo alanı hesabında dikkate alınmaz."
           }
         }
       ]
@@ -147,6 +177,7 @@
     "genelge": false,
     "pythonModule": true,
     "webScraping": false,
-    "lastUpdated": "2024-11-15T19:30:00.000Z"
+    "lastUpdated": "2026-04-12T00:00:00.000Z",
+    "notes": "Tarımsal Amaçlı Yapıların Kriterleri Talimatı (2025) Madde 7.1-7.4. Depo hakkı: toplam arazi varlığının %1'i (emsal değil, yapı hakkı). Fiili yapım alanı belediye emsaline tabidir. Min eşik: dikili 1 ha, mutlak/marjinal/özel ürün 2 ha, örtüaltı 0,3 ha."
   }
 }

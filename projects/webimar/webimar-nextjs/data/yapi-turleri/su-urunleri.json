@@ -1,0 +1,111 @@
+{
+  "slug": "su-urunleri",
+  "id": 34,
+  "name": "Su Ürünleri Üretim Tesisi",
+  "category": "Hayvancılık Tesisleri",
+  "seo": {
+    "title": "Su Ürünleri Üretim Tesisi Nasıl Kurulur? | Tarım İmar",
+    "description": "Su ürünleri üretim tesisi kurulumu, alan hesaplama ve mevzuat bilgileri. Balık çiftliği ve su ürünleri yetiştiriciliği.",
+    "keywords": [
+      "su ürünleri",
+      "balık çiftliği",
+      "su ürünleri tesisi",
+      "balık yetiştiriciliği",
+      "akvakültür"
+    ],
+    "canonical": "/su-urunleri/"
+  },
+  "hero": {
+    "title": "Su Ürünleri Üretim Tesisi",
+    "subtitle": "Balık ve su ürünleri yetiştiriciliği tesisi kurulumu",
+    "icon": "🐟"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Su ürünleri üretim tesisi</strong>, balık ve diğer su ürünlerinin kontrollü ortamda yetiştirildiği tesislerdir.</p>",
+    "purpose": "<p>Su ürünleri üretiminin artırılması ve sektörün geliştirilmesi amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Tarımsal arazi sahipleri ve su ürünleri yetiştiricileri kurabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "Kontrollü Üretim",
+      "description": "Havuz ve tanklarda kontrollü yetiştiricilik",
+      "icon": "🏊"
+    },
+    {
+      "title": "Yüksek Verim",
+      "description": "Yoğun üretim teknikleri ile yüksek verim",
+      "icon": "📈"
+    },
+    {
+      "title": "Çeşitlilik",
+      "description": "Farklı balık ve su ürünleri türleri",
+      "icon": "🐠"
+    },
+    {
+      "title": "Sürdürülebilir",
+      "description": "Çevre dostu üretim yöntemleri",
+      "icon": "♻️"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir",
+        "Su kullanım izni gerekli"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "Havuz veya tank sistemi",
+        "Su temini ve arıtma",
+        "Havalandırma sistemi",
+        "Yem depolama alanı"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Su Ürünleri Tesisi Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, su ürünleri tesisi alanınızı hesaplayın",
+    "ctaText": "Su Ürünleri Tesisi Hesapla",
+    "ctaLink": "/hesaplama/su-urunleri"
+  },
+  "faq": [
+    {
+      "question": "Su ürünleri tesisi için ne kadar arazi gerekir?",
+      "answer": "Kapasite ve tesis türüne göre değişir."
+    },
+    {
+      "question": "Hangi balık türleri yetiştirilebilir?",
+      "answer": "Alabalık, levrek, çipura, sazan gibi türler yetiştirilebilir."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Hayvan İçme Suyu Göleti",
+      "url": "/golet",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Su Ürünleri Üretim Tesisi Nasıl Kurulur?",
+    "description": "Su ürünleri üretim tesisi kurulumu, alan hesaplama ve mevzuat bilgileri. Balık çiftliği ve su ürünleri yetiştiriciliği.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

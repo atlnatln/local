@@ -96,8 +96,9 @@ class MathChallengeActivity : AppCompatActivity() {
             val jsonAvailable = questionManager.sync(token)
             topicHelper.sync()
             runOnUiThread {
-                // Test ve pratik modda isSetComplete() görmezden gel
-                if (jsonAvailable && (!questionManager.isSetComplete() || isTestMode || isPracticeMode)) {
+                // JSON soru varsa ve set tamamlanmadıysa JSON mode, yoksa fallback
+                val hasQuestions = jsonAvailable && questionManager.totalCount() > 0
+                if (hasQuestions && (!questionManager.isSetComplete() || isTestMode || isPracticeMode)) {
                     startJsonMode()
                 } else {
                     startFallbackMode()

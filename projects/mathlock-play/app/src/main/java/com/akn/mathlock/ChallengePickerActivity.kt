@@ -10,12 +10,14 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.akn.mathlock.databinding.ActivityChallengePickerBinding
 import com.akn.mathlock.service.AppLockService
+import com.akn.mathlock.util.PreferenceManager
 
 class ChallengePickerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChallengePickerBinding
     private var lockedPackage: String? = null
     private var timerExpired: Boolean = false
+    private lateinit var prefManager: PreferenceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +26,7 @@ class ChallengePickerActivity : AppCompatActivity() {
 
         lockedPackage = intent.getStringExtra("locked_package")
         timerExpired  = intent.getBooleanExtra("timer_expired", false)
+        prefManager = PreferenceManager(this)
 
         // Kilitli uygulamanın adını göster
         lockedPackage?.let { pkg ->
@@ -46,20 +49,60 @@ class ChallengePickerActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.cardMath.setOnClickListener {
-            val intent = Intent(this, MathChallengeActivity::class.java).apply {
-                putExtra("locked_package", lockedPackage)
-                putExtra("timer_expired", timerExpired)
+        // Matematik — görünürlük ebeveyn toggle'ına bağlı
+        if (prefManager.isMathEnabled) {
+            binding.cardMath.visibility = View.VISIBLE
+            binding.cardMath.setOnClickListener {
+                val intent = Intent(this, MathChallengeActivity::class.java).apply {
+                    putExtra("locked_package", lockedPackage)
+                    putExtra("timer_expired", timerExpired)
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
+        } else {
+            binding.cardMath.visibility = View.GONE
         }
 
-        binding.cardGuess.setOnClickListener {
-            val intent = Intent(this, NumberGuessActivity::class.java).apply {
-                putExtra("locked_package", lockedPackage)
-                putExtra("timer_expired", timerExpired)
+        // Sayı Tahmin — görünürlük ebeveyn toggle'ına bağlı
+        if (prefManager.isGuessEnabled) {
+            binding.cardGuess.visibility = View.VISIBLE
+            binding.cardGuess.setOnClickListener {
+                val intent = Intent(this, NumberGuessActivity::class.java).apply {
+                    putExtra("locked_package", lockedPackage)
+                    putExtra("timer_expired", timerExpired)
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
+        } else {
+            binding.cardGuess.visibility = View.GONE
+        }
+
+        // Bulmaca (Sayı Yolculuğu) — görünürlük ebeveyn toggle'ına bağlı
+        if (prefManager.isPuzzleEnabled) {
+            binding.cardPuzzle.visibility = View.VISIBLE
+            binding.cardPuzzle.setOnClickListener {
+                val intent = Intent(this, SayiYolculuguActivity::class.java).apply {
+                    putExtra("locked_package", lockedPackage)
+                    putExtra("timer_expired", timerExpired)
+                }
+                startActivity(intent)
+            }
+        } else {
+            binding.cardPuzzle.visibility = View.GONE
+        }
+
+        // Robotopia (Kodlama Macerası) — görünürlük ebeveyn toggle'ına bağlı
+        if (prefManager.isRobotopiaEnabled) {
+            binding.cardRobotopia.visibility = View.VISIBLE
+            binding.cardRobotopia.setOnClickListener {
+                val intent = Intent(this, RobotopiaActivity::class.java).apply {
+                    putExtra("locked_package", lockedPackage)
+                    putExtra("timer_expired", timerExpired)
+                }
+                startActivity(intent)
+            }
+        } else {
+            binding.cardRobotopia.visibility = View.GONE
         }
 
         binding.cardParent.setOnClickListener {

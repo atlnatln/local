@@ -1,0 +1,109 @@
+{
+  "slug": "teleferik",
+  "id": 39,
+  "name": "Tarımsal Amaçlı Teleferik",
+  "category": "Depolama ve İşleme Tesisleri",
+  "seo": {
+    "title": "Tarımsal Teleferik Sistemi | Tarım İmar",
+    "description": "Tarımsal amaçlı teleferik sistemi kurulumu, alan hesaplama ve mevzuat bilgileri.",
+    "keywords": [
+      "tarımsal teleferik",
+      "çiftlik teleferik",
+      "ürün taşıma",
+      "teleferik sistemi"
+    ],
+    "canonical": "/teleferik/"
+  },
+  "hero": {
+    "title": "Tarımsal Amaçlı Teleferik",
+    "subtitle": "Engebeli arazilerde tarımsal ürün taşıma sistemi",
+    "icon": "🚡"
+  },
+  "introduction": {
+    "whatIs": "<p><strong>Tarımsal amaçlı teleferik</strong>, engebeli ve dağlık arazilerde tarımsal ürünlerin taşınması amacıyla kurulan kablolu taşıma sistemidir.</p>",
+    "purpose": "<p>Zorlu arazi koşullarında ürün taşıma sorunlarının çözülmesi amaçlanmaktadır.</p>",
+    "whoCanBuild": "<p>Dağlık ve engebeli arazilerde tarım yapan üreticiler kurabilir.</p>"
+  },
+  "features": [
+    {
+      "title": "Kolay Taşıma",
+      "description": "Engebeli arazilerde ürün taşıma",
+      "icon": "📦"
+    },
+    {
+      "title": "Zaman Tasarrufu",
+      "description": "Hızlı ve güvenli taşıma",
+      "icon": "⏱️"
+    },
+    {
+      "title": "Verimlilik",
+      "description": "İş gücü tasarrufu",
+      "icon": "📈"
+    },
+    {
+      "title": "Güvenlik",
+      "description": "Güvenli ürün nakliyesi",
+      "icon": "🛡️"
+    }
+  ],
+  "requirements": {
+    "legal": {
+      "restrictions": [
+        "Tarımsal amaçlı yapı kapsamında değerlendirilir"
+      ],
+      "genelge": [
+        "2025 yönetmeliği ile tarımsal yapı türleri arasına eklenmiştir"
+      ]
+    },
+    "technical": {
+      "specifications": [
+        "Kablo sistemi",
+        "İstasyon yapıları",
+        "Taşıma kabinleri",
+        "Güvenlik donanımı"
+      ]
+    }
+  },
+  "calculator": {
+    "title": "Teleferik Sistemi Hesaplayın",
+    "description": "Arazinizin bilgilerini girin, teleferik sistemi alanını hesaplayın",
+    "ctaText": "Teleferik Alanı Hesapla",
+    "ctaLink": "/hesaplama/teleferik"
+  },
+  "faq": [
+    {
+      "question": "Tarımsal teleferik nerelerde kullanılır?",
+      "answer": "Dağlık ve engebeli arazilerde, özellikle çay, fındık ve meyve bahçelerinde kullanılır."
+    },
+    {
+      "question": "Teleferik sistemi için izin nasıl alınır?",
+      "answer": "Tarımsal yapı izni kapsamında başvuru yapılmalıdır."
+    }
+  ],
+  "relatedPages": [
+    {
+      "title": "Tarımsal Depo",
+      "url": "/tarimsal-depo",
+      "icon": "📋"
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Tarımsal Teleferik Sistemi",
+    "description": "Tarımsal amaçlı teleferik sistemi kurulumu, alan hesaplama ve mevzuat bilgileri.",
+    "image": "https://tarimimar.com.tr/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Tarım İmar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Tarım İmar",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarimimar.com.tr/logo.svg"
+      }
+    }
+  }
+}

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Play Console – Uygulama Config Editörü</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Google Sans', Roboto, Arial, sans-serif; background: #f8f9fa; color: #202124; min-height: 100vh; }
+    header { background: #1a73e8; color: #fff; padding: 16px 24px; }
+    header h1 { font-size: 20px; font-weight: 500; }
+    header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+    .container { max-width: 900px; margin: 24px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card { background: #fff; border-radius: 8px; border: 1px solid #e8eaed; padding: 20px; }
+    .card h2 { font-size: 15px; font-weight: 600; color: #1a73e8; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e8eaed; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 500; color: #5f6368; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .field input[type="text"], .field select { width: 100%; border: 1px solid #dadce0; border-radius: 4px; padding: 8px 10px; font-size: 14px; outline: none; transition: border-color 0.2s; }
+    .field input:focus, .field select:focus { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+    .char-count { font-size: 11px; color: #5f6368; text-align: right; margin-top: 3px; }
+    .radio-group, .checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; }
+    .radio-group label, .checkbox-group label { display: flex; align-items: center; gap: 7px; font-size: 14px; cursor: pointer; font-weight: 400; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .btn-primary { background: #1a73e8; color: #fff; }
+    .btn-primary:hover { background: #1557b0; }
+    .btn-secondary { background: #f1f3f4; color: #3c4043; }
+    .btn-secondary:hover { background: #e8eaed; }
+    .btn-success { background: #34a853; color: #fff; }
+    .btn-success:hover { background: #2d8f47; }
+    .btn-danger { background: #ea4335; color: #fff; }
+    .btn-danger:hover { background: #c5221f; }
+    .btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    textarea { width: 100%; min-height: 180px; border: 1px solid #dadce0; border-radius: 4px; padding: 10px; font-family: 'Courier New', monospace; font-size: 12px; outline: none; resize: vertical; line-height: 1.5; }
+    textarea:focus { border-color: #1a73e8; }
+    .url-box { background: #e8f0fe; border: 1px solid #c6d9ff; border-radius: 6px; padding: 12px 14px; font-size: 12px; word-break: break-all; margin-top: 12px; }
+    .url-box strong { display: block; font-size: 11px; color: #1967d2; text-transform: uppercase; margin-bottom: 6px; }
+    .url-box a { color: #1a73e8; text-decoration: none; }
+    .url-box a:hover { text-decoration: underline; }
+    .saved-list { list-style: none; }
+    .saved-list li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f3f4; font-size: 13px; }
+    .saved-list li:last-child { border-bottom: none; }
+    .saved-list .actions { display: flex; gap: 6px; }
+    .saved-list button { font-size: 11px; padding: 4px 10px; border-radius: 3px; border: 1px solid #dadce0; cursor: pointer; background: #fff; }
+    .saved-list button:hover { background: #f1f3f4; }
+    .saved-list .del-btn { color: #ea4335; border-color: #ea4335; }
+    .status-msg { padding: 8px 12px; border-radius: 4px; font-size: 13px; margin-top: 10px; display: none; }
+    .status-msg.ok { background: #e6f4ea; color: #1e8e3e; display: block; }
+    .status-msg.err { background: #fce8e6; color: #d93025; display: block; }
+    .status-msg.info { background: #e8f0fe; color: #1967d2; display: block; }
+    .install-box { background: #fffde7; border: 1px solid #f9a825; border-radius: 6px; padding: 12px 14px; font-size: 13px; margin-bottom: 16px; }
+    .install-box strong { color: #e65100; }
+    code { background: #f1f3f4; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: monospace; }
+    @media (max-width: 700px) { .container { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<header>
+  <h1>🚀 Play Console – Uygulama Config Editörü</h1>
+  <p>Yerel config yönetimi ve Tampermonkey betik yükleyici</p>
+</header>
+
+<div class="container">
+  <!-- SOL: FORM -->
+  <div>
+    <div class="card">
+      <div class="install-box">
+        <strong>Tampermonkey betiğini yükle:</strong><br>
+        Betik dosyasını Tampermonkey'e yüklemek için
+        <a href="../tampermonkey/play-console-autofill.user.js" target="_blank">play-console-autofill.user.js</a>
+        bağlantısına tıkla veya Tampermonkey Dashboard → Import'u kullan.
+      </div>
+
+      <h2>Yeni Uygulama Config</h2>
+
+      <div class="field">
+        <label>Uygulama Adı *</label>
+        <input type="text" id="f-name" maxlength="30" placeholder="Google Play'de görünecek ad">
+        <div class="char-count"><span id="f-name-count">0</span> / 30</div>
+      </div>
+
+      <div class="field">
+        <label>Varsayılan Dil</label>
+        <select id="f-lang">
+          <option value="tr-TR">Türkçe – tr-TR</option>
+          <option value="en-US" selected>İngilizce (Amerika) – en-US</option>
+          <option value="en-GB">İngilizce (İngiltere) – en-GB</option>
+          <option value="de-DE">Almanca – de-DE</option>
+          <option value="fr-FR">Fransızca – fr-FR</option>
+          <option value="es-ES">İspanyolca – es-ES</option>
+          <option value="ar">Arapça – ar</option>
+          <option value="ja-JP">Japonca – ja-JP</option>
+          <option value="ko-KR">Korece – ko-KR</option>
+          <option value="ru-RU">Rusça – ru-RU</option>
+          <option value="zh-CN">Çince (Basit) – zh-CN</option>
+          <option value="zh-TW">Çince (Geleneksel) – zh-TW</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Uygulama Türü</label>
+        <div class="radio-group">
+          <label><input type="radio" name="f-type" value="app" checked> Uygulama</label>
+          <label><input type="radio" name="f-type" value="game"> Oyun</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Fiyatlandırma</label>
+        <div class="radio-group">
+          <label><input type="radio" name="f-pricing" value="free" checked> Ücretsiz</label>
+          <label><input type="radio" name="f-pricing" value="paid"> Ücretli</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Beyanlar</label>
+        <div class="checkbox-group" style="flex-direction:column;gap:8px">
+          <label><input type="checkbox" id="f-policy" checked> Geliştirici Program Politikaları kabul</label>
+          <label><input type="checkbox" id="f-export" checked> ABD İhracat Yasaları kabul</label>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="btn btn-primary" id="btn-gen-url">🔗 Play Console URL Oluştur</button>
+        <button class="btn btn-secondary" id="btn-export-json">📋 JSON Kopyala</button>
+        <button class="btn btn-success" id="btn-save">💾 Config Kaydet</button>
+      </div>
+
+      <div class="url-box" id="url-box" style="display:none">
+        <strong>Otomatik Doldurma Bağlantısı</strong>
+        <a id="url-link" href="#" target="_blank"></a>
+      </div>
+
+      <div class="status-msg" id="status"></div>
+    </div>
+  </div>
+
+  <!-- SAĞ: JSON + SAVED -->
+  <div style="display:flex;flex-direction:column;gap:20px">
+    <div class="card">
+      <h2>JSON İçe/Dışa Aktar</h2>
+      <textarea id="json-area" placeholder='JSON yapıştır veya "JSON Kopyala" butonunu kullan…'></textarea>
+      <div class="btns">
+        <button class="btn btn-secondary" id="btn-import-json">📥 JSON ile Doldur</button>
+        <button class="btn btn-secondary" id="btn-download-json">⬇️ JSON İndir</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Kayıtlı Configler</h2>
+      <ul class="saved-list" id="saved-list">
+        <li style="color:#5f6368;font-size:12px">Henüz kayıt yok</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  const DEVELOPER_ID = '9071363965517112224';
+  const BASE_URL = `https://play.google.com/console/u/0/developers/${DEVELOPER_ID}/create-new-app`;
+
+  function readForm() {
+    return {
+      appName: document.getElementById('f-name').value.trim(),
+      defaultLanguage: document.getElementById('f-lang').value,
+      type: document.querySelector('input[name="f-type"]:checked')?.value || 'app',
+      pricing: document.querySelector('input[name="f-pricing"]:checked')?.value || 'free',
+      declarations: {
+        developerPoliciesAccepted: document.getElementById('f-policy').checked,
+        exportLawsAccepted: document.getElementById('f-export').checked,
+      },
+    };
+  }
+
+  function applyToForm(cfg) {
+    document.getElementById('f-name').value = cfg.appName || '';
+    updateCount();
+    document.getElementById('f-lang').value = cfg.defaultLanguage || 'en-US';
+    const typeRadio = document.querySelector(`input[name="f-type"][value="${cfg.type || 'app'}"]`);
+    if (typeRadio) typeRadio.checked = true;
+    const priceRadio = document.querySelector(`input[name="f-pricing"][value="${cfg.pricing || 'free'}"]`);
+    if (priceRadio) priceRadio.checked = true;
+    document.getElementById('f-policy').checked = cfg.declarations?.developerPoliciesAccepted ?? true;
+    document.getElementById('f-export').checked  = cfg.declarations?.exportLawsAccepted ?? true;
+  }
+
+  function updateCount() {
+    document.getElementById('f-name-count').textContent = document.getElementById('f-name').value.length;
+  }
+
+  function configToUrlParams(cfg) {
+    const p = new URLSearchParams({
+      ugpAutoFill: '1',
+      ugpName: cfg.appName,
+      ugpLang: cfg.defaultLanguage,
+      ugpType: cfg.type,
+      ugpPricing: cfg.pricing,
+      ugpPolicy: cfg.declarations?.developerPoliciesAccepted ? '1' : '0',
+      ugpExport: cfg.declarations?.exportLawsAccepted ? '1' : '0',
+    });
+    return `${BASE_URL}?${p.toString()}`;
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById('status');
+    el.textContent = msg;
+    el.className = `status-msg ${type}`;
+    setTimeout(() => el.className = 'status-msg', 4000);
+  }
+
+  // Kayıtlar localStorage'da
+  function getSaved() {
+    try { return JSON.parse(localStorage.getItem('ugp_configs') || '{}'); }
+    catch { return {}; }
+  }
+  function setSaved(data) { localStorage.setItem('ugp_configs', JSON.stringify(data)); }
+
+  function renderSaved() {
+    const all = getSaved();
+    const ul = document.getElementById('saved-list');
+    const keys = Object.keys(all);
+    if (!keys.length) { ul.innerHTML = '<li style="color:#5f6368;font-size:12px">Henüz kayıt yok</li>'; return; }
+    ul.innerHTML = keys.map(name => `
+      <li>
+        <span>${name}</span>
+        <div class="actions">
+          <button data-load="${name}">Yükle</button>
+          <button data-url="${name}">URL</button>
+          <button class="del-btn" data-del="${name}">Sil</button>
+        </div>
+      </li>
+    `).join('');
+    ul.querySelectorAll('[data-load]').forEach(b => b.addEventListener('click', () => {
+      applyToForm(getSaved()[b.dataset.load]);
+      showStatus(`"${b.dataset.load}" yüklendi`, 'ok');
+    }));
+    ul.querySelectorAll('[data-url]').forEach(b => b.addEventListener('click', () => {
+      const url = configToUrlParams(getSaved()[b.dataset.url]);
+      document.getElementById('url-box').style.display = 'block';
+      const link = document.getElementById('url-link');
+      link.href = url; link.textContent = url;
+      showStatus('URL oluşturuldu', 'info');
+    }));
+    ul.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => {
+      const all = getSaved(); delete all[b.dataset.del]; setSaved(all); renderSaved();
+      showStatus(`"${b.dataset.del}" silindi`, 'info');
+    }));
+  }
+
+  // Olaylar
+  document.getElementById('f-name').addEventListener('input', updateCount);
+
+  document.getElementById('btn-gen-url').addEventListener('click', () => {
+    const cfg = readForm();
+    if (!cfg.appName) { showStatus('Uygulama adı zorunlu', 'err'); return; }
+    const url = configToUrlParams(cfg);
+    document.getElementById('url-box').style.display = 'block';
+    const link = document.getElementById('url-link');
+    link.href = url; link.textContent = url;
+    navigator.clipboard?.writeText(url);
+    showStatus('URL oluşturuldu ve panoya kopyalandı', 'ok');
+  });
+
+  document.getElementById('btn-export-json').addEventListener('click', () => {
+    const json = JSON.stringify(readForm(), null, 2);
+    document.getElementById('json-area').value = json;
+    navigator.clipboard?.writeText(json);
+    showStatus('JSON panoya kopyalandı', 'ok');
+  });
+
+  document.getElementById('btn-save').addEventListener('click', () => {
+    const cfg = readForm();
+    const name = cfg.appName || ('config-' + Date.now());
+    const all = getSaved(); all[name] = cfg; setSaved(all); renderSaved();
+    showStatus(`"${name}" kaydedildi`, 'ok');
+  });
+
+  document.getElementById('btn-import-json').addEventListener('click', () => {
+    const raw = document.getElementById('json-area').value.trim();
+    if (!raw) { showStatus('JSON alanı boş', 'err'); return; }
+    try { applyToForm(JSON.parse(raw)); showStatus('JSON uygulandı', 'ok'); }
+    catch(e) { showStatus('Geçersiz JSON: ' + e.message, 'err'); }
+  });
+
+  document.getElementById('btn-download-json').addEventListener('click', () => {
+    const cfg = readForm();
+    const json = JSON.stringify(cfg, null, 2);
+    const blob = new Blob([json], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (cfg.appName || 'uygulama') + '.json';
+    a.click();
+  });
+
+  renderSaved();
+</script>
+</body>
+</html>

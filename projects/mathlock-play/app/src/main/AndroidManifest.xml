@@ -32,6 +32,12 @@
     <!-- HTTPS veri aktarımı için -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Google Play uygulama içi satın alma -->
+    <uses-permission android:name="com.android.vending.BILLING" />
+
+    <!-- Tam ekran bildirim (Android 14+: kilitli uygulama alarmı için) -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -64,6 +70,7 @@
             android:launchMode="singleTop"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.MathLock" />
 
@@ -74,6 +81,7 @@
             android:launchMode="singleTop"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.MathLock" />
 
@@ -89,6 +97,12 @@
             android:exported="false"
             android:theme="@style/Theme.MathLock" />
 
+        <!-- Hesabım -->
+        <activity
+            android:name=".AccountActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MathLock" />
+
         <!-- Uygulama Seçimi -->
         <activity
             android:name=".AppSelectionActivity"
@@ -98,6 +112,26 @@
         <!-- Oyun Türü Seçim -->
         <activity
             android:name=".ChallengePickerActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MathLock" />
+
+        <!-- Sayı Yolculuğu (Bulmaca Oyunu) -->
+        <activity
+            android:name=".SayiYolculuguActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MathLock" />
+
+        <!-- Robotopia (Kodlama Macerası) -->
+        <activity
+            android:name=".RobotopiaActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:excludeFromRecents="true"

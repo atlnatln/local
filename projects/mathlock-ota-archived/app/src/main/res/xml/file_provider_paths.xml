@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FileProvider yolları: OTA ile indirilen APK dosyası için -->
+<paths>
+    <cache-path name="apk_downloads" path="updates/" />
+</paths>

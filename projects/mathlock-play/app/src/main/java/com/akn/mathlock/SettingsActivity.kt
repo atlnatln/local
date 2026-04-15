@@ -55,84 +55,24 @@ class SettingsActivity : AppCompatActivity() {
             val token = accountManager.getOrRegister()
             val hasJson = qm.sync(token)
             val email = accountManager.getEmail()
+            val credits = accountManager.getCachedCredits()
             runOnUiThread {
-                val accountLine = if (!email.isNullOrBlank()) {
-                    "\n📧 Hesap: $email"
+                // Hesap durumu (ayrı kartta) — tıklanınca AccountActivity'ye git
+                if (!email.isNullOrBlank()) {
+                    binding.tvAccountStatus.text = "📧 $email  •  💰 $credits kredi"
+                    binding.btnRegisterEmail.text = "Hesabım →"
                 } else {
-                    "\n👤 Hesap yok — kredi almak için kayıt gerekli"
+                    binding.tvAccountStatus.text = "Kayıtlı hesap yok"
+                    binding.btnRegisterEmail.text = "📧 Hesap Oluştur / Kayıt Ol"
                 }
+                binding.btnRegisterEmail.setOnClickListener {
+                    startActivity(android.content.Intent(this, AccountActivity::class.java))
+                }
+                // Soru modu bilgisi (görev ayarları kartında)
                 if (hasJson) {
-                    binding.tvMathModeInfo.text = "🤖 AI mod aktif — ${qm.totalCount()} soru, ${qm.accessibleBatches().size} set$accountLine"
+                    binding.tvMathModeInfo.text = "🤖 AI mod aktif — ${qm.totalCount()} soru, ${qm.accessibleBatches().size} set"
                 } else {
-                    binding.tvMathModeInfo.text = "⚡ Klasik mod — rastgele sorular$accountLine"
-                }
-                // Email kayıt için tıkla
-                binding.tvMathModeInfo.setOnClickListener {
-                    showEmailRegistrationDialog()
-                }
-            }
-        }.start()
-    }
-
-    private fun showEmailRegistrationDialog() {
-        val currentEmail = accountManager.getEmail()
-        if (!currentEmail.isNullOrBlank()) {
-            AlertDialog.Builder(this)
-                .setTitle("📧 Hesap")
-                .setMessage("Kayıtlı email: $currentEmail\n\nEmail adresinizi değiştirmek ister misiniz?")
-                .setPositiveButton("Değiştir") { _, _ -> showEmailInputDialog() }
-                .setNegativeButton("Tamam", null)
-                .show()
-        } else {
-            AlertDialog.Builder(this)
-                .setTitle("👤 Hesap Oluştur")
-                .setMessage(
-                    "Kredi satın alarak daha fazla soru açmak için email adresinizle kayıt olun.\n\n" +
-                    "İlk 50 soru tamamen ücretsiz — kayıt gerekmez."
-                )
-                .setPositiveButton("Email ile Kayıt Ol") { _, _ -> showEmailInputDialog() }
-                .setNegativeButton("Şimdi Değil", null)
-                .show()
-        }
-    }
-
-    private fun showEmailInputDialog() {
-        val input = android.widget.EditText(this).apply {
-            hint = "ornek@email.com"
-            inputType = android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS or
-                        android.text.InputType.TYPE_CLASS_TEXT
-            setPadding(48, 32, 48, 32)
-            accountManager.getEmail()?.let { setText(it) }
-        }
-
-        AlertDialog.Builder(this)
-            .setTitle("Email Adresiniz")
-            .setView(input)
-            .setPositiveButton("Kaydet") { _, _ ->
-                val email = input.text.toString().trim()
-                if (email.isBlank()) {
-                    Toast.makeText(this, "Email adresi boş olamaz", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-                registerEmailInBackground(email)
-            }
-            .setNegativeButton("İptal", null)
-            .show()
-    }
-
-    private fun registerEmailInBackground(email: String) {
-        Toast.makeText(this, "Kaydediliyor...", Toast.LENGTH_SHORT).show()
-        Thread {
-            val result = accountManager.registerEmail(email)
-            runOnUiThread {
-                when (result) {
-                    is AccountManager.RegisterEmailResult.Success -> {
-                        Toast.makeText(this, "✅ Email kaydedildi: $email", Toast.LENGTH_LONG).show()
-                        updateAiModeInfo()
-                    }
-                    is AccountManager.RegisterEmailResult.Error -> {
-                        Toast.makeText(this, "❌ ${result.message}", Toast.LENGTH_LONG).show()
-                    }
+                    binding.tvMathModeInfo.text = "⚡ Klasik mod — rastgele sorular"
                 }
             }
         }.start()
@@ -246,6 +186,34 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra("test_mode", true)
             }
             startActivity(intent)
+        }
+
+        binding.btnTestPuzzle.setOnClickListener {
+            val intent = Intent(this, SayiYolculuguActivity::class.java).apply {
+                putExtra("test_mode", true)
+            }
+            startActivity(intent)
+        }
+
+        // Oyun görünürlük toggleları
+        binding.switchMath.isChecked = prefManager.isMathEnabled
+        binding.switchMath.setOnCheckedChangeListener { _, isChecked ->
+            prefManager.isMathEnabled = isChecked
+        }
+
+        binding.switchGuess.isChecked = prefManager.isGuessEnabled
+        binding.switchGuess.setOnCheckedChangeListener { _, isChecked ->
+            prefManager.isGuessEnabled = isChecked
+        }
+
+        binding.switchPuzzle.isChecked = prefManager.isPuzzleEnabled
+        binding.switchPuzzle.setOnCheckedChangeListener { _, isChecked ->
+            prefManager.isPuzzleEnabled = isChecked
+        }
+
+        binding.switchRobotopia.isChecked = prefManager.isRobotopiaEnabled
+        binding.switchRobotopia.setOnCheckedChangeListener { _, isChecked ->
+            prefManager.isRobotopiaEnabled = isChecked
         }
     }
 

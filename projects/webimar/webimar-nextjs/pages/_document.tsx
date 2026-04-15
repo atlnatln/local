@@ -132,7 +132,7 @@ export default class MyDocument extends Document {
           <meta name="googlebot" content="index, follow" />
           <meta name="author" content="Tarım İmar" />
           <meta name="publisher" content="Tarım İmar" />
-          <meta name="keywords" content="tarım, yapılaşma, hesaplama, mevzuat, bağ evi, sera, hayvan barınağı, depo, lisanslı depo, soğuk hava deposu, gübre çukuru, toprak koruma, arazi kullanımı" />
+          <meta name="keywords" content="tarım, yapılaşma, hesaplama, mevzuat, bağ evi, sera, hayvan barınağı, depo, lisanslı depo, soğuk hava deposu, gübre çukuru, toprak koruma, arazi kullanımı, fide üretim, fidan üretim, mandıra, su ürünleri, deve kuşu, gübre deposu, sundurma, çiftlik atölyesi, tarımsal AR-GE" />
           <meta name="theme-color" content="#d2691e" />
           <meta name="msapplication-TileColor" content="#d2691e" />
 

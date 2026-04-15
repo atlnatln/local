@@ -593,18 +593,87 @@ def register_email(request):
         return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
 
     # Email zaten başka bir cihazda kullanılıyor mu?
-    existing = Device.objects.filter(email=email).exclude(pk=device.pk).first()
-    if existing:
-        return Response(
-            {'error': 'Bu email adresi zaten başka bir cihazda kayıtlı'},
-            status=status.HTTP_409_CONFLICT
-        )
+    # Eğer varsa → veriyi eski cihazdan yeni cihaza transfer et (hesap kurtarma)
+    old_device = Device.objects.filter(email=email).exclude(pk=device.pk).first()
+
+    recovered = False
+    if old_device:
+        with transaction.atomic():
+            # ChildProfile'ları transfer et (isim çakışmasını kontrol et)
+            for child in old_device.children.all():
+                existing_child = ChildProfile.objects.filter(
+                    device=device, name=child.name
+                ).first()
+                if existing_child:
+                    # Yeni cihazda aynı isimde çocuk varsa — istatistikleri birleştir
+                    existing_child.total_correct += child.total_correct
+                    existing_child.total_shown += child.total_shown
+                    existing_child.current_difficulty = max(
+                        existing_child.current_difficulty, child.current_difficulty
+                    )
+                    # stats_json: eski veriyi koru (daha zengin olan)
+                    if child.stats_json and not existing_child.stats_json:
+                        existing_child.stats_json = child.stats_json
+                    existing_child.save()
+                    # Eski çocuğun QuestionSet'lerini yeni çocuğa taşı
+                    child.question_sets.update(child=existing_child)
+                    child.delete()
+                else:
+                    child.device = device
+                    child.save(update_fields=['device'])
+
+            # CreditBalance transfer: bakiyeleri birleştir
+            old_credits = CreditBalance.objects.filter(device=old_device).first()
+            if old_credits:
+                new_credits, _ = CreditBalance.objects.get_or_create(device=device)
+                new_credits.balance += old_credits.balance
+                new_credits.total_purchased += old_credits.total_purchased
+                new_credits.total_used += old_credits.total_used
+                if old_credits.free_set_used:
+                    new_credits.free_set_used = True
+                new_credits.save()
+                old_credits.delete()
+
+            # PurchaseRecord'ları transfer et
+            old_device.purchases.update(device=device)
+
+            # UserQuestionProgress transfer et (çakışma varsa atla)
+            for progress in old_device.question_progress.all():
+                if not UserQuestionProgress.objects.filter(
+                    device=device, question=progress.question
+                ).exists():
+                    progress.device = device
+                    progress.save(update_fields=['device'])
+                else:
+                    progress.delete()
+
+            # AiQueryRecord transfer et
+            old_device.ai_queries.update(device=device)
+
+            # Eski cihazdan email'i temizle
+            old_device.email = None
+            old_device.save(update_fields=['email'])
+
+            recovered = True
+            logger.info(
+                "Hesap kurtarma: email=%s, old_device=%s → new_device=%s",
+                email, old_device.installation_id[:12], device.installation_id[:12]
+            )
 
     device.email = email
     device.save(update_fields=['email', 'last_seen'])
 
-    logger.info("Email kaydedildi: device=%s, email=%s", device.installation_id[:12], email)
-    return Response({'success': True, 'email': email})
+    # Transfer sonrası güncel bakiyeyi döndür
+    credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
+
+    logger.info("Email kaydedildi: device=%s, email=%s, recovered=%s",
+                device.installation_id[:12], email, recovered)
+    return Response({
+        'success': True,
+        'email': email,
+        'recovered': recovered,
+        'credits': credit_balance.balance,
+    })
 
 
 # ─── Soru Sync ────────────────────────────────────────────────────────────────
