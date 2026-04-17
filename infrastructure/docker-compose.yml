@@ -3,7 +3,7 @@ services:
   # Main Nginx Reverse Proxy (Infrastructure level)
   # =========================================================================
   nginx_proxy:
-    image: nginx:1.24-alpine
+    image: nginx:stable-alpine
     container_name: vps_nginx_main
     ports:
       - "80:80"
@@ -36,26 +36,8 @@ services:
         max-size: "10m"
         max-file: "5"
 
-  # =========================================================================
-  # Certbot for SSL Certificate Management
-  # =========================================================================
-  certbot:
-    image: certbot/certbot:latest
-    container_name: vps_certbot
-    volumes:
-      - certbot_certs:/etc/letsencrypt
-      - certbot_webroot:/var/www/certbot
-      - ./ssl:/output/ssl
-    environment:
-      - CERTBOT_EMAIL=${CERTBOT_EMAIL:-admin@ankadata.com.tr}
-    command: |
-      sh -c "while :; do 
-        certbot renew --webroot --webroot-path=/var/www/certbot --quiet; 
-        sleep 12h; 
-      done"
-    networks:
-      - vps_network
-    restart: unless-stopped
+  # Certbot: Host cron ile yönetiliyor (renew-ssl.sh / ssl-cron-setup.sh)
+  # Docker certbot servisi kaldırıldı — çakışma ve gereksiz kaynak kullanımı önlendi.
 
   # =========================================================================
   # Monitoring - Prometheus (Optional)
@@ -148,8 +130,6 @@ networks:
 volumes:
   nginx_logs:
     name: vps_nginx_logs
-  certbot_certs:
-    name: vps_certbot_certs
   certbot_webroot:
     name: vps_certbot_webroot
   prometheus_data:
