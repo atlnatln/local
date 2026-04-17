@@ -52,7 +52,12 @@ log "Certbot modu: $CERTBOT_MODE"
 # ─── Sertifika yenileme ──────────────────────────────────────────────────────
 RENEW_OPTS="--quiet --non-interactive"
 if [ "$CERTBOT_MODE" = "webroot" ]; then
-    RENEW_OPTS="$RENEW_OPTS --webroot --webroot-path=/var/www/certbot"
+    # Renewal config dosyaları doğru webroot_path içeriyor:
+    #   /var/lib/docker/volumes/vps_certbot_webroot/_data
+    # Bu path nginx container'ına /var/www/certbot olarak mount edilmiş.
+    # --webroot-path GEÇİLMİYOR: certbot kendi /etc/letsencrypt/renewal/*.conf'unu kullanır.
+    # (Override geçilirse /var/www/certbot → host'ta yok → yenileme sessizce başarısız olur)
+    : # webroot için ek flag gerekmez
 else
     # Standalone: port 80'i geçici olarak serbest bırak
     docker stop vps_nginx_main 2>/dev/null || true
