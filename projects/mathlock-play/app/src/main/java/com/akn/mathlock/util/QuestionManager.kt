@@ -24,11 +24,25 @@ class QuestionManager(private val context: Context) {
     companion object {
         private const val TAG = "QuestionManager"
         private const val PREFS_NAME = "mathlock_questions"
-        private const val KEY_CACHED_JSON = "cached_json_v2"         // Eski cache anahtarından farklı
-        private const val KEY_PENDING_SOLVED = "pending_solved_ids"  // Sunucuya henüz gönderilmemiş
+        private const val KEY_CACHED_JSON_PREFIX = "cached_json_v2_child_" // child-specific cache
+        private const val KEY_PENDING_SOLVED_PREFIX = "pending_solved_child_" // child-specific pending
         private const val API_BASE = "https://mathlock.com.tr/api/mathlock"
         private const val CONNECT_TIMEOUT = 5000
         private const val READ_TIMEOUT = 10000
+    }
+
+    private val prefManager = PreferenceManager(context)
+
+    /** Aktif çocuğa göre cache anahtarı */
+    private fun cacheKey(): String {
+        val childId = prefManager.activeChildId
+        return if (childId > 0) "${KEY_CACHED_JSON_PREFIX}$childId" else "${KEY_CACHED_JSON_PREFIX}0"
+    }
+
+    /** Aktif çocuğa göre pending solved anahtarı */
+    private fun pendingKey(): String {
+        val childId = prefManager.activeChildId
+        return if (childId > 0) "${KEY_PENDING_SOLVED_PREFIX}$childId" else "${KEY_PENDING_SOLVED_PREFIX}0"
     }
 
     data class JsonQuestion(
@@ -63,7 +77,10 @@ class QuestionManager(private val context: Context) {
         }
 
         return try {
-            val url = URL("$API_BASE/questions/?device_token=${deviceToken.trim()}")
+            val childId = prefManager.activeChildId
+            var apiUrl = "$API_BASE/questions/?device_token=${deviceToken.trim()}"
+            if (childId > 0) apiUrl += "&child_id=$childId"
+            val url = URL(apiUrl)
             val conn = url.openConnection() as HttpURLConnection
             conn.connectTimeout = CONNECT_TIMEOUT
             conn.readTimeout = READ_TIMEOUT
@@ -73,7 +90,7 @@ class QuestionManager(private val context: Context) {
                 val json = conn.inputStream.bufferedReader().readText()
                 conn.disconnect()
                 if (parseApiResponse(json)) {
-                    prefs.edit().putString(KEY_CACHED_JSON, json).apply()
+                    prefs.edit().putString(cacheKey(), json).apply()
                     buildRotationQueue()
                     _isJsonMode = true
                     Log.d(TAG, "API'den indirildi: ${rotationQueue.size} soru, batches=$_accessibleBatches")
@@ -92,7 +109,7 @@ class QuestionManager(private val context: Context) {
     fun sync(): Boolean = sync(null)
 
     private fun loadFromCache(): Boolean {
-        val cached = prefs.getString(KEY_CACHED_JSON, null)
+        val cached = prefs.getString(cacheKey(), null)
         if (cached != null && parseApiResponse(cached)) {
             buildRotationQueue()
             _isJsonMode = true
@@ -193,7 +210,7 @@ class QuestionManager(private val context: Context) {
     fun markSolved(questionId: Int) {
         val pending = getPendingSolvedIds().toMutableSet()
         pending.add(questionId)
-        prefs.edit().putString(KEY_PENDING_SOLVED, pending.joinToString(",")).apply()
+        prefs.edit().putString(pendingKey(), pending.joinToString(",")).apply()
 
         // Lokal listede de güncelle
         _allQuestions = _allQuestions.map {
@@ -220,6 +237,8 @@ class QuestionManager(private val context: Context) {
 
             val body = JSONObject().apply {
                 put("device_token", deviceToken)
+                val childId = prefManager.activeChildId
+                if (childId > 0) put("child_id", childId)
                 val arr = JSONArray()
                 pendingIds.forEach { arr.put(it) }
                 put("solved_questions", arr)
@@ -229,7 +248,7 @@ class QuestionManager(private val context: Context) {
             conn.disconnect()
 
             if (code in 200..299) {
-                prefs.edit().remove(KEY_PENDING_SOLVED).apply()
+                prefs.edit().remove(pendingKey()).apply()
                 Log.d(TAG, "İlerleme gönderildi: ${pendingIds.size} soru")
                 true
             } else {
@@ -243,7 +262,7 @@ class QuestionManager(private val context: Context) {
     }
 
     private fun getPendingSolvedIds(): Set<Int> {
-        val raw = prefs.getString(KEY_PENDING_SOLVED, "") ?: ""
+        val raw = prefs.getString(pendingKey(), "") ?: ""
         if (raw.isBlank()) return emptySet()
         return raw.split(",").mapNotNull { it.trim().toIntOrNull() }.toSet()
     }

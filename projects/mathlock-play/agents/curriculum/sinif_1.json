@@ -1,0 +1,105 @@
+{
+  "donem": "sinif_1",
+  "etiket": "1. Sınıf",
+  "yasAraligi": [6, 7],
+  "kaynak": "MEB İlkokul Matematik Öğretim Programı 2018 — 1. Sınıf Kazanımları (Sayılar ve İşlemler)",
+  "soruSayisi": 40,
+  "soruSayisiAciklama": "6-7 yaş dikkat süresi orta, 40 soru uygun",
+  "konular": [
+    {
+      "alan": "Doğal Sayılar (0-100)",
+      "kazanimlar": [
+        "100'e kadar doğal sayıları okur ve yazar",
+        "Doğal sayıların sırasını bilir",
+        "Ritmik sayma yapar (1'er, 2'şer, 5'er, 10'ar)",
+        "Onluk ve birlik kavramını açıklar",
+        "Verilen sayının onluğunu ve birliğini belirtir"
+      ],
+      "soruTipleri": ["siralama", "eksik_sayi"],
+      "sayiAraligi": [0, 100],
+      "zorlukSinirlari": {
+        "1": "1-20 arası sıralama, hangisi büyük/küçük",
+        "2": "1-50 arası, 3 sayı arasında en küçüğü",
+        "3": "1-100 arası, 4 sayı karşılaştırma",
+        "4": "Ritmik sayma: 2, 4, 6, ?, 10",
+        "5": "Onluk-birlik: 47'nin onluğu kaçtır?"
+      }
+    },
+    {
+      "alan": "Toplama (Eldesiz)",
+      "kazanimlar": [
+        "Toplama işleminin anlamını kavrar",
+        "Tek basamaklı sayılarla toplama yapar",
+        "İki basamaklı + tek basamaklı (eldesiz) toplama yapar",
+        "Sonucu en çok 20 olan toplama işlemlerini yapar"
+      ],
+      "soruTipleri": ["toplama"],
+      "sayiAraligi": [0, 20],
+      "zorlukSinirlari": {
+        "1": "a + b, a: 1-5, b: 1-5, sonuç ≤ 10",
+        "2": "a + b, a: 1-9, b: 1-9, sonuç ≤ 18",
+        "3": "a + b, a: 10-15, b: 1-5, sonuç ≤ 20 (eldesiz)",
+        "4": "a + b + c, a: 1-5, b: 1-5, c: 1-3, sonuç ≤ 13",
+        "5": "a + b, a: 10-19, b: 1-9, sonuç ≤ 20 (iki basamak)"
+      }
+    },
+    {
+      "alan": "Çıkarma (Onluktan Bozmasız)",
+      "kazanimlar": [
+        "Çıkarma işleminin anlamını kavrar",
+        "Tek basamaklı sayılarla çıkarma yapar",
+        "20'ye kadar olan sayılarda çıkarma yapar (onluktan bozma yok)"
+      ],
+      "soruTipleri": ["cikarma"],
+      "sayiAraligi": [0, 20],
+      "zorlukSinirlari": {
+        "1": "a - b, a: 2-5, b: 1-2, sonuç ≥ 1",
+        "2": "a - b, a: 5-10, b: 1-4, sonuç ≥ 1",
+        "3": "a - b, a: 10-15, b: 1-5, sonuç ≥ 1",
+        "4": "a - b, a: 10-20, b: 1-9, sonuç ≥ 1",
+        "5": "a - b, a: 15-20, b: 5-9, sonuç ≥ 1"
+      }
+    },
+    {
+      "alan": "Eksik Sayı (Basit)",
+      "kazanimlar": [
+        "Toplama ve çıkarmada bilinmeyen sayıyı bulur",
+        "? + a = b formatında çözüm yapar"
+      ],
+      "soruTipleri": ["eksik_sayi"],
+      "sayiAraligi": [0, 20],
+      "zorlukSinirlari": {
+        "1": "? + a = b, a: 1-3, b: 3-7",
+        "2": "a + ? = b, a: 1-5, b: 5-10",
+        "3": "? - a = b, a: 1-3, b: 1-5",
+        "4": "? + a = b, a: 3-8, b: 8-15",
+        "5": "a + ? = b, a: 5-10, b: 10-20"
+      }
+    },
+    {
+      "alan": "Sıralama ve Karşılaştırma",
+      "kazanimlar": [
+        "<, >, = sembollerini kullanır",
+        "Sayıları küçükten büyüğe / büyükten küçüğe sıralar"
+      ],
+      "soruTipleri": ["siralama"],
+      "sayiAraligi": [0, 100],
+      "zorlukSinirlari": {
+        "1": "Hangisi büyük: A, B (1-20)",
+        "2": "En küçüğü hangisi: A, B, C (1-30)",
+        "3": "En büyüğü hangisi: A, B, C (1-50)",
+        "4": "4 sayıyı küçükten büyüğe sırala, en küçüğü yaz",
+        "5": "Sayılar arasında kaç tane sayı var (1-50 arası)"
+      }
+    }
+  ],
+  "toplamSoruTipleri": ["toplama", "cikarma", "siralama", "eksik_sayi"],
+  "ozelKurallar": [
+    "Çarpma ve bölme YOK — 1. sınıf müfredatında değil",
+    "Toplama sonucu 20'yi geçmemeli (eldesiz)",
+    "Çıkarma sonucu negatif olamaz",
+    "Onluktan bozma gerektiren çıkarma YOK",
+    "Somut nesnelerle ipucu (parmak, elma, top)",
+    "40 soru (50 yerine)"
+  ]
+}

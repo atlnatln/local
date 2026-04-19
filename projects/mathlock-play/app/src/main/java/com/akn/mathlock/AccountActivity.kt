@@ -359,9 +359,9 @@ class AccountActivity : AppCompatActivity(), BillingHelper.BillingListener {
                         val added = resp.optInt("credits_added", 0)
                         val total = resp.optInt("total_credits", 0)
                         Snackbar.make(binding.root, "✅ $added kredi eklendi! Toplam: $total", Snackbar.LENGTH_LONG).show()
-                        accountManager.refreshCredits()
                         refreshUI()
-                        refreshFromServer()
+                        // Kredi bilgisini arka planda güncelle
+                        Thread { accountManager.refreshCredits(); runOnUiThread { refreshUI() } }.start()
                     } else {
                         val error = try {
                             org.json.JSONObject(responseText).optString("error", "Doğrulama hatası")

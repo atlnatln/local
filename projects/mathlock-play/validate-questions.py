@@ -22,9 +22,35 @@ DATA_DIR = SCRIPT_DIR / "data"
 QUESTIONS_FILE = DATA_DIR / "questions.json"
 TOPICS_FILE = DATA_DIR / "topics.json"
 
-VALID_TYPES = {"toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi"}
+# Dönem bazlı geçerli tipler ve soru sayıları
+PERIOD_CONFIG = {
+    "okul_oncesi": {
+        "types": {"sayma", "toplama", "cikarma", "karsilastirma", "oruntu"},
+        "count": 30,
+    },
+    "sinif_1": {
+        "types": {"toplama", "cikarma", "siralama", "eksik_sayi"},
+        "count": 40,
+    },
+    "sinif_2": {
+        "types": {"toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi"},
+        "count": 50,
+    },
+    "sinif_3": {
+        "types": {"toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi", "kesir", "problem"},
+        "count": 50,
+    },
+    "sinif_4": {
+        "types": {"toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi", "kesir", "problem"},
+        "count": 50,
+    },
+}
+ALL_VALID_TYPES = set().union(*(c["types"] for c in PERIOD_CONFIG.values()))
 REQUIRED_Q_FIELDS = {"id", "text", "answer", "type", "difficulty", "hint"}
 REQUIRED_TOPIC_FIELDS = {"title", "explanation", "example", "tips"}
+
+# Aktif dönem (komut satırından veya questions.json'dan belirlenir)
+ACTIVE_PERIOD = None
 
 errors = []
 warnings = []
@@ -172,9 +198,18 @@ def validate_questions():
 
     questions = data["questions"]
 
-    # 50 soru kontrolü
-    if len(questions) != 50:
-        err(f"Soru sayısı 50 olmalı, {len(questions)} bulundu")
+    # Dönemi belirle
+    global ACTIVE_PERIOD
+    if ACTIVE_PERIOD is None:
+        ACTIVE_PERIOD = data.get("educationPeriod", "sinif_2")
+    period_cfg = PERIOD_CONFIG.get(ACTIVE_PERIOD, PERIOD_CONFIG["sinif_2"])
+    valid_types = period_cfg["types"]
+    expected_count = period_cfg["count"]
+    print(f"  📚 Dönem: {ACTIVE_PERIOD} ({expected_count} soru bekleniyor)")
+
+    # Soru sayısı kontrolü
+    if len(questions) != expected_count:
+        err(f"Soru sayısı {expected_count} olmalı, {len(questions)} bulundu")
 
     seen_ids = set()
     seen_texts = set()
@@ -194,8 +229,8 @@ def validate_questions():
             err(f"Soru {qid}: Tekrar eden id")
         seen_ids.add(q["id"])
 
-        if q["id"] < 1 or q["id"] > 50:
-            err(f"Soru {qid}: id 1-50 arasında olmalı")
+        if q["id"] < 1 or q["id"] > expected_count:
+            err(f"Soru {qid}: id 1-{expected_count} arasında olmalı")
 
         # Text tekrarı
         if q["text"] in seen_texts:
@@ -203,8 +238,8 @@ def validate_questions():
         seen_texts.add(q["text"])
 
         # Tip kontrolü
-        if q["type"] not in VALID_TYPES:
-            err(f"Soru {qid}: Geçersiz tip '{q['type']}'. Geçerliler: {VALID_TYPES}")
+        if q["type"] not in valid_types:
+            err(f"Soru {qid}: Geçersiz tip '{q['type']}'. {ACTIVE_PERIOD} için geçerliler: {valid_types}")
         types_found.add(q["type"])
 
         # Zorluk kontrolü
@@ -215,7 +250,7 @@ def validate_questions():
         if not isinstance(q["answer"], int):
             err(f"Soru {qid}: Cevap tam sayı olmalı, {type(q['answer']).__name__} bulundu")
         elif q["answer"] < 0:
-            err(f"Soru {qid}: Cevap negatif olamaz (2. sınıf): {q['answer']}")
+            err(f"Soru {qid}: Cevap negatif olamaz: {q['answer']}")
 
         # Hint boş olmamalı
         if not q.get("hint", "").strip():
@@ -230,11 +265,11 @@ def validate_questions():
         # Matematik doğrulaması
         validate_math(q)
 
-    # Dağılım uyarıları
-    if "toplama" not in types_found:
-        warn("Toplama sorusu yok — 2. sınıf için temel tip")
-    if "cikarma" not in types_found:
-        warn("Çıkarma sorusu yok — 2. sınıf için temel tip")
+    # Dağılım uyarıları — temel tipler dönem bazlı
+    core_types = {"toplama", "cikarma"} & valid_types
+    for ct in core_types:
+        if ct not in types_found:
+            warn(f"{ct} sorusu yok — {ACTIVE_PERIOD} için temel tip")
 
     # Zorluk dağılımı
     diff_counts = {}
@@ -287,7 +322,7 @@ def validate_topics():
             pass
 
     for type_name, topic in topics.items():
-        if type_name not in VALID_TYPES:
+        if type_name not in ALL_VALID_TYPES:
             warn(f"topics.json'da bilinmeyen tip: '{type_name}'")
 
         missing = REQUIRED_TOPIC_FIELDS - set(topic.keys())
@@ -308,6 +343,7 @@ def validate_topics():
 
 
 def main():
+    global ACTIVE_PERIOD
     check_q = True
     check_t = True
 
@@ -315,6 +351,16 @@ def main():
         check_t = False
     if "--topics" in sys.argv:
         check_q = False
+
+    # --period argümanı
+    for i, arg in enumerate(sys.argv):
+        if arg == "--period" and i + 1 < len(sys.argv):
+            period = sys.argv[i + 1]
+            if period not in PERIOD_CONFIG:
+                print(f"❌ Geçersiz dönem: {period}")
+                print(f"   Geçerli dönemler: {', '.join(PERIOD_CONFIG.keys())}")
+                sys.exit(1)
+            ACTIVE_PERIOD = period
 
     print("🔍 MathLock Doğrulama Başlıyor...\n")
 

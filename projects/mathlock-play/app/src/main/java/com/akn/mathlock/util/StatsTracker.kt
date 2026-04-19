@@ -7,6 +7,9 @@ import org.json.JSONObject
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Her sorunun sonucunu kaydeder, 50 tamamlanınca VPS'e yükler.
@@ -20,8 +23,12 @@ class StatsTracker(private val context: Context) {
         private const val KEY_RESULTS = "saved_results"
         private const val KEY_TOTAL_CORRECT = "total_correct_alltime"
         private const val KEY_TOTAL_SHOWN = "total_shown_alltime"
-        private const val UPLOAD_URL = "https://mathlock.com.tr/mathlock/data/stats.json"
+        private const val KEY_LAST_UPLOADED_TIME = "last_uploaded_time"
+        private const val API_STATS_URL = "https://mathlock.com.tr/api/mathlock/stats/"
     }
+
+    private val prefManager = PreferenceManager(context)
+    private var sessionStartTime: Long = 0
 
     data class QuestionResult(
         val questionId: Int,
@@ -41,6 +48,29 @@ class StatsTracker(private val context: Context) {
         loadSaved()
     }
 
+    /** Oturumu başlat — MathChallengeActivity açılışında çağır */
+    fun startSession() {
+        sessionStartTime = System.currentTimeMillis()
+    }
+
+    /** Oturumu bitir — günlük süreyi biriktir */
+    fun endSession() {
+        if (sessionStartTime <= 0) return
+        val durationSec = (System.currentTimeMillis() - sessionStartTime) / 1000
+        sessionStartTime = 0
+        if (durationSec <= 0) return
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        val key = "time_$today"
+        val dailyTotal = prefs.getLong(key, 0) + durationSec
+        prefs.edit().putLong(key, dailyTotal).apply()
+    }
+
+    /** Bugünkü toplam çalışma süresi (saniye) */
+    fun todayTimeSeconds(): Long {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        return prefs.getLong("time_$today", 0)
+    }
+
     fun addResult(result: QuestionResult) {
         results.add(result)
         // Tüm zamanlar istatistiği
@@ -56,32 +86,55 @@ class StatsTracker(private val context: Context) {
     fun currentSetSize() = results.size
 
     /**
-     * VPS'e stats.json yükle. IO thread'den çağır.
+     * Backend API'ye stats yükle. IO thread'den çağır.
      * @return true: yükleme başarılı ve local state temizlendi
      */
     fun uploadStats(questionVersion: Int): Boolean {
-        val json = buildStatsJson(questionVersion)
+        val statsJson = buildStatsJson(questionVersion)
+        val accountPrefs = context.getSharedPreferences("mathlock_account", Context.MODE_PRIVATE)
+        val deviceToken = accountPrefs.getString("device_token", null)
+        if (deviceToken == null) {
+            Log.w(TAG, "device_token yok — stats yüklenemedi")
+            return false
+        }
+        val childName = prefManager.activeChildName ?: "Çocuk"
+        val totalTime = todayTimeSeconds()
+        val lastUploaded = prefs.getLong(KEY_LAST_UPLOADED_TIME, 0)
+        val sessionTimeDelta = (totalTime - lastUploaded).coerceAtLeast(0)
+
+        // API endpoint'ine POST
+        val apiBody = JSONObject().apply {
+            put("device_token", deviceToken)
+            put("child_name", childName)
+            put("question_version", questionVersion)
+            put("session_time_seconds", sessionTimeDelta)
+            put("stats", JSONObject(statsJson))
+        }
+
         return try {
-            val conn = URL(UPLOAD_URL).openConnection() as HttpURLConnection
-            conn.requestMethod = "PUT"
+            val conn = URL(API_STATS_URL).openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
             conn.doOutput = true
             conn.connectTimeout = 5000
             conn.readTimeout = 10000
-            OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { it.write(json) }
+            OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { it.write(apiBody.toString()) }
             val code = conn.responseCode
             conn.disconnect()
             if (code in 200..299) {
                 results.clear()
-                prefs.edit().remove(KEY_RESULTS).apply()
-                Log.d(TAG, "Stats başarıyla yüklendi (v$questionVersion)")
+                prefs.edit()
+                    .remove(KEY_RESULTS)
+                    .putLong(KEY_LAST_UPLOADED_TIME, totalTime)
+                    .apply()
+                Log.d(TAG, "Stats API'ye yüklendi (v$questionVersion)")
                 true
             } else {
-                Log.w(TAG, "Stats yükleme başarısız: HTTP $code")
+                Log.w(TAG, "Stats API yükleme başarısız: HTTP $code")
                 false
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Stats yükleme hatası: ${e.message}")
+            Log.w(TAG, "Stats API yükleme hatası: ${e.message}")
             false
         }
     }
@@ -92,6 +145,9 @@ class StatsTracker(private val context: Context) {
         root.put("completedAt", System.currentTimeMillis() / 1000)
         root.put("totalShown", results.size)
         root.put("totalCorrect", results.count { it.correct })
+        val childId = prefManager.activeChildId
+        if (childId > 0) root.put("childId", childId)
+        root.put("educationPeriod", prefManager.activeEducationPeriod)
 
         // Tip bazlı
         val byType = JSONObject()

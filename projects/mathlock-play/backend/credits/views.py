@@ -39,19 +39,35 @@ _DATA_DIR = _PROJECT_DIR / 'data'
 _GENERATE_SCRIPT = _PROJECT_DIR / 'ai-generate.sh'
 _GENERATE_TIMEOUT = 180  # saniye
 
+# Dönem bazlı soru sayıları
+_QUESTION_COUNTS = {
+    'okul_oncesi': 30,
+    'sinif_1': 40,
+    'sinif_2': 50,
+    'sinif_3': 50,
+    'sinif_4': 50,
+}
 
-def _generate_via_copilot(child_stats: dict) -> list:
+_VALID_EDUCATION_PERIODS = set(_QUESTION_COUNTS.keys())
+
+
+def _generate_via_copilot(child_stats: dict, education_period: str = 'sinif_2') -> list:
     """
-    ai-generate.sh + AGENTS.md ile Copilot CLI kullanarak 50 soru üret.
+    ai-generate.sh + AGENTS.md ile Copilot CLI kullanarak soru üret.
 
     Akış:
       1. child_stats → data/stats.json yaz
-      2. ai-generate.sh --vps-mode --skip-sync çalıştır
+      2. ai-generate.sh --vps-mode --skip-sync --period <dönem> çalıştır
       3. data/questions.json oku
-      4. 50 soruyu döndür
+      4. Soruları döndür (soru sayısı döneme göre değişir)
 
     Hata durumunda RuntimeError fırlatır (use_credit krediyi iade eder).
     """
+    if education_period not in _VALID_EDUCATION_PERIODS:
+        education_period = 'sinif_2'
+
+    expected_count = _QUESTION_COUNTS[education_period]
+
     _DATA_DIR.mkdir(exist_ok=True)
 
     # Stats'ı data/stats.json'a yaz (ai-generate.sh bunu okur)
@@ -67,7 +83,8 @@ def _generate_via_copilot(child_stats: dict) -> list:
 
     try:
         result = subprocess.run(
-            ['bash', str(_GENERATE_SCRIPT), '--vps-mode', '--skip-sync'],
+            ['bash', str(_GENERATE_SCRIPT), '--vps-mode', '--skip-sync',
+             '--period', education_period],
             capture_output=True, text=True,
             timeout=_GENERATE_TIMEOUT,
             cwd=str(_PROJECT_DIR),
@@ -89,12 +106,12 @@ def _generate_via_copilot(child_stats: dict) -> list:
     data = json.loads(questions_file.read_text(encoding='utf-8'))
     questions = data.get('questions', [])
 
-    if len(questions) < 50:
-        raise RuntimeError(f"Yetersiz soru: {len(questions)}/50")
+    if len(questions) < expected_count:
+        raise RuntimeError(f"Yetersiz soru: {len(questions)}/{expected_count}")
 
     logger.info(
-        "Copilot CLI soru üretimi başarılı: v%s, %d soru",
-        data.get('version', '?'), len(questions)
+        "Copilot CLI soru üretimi başarılı: v%s, %d soru, dönem=%s",
+        data.get('version', '?'), len(questions), education_period
     )
 
     # AGENTS.md formatından QuestionSet formatına dönüştür
@@ -106,7 +123,7 @@ def _generate_via_copilot(child_stats: dict) -> list:
             'difficulty': q.get('difficulty', 1),
             'hint': q.get('hint', ''),
         }
-        for q in questions[:50]
+        for q in questions[:expected_count]
     ]
 
 
@@ -156,6 +173,16 @@ def register_device(request):
         'credits': credit_balance.balance,
         'free_set_used': credit_balance.free_set_used,
         'child_name': child.name,
+        'education_period': child.education_period,
+        'children': [
+            {
+                'id': c.id,
+                'name': c.name,
+                'education_period': c.education_period,
+                'is_active': c.is_active,
+            }
+            for c in device.children.all()
+        ],
     })
 
 
@@ -349,7 +376,11 @@ def use_credit(request):
     except (Device.DoesNotExist, ValidationError):
         return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
 
-    child, _ = ChildProfile.objects.get_or_create(device=device, name=child_name)
+    try:
+        child = ChildProfile.objects.get(device=device, name=child_name)
+    except ChildProfile.DoesNotExist:
+        return Response({'error': f'"{child_name}" isimli profil bulunamadı'},
+                        status=status.HTTP_404_NOT_FOUND)
 
     # İstatistikleri güncelle
     if stats:
@@ -377,9 +408,9 @@ def use_credit(request):
                     'credits_remaining': 0,
                 }, status=status.HTTP_402_PAYMENT_REQUIRED)
 
-    # ─── Copilot CLI + AGENTS.md ile kişiye özel 50 soru üret ─────────────
+    # ─── Copilot CLI + AGENTS.md ile kişiye özel soru üret ─────────────────
     try:
-        questions = _generate_via_copilot(child.stats_json or {})
+        questions = _generate_via_copilot(child.stats_json or {}, child.education_period)
     except Exception as exc:
         logger.error("Soru üretimi hatası: %s", exc)
         # Krediyi iade et
@@ -420,6 +451,7 @@ def use_credit(request):
         'is_free': is_free,
         'questions_generated': len(questions),
         'set_version': next_version,
+        'child_id': child.id,
     })
 
 
@@ -451,13 +483,35 @@ def upload_stats(request):
     except (Device.DoesNotExist, ValidationError):
         return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
 
-    child, _ = ChildProfile.objects.get_or_create(device=device, name=child_name)
+    try:
+        child = ChildProfile.objects.get(device=device, name=child_name)
+    except ChildProfile.DoesNotExist:
+        return Response({'error': f'"{child_name}" isimli profil bulunamadı'},
+                        status=status.HTTP_404_NOT_FOUND)
 
     # Kümülatif istatistik güncelle
     total_correct = stats.get('totalCorrect', 0)
     total_shown = stats.get('totalShown', 0)
     child.total_correct += total_correct
     child.total_shown += total_shown
+
+    # Oturum süresi güncelle (delta: bu oturumdaki artış)
+    session_time = int(request.data.get('session_time_seconds', 0))
+    if session_time > 0:
+        child.total_time_seconds += session_time
+
+    # Günlük istatistik güncelle (daily_stats)
+    from datetime import date as _date, timedelta as _td
+    today_str = _date.today().isoformat()
+    daily = child.daily_stats or {}
+    today_entry = daily.get(today_str, {'solved': 0, 'correct': 0, 'time_seconds': 0})
+    today_entry['solved'] = today_entry.get('solved', 0) + total_shown
+    today_entry['correct'] = today_entry.get('correct', 0) + total_correct
+    today_entry['time_seconds'] = today_entry.get('time_seconds', 0) + session_time
+    daily[today_str] = today_entry
+    # Son 90 günü tut
+    cutoff = (_date.today() - _td(days=90)).isoformat()
+    child.daily_stats = {k: v for k, v in daily.items() if k >= cutoff}
 
     # Zorluk seviyesi ayarla (doğruluk oranına göre)
     if child.total_shown >= 10:
@@ -640,7 +694,7 @@ def register_email(request):
             # UserQuestionProgress transfer et (çakışma varsa atla)
             for progress in old_device.question_progress.all():
                 if not UserQuestionProgress.objects.filter(
-                    device=device, question=progress.question
+                    device=device, question=progress.question, child=progress.child
                 ).exists():
                     progress.device = device
                     progress.save(update_fields=['device'])
@@ -659,6 +713,17 @@ def register_email(request):
                 "Hesap kurtarma: email=%s, old_device=%s → new_device=%s",
                 email, old_device.installation_id[:12], device.installation_id[:12]
             )
+
+            # Transfer sonrası boş varsayılan "Çocuk" profilini temizle
+            transferred_children = device.children.exclude(name="Çocuk")
+            if transferred_children.exists():
+                empty_default = device.children.filter(
+                    name="Çocuk", total_shown=0, total_correct=0
+                ).first()
+                if empty_default:
+                    empty_default.delete()
+                    logger.info("Boş varsayılan profil temizlendi: device=%s",
+                                device.installation_id[:12])
 
     device.email = email
     device.save(update_fields=['email', 'last_seen'])
@@ -724,11 +789,20 @@ def get_questions(request):
 
     question_list = []
 
+    # Aktif çocuğu belirle (tüm sorgularda kullanılacak)
+    child_id = request.query_params.get('child_id')
+    if child_id:
+        child = ChildProfile.objects.filter(device=device, id=child_id).first()
+    else:
+        child = device.children.filter(is_active=True).first() or device.children.first()
+
     # ── 1. Ücretsiz batch 0 soruları (Question model) ────────────────────
     free_questions = Question.objects.filter(batch_number=0).order_by('question_id')
+
+    # Çocuğa özel çözülen soru ID'leri
     free_solved_ids = set(
         UserQuestionProgress.objects.filter(
-            device=device, solved=True
+            device=device, solved=True, child=child
         ).values_list('question__question_id', flat=True)
     )
 
@@ -746,7 +820,6 @@ def get_questions(request):
         })
 
     # ── 2. AI per-user soruları (QuestionSet) ─────────────────────────────
-    child = ChildProfile.objects.filter(device=device).first()
     ai_set_count = 0
 
     if child:
@@ -808,21 +881,28 @@ def update_progress(request):
     try:
         solved_ids = [int(qid) for qid in solved_ids[:500]]
     except (ValueError, TypeError):
-        return Response({'error': 'solved_questions geçerli ID listesi olmalı'},
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'solved_questions geçersiz'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
         return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
 
+    # child_id varsa onu kullan, yoksa aktif profili bul
+    child_id_param = request.data.get('child_id')
+    if child_id_param:
+        _target_child = ChildProfile.objects.filter(device=device, id=child_id_param).first()
+    else:
+        _target_child = device.children.filter(is_active=True).first() or device.children.first()
+
     if reset_rotation:
-        # Batch 0 ilerlemeyi sıfırla
-        UserQuestionProgress.objects.filter(device=device).update(solved=False)
+        # Batch 0 ilerlemeyi sıfırla (çocuğa özel)
+        UserQuestionProgress.objects.filter(
+            device=device, child=_target_child
+        ).update(solved=False)
         # AI set ilerlemeyi sıfırla
-        child = ChildProfile.objects.filter(device=device).first()
-        if child:
-            QuestionSet.objects.filter(child=child).update(solved_ids=[])
+        if _target_child:
+            QuestionSet.objects.filter(child=_target_child).update(solved_ids=[])
         logger.info("Rotasyon sıfırlandı: device=%s", device.installation_id[:12])
 
     updated = 0
@@ -839,7 +919,7 @@ def update_progress(request):
             if not question:
                 continue
             progress, created = UserQuestionProgress.objects.get_or_create(
-                device=device, question=question
+                device=device, question=question, child=_target_child
             )
             if not progress.solved or created:
                 progress.solved = True
@@ -850,7 +930,7 @@ def update_progress(request):
     # AI set soruları (global ID >= _AI_SET_ID_OFFSET)
     ai_ids = [qid for qid in solved_ids if qid >= _AI_SET_ID_OFFSET]
     if ai_ids:
-        child = ChildProfile.objects.filter(device=device).first()
+        child = _target_child
         if child:
             # Hangi set'lere ait olduklarını grupla
             sets_to_update = {}  # set_pk → [global_id, ...]
@@ -871,15 +951,16 @@ def update_progress(request):
                 except QuestionSet.DoesNotExist:
                     pass
 
-    # Toplam ilerleme hesapla
+    # Toplam ilerleme hesapla (çocuğa özel)
     total_free = Question.objects.filter(batch_number=0).count()
-    free_solved = UserQuestionProgress.objects.filter(device=device, solved=True).count()
+    free_solved = UserQuestionProgress.objects.filter(
+        device=device, solved=True, child=_target_child
+    ).count()
 
     total_ai = 0
     ai_solved = 0
-    child = ChildProfile.objects.filter(device=device).first()
-    if child:
-        for qs in QuestionSet.objects.filter(child=child):
+    if _target_child:
+        for qs in QuestionSet.objects.filter(child=_target_child):
             total_ai += len(qs.questions_json or [])
             ai_solved += len(qs.solved_ids or [])
 
@@ -888,4 +969,322 @@ def update_progress(request):
         'updated': updated,
         'total_solved': free_solved + ai_solved,
         'total_accessible': total_free + total_ai,
+    })
+
+
+# ─── Çocuk Profili Yönetimi ──────────────────────────────────────────────────
+
+@api_view(['GET', 'POST'])
+def children_list(request):
+    """
+    GET  /api/mathlock/children/?device_token=uuid
+         Cihaza bağlı tüm çocuk profillerini listele.
+
+    POST /api/mathlock/children/
+         Yeni çocuk profili oluştur.
+         Body: { "device_token": "uuid", "name": "Ali", "education_period": "sinif_1" }
+    """
+    device_token = request.data.get('device_token') or request.query_params.get('device_token')
+    if not device_token:
+        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        device = Device.objects.get(device_token=device_token)
+    except (Device.DoesNotExist, ValidationError):
+        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        children = device.children.all().order_by('-is_active', 'name')
+        return Response({
+            'children': [
+                {
+                    'id': c.id,
+                    'name': c.name,
+                    'education_period': c.education_period,
+                    'education_period_display': c.get_education_period_display(),
+                    'is_active': c.is_active,
+                    'total_correct': c.total_correct,
+                    'total_shown': c.total_shown,
+                    'total_time_seconds': c.total_time_seconds,
+                    'accuracy': round(c.accuracy * 100, 1),
+                    'current_difficulty': c.current_difficulty,
+                    'question_count': c.question_count,
+                    'created_at': c.created_at.isoformat(),
+                }
+                for c in children
+            ],
+        })
+
+    # POST — yeni profil oluştur
+    name = _sanitize_child_name(request.data.get('name', ''))
+    education_period = request.data.get('education_period', 'sinif_2')
+
+    if education_period not in _VALID_EDUCATION_PERIODS:
+        return Response(
+            {'error': f'Geçersiz education_period. Geçerli: {sorted(_VALID_EDUCATION_PERIODS)}'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Max 5 çocuk profili
+    if device.children.count() >= 5:
+        return Response({'error': 'Maksimum 5 çocuk profili oluşturulabilir'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        child = ChildProfile.objects.create(
+            device=device, name=name, education_period=education_period, is_active=False,
+        )
+    except IntegrityError:
+        return Response({'error': f'"{name}" isimli profil zaten mevcut'},
+                        status=status.HTTP_409_CONFLICT)
+
+    return Response({
+        'success': True,
+        'child': {
+            'id': child.id,
+            'name': child.name,
+            'education_period': child.education_period,
+            'is_active': child.is_active,
+        },
+    }, status=status.HTTP_201_CREATED)
+
+
+@api_view(['PUT', 'DELETE'])
+def children_detail(request):
+    """
+    PUT  /api/mathlock/children/detail/
+         Çocuk profilini güncelle (isim, dönem, aktif profil seç).
+         Body: { "device_token": "uuid", "name": "Ali",
+                 "new_name": "Veli", "education_period": "sinif_3", "set_active": true }
+
+    DELETE /api/mathlock/children/detail/
+         Çocuk profilini sil.
+         Body: { "device_token": "uuid", "name": "Ali" }
+    """
+    device_token = request.data.get('device_token') or request.query_params.get('device_token')
+    child_id = request.query_params.get('child_id') or request.data.get('child_id')
+
+    if not device_token or not child_id:
+        return Response({'error': 'device_token ve child_id gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        device = Device.objects.get(device_token=device_token)
+    except (Device.DoesNotExist, ValidationError):
+        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        child = ChildProfile.objects.get(device=device, id=child_id)
+    except (ChildProfile.DoesNotExist, ValueError):
+        return Response({'error': 'Profil bulunamadı'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        # Son profil silinemez
+        if device.children.count() <= 1:
+            return Response({'error': 'Son profil silinemez'}, status=status.HTTP_400_BAD_REQUEST)
+        was_active = child.is_active
+        child.delete()
+        # Silinen aktifse başkasını aktif yap
+        if was_active:
+            first = device.children.first()
+            if first:
+                first.is_active = True
+                first.save(update_fields=['is_active'])
+        return Response({'success': True})
+
+    # PUT — güncelle
+    update_fields = ['updated_at']
+
+    new_name = request.data.get('new_name') or request.data.get('name')
+    if new_name:
+        new_name = _sanitize_child_name(new_name)
+        if ChildProfile.objects.filter(device=device, name=new_name).exclude(pk=child.pk).exists():
+            return Response({'error': f'"{new_name}" ismi zaten kullanılıyor'},
+                            status=status.HTTP_409_CONFLICT)
+        child.name = new_name
+        update_fields.append('name')
+
+    new_period = request.data.get('education_period')
+    if new_period:
+        if new_period not in _VALID_EDUCATION_PERIODS:
+            return Response({'error': 'Geçersiz education_period'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        child.education_period = new_period
+        update_fields.append('education_period')
+
+    set_active = request.data.get('set_active')
+    if set_active:
+        # Diğerlerini deaktif et
+        device.children.exclude(pk=child.pk).update(is_active=False)
+        child.is_active = True
+        update_fields.append('is_active')
+
+    child.save(update_fields=update_fields)
+
+    return Response({
+        'success': True,
+        'child': {
+            'name': child.name,
+            'education_period': child.education_period,
+            'is_active': child.is_active,
+        },
+    })
+
+
+# ─── Çocuk Rapor ve İstatistik ──────────────────────────────────────────────
+
+@api_view(['GET'])
+def child_report(request):
+    """
+    Çocuğun performans raporunu döndür.
+
+    GET /api/mathlock/children/report/?device_token=uuid&child_name=Ali
+    Response: {
+        "child": { name, education_period, accuracy, ... },
+        "summary": { ... },
+        "by_type": { ... },
+        "weekly_report": { ... },
+        "daily_history": [ ... ]
+    }
+    """
+    device_token = request.query_params.get('device_token')
+    child_name = request.query_params.get('child_name', 'Çocuk')
+
+    if not device_token:
+        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        device = Device.objects.get(device_token=device_token)
+    except (Device.DoesNotExist, ValidationError):
+        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        child = ChildProfile.objects.get(device=device, name=child_name)
+    except ChildProfile.DoesNotExist:
+        return Response({'error': f'"{child_name}" isimli profil bulunamadı'},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    # Tip bazlı istatistik analizi
+    by_type = {}
+    stats = child.stats_json or {}
+    by_type_raw = stats.get('byType', {})
+
+    for tip, data in by_type_raw.items():
+        shown = data.get('shown', 0)
+        correct = data.get('correct', 0)
+        accuracy = (correct / shown * 100) if shown > 0 else 0
+
+        # Kategori belirle
+        avg_time_str = str(data.get('avgTime', '0')).replace(',', '.')
+        try:
+            avg_time = float(avg_time_str)
+        except ValueError:
+            avg_time = 0.0
+
+        if accuracy >= 85 and avg_time < 5:
+            category = 'USTA'
+        elif accuracy >= 85:
+            category = 'GÜVENLİ'
+        elif accuracy >= 60:
+            category = 'GELİŞEN'
+        elif accuracy >= 40:
+            category = 'ZORLU'
+        else:
+            category = 'KRİTİK'
+
+        by_type[tip] = {
+            'shown': shown,
+            'correct': correct,
+            'accuracy': round(accuracy, 1),
+            'avgTime': round(avg_time, 1),
+            'hintUsed': data.get('hintUsed', 0),
+            'topicUsed': data.get('topicUsed', 0),
+            'category': category,
+        }
+
+    # Toplam set sayısı
+    set_count = QuestionSet.objects.filter(child=child).count()
+
+    return Response({
+        'child': {
+            'name': child.name,
+            'education_period': child.education_period,
+            'education_period_display': child.get_education_period_display(),
+            'accuracy': round(child.accuracy * 100, 1),
+            'total_correct': child.total_correct,
+            'total_shown': child.total_shown,
+            'total_time_seconds': child.total_time_seconds,
+            'current_difficulty': child.current_difficulty,
+            'question_count': child.question_count,
+            'sets_completed': set_count,
+            'created_at': child.created_at.isoformat(),
+        },
+        'by_type': by_type,
+        'weekly_report': child.weekly_report_json or {},
+        'daily_history': child.daily_stats or {},
+    })
+
+
+# ─── İstatistik Geçmişi (Dashboard Grafikleri İçin) ─────────────────────────
+
+@api_view(['GET'])
+def stats_history(request):
+    """
+    Çocuğun günlük/haftalık istatistik geçmişini döndür (grafik verisi).
+
+    GET /api/mathlock/children/stats-history/?device_token=uuid&child_name=Ali
+    """
+    device_token = request.query_params.get('device_token')
+    child_name = request.query_params.get('child_name', 'Çocuk')
+
+    if not device_token:
+        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        device = Device.objects.get(device_token=device_token)
+    except (Device.DoesNotExist, ValidationError):
+        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        child = ChildProfile.objects.get(device=device, name=child_name)
+    except ChildProfile.DoesNotExist:
+        return Response({'error': f'"{child_name}" isimli profil bulunamadı'},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    # Günlük istatistikler
+    daily_stats = child.daily_stats or {}
+
+    # Tip bazlı istatistikler
+    stats = child.stats_json or {}
+    by_type_raw = stats.get('byType', {})
+    by_type = {}
+    for tip, data in by_type_raw.items():
+        shown = data.get('shown', 0)
+        correct = data.get('correct', 0)
+        by_type[tip] = {
+            'total': shown,
+            'correct': correct,
+            'accuracy': round((correct / shown * 100) if shown > 0 else 0, 1),
+        }
+
+    # Seri (streak) hesaplama — ardışık gün sayısı
+    from datetime import date, timedelta
+    streak = 0
+    check_date = date.today()
+    for _ in range(365):
+        date_str = check_date.isoformat()
+        day_data = daily_stats.get(date_str, {})
+        if isinstance(day_data, dict) and day_data.get('solved', 0) > 0:
+            streak += 1
+            check_date -= timedelta(days=1)
+        else:
+            break
+
+    return Response({
+        'daily': daily_stats,
+        'by_type': by_type,
+        'streak_days': streak,
+        'total_time_minutes': round(child.total_time_seconds / 60, 1),
+        'total_correct': child.total_correct,
+        'total_shown': child.total_shown,
+        'accuracy': round(child.accuracy * 100, 1),
     })

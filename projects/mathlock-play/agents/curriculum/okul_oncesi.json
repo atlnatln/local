@@ -1,0 +1,103 @@
+{
+  "donem": "okul_oncesi",
+  "etiket": "Okul Öncesi",
+  "yasAraligi": [5, 6],
+  "kaynak": "MEB Okul Öncesi Eğitim Programı (2013, güncelleme 2024) — Bilişsel Gelişim / Matematiksel Düşünme",
+  "soruSayisi": 30,
+  "soruSayisiAciklama": "Dikkat süresi kısa (5-6 yaş), 50 soru yerine 30 soru",
+  "konular": [
+    {
+      "alan": "Sayma ve Sayılar",
+      "kazanimlar": [
+        "1-20 arası sayıları tanır ve söyler",
+        "1-10 arası nesneleri sayar (bire bir eşleme)",
+        "Ritmik sayma yapar (1'er ileri, 1-20)",
+        "Sayı sembollerini tanır (1-10)"
+      ],
+      "soruTipleri": ["sayma"],
+      "sayiAraligi": [1, 20],
+      "zorlukSinirlari": {
+        "1": "1-5 arası sayma, kaç tane var?",
+        "2": "1-10 arası sayma",
+        "3": "1-15 arası sayma, eksik sayıyı bul",
+        "4": "1-20 arası ritmik sayma (2'şer)",
+        "5": "1-20 arası geriye sayma"
+      }
+    },
+    {
+      "alan": "Toplama (Somut)",
+      "kazanimlar": [
+        "Basit toplama yapar (somut nesnelerle, sonuç ≤10)",
+        "Bir gruba ekleme kavramını anlar",
+        "'birleştirme' işlemi yapar"
+      ],
+      "soruTipleri": ["toplama"],
+      "sayiAraligi": [1, 10],
+      "zorlukSinirlari": {
+        "1": "a + b, a: 1-3, b: 1-2, sonuç ≤ 5",
+        "2": "a + b, a: 1-5, b: 1-3, sonuç ≤ 7",
+        "3": "a + b, a: 1-5, b: 1-5, sonuç ≤ 10",
+        "4": "a + b, a: 3-7, b: 1-3, sonuç ≤ 10",
+        "5": "a + b, a: 5-9, b: 1-5, sonuç ≤ 10 (büyük sayılarla)"
+      }
+    },
+    {
+      "alan": "Çıkarma (Somut)",
+      "kazanimlar": [
+        "Basit çıkarma yapar (somut nesnelerle, sonuç ≥0)",
+        "Bir gruptan ayırma kavramını anlar"
+      ],
+      "soruTipleri": ["cikarma"],
+      "sayiAraligi": [1, 10],
+      "zorlukSinirlari": {
+        "1": "a - b, a: 2-5, b: 1, sonuç ≥ 1",
+        "2": "a - b, a: 3-7, b: 1-2, sonuç ≥ 1",
+        "3": "a - b, a: 5-10, b: 1-3, sonuç ≥ 1",
+        "4": "a - b, a: 5-10, b: 2-4, sonuç ≥ 1",
+        "5": "a - b, a: 7-10, b: 3-5, sonuç ≥ 1"
+      }
+    },
+    {
+      "alan": "Karşılaştırma",
+      "kazanimlar": [
+        "İki sayıyı karşılaştırır (büyük-küçük)",
+        "Çok-az, aynı kavramlarını kullanır",
+        "Miktar eşleştirme yapar"
+      ],
+      "soruTipleri": ["karsilastirma"],
+      "sayiAraligi": [1, 10],
+      "zorlukSinirlari": {
+        "1": "Hangisi büyük: A, B (1-5 arası, fark belirgin)",
+        "2": "Hangisi büyük: A, B (1-10 arası)",
+        "3": "Hangisi küçük: A, B (1-10)",
+        "4": "En büyüğü hangisi: A, B, C (1-10)",
+        "5": "En küçüğü hangisi: A, B, C (1-15)"
+      }
+    },
+    {
+      "alan": "Örüntü",
+      "kazanimlar": [
+        "Basit tekrar eden örüntüleri tanır (AB, ABB)",
+        "Örüntüdeki eksik elemanı bulur"
+      ],
+      "soruTipleri": ["oruntu"],
+      "sayiAraligi": [1, 10],
+      "zorlukSinirlari": {
+        "1": "AB örüntüsü: 1, 2, 1, 2, ? → 1",
+        "2": "ABB: 1, 2, 2, 1, 2, 2, ? → 1",
+        "3": "ABC: 1, 2, 3, 1, 2, 3, ? → 1",
+        "4": "Artan örüntü: 2, 4, 6, ? → 8",
+        "5": "Artan örüntü: 1, 3, 5, 7, ? → 9"
+      }
+    }
+  ],
+  "toplamSoruTipleri": ["sayma", "toplama", "cikarma", "karsilastirma", "oruntu"],
+  "ozelKurallar": [
+    "İpuçları SOMUT nesnelerle verilmeli (parmak, elma, top)",
+    "Cevap her zaman ≥ 0",
+    "Dikkat süresi kısa: 30 soru yeterli (50 değil)",
+    "İlk 5 soru mutlaka çok kolay olmalı",
+    "Sayma soruları en fazla 20'ye kadar",
+    "Emoji/görsel referans ipuçlarında mutlaka kullanılmalı"
+  ]
+}

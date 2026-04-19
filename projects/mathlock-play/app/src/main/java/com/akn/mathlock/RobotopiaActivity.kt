@@ -82,21 +82,31 @@ class RobotopiaActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack()
-            return
+        // Oyun içindeyse (hash #tutorial/... ise) → menüye dön (app'in kendi geri butonu gibi)
+        webView.evaluateJavascript(
+            "(function(){ if(window.location.hash && window.location.hash.indexOf('#tutorial/') === 0) { RobotopiaMenu.show(); return 'menu'; } return 'exit'; })()"
+        ) { result ->
+            val value = result?.replace("\"", "") ?: "exit"
+            if (value == "menu") {
+                // RobotopiaMenu.show() çağrıldı, WebView menüye döndü
+                return@evaluateJavascript
+            }
+            // Menüdeyiz veya hash boş — Activity'den çık
+            runOnUiThread {
+                if (isPracticeMode || isTestMode) {
+                    @Suppress("DEPRECATION")
+                    super.onBackPressed()
+                } else {
+                    // Kilit modunda geri tuşu ana ekrana gönderir
+                    val homeIntent = android.content.Intent(android.content.Intent.ACTION_MAIN).apply {
+                        addCategory(android.content.Intent.CATEGORY_HOME)
+                        flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(homeIntent)
+                    finish()
+                }
+            }
         }
-        if (isPracticeMode || isTestMode) {
-            super.onBackPressed()
-            return
-        }
-        // Kilit modunda geri tuşu ana ekrana gönderir
-        val homeIntent = android.content.Intent(android.content.Intent.ACTION_MAIN).apply {
-            addCategory(android.content.Intent.CATEGORY_HOME)
-            flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        startActivity(homeIntent)
-        finish()
     }
 
     // ── JavaScript Bridge ────────────────────────────────

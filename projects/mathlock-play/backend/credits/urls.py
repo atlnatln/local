@@ -13,4 +13,9 @@ urlpatterns = [
     path('auth/register-email/', views.register_email),
     path('questions/', views.get_questions),
     path('questions/progress/', views.update_progress),
+    # Çocuk profili yönetimi
+    path('children/', views.children_list),
+    path('children/detail/', views.children_detail),
+    path('children/report/', views.child_report),
+    path('children/stats-history/', views.stats_history),
 ]

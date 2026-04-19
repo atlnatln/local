@@ -80,6 +80,19 @@ class AccountManager(private val context: Context) {
                     .putInt(KEY_CREDITS, credits)
                     .putBoolean(KEY_FREE_USED, freeUsed)
                     .apply()
+                // Çocuk profil bilgisini kaydet
+                val children = response.optJSONArray("children")
+                if (children != null && children.length() > 0) {
+                    val prefManager = PreferenceManager(context)
+                    for (i in 0 until children.length()) {
+                        val c = children.getJSONObject(i)
+                        if (c.optBoolean("is_active", false)) {
+                            prefManager.activeChildName = c.optString("name", "Çocuk")
+                            prefManager.activeEducationPeriod = c.optString("education_period", "sinif_2")
+                            break
+                        }
+                    }
+                }
                 Log.d(TAG, "Cihaz kaydedildi: token=${token.take(8)}...")
                 token
             } else {

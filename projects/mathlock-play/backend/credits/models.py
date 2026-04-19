@@ -18,13 +18,40 @@ class Device(models.Model):
 
 class ChildProfile(models.Model):
     """Çocuk profili — cihaz başına performans verileri."""
+
+    EDUCATION_PERIOD_CHOICES = [
+        ('okul_oncesi', 'Okul Öncesi (5-6 yaş)'),
+        ('sinif_1', '1. Sınıf (6-7 yaş)'),
+        ('sinif_2', '2. Sınıf (7-8 yaş)'),
+        ('sinif_3', '3. Sınıf (8-9 yaş)'),
+        ('sinif_4', '4. Sınıf (9-10 yaş)'),
+    ]
+
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='children')
     name = models.CharField(max_length=100, default="Çocuk")
+    education_period = models.CharField(
+        max_length=20, choices=EDUCATION_PERIOD_CHOICES, default='sinif_2',
+        help_text="Eğitim dönemi — soru üretimi bu döneme göre yapılır"
+    )
+    is_active = models.BooleanField(
+        default=True, help_text="Cihazda aktif seçili profil"
+    )
     total_correct = models.IntegerField(default=0)
     total_shown = models.IntegerField(default=0)
+    total_time_seconds = models.IntegerField(
+        default=0, help_text="Toplam çözüm süresi (saniye)"
+    )
     current_difficulty = models.IntegerField(default=1)
     stats_json = models.JSONField(default=dict, blank=True,
                                   help_text="Tip/zorluk bazlı detaylı istatistikler")
+    daily_stats = models.JSONField(
+        default=dict, blank=True,
+        help_text="Günlük performans özeti: {tarih: {correct, shown, time_seconds}}"
+    )
+    weekly_report_json = models.JSONField(
+        default=dict, blank=True,
+        help_text="AI tarafından üretilen haftalık performans raporu"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -32,13 +59,19 @@ class ChildProfile(models.Model):
         unique_together = ('device', 'name')
 
     def __str__(self):
-        return f"{self.name} ({self.device})"
+        return f"{self.name} [{self.get_education_period_display()}] ({self.device})"
 
     @property
     def accuracy(self):
         if self.total_shown == 0:
             return 0.0
         return self.total_correct / self.total_shown
+
+    @property
+    def question_count(self):
+        """Bu dönem için soru sayısı."""
+        counts = {'okul_oncesi': 30, 'sinif_1': 40}
+        return counts.get(self.education_period, 50)
 
 
 class CreditBalance(models.Model):
@@ -177,16 +210,21 @@ class Question(models.Model):
 
 
 class UserQuestionProgress(models.Model):
-    """Cihaz başına soru çözme ilerlemesi."""
+    """Çocuk profili başına soru çözme ilerlemesi."""
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='question_progress')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='user_progress')
+    child = models.ForeignKey(
+        'ChildProfile', on_delete=models.CASCADE,
+        related_name='question_progress', null=True, blank=True,
+    )
     solved = models.BooleanField(default=False)
     solve_count = models.IntegerField(default=0)
     last_attempt_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('device', 'question')
+        unique_together = ('device', 'question', 'child')
 
     def __str__(self):
         status = "✅" if self.solved else "⬜"
-        return f"{status} Q{self.question.question_id} — device={self.device}"
+        child_name = self.child.name if self.child else "?"
+        return f"{status} Q{self.question.question_id} — {child_name}"

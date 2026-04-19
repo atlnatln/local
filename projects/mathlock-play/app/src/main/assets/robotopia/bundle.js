@@ -2071,7 +2071,7 @@ var sf = 0;
 var _require = require('@robotopia/choo-game'),
     interpolate = _require.interpolate;
 
-var gameStatsPrefix = (require('sheetify/insert')("._1ece1d4c {\n    position: absolute;\n    right: 0;\n    top: 0;\n    background-color: rgba(221,221,221,0.85);\n    color: #404040;\n    padding: 10px;\n    border-radius: 3px;\n    margin: 20px;\n  }\n  \n  ._1ece1d4c > h2 {\n    font-size: 1.2em;\n    margin: 0;\n  }\n  \n  ._1ece1d4c > table {\n    margin-top: 10px;\n    border-spacing: 25px 5px;\n    text-align: center;\n  }\n  \n  ._1ece1d4c > table > th {\n    text-align: center;\n  }") || true) && "_1ece1d4c";
+var gameStatsPrefix = (require('sheetify/insert')("._1ece1d4c {\n    position: absolute;\n    right: 0;\n    top: 0;\n    background-color: rgba(221,221,221,0.75);\n    color: #404040;\n    padding: 4px 8px;\n    border-radius: 3px;\n    margin: 4px;\n    font-size: 0.75em;\n    pointer-events: none;\n    z-index: 1;\n  }\n  \n  ._1ece1d4c > h2 {\n    font-size: 0.9em;\n    margin: 0;\n  }\n  \n  ._1ece1d4c > table {\n    margin-top: 2px;\n    border-spacing: 8px 2px;\n    text-align: center;\n  }\n  \n  ._1ece1d4c > table > th {\n    text-align: center;\n  }") || true) && "_1ece1d4c";
 
 function gamePointsDisplay(_ref) {
   var game = _ref.game,
@@ -2129,7 +2129,7 @@ function gamePointsDisplay(_ref) {
     var bel2 = document.createElement("table");
     var bel1 = document.createElement("tr");
     var bel0 = document.createElement("th");
-    ac(bel0, ["Resources"]);
+    ac(bel0, ["Kaynaklar"]);
     ac(bel1, [arguments[0], bel0]);
     ac(bel2, ["\n        ", bel1, "\n        ", arguments[1], "\n      "]);
     ac(bel3, ["\n      ", bel2, "\n    "]);
@@ -2228,9 +2228,7 @@ function applyViewportTransforms(_ref) {
     var mapH = gameHeight * TILE_HEIGHT + 40;
     var scaleW = viewport.width / mapW;
     var scaleH = viewport.height / mapH;
-    var fitScale = Math.max(scaleW, scaleH);
-    if (fitScale > scaleW * 1.5) fitScale = scaleW * 1.5;
-    if (fitScale > scaleH * 1.5) fitScale = scaleH * 1.5;
+    var fitScale = Math.min(scaleW, scaleH);
     scale = getEvenScale(fitScale);
   } else {
     scale = getEvenScale(viewport.scale);

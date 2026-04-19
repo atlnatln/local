@@ -29,6 +29,7 @@ DATA_DIR="$PROJECT_DIR/data"
 STATS_FILE="$DATA_DIR/stats.json"
 QUESTIONS_FILE="$DATA_DIR/questions.json"
 TOPICS_FILE="$DATA_DIR/topics.json"
+REPORT_FILE="$DATA_DIR/report.json"
 HISTORY_DIR="$DATA_DIR/history"
 VALIDATOR="$PROJECT_DIR/validate-questions.py"
 VPS_HOST="akn@89.252.152.222"
@@ -43,21 +44,43 @@ source agents/swap-helper.sh
 DRY_RUN=false
 SKIP_SYNC=false
 VPS_MODE=false
+EDUCATION_PERIOD="sinif_2"
 while [[ $# -gt 0 ]]; do
     case $1 in
         --dry-run)    DRY_RUN=true; shift ;;
         --skip-sync)  SKIP_SYNC=true; shift ;;
         --vps-mode)   VPS_MODE=true; shift ;;
+        --period)     EDUCATION_PERIOD="$2"; shift 2 ;;
         --help)
-            echo "Kullanım: $0 [--dry-run] [--skip-sync] [--vps-mode]"
+            echo "Kullanım: $0 [--dry-run] [--skip-sync] [--vps-mode] [--period <dönem>]"
             echo "  --dry-run    Analiz yap ama Copilot çalıştırma"
             echo "  --skip-sync  VPS sync atla"
             echo "  --vps-mode   VPS'te çalıştır (scp yok, .env'den token)"
+            echo "  --period     Eğitim dönemi: okul_oncesi|sinif_1|sinif_2|sinif_3|sinif_4"
             exit 0
             ;;
         *) echo "Bilinmeyen: $1"; exit 1 ;;
     esac
 done
+
+# Eğitim dönemi → agent dosyası ve soru sayısı eşlemesi
+case "$EDUCATION_PERIOD" in
+    okul_oncesi) AGENT_FILE="agents/questions-okul-oncesi.agents.md"; EXPECTED_QUESTIONS=30 ;;
+    sinif_1)     AGENT_FILE="agents/questions-sinif-1.agents.md"; EXPECTED_QUESTIONS=40 ;;
+    sinif_2)     AGENT_FILE="agents/questions.agents.md"; EXPECTED_QUESTIONS=50 ;;
+    sinif_3)     AGENT_FILE="agents/questions-sinif-3.agents.md"; EXPECTED_QUESTIONS=50 ;;
+    sinif_4)     AGENT_FILE="agents/questions-sinif-4.agents.md"; EXPECTED_QUESTIONS=50 ;;
+    *)
+        echo -e "${RED}[HATA]${NC} Geçersiz dönem: $EDUCATION_PERIOD"
+        echo "Geçerli dönemler: okul_oncesi, sinif_1, sinif_2, sinif_3, sinif_4"
+        exit 1
+        ;;
+esac
+
+if [ ! -f "$AGENT_FILE" ]; then
+    echo -e "${RED}[HATA]${NC} Agent dosyası bulunamadı: $AGENT_FILE"
+    exit 1
+fi
 
 # VPS modunda: ops-bot .env'den GITHUB_TOKEN yükle
 if [ "$VPS_MODE" = true ]; then
@@ -73,6 +96,7 @@ fi
 
 echo -e "${CYAN}╔═══════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║    🧠 MathLock Play AI — Otomatik Soru Üretimi       ║${NC}"
+echo -e "${CYAN}║    📚 Dönem: ${EDUCATION_PERIOD}                              ║${NC}"
 echo -e "${CYAN}╚═══════════════════════════════════════════════════════╝${NC}"
 
 # ─── 0. Stats.json hazırla ──────────────────────────────────────────────────
@@ -143,7 +167,7 @@ find "$HISTORY_DIR" -name "*.json" -type f | sort | head -n -20 | xargs -r rm -f
 echo -e "\n${YELLOW}[3/5] 🤖 Copilot ile yeni sorular üretiliyor...${NC}"
 
 # Copilot CLI, CWD'deki AGENTS.md dosyasını otomatik okur — swap ile yerleştiriyoruz
-agents_swap_in "agents/questions.agents.md"
+agents_swap_in "$AGENT_FILE"
 
 PROMPT="AGENTS.md dosyasındaki tüm kuralları uygula.
 
@@ -151,17 +175,20 @@ ADIMLAR:
 1. data/stats.json oku (varsa) — çocuğun performansını analiz et
 2. data/questions.json oku — mevcut version numarasını al
 3. data/topics.json oku — mevcut konu anlatımlarını gör
-4. Yeni 50 soru üret → data/questions.json'a yaz (üzerine yaz)
+4. Yeni ${EXPECTED_QUESTIONS} soru üret → data/questions.json'a yaz (üzerine yaz)
 5. Konu anlatımlarını güncelle → data/topics.json'a yaz (zayıf alanları detaylandır)
-6. Analiz raporunu stdout'a yazdır
+6. Performans raporu üret → data/report.json'a yaz (AGENTS.md §14'e göre)
+7. Analiz raporunu stdout'a yazdır
 
 KRİTİK KURALLAR:
-- Sadece data/questions.json ve data/topics.json değiştir, başka dosyaya dokunma
-- Tam 50 soru, her cevap doğru hesaplanmış
+- Sadece data/questions.json, data/topics.json ve data/report.json değiştir, başka dosyaya dokunma
+- Tam ${EXPECTED_QUESTIONS} soru, her cevap doğru hesaplanmış
 - version = mevcut version + 1
-- Cevaplar negatif olamaz (2. sınıf)
+- Cevaplar negatif olamaz
 - Geçerli JSON, UTF-8
-- İlk 5 soru kolay olsun (moral), son 5 soru orta zorlukta (bitirme hissi)"
+- İlk 5 soru kolay olsun (moral), son 5 soru orta zorlukta (bitirme hissi)
+- educationPeriod = \"${EDUCATION_PERIOD}\"
+- questionCount = ${EXPECTED_QUESTIONS}"
 
 # Retry döngüsü: başarısızsa tekrar dene
 ATTEMPT=0
@@ -181,7 +208,7 @@ while [ $ATTEMPT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
 
     # ─── 4. Doğrulama ───────────────────────────────────────────────────────
     echo -e "\n${YELLOW}[4/5] 🔍 Doğrulama çalıştırılıyor...${NC}"
-    if python3 "$VALIDATOR"; then
+    if python3 "$VALIDATOR" --period "$EDUCATION_PERIOD"; then
         SUCCESS=true
         echo -e "${GREEN}[OK]${NC} Doğrulama başarılı!"
     else
@@ -218,6 +245,7 @@ elif [ "$VPS_MODE" = true ]; then
     sudo mkdir -p "$VPS_DATA_PATH"
     sudo cp "$QUESTIONS_FILE" "$VPS_DATA_PATH/questions.json"
     sudo cp "$TOPICS_FILE" "$VPS_DATA_PATH/topics.json"
+    [ -f "$REPORT_FILE" ] && sudo cp "$REPORT_FILE" "$VPS_DATA_PATH/report.json"
     rm -f "$STATS_FILE"
     sudo rm -f "$VPS_DATA_PATH/stats.json"
     echo -e "${GREEN}[OK]${NC} Dosyalar $VPS_DATA_PATH'e kopyalandı, stats.json temizlendi"
@@ -233,8 +261,9 @@ else
     ssh "$VPS_HOST" "sudo mkdir -p ${VPS_DATA_PATH}"
     scp "$QUESTIONS_FILE" "${VPS_HOST}:/tmp/mathlock-play-questions.json"
     scp "$TOPICS_FILE" "${VPS_HOST}:/tmp/mathlock-play-topics.json"
-    ssh "$VPS_HOST" "sudo cp /tmp/mathlock-play-questions.json ${VPS_DATA_PATH}/questions.json && sudo cp /tmp/mathlock-play-topics.json ${VPS_DATA_PATH}/topics.json && rm -f /tmp/mathlock-play-questions.json /tmp/mathlock-play-topics.json"
-    echo -e "${GREEN}[OK]${NC} questions.json ve topics.json VPS'e yüklendi"
+    [ -f "$REPORT_FILE" ] && scp "$REPORT_FILE" "${VPS_HOST}:/tmp/mathlock-play-report.json"
+    ssh "$VPS_HOST" "sudo cp /tmp/mathlock-play-questions.json ${VPS_DATA_PATH}/questions.json && sudo cp /tmp/mathlock-play-topics.json ${VPS_DATA_PATH}/topics.json && ([ -f /tmp/mathlock-play-report.json ] && sudo cp /tmp/mathlock-play-report.json ${VPS_DATA_PATH}/report.json || true) && rm -f /tmp/mathlock-play-questions.json /tmp/mathlock-play-topics.json /tmp/mathlock-play-report.json"
+    echo -e "${GREEN}[OK]${NC} questions.json, topics.json ve report.json VPS'e yüklendi"
     if [ -f "$STATS_FILE" ]; then
         rm "$STATS_FILE"
         ssh "$VPS_HOST" "sudo rm -f ${VPS_DATA_PATH}/stats.json"

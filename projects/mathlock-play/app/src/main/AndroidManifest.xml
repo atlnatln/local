@@ -103,6 +103,24 @@
             android:exported="false"
             android:theme="@style/Theme.MathLock" />
 
+        <!-- Çocuk Profilleri -->
+        <activity
+            android:name=".ChildProfilesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MathLock" />
+
+        <!-- Performans Raporu -->
+        <activity
+            android:name=".PerformanceReportActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MathLock" />
+
+        <!-- İstatistik Dashboard -->
+        <activity
+            android:name=".StatsDashboardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MathLock" />
+
         <!-- Uygulama Seçimi -->
         <activity
             android:name=".AppSelectionActivity"
@@ -117,6 +135,8 @@
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
             android:screenOrientation="portrait"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:theme="@style/Theme.MathLock" />
 
         <!-- Sayı Yolculuğu (Bulmaca Oyunu) -->

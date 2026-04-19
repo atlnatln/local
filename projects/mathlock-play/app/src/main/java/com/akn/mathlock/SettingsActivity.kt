@@ -24,6 +24,8 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var prefManager: PreferenceManager
     private lateinit var accountManager: AccountManager
     private var permissionCheckPending = false
+    // Xiaomi wizard: hangi adımdan dönüyoruz (0 = yok, 1 = autostart'tan, 2 = perm editor'dan, 3 = app settings'ten)
+    private var xiaomiStepPending = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +44,20 @@ class SettingsActivity : AppCompatActivity() {
         updateProtectionStatus()
         updateLockedAppCount()
         updateAiModeInfo()
+        updateActiveChildInfo()
+
+        // Xiaomi wizard adımından döndüyse önce onu tamamla (diğer kontrollere geçme)
+        if (xiaomiStepPending > 0) {
+            val step = xiaomiStepPending
+            xiaomiStepPending = 0
+            when (step) {
+                1 -> showXiaomiStep2()
+                2 -> showXiaomiStep3()
+                // 3 = son adım, otomatik devam gerekmiyor
+            }
+            return
+        }
+
         // İzin ayarlarından döndüyse otomatik devam et
         if (permissionCheckPending) {
             permissionCheckPending = false
@@ -56,6 +72,7 @@ class SettingsActivity : AppCompatActivity() {
             val hasJson = qm.sync(token)
             val email = accountManager.getEmail()
             val credits = accountManager.getCachedCredits()
+            val childName = prefManager.activeChildName ?: "Çocuk"
             runOnUiThread {
                 // Hesap durumu (ayrı kartta) — tıklanınca AccountActivity'ye git
                 if (!email.isNullOrBlank()) {
@@ -68,9 +85,12 @@ class SettingsActivity : AppCompatActivity() {
                 binding.btnRegisterEmail.setOnClickListener {
                     startActivity(android.content.Intent(this, AccountActivity::class.java))
                 }
-                // Soru modu bilgisi (görev ayarları kartında)
+                // Soru modu bilgisi — çocuğa özel
                 if (hasJson) {
-                    binding.tvMathModeInfo.text = "🤖 AI mod aktif — ${qm.totalCount()} soru, ${qm.accessibleBatches().size} set"
+                    val total = qm.totalCount()
+                    val solved = qm.solvedCount()
+                    val sets = qm.accessibleBatches().size
+                    binding.tvMathModeInfo.text = "👤 $childName — $total soru ($solved çözüldü), $sets set"
                 } else {
                     binding.tvMathModeInfo.text = "⚡ Klasik mod — rastgele sorular"
                 }
@@ -94,6 +114,20 @@ class SettingsActivity : AppCompatActivity() {
     private fun updateLockedAppCount() {
         val count = prefManager.getLockedApps().size
         binding.tvLockedAppCount.text = "$count uygulama"
+    }
+
+    private fun updateActiveChildInfo() {
+        val periodLabels = mapOf(
+            "okul_oncesi" to "Okul Öncesi",
+            "sinif_1" to "1. Sınıf",
+            "sinif_2" to "2. Sınıf",
+            "sinif_3" to "3. Sınıf",
+            "sinif_4" to "4. Sınıf"
+        )
+        val childName = prefManager.activeChildName ?: "Çocuk"
+        val period = prefManager.activeEducationPeriod
+        val label = periodLabels[period] ?: period
+        binding.tvActiveChild.text = "👤 $childName  •  📚 $label"
     }
 
     private fun loadSettings() {
@@ -122,10 +156,28 @@ class SettingsActivity : AppCompatActivity() {
 
         updateProtectionStatus()
         updateLockedAppCount()
+        updateActiveChildInfo()
     }
 
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
+
+        // Çocuk Profilleri kartı
+        binding.cardChildProfiles.setOnClickListener {
+            startActivity(Intent(this, ChildProfilesActivity::class.java))
+        }
+
+        // Performans Raporu kartı
+        binding.cardPerformanceReport.setOnClickListener {
+            val childName = prefManager.activeChildName
+            if (childName.isNullOrEmpty()) {
+                Toast.makeText(this, "Önce çocuk profili oluşturun", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val intent = Intent(this, PerformanceReportActivity::class.java)
+            intent.putExtra("child_name", childName)
+            startActivity(intent)
+        }
 
         // Korumayı Aç/Kapat
         binding.btnToggleService.setOnClickListener {
@@ -266,6 +318,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun startLockService() {
+        permissionCheckPending = false
         if (!AppLockService.isRunning) {
             AppLockService.start(this)
         }
@@ -342,6 +395,11 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun showXiaomiStep1() {
+        // Bu adım daha önce yapıldıysa atla
+        if (prefManager.prefs.getBoolean("xiaomi_step1_done", false)) {
+            showXiaomiStep2()
+            return
+        }
         AlertDialog.Builder(this)
             .setTitle("📋 Xiaomi Kurulum (1/3)")
             .setMessage(
@@ -350,14 +408,24 @@ class SettingsActivity : AppCompatActivity() {
                 "Açılacak sayfada MathLock'u bulup izni açın."
             )
             .setPositiveButton("Ayarlara Git") { _, _ ->
+                prefManager.prefs.edit().putBoolean("xiaomi_step1_done", true).apply()
+                xiaomiStepPending = 1
                 openMiuiAutostart()
             }
-            .setNeutralButton("Sonraki ▸") { _, _ -> showXiaomiStep2() }
+            .setNeutralButton("Sonraki ▸") { _, _ ->
+                prefManager.prefs.edit().putBoolean("xiaomi_step1_done", true).apply()
+                showXiaomiStep2()
+            }
             .setCancelable(false)
             .show()
     }
 
     private fun showXiaomiStep2() {
+        // Bu adım daha önce yapıldıysa atla
+        if (prefManager.prefs.getBoolean("xiaomi_step2_done", false)) {
+            showXiaomiStep3()
+            return
+        }
         AlertDialog.Builder(this)
             .setTitle("📋 Xiaomi Kurulum (2/3)")
             .setMessage(
@@ -366,9 +434,14 @@ class SettingsActivity : AppCompatActivity() {
                 "Bu en kritik adımdır — açılacak sayfada \"Arka planda açılır pencere göster\" iznini etkinleştirin."
             )
             .setPositiveButton("Ayarlara Git") { _, _ ->
+                prefManager.prefs.edit().putBoolean("xiaomi_step2_done", true).apply()
+                xiaomiStepPending = 2
                 openMiuiPermissionEditor()
             }
-            .setNeutralButton("Sonraki ▸") { _, _ -> showXiaomiStep3() }
+            .setNeutralButton("Sonraki ▸") { _, _ ->
+                prefManager.prefs.edit().putBoolean("xiaomi_step2_done", true).apply()
+                showXiaomiStep3()
+            }
             .setCancelable(false)
             .show()
     }

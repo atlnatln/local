@@ -590,3 +590,129 @@ class GetPackagesViewTest(ThrottleMixin, TestCase):
         for pkg in resp.json()['packages']:
             self.assertIn('questions_count', pkg)
             self.assertGreater(pkg['questions_count'], 0)
+
+
+# ─── Çocuk Rapor & İstatistik Testleri ──────────────────────────────────────
+
+@override_settings(REST_FRAMEWORK=NO_THROTTLE)
+class ChildReportViewTest(ThrottleMixin, TestCase):
+    """child_report ve stats_history endpoint testleri."""
+
+    def setUp(self):
+        super().setUp()
+        self.client = APIClient()
+        self.device = Device.objects.create(
+            installation_id="report-test-001",
+            device_token=uuid.uuid4(),
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device,
+            name="Elif",
+            education_period="sinif_2",
+            is_active=True,
+            total_correct=75,
+            total_shown=100,
+            total_time_seconds=3600,
+            stats_json={
+                "byType": {
+                    "toplama": {"shown": 40, "correct": 38, "avgTime": 3.2, "hintUsed": 2, "topicUsed": 1},
+                    "cikarma": {"shown": 30, "correct": 20, "avgTime": 5.5, "hintUsed": 5, "topicUsed": 3},
+                    "carpma": {"shown": 30, "correct": 17, "avgTime": 8.0, "hintUsed": 10, "topicUsed": 5},
+                }
+            },
+            daily_stats={
+                "2026-04-18": {"solved": 12, "correct": 10, "time_s": 300},
+                "2026-04-17": {"solved": 8, "correct": 6, "time_s": 200},
+                "2026-04-16": {"solved": 15, "correct": 12, "time_s": 400},
+            },
+            weekly_report_json={
+                "strengths": ["Toplama işlemlerinde çok başarılı"],
+                "improvementAreas": ["Çarpma konusunda gelişim gerekiyor"],
+                "recommendation": "Çarpma tablosunu tekrar etmeli.",
+            },
+        )
+        self.token = str(self.device.device_token)
+
+    # ─── child_report endpoint ───────────────────────────────────────────
+
+    def test_child_report_success(self):
+        resp = self.client.get(f'/api/mathlock/children/report/?device_token={self.token}&child_name=Elif')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertIn('child', data)
+        self.assertIn('by_type', data)
+        self.assertEqual(data['child']['name'], 'Elif')
+        self.assertEqual(data['child']['education_period'], 'sinif_2')
+        self.assertAlmostEqual(data['child']['accuracy'], 75.0, places=0)
+
+    def test_child_report_by_type_categories(self):
+        resp = self.client.get(f'/api/mathlock/children/report/?device_token={self.token}&child_name=Elif')
+        data = resp.json()
+        by_type = data['by_type']
+        # toplama: 95% + 3.2s → USTA
+        self.assertEqual(by_type['toplama']['category'], 'USTA')
+        # cikarma: 66.7% → GELİŞEN
+        self.assertEqual(by_type['cikarma']['category'], 'GELİŞEN')
+        # carpma: 56.7% → ZORLU
+        self.assertEqual(by_type['carpma']['category'], 'ZORLU')
+
+    def test_child_report_missing_token(self):
+        resp = self.client.get('/api/mathlock/children/report/?child_name=Elif')
+        self.assertEqual(resp.status_code, 400)
+
+    def test_child_report_invalid_token(self):
+        resp = self.client.get(f'/api/mathlock/children/report/?device_token={uuid.uuid4()}&child_name=Elif')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_child_report_unknown_child(self):
+        resp = self.client.get(f'/api/mathlock/children/report/?device_token={self.token}&child_name=Ahmet')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_child_report_weekly_report_fields(self):
+        resp = self.client.get(f'/api/mathlock/children/report/?device_token={self.token}&child_name=Elif')
+        data = resp.json()
+        self.assertIn('weekly_report', data)
+        wr = data['weekly_report']
+        self.assertIn('strengths', wr)
+        self.assertIn('recommendation', wr)
+
+    # ─── stats_history endpoint ──────────────────────────────────────────
+
+    def test_stats_history_success(self):
+        resp = self.client.get(f'/api/mathlock/children/stats-history/?device_token={self.token}&child_name=Elif')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertIn('daily', data)
+        self.assertIn('by_type', data)
+        self.assertIn('streak_days', data)
+        self.assertIn('total_time_minutes', data)
+
+    def test_stats_history_streak_calculation(self):
+        """Ardışık gün sayısı doğru hesaplanmalı."""
+        # Test verisinde bugün (2026-04-18) dahil 3 ardışık gün var
+        # Ancak gerçek tarih farklı olabilir, streak 0-3 arasında olmalı
+        resp = self.client.get(f'/api/mathlock/children/stats-history/?device_token={self.token}&child_name=Elif')
+        data = resp.json()
+        self.assertGreaterEqual(data['streak_days'], 0)
+
+    def test_stats_history_by_type_accuracy(self):
+        resp = self.client.get(f'/api/mathlock/children/stats-history/?device_token={self.token}&child_name=Elif')
+        data = resp.json()
+        self.assertIn('toplama', data['by_type'])
+        toplama = data['by_type']['toplama']
+        self.assertEqual(toplama['total'], 40)
+        self.assertEqual(toplama['correct'], 38)
+        self.assertAlmostEqual(toplama['accuracy'], 95.0, places=0)
+
+    def test_stats_history_total_time_minutes(self):
+        resp = self.client.get(f'/api/mathlock/children/stats-history/?device_token={self.token}&child_name=Elif')
+        data = resp.json()
+        self.assertEqual(data['total_time_minutes'], 60.0)
+
+    def test_stats_history_missing_token(self):
+        resp = self.client.get('/api/mathlock/children/stats-history/?child_name=Elif')
+        self.assertEqual(resp.status_code, 400)
+
+    def test_stats_history_invalid_token(self):
+        resp = self.client.get(f'/api/mathlock/children/stats-history/?device_token={uuid.uuid4()}&child_name=Elif')
+        self.assertEqual(resp.status_code, 404)

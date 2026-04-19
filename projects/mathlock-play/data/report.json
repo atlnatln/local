@@ -1,0 +1,31 @@
+{
+  "reportDate": "2026-04-18",
+  "summary": "Bu başlangıç setinde toplam 50 soru hazırlandı. Tüm matematik konuları (toplama, çıkarma, çarpma, bölme, sıralama ve eksik sayı) tanıtıldı. Çocuğun bu alandaki ilk deneyimleri önemli—başarı oranlarını görmek için ilk 50 soruyu çözmesini bekliyoruz.",
+  "strengths": [
+    "Tüm 6 matematik konusu güvenli bir şekilde tanıtıldı",
+    "Sorular yaş düzeyine uygun, kolay sayılardan başlıyor",
+    "İlk 5 soru motivasyon için kolay ve başarı garantili",
+    "Son 5 soru da orta zorlukta, çocuğun güvenle bitirebileceği sorular"
+  ],
+  "improvementAreas": [
+    "Tüm konular yeni başlangıç aşamasında—beklenen müdür.",
+    "İlk sonuçlar bize çocuğun hangi alanlarda daha fazla desteğe ihtiyacı olduğunu gösterecek"
+  ],
+  "recommendation": "Çocuğu rahatlatın, stres yok. İlk 50 soruyu çözerken amacı eğlenmek ve öğrenmektir. Hızlı veya yavaş olması fark etmez. Her soruda konu anlatımı (📚 butonu) ve ipucu (💡 butonu) mevcut. Çocuk zorlandığında bu butonları tıklamasını öğretin.",
+  "metrics": {
+    "totalQuestionsInSet": 50,
+    "topicsCovered": [
+      "toplama",
+      "cikarma",
+      "carpma",
+      "bolme",
+      "siralama",
+      "eksik_sayi"
+    ],
+    "difficultyDistribution": {
+      "easy": 36,
+      "medium": 14
+    },
+    "avgDifficulty": 1.28
+  }
+}

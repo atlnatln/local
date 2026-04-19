@@ -1,0 +1,103 @@
+{
+  "donem": "sinif_2",
+  "etiket": "2. Sınıf",
+  "yasAraligi": [7, 8],
+  "kaynak": "MEB İlkokul Matematik Öğretim Programı 2018 — 2. Sınıf Kazanımları (Sayılar ve İşlemler)",
+  "soruSayisi": 50,
+  "soruSayisiAciklama": "Mevcut MathLock standardı — 50 soru",
+  "konular": [
+    {
+      "alan": "Doğal Sayılar (0-999)",
+      "kazanimlar": [
+        "Üç basamaklı doğal sayıları okur ve yazar",
+        "Yüzlük, onluk ve birlik kavramlarını açıklar",
+        "Sayıları büyükten küçüğe ve küçükten büyüğe sıralar"
+      ],
+      "soruTipleri": ["siralama"],
+      "sayiAraligi": [0, 999]
+    },
+    {
+      "alan": "Toplama (Eldeli)",
+      "kazanimlar": [
+        "Eldeli toplama yapar (iki basamaklı + iki basamaklı)",
+        "Üç basamaklı sayılarla toplama yapar",
+        "Zihinden toplama stratejileri geliştirir"
+      ],
+      "soruTipleri": ["toplama"],
+      "sayiAraligi": [0, 999],
+      "zorlukSinirlari": {
+        "1": "a + b, a: 1-9, b: 1-9, sonuç ≤ 18",
+        "2": "a + b, a: 10-19, b: 1-10, sonuç ≤ 29",
+        "3": "a + b, a: 10-30, b: 10-20, sonuç ≤ 50",
+        "4": "a + b, a: 20-60, b: 10-40, sonuç ≤ 100",
+        "5": "a + b + c, a: 10-40, b: 10-30, c: 5-20, sonuç ≤ 90"
+      }
+    },
+    {
+      "alan": "Çıkarma (Onluktan Bozmalı)",
+      "kazanimlar": [
+        "Onluktan bozma gerektiren çıkarma yapar",
+        "Üç basamaklı sayılarda çıkarma yapar",
+        "Zihinden çıkarma stratejileri geliştirir"
+      ],
+      "soruTipleri": ["cikarma"],
+      "sayiAraligi": [0, 999],
+      "zorlukSinirlari": {
+        "1": "a - b, a: 2-10, b: 1-(a-1), sonuç ≥ 1",
+        "2": "a - b, a: 10-20, b: 1-9, sonuç ≥ 1",
+        "3": "a - b, a: 20-50, b: 5-19, sonuç ≥ 1",
+        "4": "a - b, a: 50-100, b: 10-49, sonuç ≥ 1",
+        "5": "a - b - c, a: 40-80, b: 5-15, c: 3-10, sonuç ≥ 1"
+      }
+    },
+    {
+      "alan": "Çarpma (Giriş)",
+      "kazanimlar": [
+        "Çarpma işleminin anlamını kavrar",
+        "2, 3, 4, 5 ile çarpma yapar",
+        "Çarpma tablosunu (1-5) bilir"
+      ],
+      "soruTipleri": ["carpma"],
+      "sayiAraligi": [1, 50],
+      "zorlukSinirlari": {
+        "1": "a x 2 veya a x 3, a: 1-5, sonuç ≤ 15",
+        "2": "a x b, a: 2-5, b: 2-5, sonuç ≤ 25",
+        "3": "a x b, a: 2-9, b: 6-9, sonuç ≤ 81",
+        "4": "a x 10, a: 1-10, sonuç ≤ 100",
+        "5": "a x b, a: 2-10, b: 2-10, sonuç ≤ 100"
+      }
+    },
+    {
+      "alan": "Bölme (Giriş)",
+      "kazanimlar": [
+        "Bölme işleminin anlamını kavrar (paylaştırma)",
+        "2'ye ve 5'e bölme yapar",
+        "Tam bölme kavramını bilir"
+      ],
+      "soruTipleri": ["bolme"],
+      "sayiAraligi": [1, 100],
+      "zorlukSinirlari": {
+        "1": "a ÷ 2, a: 2,4,6,8,10",
+        "2": "a ÷ b, b: 2-5, a: b'nin katları, a ≤ 25",
+        "3": "a ÷ b, b: 2-9, a: b'nin katları, a ≤ 50",
+        "4": "a ÷ b, b: 2-10, a: b'nin katları, a ≤ 80",
+        "5": "a ÷ b, b: 2-10, a: b'nin katları, a ≤ 100"
+      }
+    },
+    {
+      "alan": "Eksik Sayı ve Sıralama",
+      "kazanimlar": [
+        "Dört işlemde bilinmeyen sayıyı bulur",
+        "Sayıları sıralar ve karşılaştırır"
+      ],
+      "soruTipleri": ["eksik_sayi", "siralama"],
+      "sayiAraligi": [0, 999]
+    }
+  ],
+  "toplamSoruTipleri": ["toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi"],
+  "ozelKurallar": [
+    "Mevcut questions.agents.md kuralları aynen geçerli",
+    "Bu dönem MathLock'un mevcut varsayılan dönemidir",
+    "50 soru standardı"
+  ]
+}

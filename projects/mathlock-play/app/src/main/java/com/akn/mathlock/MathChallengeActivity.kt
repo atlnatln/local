@@ -77,6 +77,7 @@ class MathChallengeActivity : AppCompatActivity() {
         accountManager = AccountManager(this)
         questionManager = QuestionManager(this)
         statsTracker = StatsTracker(this)
+        statsTracker.startSession()
         topicHelper = TopicHelper(this)
 
         lockedPackage = intent.getStringExtra("locked_package")
@@ -657,6 +658,12 @@ class MathChallengeActivity : AppCompatActivity() {
             return
         }
 
+        // Pending solved soruları sunucuya gönder (kaybolmasın)
+        Thread {
+            val token = accountManager.getDeviceToken()
+            if (token != null) questionManager.uploadProgress(token)
+        }.start()
+
         lockedPackage?.let { pkg ->
             LockStateManager.notifyUnlocked(pkg)
             AppLockService.removeBlockingOverlay()
@@ -730,5 +737,10 @@ class MathChallengeActivity : AppCompatActivity() {
         } else {
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        statsTracker.endSession()
+        super.onDestroy()
     }
 }

@@ -99,6 +99,10 @@ class AppLockService : Service() {
     // Bu flag true iken aynı paket için launchChallenge tekrar tetiklenmez
     private var challengeActive = false
 
+    // Challenge başlatıldığında zaman damgası — stuck durumu tespit etmek için
+    private var challengeActiveSince: Long = 0
+    private val CHALLENGE_STUCK_TIMEOUT = 5_000L // ms — bu süre içinde activity gelmezse resetle
+
     // Ekran kapandığında ebeveyn bypass'larını temizleyen receiver
     private val screenOffReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -106,6 +110,24 @@ class AppLockService : Service() {
                 val cleared = LockStateManager.clearAllParentBypasses()
                 if (cleared > 0) {
                     Log.d(TAG, "Ekran kapandı — tüm ebeveyn bypass'ları temizlendi ($cleared paket)")
+                }
+            }
+        }
+    }
+
+    // Ekran açıldığında overlay aktifse challenge'ı yeniden tetikleyen receiver
+    private val screenOnReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_SCREEN_ON ||
+                intent?.action == Intent.ACTION_USER_PRESENT) {
+                val pkg = blockingOverlayPackage
+                if (blockingOverlayView != null && pkg != null) {
+                    Log.d(TAG, "Ekran açıldı — overlay aktif, challenge yeniden tetikleniyor: $pkg")
+                    challengeActive = false
+                    // Kısa gecikmeyle activity başlat (keyguard geçişini bekle)
+                    handler.postDelayed({
+                        reLaunchChallengeActivity(pkg)
+                    }, 800)
                 }
             }
         }
@@ -144,6 +166,11 @@ class AppLockService : Service() {
         createNotificationChannel()
         createAlertNotificationChannel()
         registerReceiver(screenOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
+        val screenOnFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_USER_PRESENT)
+        }
+        registerReceiver(screenOnReceiver, screenOnFilter)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -180,6 +207,7 @@ class AppLockService : Service() {
         challengeActive = false
         lastKnownForegroundPackage = null
         try { unregisterReceiver(screenOffReceiver) } catch (_: Exception) {}
+        try { unregisterReceiver(screenOnReceiver) } catch (_: Exception) {}
         handler.removeCallbacks(checkRunnable)
         hideBlockingOverlay()
         hideTimerOverlay()
@@ -252,7 +280,21 @@ class AppLockService : Service() {
         if (!prefManager.isAppLocked(currentPackage)) return
 
         // Challenge zaten aktifse (overlay gösterildi, activity bekleniyor) tekrar tetikleme
-        if (challengeActive) return
+        // Ancak stuck durumu kontrolü: 5 saniyeden uzun süredir aktifse resetle
+        if (challengeActive) {
+            val nowMs = System.currentTimeMillis()
+            if (challengeActiveSince > 0 &&
+                nowMs - challengeActiveSince > CHALLENGE_STUCK_TIMEOUT) {
+                Log.w(TAG, "Challenge $CHALLENGE_STUCK_TIMEOUT ms'den uzun süredir aktif — stuck durumu, resetleniyor")
+                challengeActive = false
+                challengeActiveSince = 0
+                // Overlay varsa activity'yi yeniden başlat
+                if (blockingOverlayView != null && blockingOverlayPackage != null) {
+                    reLaunchChallengeActivity(blockingOverlayPackage!!)
+                }
+            }
+            return
+        }
 
         // Flood-launch önleme: aynı paket için minimum 3 saniye aralık
         val now = System.currentTimeMillis()
@@ -300,8 +342,30 @@ class AppLockService : Service() {
         return lastPackage
     }
 
+    /**
+     * Overlay gösterilirken ChallengePickerActivity'yi yeniden başlatmaya çalışır.
+     * Ekran açılışında veya stuck durumunda kullanılır.
+     */
+    private fun reLaunchChallengeActivity(lockedPackage: String) {
+        val timerExpired = LockStateManager.isTimerExpired(lockedPackage)
+        val intent = Intent(this, ChallengePickerActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            putExtra("locked_package", lockedPackage)
+            putExtra("timer_expired", timerExpired)
+        }
+        try {
+            startActivity(intent)
+            Log.d(TAG, "Challenge activity yeniden başlatıldı: $lockedPackage")
+        } catch (e: Exception) {
+            Log.w(TAG, "Activity yeniden başlatılamadı, bildirim fallback: ${e.message}")
+            // Fallback: tam ekran bildirim üzerinden aç
+            showChallengeNotification(lockedPackage)
+        }
+    }
+
     private fun launchChallenge(lockedPackage: String) {
         challengeActive = true
+        challengeActiveSince = System.currentTimeMillis()
 
         // 1) Ana ekrana gönder — kilitli uygulamayı ön plandan düşür
         forceUserHome()
@@ -696,5 +760,6 @@ class AppLockService : Service() {
         blockingOverlayView = null
         blockingOverlayPackage = null
         challengeActive = false
+        challengeActiveSince = 0
     }
 }

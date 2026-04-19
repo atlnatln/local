@@ -27,6 +27,9 @@ class PreferenceManager(context: Context) {
         private const val KEY_MATH_ENABLED  = "challenge_math_enabled"
         private const val KEY_GUESS_ENABLED  = "challenge_guess_enabled"
         private const val KEY_ROBOTOPIA_ENABLED = "challenge_robotopia_enabled"
+        private const val KEY_ACTIVE_CHILD_ID = "active_child_id"
+        private const val KEY_ACTIVE_CHILD_NAME = "active_child_name"
+        private const val KEY_ACTIVE_EDUCATION_PERIOD = "active_education_period"
 
         private const val DEFAULT_PASS_SCORE = 3
         private const val DEFAULT_GUESS_MAX = 100
@@ -154,6 +157,20 @@ class PreferenceManager(context: Context) {
     var isRobotopiaEnabled: Boolean
         get() = prefs.getBoolean(KEY_ROBOTOPIA_ENABLED, true)
         set(value) = prefs.edit().putBoolean(KEY_ROBOTOPIA_ENABLED, value).apply()
+
+    // --- Çocuk Profili ---
+
+    var activeChildId: Int
+        get() = prefs.getInt(KEY_ACTIVE_CHILD_ID, 0)
+        set(value) = prefs.edit().putInt(KEY_ACTIVE_CHILD_ID, value).apply()
+
+    var activeChildName: String?
+        get() = prefs.getString(KEY_ACTIVE_CHILD_NAME, null)
+        set(value) = prefs.edit().putString(KEY_ACTIVE_CHILD_NAME, value).apply()
+
+    var activeEducationPeriod: String
+        get() = prefs.getString(KEY_ACTIVE_EDUCATION_PERIOD, "sinif_2") ?: "sinif_2"
+        set(value) = prefs.edit().putString(KEY_ACTIVE_EDUCATION_PERIOD, value).apply()
 
     // --- Hash Yardımcısı ---
 
