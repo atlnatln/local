@@ -18,7 +18,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n    <statement name="body">\n    <block type="move">\n    <next>\n        <block type="move"></block>\n    </next>\n</block>\n</statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move" ></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move" ></block>\n                </category>\n              </xml>'
     },
 
     label: 'Bloklar - Sürükle ve Bırak',
@@ -109,7 +109,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                </category>\n              </xml>'
     },
 
     label: 'Dönüş - Etrafında Dön',
@@ -153,7 +153,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                </category>\n              </xml>'
     },
 
     label: 'Dönüş - ZigZag',
@@ -203,7 +203,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n    <statement name="body">\n    <block type="controls_repeat">\n    <field name="TIMES">3</field>\n    <statement name="DO">\n        <block type="move"></block>\n    </statement>\n</block>\n</statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                </category>\n              </xml>'
     },
 
     label: 'Döngüler - Kolaylaştıralım',
@@ -246,7 +246,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n    <statement name="body">\n    <block type="controls_repeat">\n    <field name="TIMES">3</field>\n    <statement name="DO">\n        <block type="move"></block>\n    </statement>\n</block>\n</statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                </category>\n              </xml>'
     },
 
     label: 'Döngüler - Güzel Kısımlar',
@@ -289,7 +289,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n    <statement name="body">\n    <block type="controls_repeat">\n    <field name="TIMES">3</field>\n    <statement name="DO">\n        <block type="move"></block>\n    </statement>\n</block>\n</statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                </category>\n              </xml>'
     },
 
     label: 'Döngüler - İç İçe',
@@ -343,7 +343,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n    <statement name="body">\n    <block type="controls_repeat">\n    <field name="TIMES">3</field>\n    <statement name="DO">\n        <block type="move"></block>\n    </statement>\n</block>\n</statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                </category>\n              </xml>'
     },
 
     label: 'Döngüler - Zor Mod',
@@ -391,7 +391,7 @@ module.exports = function () {
     editor: {
       workspace: '\n        <xml xmlns="http://www.w3.org/1999/xhtml">\n          <block type="start_handler" x="50" y="50" deletable="false">\n            <statement name="body">\n              <block type="controls_repeat"/>\n              <field name="TIMES">3</field>\n              <statement name="DO">\n                <block type="controls_if"/>\n              </statement>\n            </statement>\n          </block>\n        </xml>\n      ',
 
-      toolbox: '\n        <xml id="toolbox" style="display: none">\n          <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n            <block type="move"></block>\n            <block type="rotate"></block>\n            <block type="controls_repeat"></block>\n            <block type="controls_if"></block>\n            <block type="is_next_field"></block>\n          </category>\n        </xml>\n      '
+      toolbox: '\n        <xml id="toolbox" style="display: none">\n          <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n            <block type="move"></block>\n            <block type="rotate"></block>\n            <block type="controls_repeat"><field name="TIMES">3</field></block>\n            <block type="controls_if"></block>\n            <block type="is_next_field"></block>\n          </category>\n        </xml>\n      '
     },
 
     label: 'Koşullar - Doğru Yönde',
@@ -439,7 +439,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n    <statement name="body">\n    <block type="move" deletable="false"></block>\n</statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"></block>\n                    <block type="controls_if"></block>\n                    <block type="is_next_field"></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                    <block type="controls_if"></block>\n                    <block type="is_next_field"></block>\n                </category>\n              </xml>'
     },
 
     label: 'Koşullar - İşaretleri Takip Et',
@@ -487,7 +487,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n    <block type="start_handler" x="50" y="50" deletable="false"></block>\n    <block type="resource_event_handler" x="50" y="200" deletable="false"></block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"></block>\n                    <block type="move_to_entity"></block>\n                    <block type="collect_resource"></block>\n                </category>\n\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                    <block type="move_to_entity"></block>\n                    <block type="collect_resource"></block>\n                </category>\n\n              </xml>'
     },
 
     label: 'Kaynaklar - Topla',
@@ -538,7 +538,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n    <block type="start_handler" x="50" y="50" deletable="false"></block>\n    <block type="resource_event_handler" x="50" y="200" deletable="false"></block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"></block>\n                    <block type="move_to_entity"></block>\n                    <block type="collect_resource"></block>\n                    <block type="deposit_resource"></block>\n                </category>\n\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                    <block type="move_to_entity"></block>\n                    <block type="collect_resource"></block>\n                    <block type="deposit_resource"></block>\n                </category>\n\n              </xml>'
     },
 
     label: 'Kaynaklar - Mücevheri Bırak',
@@ -593,7 +593,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n    <block type="start_handler" x="50" y="50" deletable="false"></block>\n    <block type="marker_event_handler" x="50" y="400" deletable="false" editable="false">\n      <field name="type">red</field>\n      <data>EVENT_HANDLER</data>\n      <statement name="body" editable="false">\n        <block type="move_to_entity" movable="false" editable="false">\n          <field name="entity">marker.position</field>\n        </block>\n      </statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n\n                <category name="Mantık" colour="' + blockColors.LOGIC_COLOR + '">\n                    <block type="controls_repeat"></block>\n                    <block type="controls_if"></block>\n                    <block type="logic_compare"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Sayılar" colour="' + blockColors.MATH_COLOR + '">\n                    <block type="math_number"></block>\n                    <block type="random_number"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Hareket" colour="' + blockColors.MOVEMENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="move_to_entity"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Eylemler" colour="' + blockColors.ACTION_COLOR + '">\n                    <block type="collect_resource"></block>\n                    <block type="deposit_resource"></block>\n                    <block type="place_marker"></block>\n                </category>\n                \n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n\n                <category name="Mantık" colour="' + blockColors.LOGIC_COLOR + '">\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                    <block type="controls_if"></block>\n                    <block type="logic_compare"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Sayılar" colour="' + blockColors.MATH_COLOR + '">\n                    <block type="math_number"></block>\n                    <block type="random_number"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Hareket" colour="' + blockColors.MOVEMENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="move_to_entity"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Eylemler" colour="' + blockColors.ACTION_COLOR + '">\n                    <block type="collect_resource"></block>\n                    <block type="deposit_resource"></block>\n                    <block type="place_marker"></block>\n                </category>\n                \n              </xml>'
     },
 
     label: 'İşaretçiler - Yardım Et',
@@ -662,7 +662,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n    <block type="start_handler" x="50" y="50" deletable="false"></block>\n    <block type="resource_event_handler" x="50" y="200" deletable="false"></block>\n    <block type="marker_event_handler" x="50" y="350" deletable="false" editable="false">\n      <field name="type">red</field>\n      <data>EVENT_HANDLER</data>\n      <statement name="body">\n      <block type="move_to_entity" deletable="false" editable="false" movable="false">\n        <field name="entity">marker.position</field>\n        <next>\n          <block type="collect_resource" deletable="false" editable="false" movable="false">\n            <next>\n              <block type="move_to_entity" deletable="false" editable="false" movable="false">\n              <field name="entity">robot.getBasePosition()</field>\n                <next>\n                    <block type="deposit_resource" deletable="false" editable="false" movable="false"></block>\n                </next>\n              </block>\n            </next>\n          </block>\n        </next>\n      </block>\n</statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n\n                <category name="Mantık" colour="' + blockColors.LOGIC_COLOR + '">\n                    <block type="controls_repeat"></block>\n                    <block type="controls_if"></block>\n                    <block type="logic_compare"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Sayılar" colour="' + blockColors.MATH_COLOR + '">\n                    <block type="math_number"></block>\n                    <block type="random_number"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Hareket" colour="' + blockColors.MOVEMENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="move_to_entity"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Eylemler" colour="' + blockColors.ACTION_COLOR + '">\n                    <block type="collect_resource"></block>\n                    <block type="deposit_resource"></block>\n                    <block type="place_marker"></block>\n                </category>\n                \n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n\n                <category name="Mantık" colour="' + blockColors.LOGIC_COLOR + '">\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                    <block type="controls_if"></block>\n                    <block type="logic_compare"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Sayılar" colour="' + blockColors.MATH_COLOR + '">\n                    <block type="math_number"></block>\n                    <block type="random_number"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Hareket" colour="' + blockColors.MOVEMENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="move_to_entity"></block>\n                </category>\n                \n                <sep gap="8"></sep>\n                \n                <category name="Eylemler" colour="' + blockColors.ACTION_COLOR + '">\n                    <block type="collect_resource"></block>\n                    <block type="deposit_resource"></block>\n                    <block type="place_marker"></block>\n                </category>\n                \n              </xml>'
     },
 
     label: 'İşaretçiler - Büyük Toplama',
@@ -714,7 +714,7 @@ module.exports = function () {
     editor: {
       workspace: '<xml xmlns="http://www.w3.org/1999/xhtml">\n<block type="start_handler" x="50" y="50" deletable="false">\n  <statement name="body">\n    <block type="controls_repeat">\n      <field name="TIMES">3</field>\n      <statement name="DO">\n      <block type="move">\n        <field name="move">FORWARD</field>\n          <next>\n            <block type="controls_if">\n              <value name="IF0">\n                <block type="logic_compare">\n                  <field name="OP">EQ</field>\n                  <value name="A">\n                    <block type="random_number" id="/2hWV!Bsg{eIiMHNaQm6">\n                      <field name="min">1</field>\n                      <field name="max">2</field>\n                    </block>\n                  </value>\n                  <value name="B">\n                    <block type="math_number" id="nL#iBs7tFzsRy}-I%z3a">\n                      <field name="NUM">1</field>\n                    </block>\n                  </value>\n                </block>\n              </value>\n            <statement name="DO0">\n              <block type="rotate">\n                <field name="direction">LEFT</field>\n              </block>\n            </statement>\n            </block>\n          </next>\n        </block>\n      </statement>\n    </block>\n  </statement>\n</block>\n</xml>',
 
-      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Kod Blokları" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"></block>\n                    <block type="controls_if"></block>\n                    <block type="logic_compare"></block>\n                    <block type="math_number"></block>\n                    <block type="random_number"></block>\n                </category>\n              </xml>'
+      toolbox: '<xml id="toolbox" style="display: none">\n                <category name="Blok Ekle +" colour="' + blockColors.EVENT_COLOR + '">\n                    <block type="move"></block>\n                    <block type="rotate"></block>\n                    <block type="controls_repeat"><field name="TIMES">3</field></block>\n                    <block type="controls_if"></block>\n                    <block type="logic_compare"></block>\n                    <block type="math_number"></block>\n                    <block type="random_number"></block>\n                </category>\n              </xml>'
     },
 
     label: 'Keşif - Amaçsız Dolaşmak',
@@ -1704,7 +1704,7 @@ var INITIAL_TRANSFORM = {
   }
 };
 
-var prefix = (require('sheetify/insert')("._997216c4 {\n    width: 100%;\n    height: 100%;\n  }\n\n  ._997216c4 > canvas {\n    cursor: -webkit-grab;\n    cursor: grab;\n  }\n\n  ._997216c4 > canvas.dragging {\n    cursor: -webkit-grabbing;\n    cursor: grabbing;\n  }") || true) && "_997216c4";
+var prefix = (require('sheetify/insert')("._997216c4 {\n    width: 100%;\n    height: 100%;\n    overflow: hidden;\n  }\n\n  ._997216c4 > canvas {\n    cursor: -webkit-grab;\n    cursor: grab;\n    display: block;\n  }\n\n  ._997216c4 > canvas.dragging {\n    cursor: -webkit-grabbing;\n    cursor: grabbing;\n  }") || true) && "_997216c4";
 
 function canvasWidget() {
   var ctx = null;
@@ -2012,7 +2012,7 @@ var _require = require('./runtime-controls'),
 
 var gameStatsView = require('./game-stats');
 
-var gameRunnerPrefix = (require('sheetify/insert')("._5a8deb15 {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: column;\n  }\n\n  ._5a8deb15 > .controls {\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    height: 50px;\n    border-bottom: 1px solid grey;\n  }\n\n  ._5a8deb15 > .game {\n    position: relative;\n    height: calc(100% - 50px);\n  }") || true) && "_5a8deb15";
+var gameRunnerPrefix = (require('sheetify/insert')("._5a8deb15 {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n  }\n\n  ._5a8deb15 > .controls {\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    height: 50px;\n    border-bottom: 1px solid grey;\n    flex-shrink: 0;\n  }\n\n  ._5a8deb15 > .game {\n    position: relative;\n    height: calc(100% - 50px);\n    overflow: hidden;\n  }") || true) && "_5a8deb15";
 
 function gameRunnerView(_ref) {
   var game = _ref.game,
@@ -2221,8 +2221,20 @@ function applyViewportTransforms(_ref) {
   // move origin to center of canvas
   ctx.translate(viewport.width / 2, viewport.height / 2);
 
-  // apply scale
-  var scale = getEvenScale(viewport.scale);
+  // apply scale — on mobile auto-fit map into canvas, filling it
+  var scale;
+  if (window.innerWidth < 768) {
+    var mapW = gameWidth * TILE_WIDTH;
+    var mapH = gameHeight * TILE_HEIGHT + 40;
+    var scaleW = viewport.width / mapW;
+    var scaleH = viewport.height / mapH;
+    var fitScale = Math.max(scaleW, scaleH);
+    if (fitScale > scaleW * 1.5) fitScale = scaleW * 1.5;
+    if (fitScale > scaleH * 1.5) fitScale = scaleH * 1.5;
+    scale = getEvenScale(fitScale);
+  } else {
+    scale = getEvenScale(viewport.scale);
+  }
   ctx.scale(scale, scale);
 
   // center game field
@@ -44615,7 +44627,7 @@ var game = {
 var editor = {
   workspace: '\n    <xml xmlns="http://www.w3.org/1999/xhtml">\n      <block type="start_handler" id="!o0D0w#D7c3RJ_[d[KgX" x="50" y="50" deletable="false"></block>\n    </xml>\n  ',
 
-  toolbox: '\n    <xml id="toolbox" style="display: none">\n        <category name="Mantık" colour="' + blockColors.LOGIC_COLOR + '">\n          <block type="logic_boolean"></block>          \n          <block type="logic_negate"></block>\n          <block type="logic_compare"></block>\n          <block type="controls_if"></block>\n          <block type="logic_compare"></block>\n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Döngüler" colour="' + blockColors.LOOPS_COLOR + '">\n          <block type="controls_repeat"></block>\n          <block type="controls_repeat_ext"></block>\n          <block type="controls_whileUntil"></block>\n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Matematik" colour="' + blockColors.MATH_COLOR + '">\n          <block type="math_number"></block>\n          <block type="random_number"></block>\n          <block type="random_number_ext"></block>\n          <block type="math_arithmetic"></block>\n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Hareket" colour="' + blockColors.MOVEMENT_COLOR + '">\n          <block type="move"></block>\n          <block type="rotate"></block>\n          <block type="move_to"></block>\n          <block type="move_to_ext"></block>\n          <block type="move_to_entity"></block>\n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Eylemler" colour="' + blockColors.ACTION_COLOR + '">\n          <block type="collect_resource"></block>\n          <block type="deposit_resource"></block>\n          <block type="collected_resources"></block>\n          <block type="place_marker"></block>\n          <block type="place_marker_ext"></block>          \n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Olaylar" colour="' + blockColors.EVENT_COLOR + '">\n          <block type="resource_event_handler"></block>\n          <block type="marker_event_handler"></block>\n        </category>\n   </xml>'
+  toolbox: '\n    <xml id="toolbox" style="display: none">\n        <category name="Mantık" colour="' + blockColors.LOGIC_COLOR + '">\n          <block type="logic_boolean"></block>          \n          <block type="logic_negate"></block>\n          <block type="logic_compare"></block>\n          <block type="controls_if"></block>\n          <block type="logic_compare"></block>\n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Döngüler" colour="' + blockColors.LOOPS_COLOR + '">\n          <block type="controls_repeat"><field name="TIMES">3</field></block>\n          <block type="controls_repeat_ext"></block>\n          <block type="controls_whileUntil"></block>\n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Matematik" colour="' + blockColors.MATH_COLOR + '">\n          <block type="math_number"></block>\n          <block type="random_number"></block>\n          <block type="random_number_ext"></block>\n          <block type="math_arithmetic"></block>\n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Hareket" colour="' + blockColors.MOVEMENT_COLOR + '">\n          <block type="move"></block>\n          <block type="rotate"></block>\n          <block type="move_to"></block>\n          <block type="move_to_ext"></block>\n          <block type="move_to_entity"></block>\n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Eylemler" colour="' + blockColors.ACTION_COLOR + '">\n          <block type="collect_resource"></block>\n          <block type="deposit_resource"></block>\n          <block type="collected_resources"></block>\n          <block type="place_marker"></block>\n          <block type="place_marker_ext"></block>          \n        </category>\n        \n        <sep gap="8"></sep>\n        \n        <category name="Olaylar" colour="' + blockColors.EVENT_COLOR + '">\n          <block type="resource_event_handler"></block>\n          <block type="marker_event_handler"></block>\n        </category>\n   </xml>'
 };
 
 module.exports = {
@@ -44833,10 +44845,13 @@ var tutorialView = function tutorialView(state, prev, send) {
     }
   });
 
+  var isMobile = window.innerWidth < 768;
   var pageLayoutHtml = pageLayout({
     id: 'tutorial-page',
     context: [state, prev, send],
-    panels: [{ view: instructionHtml, size: 1 }, { view: gameRunnerHtml, size: 2 }, { view: blocklyHtml, size: 2 }]
+    panels: isMobile
+      ? [{ view: gameRunnerHtml, size: 1 }, { view: blocklyHtml, size: 1 }]
+      : [{ view: instructionHtml, size: 1 }, { view: gameRunnerHtml, size: 2 }, { view: blocklyHtml, size: 2 }]
   });
 
   return function () {

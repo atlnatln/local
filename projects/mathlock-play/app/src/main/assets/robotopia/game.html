@@ -133,7 +133,7 @@
         ._80aeacb2 > .inner h1 { color: #38bdf8 !important; font-size: 1.15em !important; }
         ._80aeacb2 > .inner > .content { overflow-wrap: break-word !important; }
 
-        /* Panel layout: hide instruction panel, split game+blockly */
+        /* Panel layout: 2 panels (game + blockly), vertical on mobile */
         ._98e65704 {
             flex-direction: column !important;
             height: 100% !important;
@@ -145,18 +145,15 @@
         ._98e65704 > .panel {
             width: 100% !important;
             flex: none !important;
+            overflow: hidden !important;
         }
-        /* 1st panel = instruction → hide on mobile (info shown in story dialog) */
+        /* 1st panel = game runner (50%) */
         ._98e65704 > .panel:first-child {
-            display: none !important;
+            height: 50% !important;
         }
-        /* 2nd panel = game runner (45%) */
-        ._98e65704 > .panel:nth-child(3) {
-            height: 45% !important;
-        }
-        /* 3rd panel = blockly editor (55%) */
-        ._98e65704 > .panel:nth-child(5) {
-            height: 55% !important;
+        /* 2nd panel = blockly editor (50%) */
+        ._98e65704 > .panel:last-child {
+            height: 50% !important;
         }
 
         /* Blockly: wider toolbox + touch-friendly */
@@ -201,8 +198,9 @@
             ._ed8591e2 > .goal { font-size: 13px !important; }
         }
 
-        /* Canvas: tam genişlik al */
-        canvas { max-width: 100% !important; touch-action: none; }
+        /* Canvas: container'a sığdır, taşmayı engelle */
+        canvas { max-width: 100% !important; max-height: 100% !important; touch-action: none; object-fit: contain; }
+        ._997216c4 { overflow: hidden !important; }
 
         /* Choo overview level images removed — suppress 404s completely */
         /* inline style'ı override etmek için !important + spesifiklik arttırma */
@@ -284,26 +282,26 @@
         '._1482c51e { width: 100% !important; height: 100vh !important; overflow: hidden !important; display: flex !important; flex-direction: column !important; }' +
         '._1482c51e > .content { flex: 1 !important; height: 0 !important; min-height: 0 !important; overflow: hidden !important; }' +
 
-        /* ── Panel layout: 3 panels → hide instruction panel, split game+blockly ── */
+        /* ── Panel layout: 2 panels (game + blockly) on mobile ── */
         '._98e65704 { flex-direction: column !important; height: 100% !important; overflow: hidden !important; }' +
         '._98e65704 > .divider { display: none !important; }' +
-        '._98e65704 > .panel { width: 100% !important; flex: none !important; }' +
-        '._98e65704 > .panel:first-child { display: none !important; }' +
-        '._98e65704 > .panel:nth-child(3) { height: 45% !important; }' +
-        '._98e65704 > .panel:nth-child(5) { height: 55% !important; }' +
+        '._98e65704 > .panel { width: 100% !important; flex: none !important; overflow: hidden !important; }' +
+        '._98e65704 > .panel:first-child { height: 50% !important; }' +
+        '._98e65704 > .panel:last-child { height: 50% !important; }' +
 
         /* ── Game runner ── */
-        '._5a8deb15 { height: 100% !important; }' +
-        '._5a8deb15 > .controls { height: 36px !important; padding: 0 4px !important; }' +
+        '._5a8deb15 { height: 100% !important; overflow: hidden !important; }' +
+        '._5a8deb15 > .controls { height: 36px !important; padding: 0 4px !important; flex-shrink: 0 !important; }' +
         '._5a8deb15 > .controls button { min-width: 36px !important; }' +
-        '._5a8deb15 > .game { height: calc(100% - 36px) !important; }' +
+        '._5a8deb15 > .game { height: calc(100% - 36px) !important; overflow: hidden !important; }' +
 
         /* ── Blockly: touch-friendly ── */
         '.blocklyToolboxDiv { min-width: 80px !important; touch-action: pan-y !important; }' +
         '.blocklyTreeRow { height: 32px !important; line-height: 32px !important; }' +
         '.blocklyTreeLabel { font-size: 12px !important; }' +
         '.blocklyMainBackground, .blocklySvg { touch-action: none !important; }' +
-        'canvas { max-width: 100% !important; touch-action: none; }' +
+        '._997216c4 { background: #4a6ca4 !important; overflow: hidden !important; }' +
+        'canvas { max-width: 100% !important; max-height: 100% !important; touch-action: none; object-fit: contain; }' +
 
         /* ── Overlay buttons touch-friendly ── */
         '._80aeacb2 button, ._80aeacb2 a { min-height: 44px !important; min-width: 44px !important; font-size: 15px !important; padding: 10px 18px !important; }' +
