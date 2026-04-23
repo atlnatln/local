@@ -5,24 +5,18 @@
 
 ---
 
-## Faz 1: Progress Sayımı (P1 — Kritik)
+## Faz 1: Progress Sayımı (P1 — Kritik) ✅ ÇÖZÜLDÜ
 
 **Sorun**: 10 matematik sorusu çözülüyor ama 5 tanesi çözülmüş görünüyor.
 
 **Kök Neden**: Normal modda kilit açılınca (`unlockAndLaunchApp()`) `uploadProgress()` çağrılmıyor. Çözülen sorular SharedPreferences'a `pending_solved` olarak yazılıyor ama sunucuya gönderilmiyor. Ancak bir **sonraki** `MathChallengeActivity` açılışında (`onCreate`) yükleniyor. Birden fazla oturumda pending ID'ler birbirini eziyor.
 
-**Akış (buggy)**:
-```
-Oturum 1: 5 soru çöz → pending'e yaz → unlock → finish (SUNUCUYA GÖNDERİLMEDİ)
-Oturum 2: onCreate'da oturum 1'in 5 pending'i gönderilir → 5 yeni soru çöz → unlock → finish (YENİ 5 GÖNDERİLMEDİ)
-```
-
 **Fix**: `unlockAndLaunchApp()` ve `onDestroy()` içinde pending progress'i upload et.
 
 **Dosyalar**:
-- `MathChallengeActivity.kt` — `unlockAndLaunchApp()` (satır ~649)
+- `MathChallengeActivity.kt` — `unlockAndLaunchApp()` (satır ~662) + `onDestroy()` (satır ~742)
 
-**Durum**: [ ] Yapılacak
+**Durum**: ✅ Çözüldü — `unlockAndLaunchApp()` içinde `Thread { uploadProgress() }.start()` mevcut, `onDestroy()` içinde backup upload eklendi.
 
 ---
 

@@ -1,7 +1,9 @@
 # MathLock Google Play Yol Haritası
 
-Durum tarihi: 5 Nisan 2026
+Durum tarihi: 23 Nisan 2026
 
+> **Güncelleme (23 Nisan 2026):** Phase 1 kritik bugfix'ler tamamlandı. Progress sayımı bug'ı düzeltildi, kredi sistemi Android entegrasyonu tamamlandı, duplicate profil zaten çözülmüştü. kimi-cli migration tamamlandı.
+>
 > **Güncelleme (5 Nisan 2026):** Internal testing başarıyla tamamlandı! Uygulama Play Console'a yüklendi ve telefondan indirilip test edildi.
 >
 > **Güncelleme (25 Mart 2026 — akşam):** Kısa vadeli yol haritasının 5.1-5.4 adımları tamamlandı. `projects/mathlock-play` altında Play uyumlu ayrı proje oluşturuldu. Detaylar aşağıda.
@@ -99,12 +101,26 @@ Hedef: İlk 50 soru ücretsiz; daha fazla isteyince AI devreye girer; 10 kredi =
 | Satın alma | `BillingManager` → PurchaseToken → backend verify → kredi ekle → consume |
 | 10 kredi paketi | 10×50 = 500 AI soru + 50 ücretsiz = **550 toplam** |
 
+### ✅ Phase 1 — Kritik Bugfix'ler (23 Nisan 2026)
+
+#### 1A. Progress Sayımı Bug'ı
+- `MathChallengeActivity.onDestroy()` içinde `questionManager.uploadProgress()` backup eklendi.
+- `unlockAndLaunchApp()`'daki `Thread` + `finish()` kombinasyonunun güvenlik açığı giderildi.
+
+#### 1B. Duplicate Profil Bug'ı
+- `backend/credits/views.py` — `register_email()` içinde boş varsayılan "Çocuk" profili otomatik temizleniyor (zaten mevcuttu, doğrulandı).
+
+#### 1C. Kredi Sistemi Android Entegrasyonu
+- `CreditApiClient.kt` oluşturuldu (`useCredit()` API çağrısı).
+- `MathChallengeActivity.onSetComplete()` içinde `creditClient.useCredit()` entegre edildi.
+- `StatsTracker.buildStatsJson()` public yapıldı (kredi API'sine stats göndermek için).
+
 #### Bekleyen Entegrasyon Adımları
-1. `MathChallengeActivity.onSetComplete()` içinde `CreditManager.initBilling()` ve `useCredit()` çağrısı
-2. `StatsTracker.uploadStats()` → `MathLockApi.uploadStats()` geçişi (device_token ile)
-3. Google Play Console'da ürün ID'lerini tanımla: `kredi_1`, `kredi_5`, `kredi_10`
-4. `google-service-account.json` dosyasını VPS'e yerleştir
-5. Satın alma UI ekranı (SettingsActivity veya ayrı ShopActivity)
+1. ~~`MathChallengeActivity.onSetComplete()` içinde `useCredit()` çağrısı~~ ✅ Tamamlandı
+2. ~~`StatsTracker.uploadStats()` backend entegrasyonu~~ ✅ Tamamlandı
+3. Google Play Console'da ürün ID'lerini tanımla: `kredi_1`, `kredi_5`, `kredi_10` ⏳
+4. `google-service-account.json` dosyasını VPS'e yerleştir ⏳
+5. Satın alma UI ekranı (SettingsActivity veya ayrı ShopActivity) ⏳
 
 ### Play sürümü teknik özet
 
@@ -123,13 +139,14 @@ Hedef: İlk 50 soru ücretsiz; daha fazla isteyince AI devreye girer; 10 kredi =
 ## Bekleyen İşler
 
 ### 5.5 — Hesap ve test süreci (DNS propagasyonu sonrası)
-1. ~~DNS propagasyonunu bekle → SSL sertifikası al → web sitesini deploy et~~ ⏳
+1. ~~DNS propagasyonunu bekle → SSL sertifikası al → web sitesini deploy et~~ ✅ (mathlock.com.tr yayında)
 2. ~~Play Console hesabını ve kimlik doğrulamayı tamamla~~ ✅
 3. ~~Release keystore oluştur ve imzalı AAB üret~~ ✅ (keystore.jks, compileSdk=35, targetSdk=35)
 4. ~~Internal testing ile smoke test yap~~ ✅ (versionCode=2, internal test track yayında)
-5. Closed testing'i en az 12 tester ile başlat ⏳
-6. 14 gün continuous opt-in sürecini tamamla ⏳
-7. Production access başvurusunu yap ⏳
+5. ~~Phase 1 kritik bugfix'ler~~ ✅ (23 Nisan 2026 — progress bug, duplicate profil, kredi entegrasyonu)
+6. Closed testing'i en az 12 tester ile başlat ⏳
+7. 14 gün continuous opt-in sürecini tamamla ⏳
+8. Production access başvurusunu yap ⏳
 
 #### 5.5 Ek Notlar (5 Nisan 2026)
 - **Keystore**: `projects/mathlock-play/keystore.jks` (alias: mathlock-play)
@@ -583,14 +600,14 @@ Ancak dikkat:
 
 Yayın öncesi bunlardan biri açıksa başvuru yapılmamalı:
 
-1. Play sürümünde self-update veya APK indirme-kurma akışı varsa
-2. HTTP üzerinden veri aktarımı varsa
-3. QUERY_ALL_PACKAGES için güçlü gerekçe ve disclosure yoksa
-4. KILL_BACKGROUND_PROCESSES kullanımı sürüyorsa
-5. Gizlilik politikası ile gerçek uygulama davranışı uyuşmuyorsa
-6. Monitoring / parental control konumlandırması mağaza metninde net değilse
-7. Data safety formu eksik veya yanıltıcıysa
-8. Tester süreci kağıt üzerinde var ama gerçek engagement yoksa
+1. ~~Play sürümünde self-update veya APK indirme-kurma akışı varsa~~ ✅ Çözüldü
+2. ~~HTTP üzerinden veri aktarımı varsa~~ ✅ Çözüldü (HTTPS zorunlu)
+3. QUERY_ALL_PACKAGES için güçlü gerekçe ve disclosure yoksa ⏳ (Play Console declaration girilmeli)
+4. ~~KILL_BACKGROUND_PROCESSES kullanımı sürüyorsa~~ ✅ Çözüldü
+5. Gizlilik politikası ile gerçek uygulama davranışı uyuşmuyorsa ⏳
+6. Monitoring / parental control konumlandırması mağaza metninde net değilse ⏳
+7. Data safety formu eksik veya yanıltıcıysa ⏳
+8. Tester süreci kağıt üzerinde var ama gerçek engagement yoksa ⏳
 
 ## 9. Önerilen 30 Günlük Takvim
 
