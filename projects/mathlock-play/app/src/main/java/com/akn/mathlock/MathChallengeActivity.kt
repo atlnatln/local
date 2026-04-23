@@ -16,6 +16,7 @@ import com.akn.mathlock.util.PreferenceManager
 import com.akn.mathlock.util.QuestionManager
 import com.akn.mathlock.util.StatsTracker
 import com.akn.mathlock.util.TopicHelper
+import com.akn.mathlock.util.CreditApiClient
 
 class MathChallengeActivity : AppCompatActivity() {
 
@@ -29,6 +30,7 @@ class MathChallengeActivity : AppCompatActivity() {
     private lateinit var questionManager: QuestionManager
     private lateinit var statsTracker: StatsTracker
     private lateinit var topicHelper: TopicHelper
+    private lateinit var creditClient: CreditApiClient
 
     private var lockedPackage: String? = null
     private var isTestMode = false
@@ -79,6 +81,7 @@ class MathChallengeActivity : AppCompatActivity() {
         statsTracker = StatsTracker(this)
         statsTracker.startSession()
         topicHelper = TopicHelper(this)
+        creditClient = CreditApiClient()
 
         lockedPackage = intent.getStringExtra("locked_package")
         isTestMode = intent.getBooleanExtra("test_mode", false)
@@ -482,9 +485,10 @@ class MathChallengeActivity : AppCompatActivity() {
         binding.progressBar.max = questionManager.totalCount()
         binding.progressBar.progress = questionManager.totalCount()
 
-        // Stats yükle + sıradaki set için soruları arka planda hazırla
+        // Stats yükle + kredi kullan + sıradaki set için soruları arka planda hazırla
         Thread {
             val token = accountManager.getDeviceToken()
+            val childName = prefManager.activeChildName ?: "Çocuk"
             val uploaded = statsTracker.uploadStats(questionManager.getVersion())
             if (token != null) {
                 questionManager.uploadProgress(token)
@@ -494,6 +498,16 @@ class MathChallengeActivity : AppCompatActivity() {
                 Log.d(TAG, "Stats yüklendi, progress sıfırlandı")
             } else {
                 Log.w(TAG, "Stats yükleme başarısız, sonra tekrar denenecek")
+            }
+            // Yeni set üretmek için kredi kullan (ilk set ücretsiz)
+            if (token != null) {
+                val statsJson = statsTracker.buildStatsJson(questionManager.getVersion())
+                val creditResult = creditClient.useCredit(token, childName, statsJson)
+                if (creditResult.success) {
+                    Log.d(TAG, "Kredi kullanıldı: kalan=${creditResult.creditsRemaining}, ücretsiz=${creditResult.isFree}, set_version=${creditResult.setVersion}")
+                } else {
+                    Log.w(TAG, "Kredi kullanılamadı: ${creditResult.error}")
+                }
             }
             // Soruları şimdi sync et — VPS'te yeni set hazır olunca sessizce çeker
             questionManager.sync(token)
@@ -741,6 +755,16 @@ class MathChallengeActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         statsTracker.endSession()
+        // Activity yok olmadan önce pending progress'i son kez göndermeye çalış
+        // (unlockAndLaunchApp() içindeki Thread async çalıştığı için finish() öncesinde kaybolabilir)
+        val token = accountManager.getDeviceToken()
+        if (token != null) {
+            try {
+                questionManager.uploadProgress(token)
+            } catch (e: Exception) {
+                Log.w(TAG, "onDestroy progress upload hatası: ${e.message}")
+            }
+        }
         super.onDestroy()
     }
 }

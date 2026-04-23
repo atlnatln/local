@@ -139,7 +139,7 @@ class StatsTracker(private val context: Context) {
         }
     }
 
-    private fun buildStatsJson(questionVersion: Int): String {
+    fun buildStatsJson(questionVersion: Int): String {
         val root = JSONObject()
         root.put("questionVersion", questionVersion)
         root.put("completedAt", System.currentTimeMillis() / 1000)

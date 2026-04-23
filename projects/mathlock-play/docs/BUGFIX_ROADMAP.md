@@ -26,27 +26,16 @@ Oturum 2: onCreate'da oturum 1'in 5 pending'i gönderilir → 5 yeni soru çöz 
 
 ---
 
-## Faz 2: Email ile Kayıtta Duplicate Profil (P1 — Kritik)
+## Faz 2: Email ile Kayıtta Duplicate Profil (P1 — Kritik) ✅ ÇÖZÜLDÜ
 
 **Sorun**: Uygulama silinip tekrar yüklendiğinde, email ile kayıt olunca eski çocuk profili aktif olarak geliyor AMA ek olarak boş bir "Çocuk" profili de aktif olarak geliyor.
 
-**Kök Neden**: `register_device()` her çağrıda `ChildProfile.objects.get_or_create(device=device, name="Çocuk")` ile varsayılan profil oluşturuyor. Yeni `installation_id` → yeni `Device` → yeni "Çocuk" profili. Sonra `register_email()` eski cihazdan gerçek çocuğu (ör: "Ali") transfer ediyor. Sonuç: "Çocuk" (boş) + "Ali" (eski veriler) yan yana.
-
-**Akış (buggy)**:
-```
-1. Yeni kurulum → register_device() → yeni "Çocuk" profili oluşturulur
-2. Email kayıt → register_email() → eski "Ali" profili transfer edilir
-3. Sonuç: 2 profil ("Çocuk" boş + "Ali" verili)
-```
-
-**Fix**: `register_email()` içinde transfer sonrası, eğer email'den çocuk profilleri geldiyse boş varsayılan "Çocuk" profilini temizle.
+**Fix**: `register_email()` içinde transfer sonrası boş varsayılan "Çocuk" profili temizleniyor.
 
 **Dosyalar**:
-- `backend/credits/views.py` — `register_email()` (satır ~622)
+- `backend/credits/views.py` — `register_email()` (satır ~1150)
 
-**Bonus — UserQuestionProgress transfer eksikliği**: `register_email()` transfer bloğunda progress child filtresi yok (yeni child-based modelle uyumsuz). Burada da child FK dikkate alınmalı.
-
-**Durum**: [ ] Yapılacak
+**Durum**: ✅ Çözüldü — `transferred_children.exists()` kontrolü ile boş `name="Çocuk", total_shown=0, total_correct=0` profili otomatik siliniyor.
 
 ---
 
