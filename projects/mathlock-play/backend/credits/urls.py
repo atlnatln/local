@@ -13,6 +13,9 @@ urlpatterns = [
     path('auth/register-email/', views.register_email),
     path('questions/', views.get_questions),
     path('questions/progress/', views.update_progress),
+    # Bulmaca seviye sistemi
+    path('levels/', views.get_levels),
+    path('levels/progress/', views.update_level_progress),
     # Çocuk profili yönetimi
     path('children/', views.children_list),
     path('children/detail/', views.children_detail),

@@ -1,6 +1,6 @@
 # Sayı Yolculuğu — AI Seviye Üretim Kuralları
 
-> Bu dosya `ai-generate-levels.sh` tarafından Copilot CLI'a (claude-haiku-4.5) verilir.
+> Bu dosya `ai-generate-levels.sh` tarafından kimi-cli'ye (kimi-for-coding) verilir.
 > Seviye üretim algoritmasını, JSON şemasını ve doğrulama kurallarını tanımlar.
 
 ---

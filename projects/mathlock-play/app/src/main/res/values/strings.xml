@@ -17,7 +17,7 @@
     <string name="challenge_picker_subtitle">Bir oyun seç ve kilidi aç!</string>
     <string name="pick_math">🧮 Matematik Soruları</string>
     <string name="pick_guess">🎯 Sayı Tahmin Oyunu</string>
-    <string name="pick_parent">🔑 Ebeveyn Girişi</string>
+    <string name="pick_parent">🫆 Ebeveyn Girişi</string>
 
     <!-- Matematik -->
     <string name="math_title">🧮 Matematik Soruları</string>
@@ -51,7 +51,7 @@
     <string name="guess_invalid">⚠️ 0–%1$d arası bir sayı gir!</string>
 
     <!-- Ebeveyn Kimlik Doğrulama -->
-    <string name="parent_auth_title">🔑 Ebeveyn Girişi</string>
+    <string name="parent_auth_title">🫆 Ebeveyn Girişi</string>
     <string name="parent_auth_subtitle">Kimliğinizi doğrulayın</string>
     <string name="btn_fingerprint">Parmak İzi ile Gir</string>
     <string name="btn_pin_login">PIN ile Gir</string>
@@ -75,6 +75,7 @@
     <string name="pin_too_short">⚠️ PIN en az 4 haneli olmalı!</string>
     <string name="settings_math_section">Matematik Ayarları</string>
     <string name="settings_guess_max">Sayı Oyunu Üst Sınırı: %1$d</string>
+    <string name="settings_guess_rounds">Sayı Bul: Kaç tur çözülmeli: %1$d tur</string>
     <string name="settings_unlock_duration_title">⏱️ Kilit Açma Süresi</string>
     <string name="settings_unlock_duration_unlimited">Sınırsız (süre yok)</string>
     <string name="settings_unlock_duration_minutes">%1$d dakika</string>

@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.utils import timezone
 
 
 class Device(models.Model):
@@ -55,8 +56,15 @@ class ChildProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    _VALID_EDUCATION_PERIODS = {'okul_oncesi', 'sinif_1', 'sinif_2', 'sinif_3', 'sinif_4'}
+
     class Meta:
         unique_together = ('device', 'name')
+
+    def save(self, *args, **kwargs):
+        if self.education_period not in self._VALID_EDUCATION_PERIODS:
+            self.education_period = 'sinif_2'
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} [{self.get_education_period_display()}] ({self.device})"
@@ -165,6 +173,56 @@ class CreditPackage(models.Model):
 
     def __str__(self):
         return f"{self.display_name} ({self.product_id}) — {self.credits} kredi"
+
+
+class LevelSet(models.Model):
+    """Çocuk için AI tarafından üretilen kişisel seviye seti (12 bulmaca)."""
+    child = models.ForeignKey(ChildProfile, on_delete=models.CASCADE, related_name='level_sets')
+    version = models.IntegerField()
+    levels_json = models.JSONField(help_text="12 seviyeden oluşan set")
+    is_ai_generated = models.BooleanField(default=False)
+    credit_used = models.BooleanField(default=False, help_text="Bu set için kredi harcandı mı")
+    completed_level_ids = models.JSONField(
+        default=list, blank=True,
+        help_text="Tamamlanan seviye ID'leri"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-version']
+        unique_together = ('child', 'version')
+
+    def __str__(self):
+        ai = "🤖" if self.is_ai_generated else "📦"
+        completed = len(self.completed_level_ids or [])
+        total = len(self.levels_json or [])
+        return f"{ai} v{self.version} ({self.child.name}) — {completed}/{total}"
+
+
+class RenewalLock(models.Model):
+    """
+    Otomatik içerik yenileme kilidi — idempotency garantisi.
+
+    Aynı çocuk için eşzamanlı yenileme başlatma riskini ortadan kaldırır.
+    Örnek: kullanıcı "tüm seviyeler bitti" + "kredi yükledi" sinyalleri aynı anda geldiğinde
+    yalnızca biri kredi düşer, diğeri kilitli görüp gerisiz döner.
+
+    content_type: 'questions' | 'levels'
+    TTL: 15 dakika (generation timeout'dan fazla) — sunucu çökerse otomatik temizlenir.
+    """
+    child = models.ForeignKey(
+        ChildProfile, on_delete=models.CASCADE, related_name='renewal_locks'
+    )
+    content_type = models.CharField(max_length=20)
+    expires_at = models.DateTimeField(help_text="Bu süre geçince kilit geçersiz sayılır")
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('child', 'content_type')
+        indexes = [models.Index(fields=['expires_at'])]
+
+    def __str__(self):
+        return f"RenewalLock({self.content_type}) — {self.child.name} until {self.expires_at}"
 
 
 class AiQueryRecord(models.Model):

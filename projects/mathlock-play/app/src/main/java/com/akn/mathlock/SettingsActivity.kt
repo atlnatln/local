@@ -144,6 +144,11 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderGuessMax.value = guessMax.coerceIn(10f, 500f)
         binding.tvGuessMax.text = getString(R.string.settings_guess_max, guessMax.toInt())
 
+        // Sayı Bul tur sayısı
+        val guessRounds = prefManager.guessRequiredRounds.toFloat()
+        binding.sliderGuessRounds.value = guessRounds.coerceIn(1f, 10f)
+        binding.tvGuessRounds.text = getString(R.string.settings_guess_rounds, guessRounds.toInt())
+
         // Kilit açma süresi
         val duration = prefManager.unlockDurationMinutes.toFloat().coerceIn(0f, 60f)
         binding.sliderUnlockDuration.value = duration
@@ -208,6 +213,13 @@ class SettingsActivity : AppCompatActivity() {
             val max = value.toInt()
             prefManager.guessMaxNumber = max
             binding.tvGuessMax.text = getString(R.string.settings_guess_max, max)
+        }
+
+        // Sayı Bul tur sayısı slider
+        binding.sliderGuessRounds.addOnChangeListener { _, value, _ ->
+            val rounds = value.toInt()
+            prefManager.guessRequiredRounds = rounds
+            binding.tvGuessRounds.text = getString(R.string.settings_guess_rounds, rounds)
         }
 
         // Kilit açma süresi slider

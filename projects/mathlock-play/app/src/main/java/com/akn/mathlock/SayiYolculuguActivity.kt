@@ -9,6 +9,9 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.service.AppLockService
+import com.akn.mathlock.util.AccountManager
+import com.akn.mathlock.util.PreferenceManager
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -17,7 +20,7 @@ class SayiYolculuguActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "SayiYolculugu"
-        private const val LEVELS_URL = "https://mathlock.com.tr/mathlock/data/levels.json"
+        private const val API_BASE = "https://mathlock.com.tr/api/mathlock"
         private const val PREFS_NAME = "sayi_yolculugu"
         private const val KEY_CACHED_LEVELS = "cached_levels"
         private const val CONNECT_TIMEOUT = 5000
@@ -30,6 +33,8 @@ class SayiYolculuguActivity : AppCompatActivity() {
     private var isTestMode = false
     private var timerExpired = false
     private var levelsCompleted = 0
+    private var currentSetId: Int? = null
+    private val completedLevelIds = mutableSetOf<Int>()
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,33 +99,61 @@ class SayiYolculuguActivity : AppCompatActivity() {
     }
 
     private fun fetchLevels(): String? {
-        // 1. VPS'ten indir
-        try {
-            val url = URL(LEVELS_URL)
-            val conn = url.openConnection() as HttpURLConnection
-            conn.connectTimeout = CONNECT_TIMEOUT
-            conn.readTimeout = READ_TIMEOUT
-            conn.requestMethod = "GET"
+        val accountManager = AccountManager(this)
+        val prefManager = PreferenceManager(this)
+        val token = accountManager.getDeviceToken()
+        val childId = prefManager.activeChildId
 
-            if (conn.responseCode == 200) {
-                val json = conn.inputStream.bufferedReader().readText()
+        // 1. API'den çocuğa özel seviye ve ilerleme bilgisini al
+        if (!token.isNullOrBlank()) {
+            try {
+                var apiUrl = "$API_BASE/levels/?device_token=${token.trim()}"
+                if (childId > 0) apiUrl += "&child_id=$childId"
+                val url = URL(apiUrl)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.connectTimeout = CONNECT_TIMEOUT
+                conn.readTimeout = READ_TIMEOUT
+                conn.requestMethod = "GET"
+
+                if (conn.responseCode == 200) {
+                    val json = conn.inputStream.bufferedReader().readText()
+                    conn.disconnect()
+                    // set_id ve completed_level_ids'i sakla
+                    try {
+                        val root = JSONObject(json)
+                        currentSetId = root.optInt("set_id", 0).takeIf { it > 0 }
+                        val idsArr = root.optJSONArray("completed_level_ids")
+                        if (idsArr != null) {
+                            completedLevelIds.clear()
+                            for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
+                        }
+                    } catch (_: Exception) {}
+                    // Cache'e yaz ve döndür
+                    getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                        .edit().putString(KEY_CACHED_LEVELS, json).apply()
+                    Log.d(TAG, "API'den seviyeler indirildi (set=$currentSetId, tamamlanan=${completedLevelIds.size})")
+                    return json
+                }
                 conn.disconnect()
-                // Cache'e yaz
-                getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                    .edit().putString(KEY_CACHED_LEVELS, json).apply()
-                Log.d(TAG, "VPS'ten seviyeler indirildi")
-                return json
+            } catch (e: Exception) {
+                Log.w(TAG, "API bağlantısı başarısız: ${e.message}")
             }
-            conn.disconnect()
-        } catch (e: Exception) {
-            Log.w(TAG, "VPS bağlantısı başarısız: ${e.message}")
         }
 
         // 2. Cache'ten oku
         val cached = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
             .getString(KEY_CACHED_LEVELS, null)
         if (cached != null) {
-            Log.d(TAG, "Cache'ten seviyeler yüklendi")
+            try {
+                val root = JSONObject(cached)
+                currentSetId = root.optInt("set_id", 0).takeIf { it > 0 }
+                val idsArr = root.optJSONArray("completed_level_ids")
+                if (idsArr != null) {
+                    completedLevelIds.clear()
+                    for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
+                }
+            } catch (_: Exception) {}
+            Log.d(TAG, "Cache'ten seviyeler yüklendi (set=$currentSetId, tamamlanan=${completedLevelIds.size})")
             return cached
         }
 
@@ -173,7 +206,14 @@ class SayiYolculuguActivity : AppCompatActivity() {
                     when (event) {
                         "levelComplete" -> {
                             levelsCompleted++
+                            val levelId = data.optInt("levelId", 0)
                             Log.d(TAG, "Seviye tamamlandı: ${data.optInt("levelId")}, yıldız: ${data.optInt("stars")}")
+                            if (levelId > 0) {
+                                completedLevelIds.add(levelId)
+                                if (!isPracticeMode && !isTestMode) {
+                                    uploadLevelProgress(listOf(levelId))
+                                }
+                            }
 
                             // Kilit modunda: belirli sayıda seviye tamamlanınca unlock
                             if (!isPracticeMode && !isTestMode) {
@@ -185,7 +225,9 @@ class SayiYolculuguActivity : AppCompatActivity() {
                         }
                         "allComplete" -> {
                             Log.d(TAG, "Tüm seviyeler tamamlandı: ${data.optInt("totalStars")}/${data.optInt("maxStars")} yıldız")
-                            uploadStats(data)
+                            if (!isPracticeMode && !isTestMode) {
+                                uploadLevelProgress(completedLevelIds.toList())
+                            }
                         }
                         "finish" -> {
                             if (isPracticeMode || isTestMode) {
@@ -202,14 +244,36 @@ class SayiYolculuguActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadStats(data: JSONObject) {
+    private fun uploadLevelProgress(newlyCompletedIds: List<Int>) {
         Thread {
             try {
-                val statsUrl = URL("https://mathlock.com.tr/mathlock/data/level-stats.json")
-                // TODO: POST endpoint oluşturulunca aktifleştir
-                Log.d(TAG, "Stats upload placeholder: ${data.toString().take(200)}")
+                val accountManager = AccountManager(this)
+                val prefManager = PreferenceManager(this)
+                val token = accountManager.getDeviceToken() ?: return@Thread
+                val childId = prefManager.activeChildId
+
+                val url = URL("$API_BASE/levels/progress/")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+                conn.doOutput = true
+                conn.connectTimeout = CONNECT_TIMEOUT
+                conn.readTimeout = READ_TIMEOUT
+
+                val body = JSONObject().apply {
+                    put("device_token", token)
+                    if (childId > 0) put("child_id", childId)
+                    currentSetId?.let { put("set_id", it) }
+                    val arr = JSONArray()
+                    completedLevelIds.forEach { arr.put(it) }
+                    put("completed_level_ids", arr)
+                }
+                conn.outputStream.bufferedWriter().use { it.write(body.toString()) }
+                val code = conn.responseCode
+                conn.disconnect()
+                Log.d(TAG, "Level progress gönderildi (kod=$code, tamamlanan=${completedLevelIds.size})")
             } catch (e: Exception) {
-                Log.w(TAG, "Stats upload başarısız: ${e.message}")
+                Log.w(TAG, "Level progress gönderme hatası: ${e.message}")
             }
         }.start()
     }

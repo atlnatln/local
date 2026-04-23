@@ -50,7 +50,7 @@ class NumberGuessActivity : AppCompatActivity() {
         lockedPackage = intent.getStringExtra("locked_package")
         isTestMode = intent.getBooleanExtra("test_mode", false)
         isPracticeMode = intent.getBooleanExtra("practice_mode", false)
-        requiredCount = prefManager.passScore.coerceAtLeast(1)
+        requiredCount = prefManager.guessRequiredRounds.coerceAtLeast(1)
         sessionSolvedCount = 0
 
         if (isPracticeMode) {

@@ -384,12 +384,34 @@ function initGame(levelsJson) {
   try {
     const data = typeof levelsJson === 'string' ? JSON.parse(levelsJson) : levelsJson;
     levels = data.levels || data;
+    const completedIds = data.completed_level_ids || [];
+
+    state.levelIdx = 0;
+    state.progress = {};
+
+    // Tamamlanan seviyeleri state.progress'e yükle ve ilk eksik seviyeyi bul
+    if (completedIds.length > 0) {
+      levels.forEach(function(lv, i) {
+        var lvId = lv.id != null ? lv.id : (i + 1);
+        if (completedIds.indexOf(lvId) !== -1) {
+          state.progress[i] = { completed: true, stars: 1 };
+        }
+      });
+      // İlk tamamlanmamış seviyeye atla
+      var firstUncompleted = levels.length; // varsayılan: hepsi tamamlandı
+      for (var i = 0; i < levels.length; i++) {
+        if (!state.progress[i] || !state.progress[i].completed) {
+          firstUncompleted = i;
+          break;
+        }
+      }
+      // Hepsi tamamlandıysa döngüyü sıfırla (yeni set bekleniyor)
+      state.levelIdx = firstUncompleted < levels.length ? firstUncompleted : 0;
+    }
   } catch(e) {
     levels = [];
   }
   if (levels.length === 0) return;
-  state.levelIdx = 0;
-  state.progress = {};
   loadLevel();
 }
 

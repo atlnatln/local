@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 MathLock — questions.json ve topics.json doğrulama scripti.
-Copilot'un ürettiği soruların geçerliliğini kontrol eder.
+kimi-cli'nin ürettiği soruların geçerliliğini kontrol eder.
 
 Kullanım:
     python3 validate-questions.py                # her iki dosyayı kontrol et
@@ -343,7 +343,7 @@ def validate_topics():
 
 
 def main():
-    global ACTIVE_PERIOD
+    global ACTIVE_PERIOD, DATA_DIR, QUESTIONS_FILE, TOPICS_FILE
     check_q = True
     check_t = True
 
@@ -361,6 +361,13 @@ def main():
                 print(f"   Geçerli dönemler: {', '.join(PERIOD_CONFIG.keys())}")
                 sys.exit(1)
             ACTIVE_PERIOD = period
+
+    # --data-dir argümanı (çakışmasız çocuk-bazlı üretim için)
+    for i, arg in enumerate(sys.argv):
+        if arg == "--data-dir" and i + 1 < len(sys.argv):
+            DATA_DIR = Path(sys.argv[i + 1])
+            QUESTIONS_FILE = DATA_DIR / "questions.json"
+            TOPICS_FILE = DATA_DIR / "topics.json"
 
     print("🔍 MathLock Doğrulama Başlıyor...\n")
 

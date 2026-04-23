@@ -24,7 +24,7 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
    │   └─ stats.json varsa → ai-generate.sh --vps-mode
    ├─ Local monitor: mathlock-monitor.sh (systemd user service)
    │   └─ VPS'teki stats izler → ai-generate.sh yerel
-   └─ Copilot CLI: AGENTS.md kurallarıyla 50 soru üretir
+   └─ kimi-cli: AGENTS.md kurallarıyla 50 soru üretir
 ```
 
 ### VPS Dizin Yapısı:

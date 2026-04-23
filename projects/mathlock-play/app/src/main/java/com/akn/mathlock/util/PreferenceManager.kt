@@ -26,6 +26,7 @@ class PreferenceManager(context: Context) {
         private const val KEY_PUZZLE_ENABLED = "challenge_puzzle_enabled"
         private const val KEY_MATH_ENABLED  = "challenge_math_enabled"
         private const val KEY_GUESS_ENABLED  = "challenge_guess_enabled"
+        private const val KEY_GUESS_REQUIRED_ROUNDS = "guess_required_rounds"
         private const val KEY_ROBOTOPIA_ENABLED = "challenge_robotopia_enabled"
         private const val KEY_ACTIVE_CHILD_ID = "active_child_id"
         private const val KEY_ACTIVE_CHILD_NAME = "active_child_name"
@@ -33,6 +34,7 @@ class PreferenceManager(context: Context) {
 
         private const val DEFAULT_PASS_SCORE = 3
         private const val DEFAULT_GUESS_MAX = 100
+        private const val DEFAULT_GUESS_REQUIRED_ROUNDS = 1
 
         const val EXPIRE_ACTION_RELOCK = "relock"
         const val EXPIRE_ACTION_CLOSE = "close"
@@ -103,6 +105,11 @@ class PreferenceManager(context: Context) {
     var guessMaxNumber: Int
         get() = prefs.getInt(KEY_GUESS_MAX, DEFAULT_GUESS_MAX)
         set(value) = prefs.edit().putInt(KEY_GUESS_MAX, value).apply()
+
+    // Kaç tur doğru tahmin yapılması gerektiğini belirler (1-10). Ebeveyn ayarlar.
+    var guessRequiredRounds: Int
+        get() = prefs.getInt(KEY_GUESS_REQUIRED_ROUNDS, DEFAULT_GUESS_REQUIRED_ROUNDS).coerceIn(1, 10)
+        set(value) = prefs.edit().putInt(KEY_GUESS_REQUIRED_ROUNDS, value.coerceIn(1, 10)).apply()
 
     // 0 = sınırsız, diğerleri dakika cinsinden
     var unlockDurationMinutes: Int

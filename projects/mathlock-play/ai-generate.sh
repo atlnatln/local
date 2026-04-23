@@ -4,7 +4,7 @@
 #
 # Bu script 50 soru çözüldükten sonra otomatik tetiklenir:
 #   1. stats.json analiz edilir
-#   2. Copilot (claude-haiku-4.5) yeni 50 soru + konu anlatımları üretir
+#   2. kimi-cli (kimi-for-coding) yeni 50 soru + konu anlatımları üretir
 #   3. validate-questions.py ile doğrulanır (başarısızsa tekrar dener)
 #   4. VPS nginx'e data sync edilir (mathlock.com.tr)
 #   5. Telefon yeni soruları indirir
@@ -51,23 +51,32 @@ while [[ $# -gt 0 ]]; do
         --skip-sync)  SKIP_SYNC=true; shift ;;
         --vps-mode)   VPS_MODE=true; shift ;;
         --period)     EDUCATION_PERIOD="$2"; shift 2 ;;
+        --data-dir)   DATA_DIR="$2"; shift 2 ;;
         --help)
-            echo "Kullanım: $0 [--dry-run] [--skip-sync] [--vps-mode] [--period <dönem>]"
-            echo "  --dry-run    Analiz yap ama Copilot çalıştırma"
+            echo "Kullanım: $0 [--dry-run] [--skip-sync] [--vps-mode] [--period <dönem>] [--data-dir <dizin>]"
+            echo "  --dry-run    Analiz yap ama kimi-cli çalıştırma"
             echo "  --skip-sync  VPS sync atla"
             echo "  --vps-mode   VPS'te çalıştır (scp yok, .env'den token)"
             echo "  --period     Eğitim dönemi: okul_oncesi|sinif_1|sinif_2|sinif_3|sinif_4"
+            echo "  --data-dir   stats/questions yazılacak dizin (varsayılan: ./data)"
             exit 0
             ;;
         *) echo "Bilinmeyen: $1"; exit 1 ;;
     esac
 done
 
+# --data-dir sonrası dosya yollarını yeniden türet (çakışmasız çocuk-bazlı üretim için)
+STATS_FILE="$DATA_DIR/stats.json"
+QUESTIONS_FILE="$DATA_DIR/questions.json"
+TOPICS_FILE="$DATA_DIR/topics.json"
+REPORT_FILE="$DATA_DIR/report.json"
+HISTORY_DIR="$DATA_DIR/history"
+
 # Eğitim dönemi → agent dosyası ve soru sayısı eşlemesi
 case "$EDUCATION_PERIOD" in
     okul_oncesi) AGENT_FILE="agents/questions-okul-oncesi.agents.md"; EXPECTED_QUESTIONS=30 ;;
     sinif_1)     AGENT_FILE="agents/questions-sinif-1.agents.md"; EXPECTED_QUESTIONS=40 ;;
-    sinif_2)     AGENT_FILE="agents/questions.agents.md"; EXPECTED_QUESTIONS=50 ;;
+    sinif_2)     AGENT_FILE="agents/questions-sinif-2.agents.md"; EXPECTED_QUESTIONS=50 ;;
     sinif_3)     AGENT_FILE="agents/questions-sinif-3.agents.md"; EXPECTED_QUESTIONS=50 ;;
     sinif_4)     AGENT_FILE="agents/questions-sinif-4.agents.md"; EXPECTED_QUESTIONS=50 ;;
     *)
@@ -82,17 +91,8 @@ if [ ! -f "$AGENT_FILE" ]; then
     exit 1
 fi
 
-# VPS modunda: ops-bot .env'den GITHUB_TOKEN yükle
-if [ "$VPS_MODE" = true ]; then
-    ENV_FILE="/home/akn/vps/ops-bot/.env"
-    if [ -f "$ENV_FILE" ]; then
-        set -a; source "$ENV_FILE"; set +a
-    fi
-    if [ -z "${GITHUB_TOKEN:-}" ] && [ -z "${GH_TOKEN:-}" ]; then
-        echo -e "${RED}[HATA]${NC} GITHUB_TOKEN bulunamadı — ops-bot/.env kontrol edin"
-        exit 1
-    fi
-fi
+# kimi-cli OAuth ile çalışır; env token gerekmez.
+# ~/.kimi/credentials/ altındaki login bilgisi kullanılır.
 
 echo -e "${CYAN}╔═══════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║    🧠 MathLock Play AI — Otomatik Soru Üretimi       ║${NC}"
@@ -163,25 +163,25 @@ fi
 # Son 20 arşiv dosyası kalsın
 find "$HISTORY_DIR" -name "*.json" -type f | sort | head -n -20 | xargs -r rm -f
 
-# ─── 3. Copilot Çalıştır ────────────────────────────────────────────────────
-echo -e "\n${YELLOW}[3/5] 🤖 Copilot ile yeni sorular üretiliyor...${NC}"
+# ─── 3. kimi-cli Çalıştır ───────────────────────────────────────────────────
+echo -e "\n${YELLOW}[3/5] 🤖 kimi-cli ile yeni sorular üretiliyor...${NC}"
 
-# Copilot CLI, CWD'deki AGENTS.md dosyasını otomatik okur — swap ile yerleştiriyoruz
+# kimi-cli, CWD'deki AGENTS.md dosyasını otomatik okur — swap ile yerleştiriyoruz
 agents_swap_in "$AGENT_FILE"
 
 PROMPT="AGENTS.md dosyasındaki tüm kuralları uygula.
 
 ADIMLAR:
-1. data/stats.json oku (varsa) — çocuğun performansını analiz et
-2. data/questions.json oku — mevcut version numarasını al
-3. data/topics.json oku — mevcut konu anlatımlarını gör
-4. Yeni ${EXPECTED_QUESTIONS} soru üret → data/questions.json'a yaz (üzerine yaz)
-5. Konu anlatımlarını güncelle → data/topics.json'a yaz (zayıf alanları detaylandır)
-6. Performans raporu üret → data/report.json'a yaz (AGENTS.md §14'e göre)
+1. ${STATS_FILE} oku (varsa) — çocuğun performansını analiz et
+2. ${QUESTIONS_FILE} oku — mevcut version numarasını al
+3. ${TOPICS_FILE} oku — mevcut konu anlatımlarını gör
+4. Yeni ${EXPECTED_QUESTIONS} soru üret → ${QUESTIONS_FILE} dosyasına yaz (üzerine yaz)
+5. Konu anlatımlarını güncelle → ${TOPICS_FILE} dosyasına yaz (zayıf alanları detaylandır)
+6. Performans raporu üret → ${REPORT_FILE} dosyasına yaz (AGENTS.md §14'e göre)
 7. Analiz raporunu stdout'a yazdır
 
 KRİTİK KURALLAR:
-- Sadece data/questions.json, data/topics.json ve data/report.json değiştir, başka dosyaya dokunma
+- Sadece ${QUESTIONS_FILE}, ${TOPICS_FILE} ve ${REPORT_FILE} değiştir, başka dosyaya dokunma
 - Tam ${EXPECTED_QUESTIONS} soru, her cevap doğru hesaplanmış
 - version = mevcut version + 1
 - Cevaplar negatif olamaz
@@ -198,23 +198,24 @@ while [ $ATTEMPT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
     ATTEMPT=$((ATTEMPT + 1))
     echo -e "\n${CYAN}[Deneme ${ATTEMPT}/${MAX_RETRIES}]${NC}"
 
-    # Copilot CLI çalıştır
-    COPILOT_BIN="$(command -v copilot 2>/dev/null || echo "$HOME/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/copilot")"
-    if [ ! -x "$COPILOT_BIN" ]; then
-        echo -e "${RED}[HATA]${NC} Copilot CLI bulunamadı!"
+    # kimi-cli çalıştır (VPS'te ~/.local/bin/uv tool install konumu)
+    export PATH="$HOME/.local/bin:$PATH"
+    KIMI_BIN="$(command -v kimi 2>/dev/null)"
+    if [ ! -x "$KIMI_BIN" ]; then
+        echo -e "${RED}[HATA]${NC} kimi-cli bulunamadı!"
         exit 1
     fi
-    "$COPILOT_BIN" -p "$PROMPT" -s --no-ask-user --yolo --model claude-haiku-4.5 2>&1
+    "$KIMI_BIN" -p "$PROMPT" --print --final-message-only --model kimi-code/kimi-for-coding 2>&1
 
     # ─── 4. Doğrulama ───────────────────────────────────────────────────────
     echo -e "\n${YELLOW}[4/5] 🔍 Doğrulama çalıştırılıyor...${NC}"
-    if python3 "$VALIDATOR" --period "$EDUCATION_PERIOD"; then
+    if python3 "$VALIDATOR" --period "$EDUCATION_PERIOD" --data-dir "$DATA_DIR"; then
         SUCCESS=true
         echo -e "${GREEN}[OK]${NC} Doğrulama başarılı!"
     else
         echo -e "${RED}[HATA]${NC} Doğrulama başarısız (deneme ${ATTEMPT}/${MAX_RETRIES})"
         if [ $ATTEMPT -lt $MAX_RETRIES ]; then
-            echo -e "${YELLOW}[TEKRAR]${NC} Copilot tekrar çalıştırılacak..."
+            echo -e "${YELLOW}[TEKRAR]${NC} kimi-cli tekrar çalıştırılacak..."
             # Arşivden geri yükle
             if [ -f "$HISTORY_DIR/questions_v${CURRENT_VERSION}_${TIMESTAMP}.json" ]; then
                 cp "$HISTORY_DIR/questions_v${CURRENT_VERSION}_${TIMESTAMP}.json" "$QUESTIONS_FILE"

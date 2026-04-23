@@ -111,9 +111,16 @@ class QuestionManager(private val context: Context) {
     private fun loadFromCache(): Boolean {
         val cached = prefs.getString(cacheKey(), null)
         if (cached != null && parseApiResponse(cached)) {
+            // Bekleyen çözüm ID'lerini cache'deki veriye uygula
+            val pending = getPendingSolvedIds()
+            if (pending.isNotEmpty()) {
+                _allQuestions = _allQuestions.map { q ->
+                    if (q.id in pending) q.copy(solved = true) else q
+                }
+            }
             buildRotationQueue()
             _isJsonMode = true
-            Log.d(TAG, "Cache'ten yüklendi: ${rotationQueue.size} soru")
+            Log.d(TAG, "Cache'ten yüklendi: ${rotationQueue.size} soru (pending=${pending.size})")
             return true
         }
         _isJsonMode = false

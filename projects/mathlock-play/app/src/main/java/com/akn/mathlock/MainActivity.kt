@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // Ebeveyn erişim butonu (🔑) → parmak izi doğrulama doğrudan bu ekranda
+        // Ebeveyn erişim butonu (🫆) → parmak izi doğrulama doğrudan bu ekranda
         binding.btnParentAccess.setOnClickListener {
             showParentBiometricAuth()
         }

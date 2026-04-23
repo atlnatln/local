@@ -61,7 +61,7 @@ Bu proje, MathLock uygulamasının Google Play Store'a uyumlu sürümüdür.
 - **Kademeli zorluk**: 5 zorluk seviyesi, çocuğun performansına göre ayarlanır
 - **İpucu sistemi**: Yanlış cevapta önce ipucu, sonra konu anlatımı gösterilir
 - **İstatistik takibi**: Her cevap kaydedilir, 50 soru tamamlanınca VPS'e yüklenir
-- **AI soru üretimi**: Copilot (claude-haiku-4.5) çocuğun performansına göre yeni set üretir
+- **AI soru üretimi**: kimi-cli (kimi-for-coding) çocuğun performansına göre yeni set üretir
 - **Otomatik döngü**: Çöz → istatistik yükle → AI yeni set üret → telefon indir
 - Hedef seviye: İlkokul 2. sınıf
 
@@ -123,7 +123,7 @@ stats.json yükle              ──→   performans verisi
 
                                     ai-generate.sh çalışır:
                                     ├─ stats analiz et
-                                    ├─ Copilot yeni 50 soru üret
+                                    ├─ kimi-cli yeni 50 soru üret
                                     ├─ validate-questions.py doğrula
                                     └─ questions.json güncelle
 
@@ -179,7 +179,7 @@ data/                            # AI soru sistemi verileri
 ├── topics.json                  # Konu anlatımları
 └── history/                     # Arşiv (eski setler + stats)
 
-AGENTS.md                        # Copilot soru üretim kuralları
+AGENTS.md                        # kimi-cli soru üretim kuralları
 ai-generate.sh                   # AI pipeline: üret → doğrula → sync
 validate-questions.py            # JSON doğrulama
 deploy.sh                        # Build + OTA deploy
@@ -195,8 +195,8 @@ deploy.sh                        # Build + OTA deploy
 - **Cooldown:** Kilit açıldıktan sonra 30 saniye tekrar kilitleme yok
 
 ### AI Soru Pipeline
-- **Araç:** GitHub Copilot CLI (`gh copilot suggest --yolo`)
-- **Model:** claude-haiku-4.5
+- **Araç:** kimi-cli (`kimi -p "..." --print --final-message-only`)
+- **Model:** kimi-code/kimi-for-coding (Kimi-k2.6)
 - **Kural dosyası:** `AGENTS.md` — sınıf seviyesi, soru tipleri, zorluk aralığı
 - **Doğrulama:** `validate-questions.py` — şema, matematik doğruluğu, sınırlar
 - **Otomasyon:** `ai-generate.sh` — üret → doğrula → retry → VPS sync → stats temizle

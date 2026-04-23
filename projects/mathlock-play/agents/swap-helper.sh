@@ -2,15 +2,15 @@
 # ============================================================================
 # AGENTS.md Swap Helper — mathlock-play scriptleri için
 #
-# copilot CLI her zaman CWD'deki AGENTS.md dosyasını okur.
+# kimi-cli her zaman CWD'deki AGENTS.md dosyasını okur.
 # Birden fazla ajan kullandığımız için (matematik soruları + bulmaca seviyeleri)
 # her script kendi ajan dosyasını geçici olarak AGENTS.md'ye kopyalar,
-# copilot'u çalıştırır, sonra temizler/geri yükler.
+# kimi-cli'yi çalıştırır, sonra temizler/geri yükler.
 #
 # Kullanım (source ile):
 #   source agents/swap-helper.sh
 #   agents_swap_in "agents/questions.agents.md"
-#   # ... copilot çalıştır ...
+#   # ... kimi-cli çalıştır ...
 #   agents_swap_out
 #
 # NOT: Eşzamanlı çalışma koruması: lockfile pattern.

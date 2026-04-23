@@ -302,7 +302,7 @@ docker compose exec mathlock-backend python manage.py migrate --no-input
 Her soru seti tamamlandığında (50 soru çözüldüğünde) AI sadece yeni sorular değil, bir **performans raporu** da üretir.
 
 ```
-ai-generate.sh çalışırken → Copilot CLI → questions.json + report.json
+ai-generate.sh çalışırken → kimi-cli → questions.json + report.json
 ```
 
 ### 6.2 Rapor Formatı

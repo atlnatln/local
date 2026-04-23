@@ -398,6 +398,29 @@
                     android:background="#E0E0E0"
                     android:layout_marginBottom="8dp" />
 
+                <!-- Sayı Bul: Kaç tur -->
+                <TextView
+                    android:id="@+id/tvGuessRounds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderGuessRounds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="1"
+                    android:valueTo="10"
+                    android:stepSize="1" />
+
+                <!-- Ayırıcı -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"
+                    android:layout_marginBottom="8dp" />
+
                 <!-- Kilit Açma Süresi -->
                 <TextView
                     android:id="@+id/tvUnlockDuration"
@@ -468,7 +491,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🔑 Ebeveyn Girişi"
+                    android:text="🫆 Ebeveyn Girişi"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"

@@ -334,7 +334,7 @@
             android:id="@+id/btnParentAccess"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🔑"
+            android:text="🫆"
             android:textSize="22sp"
             android:alpha="0.35"
             android:layout_marginTop="8dp"

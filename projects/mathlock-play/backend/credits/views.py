@@ -2,19 +2,25 @@ import json
 import logging
 import re
 import subprocess
+import threading
 import uuid
+import tempfile
+import shutil
+from datetime import timedelta
 from pathlib import Path
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
 from .models import (ChildProfile, CreditBalance, CreditPackage,
-                     Device, PurchaseRecord, Question, QuestionSet, UserQuestionProgress)
+                     Device, LevelSet, PurchaseRecord, Question, QuestionSet,
+                     RenewalLock, UserQuestionProgress)
 from .google_play import verify_purchase
 
 logger = logging.getLogger(__name__)
@@ -31,13 +37,21 @@ def _sanitize_child_name(name: str) -> str:
     return name or 'Çocuk'
 
 
-# ─── Soru Üretimi (Copilot CLI + AGENTS.md) ─────────────────────────────────
+# ─── Soru Üretimi (kimi-cli + AGENTS.md) ──────────────────────────────────
 
 # Proje dizini: backend/ → üst dizin = mathlock-play/
 _PROJECT_DIR = Path(settings.BASE_DIR).parent
 _DATA_DIR = _PROJECT_DIR / 'data'
 _GENERATE_SCRIPT = _PROJECT_DIR / 'ai-generate.sh'
 _GENERATE_TIMEOUT = 180  # saniye
+
+# Bulmaca seviye scripti
+_GENERATE_LEVELS_SCRIPT = _PROJECT_DIR / 'ai-generate-levels.sh'
+_LEVELS_FILE = _DATA_DIR / 'levels.json'
+_LEVELS_COUNT = 12  # Her sette 12 seviye
+
+# Yenileme kilidi TTL: 15 dakika (generation timeout 3 dk + tampon)
+_RENEWAL_LOCK_TTL = 15 * 60  # saniye
 
 # Dönem bazlı soru sayıları
 _QUESTION_COUNTS = {
@@ -51,15 +65,18 @@ _QUESTION_COUNTS = {
 _VALID_EDUCATION_PERIODS = set(_QUESTION_COUNTS.keys())
 
 
-def _generate_via_copilot(child_stats: dict, education_period: str = 'sinif_2') -> list:
+def _generate_via_kimi(child_stats: dict, education_period: str = 'sinif_2') -> list:
     """
-    ai-generate.sh + AGENTS.md ile Copilot CLI kullanarak soru üret.
+    ai-generate.sh + AGENTS.md ile kimi-cli kullanarak soru üret.
+
+    Her çocuk için izole geçici dizin kullanır — eşzamanlı üretimlerde dosya çakışması olmaz.
 
     Akış:
-      1. child_stats → data/stats.json yaz
-      2. ai-generate.sh --vps-mode --skip-sync --period <dönem> çalıştır
-      3. data/questions.json oku
-      4. Soruları döndür (soru sayısı döneme göre değişir)
+      1. Geçici dizin oluştur (/tmp/mathlock-gen-<uuid>/)
+      2. child_stats → tmpdir/stats.json yaz
+      3. ai-generate.sh --vps-mode --skip-sync --period <dönem> --data-dir tmpdir çalıştır
+      4. tmpdir/questions.json oku
+      5. Geçici dizini temizle
 
     Hata durumunda RuntimeError fırlatır (use_credit krediyi iade eder).
     """
@@ -68,63 +85,481 @@ def _generate_via_copilot(child_stats: dict, education_period: str = 'sinif_2') 
 
     expected_count = _QUESTION_COUNTS[education_period]
 
-    _DATA_DIR.mkdir(exist_ok=True)
-
-    # Stats'ı data/stats.json'a yaz (ai-generate.sh bunu okur)
-    stats_file = _DATA_DIR / 'stats.json'
-    stats_file.write_text(
-        json.dumps(child_stats, ensure_ascii=False, indent=2),
-        encoding='utf-8'
-    )
-
-    # ai-generate.sh çalıştır
-    if not _GENERATE_SCRIPT.exists():
-        raise RuntimeError("ai-generate.sh bulunamadı")
-
+    tmpdir = Path(tempfile.mkdtemp(prefix='mathlock-gen-'))
     try:
-        result = subprocess.run(
-            ['bash', str(_GENERATE_SCRIPT), '--vps-mode', '--skip-sync',
-             '--period', education_period],
-            capture_output=True, text=True,
-            timeout=_GENERATE_TIMEOUT,
-            cwd=str(_PROJECT_DIR),
+        # Stats'ı geçici dizine yaz (ai-generate.sh bunu okur)
+        (tmpdir / 'stats.json').write_text(
+            json.dumps(child_stats, ensure_ascii=False, indent=2),
+            encoding='utf-8'
         )
-    except subprocess.TimeoutExpired:
-        logger.error("ai-generate.sh %d saniye zaman aşımı", _GENERATE_TIMEOUT)
-        raise RuntimeError("Soru üretimi zaman aşımına uğradı")
 
-    if result.returncode != 0:
-        logger.error("ai-generate.sh başarısız (rc=%d): %s",
-                     result.returncode, result.stderr[-500:] if result.stderr else "")
-        raise RuntimeError("Soru üretimi başarısız")
+        # ai-generate.sh çalıştır
+        if not _GENERATE_SCRIPT.exists():
+            raise RuntimeError("ai-generate.sh bulunamadı")
 
-    # Üretilen soruları oku
-    questions_file = _DATA_DIR / 'questions.json'
-    if not questions_file.exists():
-        raise RuntimeError("questions.json üretilmedi")
+        try:
+            result = subprocess.run(
+                ['bash', str(_GENERATE_SCRIPT), '--vps-mode', '--skip-sync',
+                 '--period', education_period, '--data-dir', str(tmpdir)],
+                capture_output=True, text=True,
+                timeout=_GENERATE_TIMEOUT,
+                cwd=str(_PROJECT_DIR),
+            )
+        except subprocess.TimeoutExpired:
+            logger.error("ai-generate.sh %d saniye zaman aşımı", _GENERATE_TIMEOUT)
+            raise RuntimeError("Soru üretimi zaman aşımına uğradı")
 
-    data = json.loads(questions_file.read_text(encoding='utf-8'))
-    questions = data.get('questions', [])
+        if result.returncode != 0:
+            logger.error("ai-generate.sh başarısız (rc=%d): %s",
+                         result.returncode, result.stderr[-500:] if result.stderr else "")
+            raise RuntimeError("Soru üretimi başarısız")
 
-    if len(questions) < expected_count:
-        raise RuntimeError(f"Yetersiz soru: {len(questions)}/{expected_count}")
+        # Üretilen soruları oku
+        questions_file = tmpdir / 'questions.json'
+        if not questions_file.exists():
+            raise RuntimeError("questions.json üretilmedi")
 
-    logger.info(
-        "Copilot CLI soru üretimi başarılı: v%s, %d soru, dönem=%s",
-        data.get('version', '?'), len(questions), education_period
-    )
+        data = json.loads(questions_file.read_text(encoding='utf-8'))
+        questions = data.get('questions', [])
 
-    # AGENTS.md formatından QuestionSet formatına dönüştür
-    return [
-        {
-            'text': q['text'],
-            'answer': q['answer'],
-            'type': q.get('type', ''),
-            'difficulty': q.get('difficulty', 1),
-            'hint': q.get('hint', ''),
+        if len(questions) < expected_count:
+            raise RuntimeError(f"Yetersiz soru: {len(questions)}/{expected_count}")
+
+        logger.info(
+            "kimi-cli soru üretimi başarılı: v%s, %d soru, dönem=%s",
+            data.get('version', '?'), len(questions), education_period
+        )
+
+        # AGENTS.md formatından QuestionSet formatına dönüştür
+        return [
+            {
+                'text': q['text'],
+                'answer': q['answer'],
+                'type': q.get('type', ''),
+                'difficulty': q.get('difficulty', 1),
+                'hint': q.get('hint', ''),
+            }
+            for q in questions[:expected_count]
+        ]
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+# ─── Seviye Üretimi (ai-generate-levels.sh) ──────────────────────────────────
+
+def _generate_levels_via_kimi(level_stats: dict = None, education_period: str = 'sinif_2') -> list:
+    """
+    ai-generate-levels.sh --vps-mode --period <dönem> ile 12 yeni bulmaca seviyesi üret.
+
+    Her çocuk için izole geçici dizin kullanır — eşzamanlı üretimlerde dosya çakışması olmaz.
+
+    Akış:
+      1. Geçici dizin oluştur
+      2. level_stats → tmpdir/level-stats.json yaz
+      3. ai-generate-levels.sh --vps-mode --period <dönem> --data-dir tmpdir çalıştır
+      4. tmpdir/levels.json oku → seviyeleri döndür
+      5. Geçici dizini temizle
+
+    Hata durumunda RuntimeError fırlatır.
+    """
+    if education_period not in _VALID_EDUCATION_PERIODS:
+        education_period = 'sinif_2'
+
+    if not _GENERATE_LEVELS_SCRIPT.exists():
+        raise RuntimeError("ai-generate-levels.sh bulunamadı")
+
+    tmpdir = Path(tempfile.mkdtemp(prefix='mathlock-levels-gen-'))
+    try:
+        # Stats'ı geçici dizine yaz (script okuyacak)
+        if level_stats:
+            (tmpdir / 'level-stats.json').write_text(
+                json.dumps(level_stats, ensure_ascii=False, indent=2),
+                encoding='utf-8'
+            )
+
+        try:
+            result = subprocess.run(
+                ['bash', str(_GENERATE_LEVELS_SCRIPT), '--vps-mode',
+                 '--period', education_period, '--data-dir', str(tmpdir)],
+                capture_output=True, text=True,
+                timeout=_GENERATE_TIMEOUT,
+                cwd=str(_PROJECT_DIR),
+            )
+        except subprocess.TimeoutExpired:
+            logger.error("ai-generate-levels.sh %d saniye zaman aşımı", _GENERATE_TIMEOUT)
+            raise RuntimeError("Seviye üretimi zaman aşımına uğradı")
+
+        if result.returncode != 0:
+            logger.error("ai-generate-levels.sh başarısız (rc=%d): %s",
+                         result.returncode, result.stderr[-500:] if result.stderr else "")
+            raise RuntimeError("Seviye üretimi başarısız")
+
+        levels_file = tmpdir / 'levels.json'
+        if not levels_file.exists():
+            raise RuntimeError("levels.json üretilmedi")
+
+        data = json.loads(levels_file.read_text(encoding='utf-8'))
+        levels = data.get('levels', [])
+
+        if len(levels) < _LEVELS_COUNT:
+            raise RuntimeError(f"Yetersiz seviye: {len(levels)}/{_LEVELS_COUNT}")
+
+        logger.info(
+            "Seviye üretimi başarılı: v%s, %d seviye", data.get('version', '?'), len(levels)
+        )
+        return levels[:_LEVELS_COUNT]
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+# ─── Otomatik Yenileme Yardımcıları ─────────────────────────────────────────
+
+def _build_child_stats(child) -> dict:
+    """
+    Çocuğa özel üretim için DB + Android stats'ı birleştir.
+    AI bu dict'i okuyarak çocuğun güçlü/zayıf yönlerine göre soru üretir.
+    """
+    from datetime import date as _date
+
+    # Android'den gelen tip/zorluk detayları (temel)
+    stats = dict(child.stats_json or {})
+
+    # Backend DB'den yetkili alanlar (override)
+    stats['childName'] = child.name
+    stats['educationPeriod'] = child.education_period
+    stats['totalCorrect'] = child.total_correct
+    stats['totalShown'] = child.total_shown
+    stats['accuracy'] = round(child.accuracy, 3)
+    stats['currentDifficulty'] = child.current_difficulty
+    stats['totalTimeSeconds'] = child.total_time_seconds
+
+    # Son 7 günlük performans özeti
+    if child.daily_stats:
+        last7 = dict(sorted(child.daily_stats.items())[-7:])
+        stats['last7DaysStats'] = last7
+
+    # AI soru setlerindeki çözülme durumu
+    ai_sets_summary = []
+    for qs in QuestionSet.objects.filter(child=child).order_by('-version')[:5]:
+        ai_sets_summary.append({
+            'version': qs.version,
+            'total': len(qs.questions_json or []),
+            'solved': len(qs.solved_ids or []),
+        })
+    if ai_sets_summary:
+        stats['aiSetsSummary'] = ai_sets_summary
+
+    return stats
+
+
+def _build_level_stats(child) -> dict:
+    """Çocuğa özel seviye üretimi için DB'den level istatistiklerini topla."""
+    stats: dict = {
+        'childName': child.name,
+        'educationPeriod': child.education_period,
+    }
+    latest_ls = LevelSet.objects.filter(child=child).order_by('-version').first()
+    if latest_ls:
+        stats['completedLevelIds'] = latest_ls.completed_level_ids or []
+        stats['totalCompleted'] = len(latest_ls.completed_level_ids or [])
+        stats['totalLevels'] = len(latest_ls.levels_json or [])
+        stats['lastVersion'] = latest_ls.version
+    return stats
+
+
+def _refund_credit(credit_balance_pk: int, is_free: bool):
+    """Hata durumunda krediyi iade et (background thread'den güvenli çağrılır)."""
+    try:
+        with transaction.atomic():
+            cb = CreditBalance.objects.select_for_update().get(pk=credit_balance_pk)
+            if is_free:
+                cb.free_set_used = False
+                cb.save(update_fields=['free_set_used', 'updated_at'])
+            else:
+                cb.balance += 1
+                cb.total_used -= 1
+                cb.save(update_fields=['balance', 'total_used', 'updated_at'])
+    except Exception as e:
+        logger.error("Kredi iadesi başarısız (pk=%d): %s", credit_balance_pk, e)
+
+
+def _refresh_weekly_report(child) -> None:
+    """
+    Son 7 günün DB istatistiklerinden haftalık gelişim raporunu hesapla ve kaydet.
+    upload_stats sonrası çağrılır — ağır işlem yok, sadece DB verisinden özet üretir.
+    """
+    from datetime import date as _date, timedelta as _td
+    try:
+        daily = child.daily_stats or {}
+        today = _date.today()
+        week_start = (today - _td(days=6)).isoformat()
+        week_days = {
+            (today - _td(days=i)).isoformat(): {}
+            for i in range(6, -1, -1)
         }
-        for q in questions[:expected_count]
-    ]
+        total_solved = total_correct = total_time = 0
+        for day_str in week_days:
+            entry = daily.get(day_str, {})
+            total_solved += entry.get('solved', 0)
+            total_correct += entry.get('correct', 0)
+            total_time += entry.get('time_seconds', 0)
+            week_days[day_str] = entry
+
+        weekly_acc = round(total_correct / total_solved * 100, 1) if total_solved > 0 else 0
+
+        # Tip bazlı güçlü/zayıf alan analizi
+        by_type = child.stats_json.get('byType', {}) if child.stats_json else {}
+        strong, weak = [], []
+        for tip, data in by_type.items():
+            shown = data.get('shown', 0)
+            correct = data.get('correct', 0)
+            if shown >= 5:
+                acc = correct / shown * 100
+                if acc >= 80:
+                    strong.append(tip)
+                elif acc < 50:
+                    weak.append(tip)
+
+        # Seviye ilerleme özeti
+        level_summary: dict = {}
+        ls = LevelSet.objects.filter(child=child).order_by('-version').first()
+        if ls:
+            done = len(ls.completed_level_ids or [])
+            total = len(ls.levels_json or [])
+            level_summary = {'completed': done, 'total': total, 'version': ls.version}
+
+        report = {
+            'generatedAt': today.isoformat(),
+            'period': 'last_7_days',
+            'totalSolved': total_solved,
+            'totalCorrect': total_correct,
+            'accuracy': weekly_acc,
+            'totalTimeMinutes': round(total_time / 60, 1),
+            'avgDailyMinutes': round(total_time / 60 / 7, 1),
+            'currentDifficulty': child.current_difficulty,
+            'strongTopics': strong,
+            'weakTopics': weak,
+            'levelProgress': level_summary,
+            'dailyBreakdown': week_days,
+        }
+        child.weekly_report_json = report
+        child.save(update_fields=['weekly_report_json'])
+    except Exception as e:
+        logger.warning("Haftalık rapor güncellenemedi (child=%s): %s", child.name, e)
+
+
+def _auto_renew_questions(child_pk: int, credit_balance_pk: int, is_free: bool):
+    """Background thread: matematik soru seti yenile."""
+    from django.db import connection
+    try:
+        child = ChildProfile.objects.get(pk=child_pk)
+        child_stats = _build_child_stats(child)
+        questions = _generate_via_kimi(child_stats, child.education_period)
+
+        latest = QuestionSet.objects.filter(child=child).order_by('-version').first()
+        next_version = (latest.version + 1) if latest else 1
+
+        QuestionSet.objects.create(
+            child=child,
+            version=next_version,
+            questions_json=questions,
+            is_ai_generated=True,
+            credit_used=not is_free,
+        )
+        logger.info(
+            "Otomatik soru yenileme başarılı: child=%s, v%d, %d soru",
+            child.name, next_version, len(questions)
+        )
+    except Exception as exc:
+        logger.error("Otomatik soru yenileme hatası: %s", exc)
+        _refund_credit(credit_balance_pk, is_free)
+    finally:
+        _release_renewal_lock(child_pk, 'questions')
+        from django.db import connection as _conn
+        _conn.close()
+
+
+def _auto_renew_levels(child_pk: int, credit_balance_pk: int, is_free: bool, level_stats: dict):
+    """Background thread: bulmaca seviye seti yenile."""
+    try:
+        child = ChildProfile.objects.get(pk=child_pk)
+        levels = _generate_levels_via_kimi(level_stats, child.education_period)
+
+        latest = LevelSet.objects.filter(child=child).order_by('-version').first()
+        next_version = (latest.version + 1) if latest else 1
+
+        LevelSet.objects.create(
+            child=child,
+            version=next_version,
+            levels_json=levels,
+            is_ai_generated=True,
+            credit_used=not is_free,
+        )
+        logger.info(
+            "Otomatik seviye yenileme başarılı: child=%s, v%d, %d seviye",
+            child.name, next_version, len(levels)
+        )
+    except Exception as exc:
+        logger.error("Otomatik seviye yenileme hatası: %s", exc)
+        _refund_credit(credit_balance_pk, is_free)
+    finally:
+        _release_renewal_lock(child_pk, 'levels')
+        from django.db import connection as _conn
+        _conn.close()
+
+
+def _run_in_background(fn, *args, **kwargs):
+    """Django ORM ile güvenli daemon thread başlat."""
+    def wrapper():
+        fn(*args, **kwargs)
+    t = threading.Thread(target=wrapper, daemon=True)
+    t.start()
+    return t
+
+
+def _release_renewal_lock(child_pk: int, content_type: str):
+    """Yenileme kilidini serbest bırak. Hata olursa logla, sessizce devam et."""
+    try:
+        RenewalLock.objects.filter(child_id=child_pk, content_type=content_type).delete()
+    except Exception as e:
+        logger.warning(
+            "Kilit serbest bırakılamadı (child_pk=%d, type=%s): %s",
+            child_pk, content_type, e,
+        )
+
+
+def _deduct_credit_and_lock(child_pk: int, device, content_type: str) -> tuple:
+    """
+    Tek atomic işlem: yenileme kilidi al + kredi düş.
+    Döndürür: (success, is_free, credit_balance_pk, credits_remaining)
+
+    success=False durumları:
+      - Aynı çocuk için bu content_type zaten kilitli (yenileme devam ediyor)
+      - Kredi yok
+
+    Kilit, arka plan thread'i tamamlanınca _release_renewal_lock ile serbest bırakılır.
+    Sunucu çökerse _RENEWAL_LOCK_TTL (15 dk) sonra otomatik geçersiz sayılır.
+    """
+    now = timezone.now()
+    expires_at = now + timedelta(seconds=_RENEWAL_LOCK_TTL)
+
+    with transaction.atomic():
+        # ChildProfile satırını kilitle — aynı çocuk için tüm yenileme işlemlerini serialize et
+        try:
+            ChildProfile.objects.select_for_update(nowait=True).get(pk=child_pk)
+        except ChildProfile.DoesNotExist:
+            return False, False, 0, 0
+        except Exception:
+            # nowait: satır başka transaction'da kilitliyse hemen dön
+            logger.info(
+                "Yenileme: çocuk satırı kilitli, atlanıyor (child_pk=%d, type=%s)",
+                child_pk, content_type,
+            )
+            return False, False, 0, 0
+
+        # Süresi dolmuş kilidi temizle
+        RenewalLock.objects.filter(
+            child_id=child_pk, content_type=content_type, expires_at__lt=now
+        ).delete()
+
+        # Kilit var mı?
+        if RenewalLock.objects.filter(child_id=child_pk, content_type=content_type).exists():
+            logger.info(
+                "Yenileme zaten devam ediyor, atlandı: child_pk=%d, type=%s",
+                child_pk, content_type,
+            )
+            return False, False, 0, 0
+
+        # Kilidi oluştur
+        RenewalLock.objects.create(
+            child_id=child_pk,
+            content_type=content_type,
+            expires_at=expires_at,
+        )
+
+        # Kredi düş
+        cb = CreditBalance.objects.select_for_update().get_or_create(device=device)[0]
+        is_free = not cb.free_set_used
+
+        if is_free:
+            cb.free_set_used = True
+            cb.save(update_fields=['free_set_used', 'updated_at'])
+            return True, True, cb.pk, cb.balance
+        elif cb.balance > 0:
+            cb.balance -= 1
+            cb.total_used += 1
+            cb.save(update_fields=['balance', 'total_used', 'updated_at'])
+            return True, False, cb.pk, cb.balance
+        else:
+            # Kredi yok — kilidi geri al (transaction rollback yöntemi: kilidi sil)
+            RenewalLock.objects.filter(
+                child_id=child_pk, content_type=content_type
+            ).delete()
+            return False, False, cb.pk, 0
+
+
+def _check_and_auto_renew_after_purchase(device_pk: int):
+    """
+    Satın alma sonrası otomatik yenileme — background thread'de çalışır.
+
+    Önce her çocuk için matematik soruları tükendi mi kontrol eder (öncelik 1),
+    ardından bulmaca seviyeleri tükendi mi kontrol eder (öncelik 2).
+    Her tükenmiş içerik için 1 kredi düşer ve arka planda üretim başlatır.
+    Krediler yetmediğinde durur.
+    """
+    from django.db import connection as _conn
+    try:
+        device = Device.objects.get(pk=device_pk)
+        children = list(device.children.filter(is_active=True))
+
+        for child in children:
+            # ── 1. Öncelik: Matematik soruları ──────────────────────────────
+            total_free = Question.objects.filter(batch_number=0).count()
+            free_solved = UserQuestionProgress.objects.filter(
+                device=device, solved=True, child=child
+            ).count()
+            total_ai = 0
+            ai_solved = 0
+            for qs in QuestionSet.objects.filter(child=child):
+                total_ai += len(qs.questions_json or [])
+                ai_solved += len(qs.solved_ids or [])
+
+            total_q = total_free + total_ai
+            solved_q = free_solved + ai_solved
+            if total_q > 0 and solved_q >= total_q:
+                success, is_free, cb_pk, _ = _deduct_credit_and_lock(child.pk, device, 'questions')
+                if success:
+                    _run_in_background(_auto_renew_questions, child.pk, cb_pk, is_free)
+                    logger.info(
+                        "Satın alma sonrası matematik yenileme başlatıldı: child=%s, is_free=%s",
+                        child.name, is_free,
+                    )
+                else:
+                    logger.info("Satın alma sonrası yenileme: kredi yetmedi veya kilitli (child=%s)", child.name)
+
+            # ── 2. Öncelik: Bulmaca seviyeleri ──────────────────────────────
+            latest_ls = LevelSet.objects.filter(child=child).order_by('-version').first()
+            if latest_ls:
+                total_lvl = len(latest_ls.levels_json or [])
+                done_lvl = len(latest_ls.completed_level_ids or [])
+                if total_lvl > 0 and done_lvl >= total_lvl:
+                    success, is_free, cb_pk, _ = _deduct_credit_and_lock(child.pk, device, 'levels')
+                    if success:
+                        _run_in_background(_auto_renew_levels, child.pk, cb_pk, is_free, _build_level_stats(child))
+                        logger.info(
+                            "Satın alma sonrası seviye yenileme başlatıldı: child=%s, is_free=%s",
+                            child.name, is_free,
+                        )
+                    else:
+                        logger.info(
+                            "Satın alma sonrası seviye yenileme: kredi yetmedi veya kilitli (child=%s)",
+                            child.name,
+                        )
+
+    except Exception as exc:
+        logger.error("Satın alma sonrası otomatik yenileme hatası (device_pk=%d): %s", device_pk, exc)
+    finally:
+        _conn.close()
 
 
 # ─── Scope-based Throttles ──────────────────────────────────────────────────
@@ -266,10 +701,12 @@ def verify_purchase_view(request):
                 )
                 credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
                 credit_balance.add_credits(credits_to_add)
+                _run_in_background(_check_and_auto_renew_after_purchase, device.pk)
                 return Response({
                     'success': True,
                     'credits_added': credits_to_add,
                     'total_credits': credit_balance.balance,
+                    'auto_renewal_queued': True,
                     'debug': True,
                 })
 
@@ -295,10 +732,13 @@ def verify_purchase_view(request):
                 logger.info("Satın alma doğrulandı: device=%s, product=%s, credits=%d",
                             device.installation_id[:12], product_id, credits_to_add)
 
+                _run_in_background(_check_and_auto_renew_after_purchase, device.pk)
+
                 return Response({
                     'success': True,
                     'credits_added': credits_to_add,
                     'total_credits': credit_balance.balance,
+                    'auto_renewal_queued': True,
                 })
             else:
                 record.save()
@@ -408,9 +848,9 @@ def use_credit(request):
                     'credits_remaining': 0,
                 }, status=status.HTTP_402_PAYMENT_REQUIRED)
 
-    # ─── Copilot CLI + AGENTS.md ile kişiye özel soru üret ─────────────────
+    # ─── kimi-cli + AGENTS.md ile kişiye özel soru üret ──────────────────
     try:
-        questions = _generate_via_copilot(child.stats_json or {}, child.education_period)
+        questions = _generate_via_kimi(child.stats_json or {}, child.education_period)
     except Exception as exc:
         logger.error("Soru üretimi hatası: %s", exc)
         # Krediyi iade et
@@ -441,7 +881,7 @@ def use_credit(request):
     )
 
     logger.info(
-        "Copilot CLI soru seti: child=%s, v%d, %d soru, is_free=%s",
+        "kimi-cli soru seti: child=%s, v%d, %d soru, is_free=%s",
         child.name, next_version, len(questions), is_free
     )
 
@@ -524,15 +964,8 @@ def upload_stats(request):
     child.stats_json = stats
     child.save()
 
-    # ai-generate.sh için stats dosyasını da güncelle
-    try:
-        stats_path = _DATA_DIR / 'stats.json'
-        _DATA_DIR.mkdir(exist_ok=True)
-        stats_path.write_text(
-            json.dumps(stats, ensure_ascii=False, indent=2), encoding='utf-8'
-        )
-    except Exception as e:
-        logger.warning("data/stats.json yazılamadı: %s", e)
+    # Haftalık gelişim raporunu DB istatistiklerinden güncelle
+    _refresh_weekly_report(child)
 
     logger.info("Stats kaydedildi: child=%s, correct=%d/%d, difficulty=%d",
                 child.name, total_correct, total_shown, child.current_difficulty)
@@ -964,11 +1397,32 @@ def update_progress(request):
             total_ai += len(qs.questions_json or [])
             ai_solved += len(qs.solved_ids or [])
 
+    # ── Otomatik matematik sorusu yenileme ───────────────────────────────────
+    # Kural: Bu istekte yeni çözüm yapıldı + tüm sorular çözüldü + kredi var → auto-renew
+    auto_renewal_started = False
+    credits_remaining = None
+
+    if updated > 0 and _target_child and (total_free + total_ai) > 0:
+        all_solved = (free_solved + ai_solved) >= (total_free + total_ai)
+        if all_solved:
+            success, is_free, cb_pk, credits_remaining = _deduct_credit_and_lock(
+                _target_child.pk, device, 'questions'
+            )
+            if success:
+                auto_renewal_started = True
+                _run_in_background(_auto_renew_questions, _target_child.pk, cb_pk, is_free)
+                logger.info(
+                    "Otomatik matematik yenileme başlatıldı: child=%s, is_free=%s",
+                    _target_child.name, is_free
+                )
+
     return Response({
         'success': True,
         'updated': updated,
         'total_solved': free_solved + ai_solved,
         'total_accessible': total_free + total_ai,
+        'auto_renewal_started': auto_renewal_started,
+        **(({'credits_remaining': credits_remaining}) if auto_renewal_started else {}),
     })
 
 
@@ -1288,3 +1742,180 @@ def stats_history(request):
         'total_shown': child.total_shown,
         'accuracy': round(child.accuracy * 100, 1),
     })
+
+
+# ─── Bulmaca Seviye Endpoint'leri ────────────────────────────────────────────
+
+@api_view(['GET'])
+def get_levels(request):
+    """
+    Çocuğun mevcut bulmaca seviye setini döndür.
+    İlk istekte static levels.json'dan kişisel LevelSet oluşturulur.
+
+    GET /api/mathlock/levels/?device_token=uuid[&child_id=N]
+    Response: {
+        "levels": [...],
+        "version": 1,
+        "set_id": 5,
+        "completed_level_ids": [1, 2, 3],
+        "total_levels": 12,
+        "completed_count": 3
+    }
+    """
+    device_token = request.query_params.get('device_token')
+    if not device_token:
+        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        device = Device.objects.get(device_token=device_token)
+    except (Device.DoesNotExist, ValidationError):
+        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+
+    child_id = request.query_params.get('child_id')
+    if child_id:
+        child = ChildProfile.objects.filter(device=device, id=child_id).first()
+    else:
+        child = device.children.filter(is_active=True).first() or device.children.first()
+
+    if not child:
+        return Response({'error': 'Profil bulunamadı'}, status=status.HTTP_404_NOT_FOUND)
+
+    level_set = LevelSet.objects.filter(child=child).order_by('-version').first()
+
+    if not level_set:
+        # İlk erişim: static levels.json'dan kişisel set oluştur
+        try:
+            if _LEVELS_FILE.exists():
+                data = json.loads(_LEVELS_FILE.read_text(encoding='utf-8'))
+                levels = data.get('levels', [])[:_LEVELS_COUNT]
+            else:
+                levels = []
+        except Exception as e:
+            logger.error("levels.json okunamadı: %s", e)
+            levels = []
+
+        if not levels:
+            return Response(
+                {'error': 'Seviye verisi bulunamadı'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
+
+        level_set = LevelSet.objects.create(
+            child=child,
+            version=1,
+            levels_json=levels,
+            is_ai_generated=False,
+            credit_used=False,
+        )
+        logger.info("İlk seviye seti oluşturuldu: child=%s", child.name)
+
+    completed = level_set.completed_level_ids or []
+
+    return Response({
+        'levels': level_set.levels_json,
+        'version': level_set.version,
+        'set_id': level_set.pk,
+        'completed_level_ids': completed,
+        'total_levels': len(level_set.levels_json or []),
+        'completed_count': len(completed),
+    })
+
+
+@api_view(['POST'])
+def update_level_progress(request):
+    """
+    Tamamlanan bulmaca seviyelerini raporla.
+    Tüm seviyeler biterse + kredi varsa → otomatik kredi düş + yeni set üret.
+
+    POST /api/mathlock/levels/progress/
+    Body: {
+        "device_token": "uuid",
+        "child_id": 1,
+        "set_id": 5,
+        "completed_level_ids": [1, 2, ..., 12],
+        "level_stats": { "totalCompleted": 12, "totalStars": 28, ... }
+    }
+    Response: {
+        "success": true,
+        "completed_count": 12,
+        "total_levels": 12,
+        "all_completed": true,
+        "auto_renewal_started": true,
+        "credits_remaining": 4
+    }
+    """
+    device_token = request.data.get('device_token')
+    if not device_token:
+        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        device = Device.objects.get(device_token=device_token)
+    except (Device.DoesNotExist, ValidationError):
+        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+
+    child_id = request.data.get('child_id')
+    if child_id:
+        child = ChildProfile.objects.filter(device=device, id=child_id).first()
+    else:
+        child = device.children.filter(is_active=True).first() or device.children.first()
+
+    if not child:
+        return Response({'error': 'Profil bulunamadı'}, status=status.HTTP_404_NOT_FOUND)
+
+    # İlerleme verilerini al
+    set_id = request.data.get('set_id')
+    completed_ids_raw = request.data.get('completed_level_ids', [])
+    level_stats = request.data.get('level_stats', {})
+
+    if not isinstance(completed_ids_raw, list):
+        return Response({'error': 'completed_level_ids liste olmalı'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        completed_ids = [int(lid) for lid in completed_ids_raw[:50]]
+    except (ValueError, TypeError):
+        return Response({'error': 'completed_level_ids geçersiz'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Level set'i bul
+    if set_id:
+        level_set = LevelSet.objects.filter(pk=set_id, child=child).first()
+    else:
+        level_set = LevelSet.objects.filter(child=child).order_by('-version').first()
+
+    if not level_set:
+        return Response({'error': 'Seviye seti bulunamadı'}, status=status.HTTP_404_NOT_FOUND)
+
+    # İlerlemeyi güncelle
+    existing = set(level_set.completed_level_ids or [])
+    new_completed = set(completed_ids) - existing
+    level_set.completed_level_ids = list(existing | set(completed_ids))
+    level_set.save(update_fields=['completed_level_ids'])
+
+    total_levels = len(level_set.levels_json or [])
+    completed_count = len(level_set.completed_level_ids)
+    all_completed = completed_count >= total_levels > 0
+
+    auto_renewal_started = False
+    credits_remaining = None
+
+    # Yeni ilerleme + tüm bitti + kredi var → otomatik yenile
+    if all_completed and len(new_completed) > 0:
+        success, is_free, cb_pk, credits_remaining = _deduct_credit_and_lock(
+            child.pk, device, 'levels'
+        )
+        if success:
+            auto_renewal_started = True
+            _run_in_background(_auto_renew_levels, child.pk, cb_pk, is_free, _build_level_stats(child))
+            logger.info(
+                "Otomatik seviye yenileme başlatıldı: child=%s, is_free=%s",
+                child.name, is_free
+            )
+
+    return Response({
+        'success': True,
+        'completed_count': completed_count,
+        'total_levels': total_levels,
+        'all_completed': all_completed,
+        'auto_renewal_started': auto_renewal_started,
+        **(({'credits_remaining': credits_remaining}) if auto_renewal_started else {}),
+    })
+
