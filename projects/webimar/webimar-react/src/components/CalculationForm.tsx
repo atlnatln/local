@@ -193,7 +193,7 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
   // External emsal türü ile senkronizasyon
   useEffect(() => {
     if (emsalTuru && emsalTuru !== formData.emsal_turu) {
-      setFormData(prev => ({ ...prev, emsal_turu: emsalTuru as 'marjinal' | 'mutlak_dikili' }));
+      setFormData(prev => ({ ...prev, emsal_turu: emsalTuru as 'marjinal' | 'mutlak_dikili' | 'mutlak_dikili_8' }));
     }
   }, [emsalTuru, formData.emsal_turu]);
 
@@ -1104,7 +1104,8 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
       if (calculationType !== 'bag-evi') {
         if (calculationType !== 'ipek-bocekciligi') {
           finalFormData.emsal_turu = formData.emsal_turu || 'marjinal';
-          console.log(`📐 Emsal türü eklendi: ${finalFormData.emsal_turu} (${finalFormData.emsal_turu === 'marjinal' ? '%20' : '%5'})`);
+          const emsalYuzde = finalFormData.emsal_turu === 'marjinal' ? '%20' : finalFormData.emsal_turu === 'mutlak_dikili_8' ? '%8' : '%5';
+          console.log(`📐 Emsal türü eklendi: ${finalFormData.emsal_turu} (${emsalYuzde})`);
         }
       }
       
@@ -1144,9 +1145,11 @@ const CalculationForm: React.FC<CalculationFormComponentProps> = ({
         'ciftlik-atolyesi',
       ];
       if (dynamicEmsalTypes.includes(calculationType)) {
-        // emsal_turu 'marjinal' ise 0.20, 'mutlak_dikili' ise 0.05
+        // emsal_turu 'marjinal' ise 0.20, 'mutlak_dikili_8' ise 0.08, 'mutlak_dikili' ise 0.05
         let emsalOrani = 0.20;
-        if (finalFormData.emsal_turu === 'mutlak_dikili') {
+        if (finalFormData.emsal_turu === 'mutlak_dikili_8') {
+          emsalOrani = 0.08;
+        } else if (finalFormData.emsal_turu === 'mutlak_dikili') {
           emsalOrani = 0.05;
         }
         finalFormData.emsal_orani = emsalOrani;

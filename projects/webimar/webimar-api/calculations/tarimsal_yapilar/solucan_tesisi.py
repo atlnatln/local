@@ -610,11 +610,13 @@ def solucan_tesisi_degerlendir(arazi_bilgileri: dict, yapi_bilgileri: dict = Non
             emsal_turu = yapi_bilgileri.get("emsal_turu")
         
         # constants.py'den emsal oranlarını içe aktarma
-        from .constants import EMSAL_ORANI_MARJINAL, EMSAL_ORANI_MUTLAK_DIKILI
+        from .constants import EMSAL_ORANI_MARJINAL, EMSAL_ORANI_MUTLAK_DIKILI, EMSAL_ORANI_MUTLAK_DIKILI_8
         
         # Emsal türüne göre oranı belirle
         emsal_orani = None
-        if emsal_turu == "mutlak_dikili":
+        if emsal_turu == "mutlak_dikili_8":
+            emsal_orani = EMSAL_ORANI_MUTLAK_DIKILI_8  # %8
+        elif emsal_turu == "mutlak_dikili":
             emsal_orani = EMSAL_ORANI_MUTLAK_DIKILI  # %5
         elif emsal_turu == "marjinal":
             emsal_orani = EMSAL_ORANI_MARJINAL  # %20

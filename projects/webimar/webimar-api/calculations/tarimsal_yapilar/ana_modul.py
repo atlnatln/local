@@ -119,10 +119,13 @@ def genel_vasif_kural_kontrolu(arazi_bilgileri, yapi_bilgileri):
     emsal_turu = yapi_bilgileri.get("emsal_turu", "marjinal")  # Default marjinal
     
     # Emsal oranını belirle
-    from .constants import EMSAL_ORANI_MARJINAL, EMSAL_ORANI_MUTLAK_DIKILI
-    if emsal_turu == "mutlak_dikili":
+    from .constants import EMSAL_ORANI_MARJINAL, EMSAL_ORANI_MUTLAK_DIKILI, EMSAL_ORANI_MUTLAK_DIKILI_8
+    if emsal_turu == "mutlak_dikili_8":
+        secilen_emsal_orani = EMSAL_ORANI_MUTLAK_DIKILI_8  # %8
+        emsal_aciklama = "Mutlak tarım arazisi, dikili tarım arazisi ve özel ürün arazileri (%8)"
+    elif emsal_turu == "mutlak_dikili":
         secilen_emsal_orani = EMSAL_ORANI_MUTLAK_DIKILI  # %5
-        emsal_aciklama = "Mutlak tarım arazisi, dikili tarım arazisi ve özel ürün arazileri"
+        emsal_aciklama = "Mutlak tarım arazisi, dikili tarım arazisi ve özel ürün arazileri (%5)"
     else:
         secilen_emsal_orani = EMSAL_ORANI_MARJINAL  # %20
         emsal_aciklama = "Marjinal tarım arazileri"

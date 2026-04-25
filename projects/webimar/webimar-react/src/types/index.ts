@@ -29,7 +29,7 @@ export interface DetailedCalculationInput extends BaseCalculationInput {
   dut_bahcesi_var_mi?: boolean;
 
   // Emsal türü seçimi (tarımsal yapılar için)
-  emsal_turu?: 'marjinal' | 'mutlak_dikili';
+  emsal_turu?: 'marjinal' | 'mutlak_dikili' | 'mutlak_dikili_8';
 
   // Bağ evi için özel alanlar
   tarla_alani?: number;

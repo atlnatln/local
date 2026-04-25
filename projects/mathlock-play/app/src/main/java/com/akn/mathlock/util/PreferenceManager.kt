@@ -15,6 +15,7 @@ class PreferenceManager(context: Context) {
         private const val KEY_PATTERN_HASH = "pattern_hash"
         private const val KEY_SERVICE_ENABLED = "service_enabled"
         private const val KEY_PASS_SCORE = "pass_score"
+        private const val KEY_LEVELS_TO_UNLOCK = "levels_to_unlock"
         private const val KEY_GUESS_MAX = "guess_max"
         private const val KEY_UNLOCK_DURATION = "unlock_duration_minutes"
         private const val KEY_UNLOCK_EXPIRED_ACTION = "unlock_expired_action"
@@ -33,6 +34,7 @@ class PreferenceManager(context: Context) {
         private const val KEY_ACTIVE_EDUCATION_PERIOD = "active_education_period"
 
         private const val DEFAULT_PASS_SCORE = 3
+        private const val DEFAULT_LEVELS_TO_UNLOCK = 3
         private const val DEFAULT_GUESS_MAX = 100
         private const val DEFAULT_GUESS_REQUIRED_ROUNDS = 1
 
@@ -101,6 +103,10 @@ class PreferenceManager(context: Context) {
     var passScore: Int
         get() = prefs.getInt(KEY_PASS_SCORE, DEFAULT_PASS_SCORE)
         set(value) = prefs.edit().putInt(KEY_PASS_SCORE, value).apply()
+
+    var levelsToUnlock: Int
+        get() = prefs.getInt(KEY_LEVELS_TO_UNLOCK, DEFAULT_LEVELS_TO_UNLOCK)
+        set(value) = prefs.edit().putInt(KEY_LEVELS_TO_UNLOCK, value).apply()
 
     var guessMaxNumber: Int
         get() = prefs.getInt(KEY_GUESS_MAX, DEFAULT_GUESS_MAX)

@@ -139,6 +139,11 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderPassScore.value = passScore.coerceAtMost(10f)
         binding.tvPassScore.text = getString(R.string.settings_pass_score, passScore.toInt())
 
+        // Sayı Yolculuğu seviye sayısı
+        val levelsToUnlock = prefManager.levelsToUnlock.toFloat()
+        binding.sliderLevelsToUnlock.value = levelsToUnlock.coerceAtMost(12f)
+        binding.tvLevelsToUnlock.text = getString(R.string.settings_levels_to_unlock, levelsToUnlock.toInt())
+
         // Sayı tahmin ayarları
         val guessMax = prefManager.guessMaxNumber.toFloat()
         binding.sliderGuessMax.value = guessMax.coerceIn(10f, 500f)
@@ -206,6 +211,13 @@ class SettingsActivity : AppCompatActivity() {
             val score = value.toInt()
             prefManager.passScore = score
             binding.tvPassScore.text = getString(R.string.settings_pass_score, score)
+        }
+
+        // Sayı Yolculuğu seviye sayısı slider
+        binding.sliderLevelsToUnlock.addOnChangeListener { _, value, _ ->
+            val levels = value.toInt()
+            prefManager.levelsToUnlock = levels
+            binding.tvLevelsToUnlock.text = getString(R.string.settings_levels_to_unlock, levels)
         }
 
         // Sayı tahmin üst sınır slider

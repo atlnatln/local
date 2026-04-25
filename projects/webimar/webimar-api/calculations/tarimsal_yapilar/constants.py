@@ -90,6 +90,7 @@ SERA_VARSAYILAN_ALAN_ORANI = 0.8
 # Emsal oranları
 EMSAL_ORANI_MARJINAL = 0.20  # Marjinal tarım arazileri için %20
 EMSAL_ORANI_MUTLAK_DIKILI = 0.05  # Mutlak tarım arazisi, dikili tarım arazisi ve özel ürün arazileri için %5
+EMSAL_ORANI_MUTLAK_DIKILI_8 = 0.08  # Bazı bölgelerde mutlak/dikili/özel ürün arazileri için %8
 
 # Genel yapı türleri listesi - YAPI_TURLERI'nden dinamik olarak oluşturulan
 GENEL_YAPI_TURLERI_LISTESI = [yapi["ad"] for yapi in YAPI_TURLERI]

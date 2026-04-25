@@ -822,6 +822,18 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({
               <div className="emsal-percentage">%5</div>
               <div className="emsal-subtitle">Mutlak tarım arazisi, dikili tarım arazisi ve özel ürün arazileri için emsal</div>
             </EmsalTuruButton>
+
+            <EmsalTuruButton
+              type="button"
+              $isSelected={(selectedEmsalType || 'marjinal') === 'mutlak_dikili_8'}
+              onClick={() => {
+                if (onEmsalTypeChange) onEmsalTypeChange('mutlak_dikili_8');
+              }}
+            >
+              <div className="emsal-title">🌾 Mutlak & Dikili Alan (Özel)</div>
+              <div className="emsal-percentage">%8</div>
+              <div className="emsal-subtitle">Bazı bölgelerde mutlak, dikili ve özel ürün arazileri için emsal</div>
+            </EmsalTuruButton>
           </EmsalTuruContainer>
           <ResultDescription style={{ marginTop: '12px', textAlign: 'center', fontStyle: 'italic' }}>
             Emsal türünü değiştirdiğinizde hesaplamalar otomatik olarak güncellenir

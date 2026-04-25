@@ -368,6 +368,22 @@
                     android:valueTo="10"
                     android:stepSize="1" />
 
+                <!-- Sayı Yolculuğu Seviye Sayısı -->
+                <TextView
+                    android:id="@+id/tvLevelsToUnlock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderLevelsToUnlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="1"
+                    android:valueTo="12"
+                    android:stepSize="1" />
+
                 <!-- Ayırıcı -->
                 <View
                     android:layout_width="match_parent"

@@ -64,9 +64,7 @@ class ChallengePickerActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // Sadece Matematik kilit açma ekranında gösterilir.
-        // Diğer oyunlar (Sayı Tahmin, Bulmaca, Robotopia) ana ekrandaki pratik modda
-        // erişilebilir ancak kilitli uygulama açmak için kullanılamaz.
+        // Matematik
         if (prefManager.isMathEnabled) {
             binding.cardMath.visibility = View.VISIBLE
             binding.cardMath.setOnClickListener {
@@ -80,9 +78,22 @@ class ChallengePickerActivity : AppCompatActivity() {
             binding.cardMath.visibility = View.GONE
         }
 
+        // Sayı Yolculuğu
+        if (prefManager.isPuzzleEnabled) {
+            binding.cardPuzzle.visibility = View.VISIBLE
+            binding.cardPuzzle.setOnClickListener {
+                val intent = Intent(this, SayiYolculuguActivity::class.java).apply {
+                    putExtra("locked_package", lockedPackage)
+                    putExtra("timer_expired", timerExpired)
+                }
+                startActivity(intent)
+            }
+        } else {
+            binding.cardPuzzle.visibility = View.GONE
+        }
+
         // Kilit açma ekranında diğer oyunlar görünmez
         binding.cardGuess.visibility = View.GONE
-        binding.cardPuzzle.visibility = View.GONE
         binding.cardRobotopia.visibility = View.GONE
 
         binding.cardParent.setOnClickListener {

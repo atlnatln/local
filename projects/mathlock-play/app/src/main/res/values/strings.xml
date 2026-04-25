@@ -83,6 +83,7 @@
     <string name="settings_relock">🔒 Yeni soru sor (tekrar kilitle)</string>
     <string name="settings_close_app">🏠 Ana ekrana dön ve kilitle</string>
     <string name="settings_pass_score">Uygulama Açma Skoru: %1$d doğru</string>
+    <string name="settings_levels_to_unlock">Sayı Yolculuğu Açma: %1$d seviye</string>
     <string name="settings_difficulty">Zorluk Seviyesi</string>
     <string name="settings_auth_section">Kimlik Doğrulama</string>
     <string name="settings_enable_fingerprint">Parmak İzi ile Giriş</string>

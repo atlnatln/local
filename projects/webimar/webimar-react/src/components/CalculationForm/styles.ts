@@ -230,6 +230,7 @@ export const EmsalTuruContainer = styled.div`
   display: flex;
   gap: 12px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
   
   @media (max-width: 768px) {
     flex-direction: column;
@@ -240,6 +241,7 @@ export const EmsalTuruContainer = styled.div`
 // Emsal türü seçim butonu
 export const EmsalTuruButton = styled.button<{ $isSelected: boolean }>`
   flex: 1;
+  min-width: 140px;
   padding: 14px 20px;
   border: 2px solid ${props => props.$isSelected ? '#3498db' : '#e0e6ed'};
   border-radius: 8px;

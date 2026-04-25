@@ -262,6 +262,14 @@ class SayiYolculuguActivity : AppCompatActivity() {
                                     uploadLevelProgress(listOf(levelId))
                                 }
                             }
+                            // Kilitli uygulama açma hedefi kontrolü
+                            if (lockedPackage != null && !isPracticeMode && !isTestMode) {
+                                val required = PreferenceManager(this@SayiYolculuguActivity).levelsToUnlock
+                                if (levelsCompleted >= required) {
+                                    Log.i(TAG, "Kilitli uygulama açma hedefine ulaşıldı: $levelsCompleted / $required")
+                                    unlockAndFinish()
+                                }
+                            }
                         }
                         "allComplete" -> {
                             Log.i(TAG, "Tüm seviyeler tamamlandı: ${data.optInt("totalStars")}/${data.optInt("maxStars")} yıldız")

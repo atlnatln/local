@@ -835,7 +835,9 @@ def mantar_degerlendir(data: dict) -> dict:
         emsal_orani = data.get('emsal_orani', None)
         emsal_turu = data.get('emsalTuru') or data.get('emsal_turu')
         if emsal_orani is None and emsal_turu:
-            if emsal_turu in ['mutlak_dikili', 'mutlak', 'dikili']:
+            if emsal_turu in ['mutlak_dikili_8']:
+                emsal_orani = 0.08
+            elif emsal_turu in ['mutlak_dikili', 'mutlak', 'dikili']:
                 emsal_orani = 0.05
             elif emsal_turu in ['marjinal', 'marjinal_tarim']:
                 emsal_orani = 0.20
