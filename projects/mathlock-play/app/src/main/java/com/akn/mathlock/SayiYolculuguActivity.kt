@@ -156,11 +156,19 @@ class SayiYolculuguActivity : AppCompatActivity() {
                         val root = JSONObject(json)
                         currentSetId = root.optInt("set_id", 0).takeIf { it > 0 }
                         val idsArr = root.optJSONArray("completed_level_ids")
+                        // Server'dan gelen verileri al ama local'deki daha güncel verileri koru
+                        // (Kullanıcı uygulamayı kapatırsa upload thread kesilebilir)
                         completedLevelIds.clear()
                         if (idsArr != null) {
                             for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
                         }
+                        // Local cache'teki tamamlanan ID'leri de ekle (merge)
+                        val localRaw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            .getString(KEY_COMPLETED_IDS, "") ?: ""
+                        localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
+                            .forEach { completedLevelIds.add(it) }
                         saveCompletedLevels()
+                        Log.i(TAG, "Seviye ilerlemesi birleştirildi: server=${idsArr?.length() ?: 0} + local=${localRaw.split(",").count { it.trim().toIntOrNull() != null }} → toplam=${completedLevelIds.size}")
                     } catch (_: Exception) {}
                     val injected = injectCompletedIds(json)
                     getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
@@ -180,10 +188,16 @@ class SayiYolculuguActivity : AppCompatActivity() {
                 val root = JSONObject(cached)
                 currentSetId = root.optInt("set_id", 0).takeIf { it > 0 }
                 val idsArr = root.optJSONArray("completed_level_ids")
+                completedLevelIds.clear()
                 if (idsArr != null) {
-                    completedLevelIds.clear()
                     for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
                 }
+                // Local cache'teki tamamlanan ID'leri de ekle (merge)
+                val localRaw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    .getString(KEY_COMPLETED_IDS, "") ?: ""
+                localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
+                    .forEach { completedLevelIds.add(it) }
+                saveCompletedLevels()
             } catch (_: Exception) {}
             val injected = injectCompletedIds(cached)
             getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
