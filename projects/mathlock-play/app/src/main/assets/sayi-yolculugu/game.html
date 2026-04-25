@@ -326,10 +326,12 @@ body {
 </div>
 
 <div id="allComplete">
-  <h1>🏆 Harika!</h1>
+  <h1 id="allCompleteTitle">🏆 Harika!</h1>
   <div class="total-stars" id="totalStarsText"></div>
-  <p>Tüm seviyeleri tamamladın!</p>
+  <p id="allCompleteMsg">Tüm seviyeleri tamamladın!</p>
+  <div id="allCompleteSpinner" style="display:none; margin: 16px 0; font-size: 1.2rem;">⏳ Yeni seviyeler hazırlanıyor, lütfen bekleyin...</div>
   <button id="btnFinish">Tamam</button>
+  <button id="btnBuyCredits" style="display:none; margin-top: 12px; background: linear-gradient(135deg, #ffd700, #ff8c00);">💎 Kredi Satın Al</button>
 </div>
 
 <script>
@@ -744,7 +746,13 @@ function showAllComplete() {
   for (var k in state.progress) {
     if (state.progress[k].stars) totalStars += state.progress[k].stars;
   }
+  $('allCompleteTitle').textContent = '🏆 Harika!';
+  $('allCompleteMsg').textContent = 'Tüm seviyeleri tamamladın!';
   $('totalStarsText').textContent = '⭐ ' + totalStars + ' / ' + maxStars;
+  $('totalStarsText').style.display = '';
+  $('allCompleteSpinner').style.display = 'none';
+  $('btnFinish').style.display = '';
+  $('btnBuyCredits').style.display = 'none';
   allComplete.classList.add('active');
 
   notifyAndroid('allComplete', {
@@ -756,9 +764,46 @@ function showAllComplete() {
   });
 }
 
+function showRenewalLoading() {
+  console.info('[Game] showRenewalLoading');
+  $('allCompleteTitle').textContent = '⏳ Yeni seviyeler hazırlanıyor...';
+  $('allCompleteMsg').textContent = 'Yapay zeka yeni bulmacalar üretiyor, lütfen bekleyin.';
+  $('totalStarsText').style.display = 'none';
+  $('allCompleteSpinner').style.display = 'block';
+  $('btnFinish').style.display = 'none';
+  $('btnBuyCredits').style.display = 'none';
+  allComplete.classList.add('active');
+}
+
+function showCreditRequired() {
+  console.info('[Game] showCreditRequired');
+  $('allCompleteTitle').textContent = '💎 Kredi Gerekli';
+  $('allCompleteMsg').textContent = 'Yeni seviyelere geçmek için kredi satın almalısın.';
+  $('totalStarsText').style.display = 'none';
+  $('allCompleteSpinner').style.display = 'none';
+  $('btnFinish').style.display = 'none';
+  $('btnBuyCredits').style.display = '';
+  allComplete.classList.add('active');
+}
+
+function showRenewalError() {
+  console.info('[Game] showRenewalError');
+  $('allCompleteTitle').textContent = '⚠️ Hata';
+  $('allCompleteMsg').textContent = 'Yeni seviyeler hazırlanırken bir sorun oluştu. Lütfen tekrar dene.';
+  $('totalStarsText').style.display = 'none';
+  $('allCompleteSpinner').style.display = 'none';
+  $('btnFinish').style.display = '';
+  $('btnBuyCredits').style.display = 'none';
+  allComplete.classList.add('active');
+}
+
 $('btnFinish').addEventListener('click', function() {
   allComplete.classList.remove('active');
   notifyAndroid('finish', {});
+});
+
+$('btnBuyCredits').addEventListener('click', function() {
+  notifyAndroid('buyCredits', {});
 });
 
 // ── Utility ──────────────────────────────────────────────

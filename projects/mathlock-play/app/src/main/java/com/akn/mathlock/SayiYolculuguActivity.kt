@@ -2,6 +2,8 @@ package com.akn.mathlock
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -250,12 +252,26 @@ class SayiYolculuguActivity : AppCompatActivity() {
                         "allComplete" -> {
                             Log.i(TAG, "Tüm seviyeler tamamlandı: ${data.optInt("totalStars")}/${data.optInt("maxStars")} yıldız")
                             if (!isTestMode) {
-                                uploadLevelProgress(completedLevelIds.toList())
+                                uploadLevelProgress(completedLevelIds.toList()) { resp ->
+                                    val autoRenewal = resp.optBoolean("auto_renewal_started", false)
+                                    val creditsRemaining = resp.optInt("credits_remaining", -1)
+                                    Log.i(TAG, "allComplete response: autoRenewal=$autoRenewal, credits=$creditsRemaining")
+                                    if (autoRenewal) {
+                                        showRenewalLoading()
+                                        pollForNewSet()
+                                    } else {
+                                        showCreditRequired(creditsRemaining)
+                                    }
+                                }
+                            } else {
+                                clearLevelCacheAndReload()
                             }
-                            clearLevelCacheAndReload()
                         }
                         "finish" -> {
                             finish()
+                        }
+                        "buyCredits" -> {
+                            startActivity(android.content.Intent(this@SayiYolculuguActivity, AccountActivity::class.java))
                         }
                     }
                 } catch (e: Exception) {
@@ -265,7 +281,7 @@ class SayiYolculuguActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadLevelProgress(newlyCompletedIds: List<Int>) {
+    private fun uploadLevelProgress(newlyCompletedIds: List<Int>, onResult: ((JSONObject) -> Unit)? = null) {
         Thread {
             try {
                 val accountManager = AccountManager(this)
@@ -291,22 +307,12 @@ class SayiYolculuguActivity : AppCompatActivity() {
                 val response = apiClient.post("/levels/progress/", body)
                 val code = response.statusCode
                 val responseText = response.body.toString()
-                Log.i(TAG, "Level progress gönderildi (kod=$code, tamamlanan=${completedLevelIds.size})")
+                Log.i(TAG, "Level progress gönderildi (kod=$code, tamamlanan=${completedLevelIds.size}, body=$responseText)")
 
                 if (code in 200..299 && responseText.isNotBlank()) {
                     try {
                         val resp = JSONObject(responseText)
-                        val allCompleted = resp.optBoolean("all_completed", false)
-                        val autoRenewal = resp.optBoolean("auto_renewal_started", false)
-                        if (allCompleted && !autoRenewal) {
-                            runOnUiThread {
-                                Toast.makeText(
-                                    this@SayiYolculuguActivity,
-                                    "🏆 Tüm seviyeler tamamlandı! Yeni seviyeler için kredi satın alabilirsin.",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        }
+                        onResult?.let { runOnUiThread { it(resp) } }
                     } catch (_: Exception) {}
                 }
             } catch (e: Exception) {
@@ -322,5 +328,74 @@ class SayiYolculuguActivity : AppCompatActivity() {
             .edit().remove(KEY_CACHED_LEVELS).apply()
         Log.i(TAG, "Level cache temizlendi, yeni seviyeler çekiliyor...")
         loadLevelsIntoGame()
+    }
+
+    // ── Yeni set hazırlanana kadar polling ─────────────────────────────────
+
+    private fun showRenewalLoading() {
+        runOnUiThread {
+            webView.evaluateJavascript("showRenewalLoading();", null)
+        }
+    }
+
+    private fun showCreditRequired(creditsRemaining: Int) {
+        runOnUiThread {
+            webView.evaluateJavascript("showCreditRequired();", null)
+            Toast.makeText(
+                this,
+                "💎 Yeni seviyelere geçmek için kredi gerekli (kalan: $creditsRemaining)",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun showRenewalError() {
+        runOnUiThread {
+            webView.evaluateJavascript("showRenewalError();", null)
+        }
+    }
+
+    private fun pollForNewSet(attempt: Int = 0) {
+        if (attempt >= 20) {
+            Log.w(TAG, "Yeni set 60 sn içinde gelmedi, hata gösteriliyor")
+            showRenewalError()
+            return
+        }
+        Thread {
+            val levels = fetchLevels()
+            runOnUiThread {
+                if (levels != null) {
+                    try {
+                        val root = JSONObject(levels)
+                        val idsArr = root.optJSONArray("completed_level_ids")
+                        val completedCount = idsArr?.length() ?: 0
+                        val levelsArr = root.optJSONArray("levels")
+                        val totalLevels = levelsArr?.length() ?: 0
+                        if (completedCount < totalLevels) {
+                            Log.i(TAG, "Yeni set geldi! (tamamlanan=$completedCount / toplam=$totalLevels)")
+                            val escaped = levels
+                                .replace("\\", "\\\\")
+                                .replace("'", "\\'")
+                                .replace("\n", "\\n")
+                                .replace("\r", "")
+                            webView.evaluateJavascript("initGame('$escaped');", null)
+                        } else {
+                            Log.d(TAG, "Set hâlâ tamamlanmış, tekrar deneniyor (deneme=${attempt + 1})")
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                pollForNewSet(attempt + 1)
+                            }, 3000)
+                        }
+                    } catch (_: Exception) {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            pollForNewSet(attempt + 1)
+                        }, 3000)
+                    }
+                } else {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        pollForNewSet(attempt + 1)
+                    }, 3000)
+                }
+            }
+        }.start()
     }
 }
