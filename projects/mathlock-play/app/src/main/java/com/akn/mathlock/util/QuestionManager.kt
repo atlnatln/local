@@ -97,7 +97,8 @@ class QuestionManager(private val context: Context) {
                             if (q.id in pending) q.copy(solved = true) else q
                         }
                     }
-                    prefs.edit().putString(cacheKey(), json).apply()
+                    // Cache'e kaydederken pending ID'leri de dahil et
+                    prefs.edit().putString(cacheKey(), serializeQuestions()).apply()
                     buildRotationQueue()
                     _isJsonMode = true
                     Log.d(TAG, "API'den indirildi: ${rotationQueue.size} soru, batches=$_accessibleBatches, pending=${pending.size}")
@@ -124,6 +125,8 @@ class QuestionManager(private val context: Context) {
                 _allQuestions = _allQuestions.map { q ->
                     if (q.id in pending) q.copy(solved = true) else q
                 }
+                // pending ID'leri uyguladıktan sonra cache'i güncelle
+                prefs.edit().putString(cacheKey(), serializeQuestions()).apply()
             }
             buildRotationQueue()
             _isJsonMode = true
@@ -175,6 +178,30 @@ class QuestionManager(private val context: Context) {
         }
     }
 
+    /** Mevcut _allQuestions + _accessibleBatches'i JSON'a serialize et */
+    private fun serializeQuestions(): String {
+        val arr = JSONArray()
+        _allQuestions.forEach { q ->
+            val obj = JSONObject().apply {
+                put("id", q.id)
+                put("type", q.type)
+                put("text", q.text)
+                put("answer", q.answer)
+                put("difficulty", q.difficulty)
+                put("hint", q.hint)
+                put("batch", q.batch)
+                put("solved", q.solved)
+            }
+            arr.put(obj)
+        }
+        val batchesArr = JSONArray()
+        _accessibleBatches.forEach { batchesArr.put(it) }
+        return JSONObject().apply {
+            put("questions", arr)
+            put("accessible_batches", batchesArr)
+        }.toString()
+    }
+
     /**
      * Rotasyon sırasını oluştur:
      *   1. En yüksek batch'te çözülmemiş sorular (yeni içerik önce)
@@ -213,7 +240,7 @@ class QuestionManager(private val context: Context) {
 
     fun totalCount() = rotationQueue.size
     fun solvedCount() = _allQuestions.count { it.solved }
-    fun isSetComplete() = rotationQueue.isNotEmpty() && currentRotationIndex >= rotationQueue.size
+    fun isSetComplete() = _allQuestions.none { it.batch in _accessibleBatches && !it.solved }
     fun getVersion() = _accessibleBatches.maxOrNull() ?: 0
     fun accessibleBatches() = _accessibleBatches
 
