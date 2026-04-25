@@ -11,8 +11,8 @@ android {
         applicationId = "com.akn.mathlock.play"
         minSdk = 26
         targetSdk = 35
-        versionCode = 46
-        versionName = "1.0.46"
+        versionCode = 55
+        versionName = "1.0.52"
     }
 
     signingConfigs {
@@ -68,4 +68,6 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.json:json:20231013")
 }

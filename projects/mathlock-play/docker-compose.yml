@@ -38,6 +38,12 @@ services:
       - DB_PORT=5432
     volumes:
       - ./backend:/app
+      - ./data:/app/data
+      - ./ai-generate.sh:/app/ai-generate.sh
+      - ./ai-generate-levels.sh:/app/ai-generate-levels.sh
+      - ./validate-questions.py:/app/validate-questions.py
+      - ./validate-levels.py:/app/validate-levels.py
+      - ./agents:/app/agents
     networks:
       - default
       - vps_infrastructure_network

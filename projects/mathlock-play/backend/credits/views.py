@@ -40,10 +40,18 @@ def _sanitize_child_name(name: str) -> str:
 # ─── Soru Üretimi (kimi-cli + AGENTS.md) ──────────────────────────────────
 
 # Proje dizini: backend/ → üst dizin = mathlock-play/
+# NOT: Container'da BASE_DIR=/app olduğunda parent=/ olur.
+# Mount yapısına göre adaptif: önce parent dizini dene (lokal), yoksa BASE_DIR (container).
 _PROJECT_DIR = Path(settings.BASE_DIR).parent
+if not (_PROJECT_DIR / 'ai-generate.sh').exists():
+    _PROJECT_DIR = Path(settings.BASE_DIR)
+
 _DATA_DIR = _PROJECT_DIR / 'data'
+if not _DATA_DIR.exists():
+    _DATA_DIR = Path(settings.BASE_DIR) / 'data'
+
 _GENERATE_SCRIPT = _PROJECT_DIR / 'ai-generate.sh'
-_GENERATE_TIMEOUT = 180  # saniye
+_GENERATE_TIMEOUT = 1200  # saniye
 
 # Bulmaca seviye scripti
 _GENERATE_LEVELS_SCRIPT = _PROJECT_DIR / 'ai-generate-levels.sh'
@@ -401,7 +409,8 @@ def _auto_renew_levels(child_pk: int, credit_balance_pk: int, is_free: bool, lev
         )
     except Exception as exc:
         logger.error("Otomatik seviye yenileme hatası: %s", exc)
-        _refund_credit(credit_balance_pk, is_free)
+        if credit_balance_pk:
+            _refund_credit(credit_balance_pk, is_free)
     finally:
         _release_renewal_lock(child_pk, 'levels')
         from django.db import connection as _conn
@@ -672,6 +681,7 @@ def verify_purchase_view(request):
 
             if existing:
                 if existing.verified:
+                    _check_refunded_purchases(device)
                     credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
                     return Response({
                         'success': True,
@@ -697,6 +707,8 @@ def verify_purchase_view(request):
                     order_id=f"DEBUG_{purchase_token[:40]}",
                     credits_added=credits_to_add,
                     verified=True,
+                    purchase_state=0,
+                    last_verified_at=timezone.now(),
                     verification_response={"debug": True},
                 )
                 credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
@@ -719,8 +731,18 @@ def verify_purchase_view(request):
 
             verification = verify_purchase(purchase_token, product_id)
             record.verification_response = verification.get('raw_response', {})
+            record.purchase_state = verification.get('purchase_state', -1)
+            record.last_verified_at = timezone.now()
 
-            if verification.get('valid'):
+            if not verification.get('valid'):
+                error_msg = verification.get('error', 'Doğrulama başarısız')
+                logger.warning("Satın alma doğrulanamadı: device=%s, product=%s, error=%s, purchase_state=%s",
+                               device.installation_id[:12], product_id, error_msg, record.purchase_state)
+                record.save()
+                return Response({'success': False, 'error': error_msg},
+                                status=status.HTTP_402_PAYMENT_REQUIRED)
+
+            if record.purchase_state == 0:
                 record.verified = True
                 record.order_id = verification.get('order_id', '')
                 record.credits_added = credits_to_add
@@ -742,9 +764,10 @@ def verify_purchase_view(request):
                 })
             else:
                 record.save()
-                error_msg = verification.get('error', 'Doğrulama başarısız')
-                logger.warning("Satın alma doğrulanamadı: device=%s, error=%s",
-                               device.installation_id[:12], error_msg)
+                state_map = {1: 'Satın alma iade edilmiş veya iptal edilmiş', 2: 'Satın alma beklemede'}
+                error_msg = state_map.get(record.purchase_state, f'Satın alma geçersiz (state={record.purchase_state})')
+                logger.warning("Satın alma reddedildi: device=%s, product=%s, state=%s",
+                               device.installation_id[:12], product_id, record.purchase_state)
                 return Response({'success': False, 'error': error_msg},
                                 status=status.HTTP_402_PAYMENT_REQUIRED)
 
@@ -756,6 +779,52 @@ def verify_purchase_view(request):
             {'error': 'Bu token eşzamanlı başka bir istek tarafından işlendi, lütfen bakiyenizi kontrol edin'},
             status=status.HTTP_409_CONFLICT,
         )
+
+
+# ─── İade Kontrolü (Yardımcı Fonksiyon) ─────────────────────────────────────
+
+def _check_refunded_purchases(device):
+    """
+    Google Play'den iade edilmiş satın almaları kontrol et ve krediyi düşür.
+
+    Çalışma mantığı:
+      - verified=True olan PurchaseRecord'ları al
+      - purchase_state=-1 veya last_verified_at 24 saatten eskiyse tekrar doğrula
+      - purchase_state=1 (canceled) ise krediyi düşür, verified=False yap
+    """
+    from datetime import timedelta
+
+    for record in device.purchases.filter(verified=True):
+        needs_check = (
+            record.purchase_state == -1
+            or record.last_verified_at is None
+            or (timezone.now() - record.last_verified_at) > timedelta(hours=24)
+        )
+        if not needs_check:
+            continue
+
+        try:
+            verification = verify_purchase(record.purchase_token, record.product_id)
+            record.purchase_state = verification.get('purchase_state', -1)
+            record.last_verified_at = timezone.now()
+
+            if record.purchase_state == 1:  # canceled = iade edilmiş
+                credit_balance = CreditBalance.objects.filter(device=device).first()
+                if credit_balance and record.credits_added > 0:
+                    credit_balance.balance = max(0, credit_balance.balance - record.credits_added)
+                    credit_balance.total_purchased = max(0, credit_balance.total_purchased - record.credits_added)
+                    credit_balance.save()
+                    logger.warning(
+                        "Satın alma iade edildi, kredi düşürüldü: device=%s, order=%s, credits=%d",
+                        device.installation_id[:12], record.order_id, record.credits_added
+                    )
+                record.verified = False
+                record.save()
+            else:
+                record.save()
+        except Exception as e:
+            logger.error("İade kontrolü hatası: device=%s, error=%s",
+                         device.installation_id[:12], str(e))
 
 
 # ─── Kredi Sorgulama ────────────────────────────────────────────────────────
@@ -776,6 +845,8 @@ def get_credits(request):
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
         return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+
+    _check_refunded_purchases(device)
 
     credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
 
@@ -1875,14 +1946,38 @@ def update_level_progress(request):
     except (ValueError, TypeError):
         return Response({'error': 'completed_level_ids geçersiz'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Level set'i bul
+    # Level set'i bul, yoksa oluştur
     if set_id:
         level_set = LevelSet.objects.filter(pk=set_id, child=child).first()
     else:
         level_set = LevelSet.objects.filter(child=child).order_by('-version').first()
 
     if not level_set:
-        return Response({'error': 'Seviye seti bulunamadı'}, status=status.HTTP_404_NOT_FOUND)
+        # İlk erişim: static levels.json'dan kişisel set oluştur
+        try:
+            if _LEVELS_FILE.exists():
+                data = json.loads(_LEVELS_FILE.read_text(encoding='utf-8'))
+                levels = data.get('levels', [])[:_LEVELS_COUNT]
+            else:
+                levels = []
+        except Exception as e:
+            logger.error("levels.json okunamadı: %s", e)
+            levels = []
+
+        if not levels:
+            return Response(
+                {'error': 'Seviye verisi bulunamadı'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
+
+        level_set = LevelSet.objects.create(
+            child=child,
+            version=1,
+            levels_json=levels,
+            is_ai_generated=False,
+            credit_used=False,
+        )
+        logger.info("İlk seviye seti oluşturuldu (update_progress): child=%s", child.name)
 
     # İlerlemeyi güncelle
     existing = set(level_set.completed_level_ids or [])
@@ -1897,18 +1992,55 @@ def update_level_progress(request):
     auto_renewal_started = False
     credits_remaining = None
 
-    # Yeni ilerleme + tüm bitti + kredi var → otomatik yenile
-    if all_completed and len(new_completed) > 0:
-        success, is_free, cb_pk, credits_remaining = _deduct_credit_and_lock(
-            child.pk, device, 'levels'
-        )
-        if success:
-            auto_renewal_started = True
-            _run_in_background(_auto_renew_levels, child.pk, cb_pk, is_free, _build_level_stats(child))
+    # Yeni ilerleme + tüm bitti → otomatik yenile
+    # NOT: len(new_completed)>0 kontrolü kaldırıldı.
+    # Sebep: ilk yenileme başarısız olursa (örn. AI hata verirse) çocuk tekrar
+    # aynı seti bitirdiğinde new_completed boş kalıyor ve yenileme hiçbir
+    # zaman tekrar denenmiyordu (deadlock).
+    # Yerine: daha yüksek versiyonlu set var mı + kilit var mı kontrolü eklendi.
+    if all_completed:
+        has_newer = LevelSet.objects.filter(child=child, version__gt=level_set.version).exists()
+        lock_exists = RenewalLock.objects.filter(child_id=child.pk, content_type='levels').exists()
+
+        if has_newer:
             logger.info(
-                "Otomatik seviye yenileme başlatıldı: child=%s, is_free=%s",
-                child.name, is_free
+                "Seviye seti tamamlandı ama daha yeni set zaten mevcut: "
+                "child=%s, version=%d",
+                child.name, level_set.version
             )
+        elif lock_exists:
+            logger.info(
+                "Seviye seti tamamlandı ama yenileme zaten devam ediyor: "
+                "child=%s, version=%d",
+                child.name, level_set.version
+            )
+        else:
+            # Önce kredi düşmeyi dene (kredi varsa)
+            success, is_free, cb_pk, credits_remaining = _deduct_credit_and_lock(
+                child.pk, device, 'levels'
+            )
+            if success:
+                auto_renewal_started = True
+                _run_in_background(
+                    _auto_renew_levels, child.pk, cb_pk, is_free, _build_level_stats(child)
+                )
+                logger.info(
+                    "Otomatik seviye yenileme başlatıldı (kredili): "
+                    "child=%s, is_free=%s, version=%d → %d",
+                    child.name, is_free, level_set.version, level_set.version + 1
+                )
+            else:
+                # Kredi yoksa bile ücretsiz yenile — Sayı Yolculuğu her zaman devam edebilmeli
+                auto_renewal_started = True
+                credits_remaining = credits_remaining or 0
+                _run_in_background(
+                    _auto_renew_levels, child.pk, 0, True, _build_level_stats(child)
+                )
+                logger.info(
+                    "Otomatik seviye yenileme başlatıldı (ücretsiz): "
+                    "child=%s, version=%d → %d",
+                    child.name, level_set.version, level_set.version + 1
+                )
 
     return Response({
         'success': True,

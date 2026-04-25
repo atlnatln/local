@@ -363,8 +363,9 @@ let state = {
 function isAndroid() { return typeof Android !== 'undefined'; }
 
 function notifyAndroid(event, data) {
+  console.info('[Game] notifyAndroid: ' + event + ' data=' + JSON.stringify(data));
   if (isAndroid()) {
-    try { Android.onGameEvent(event, JSON.stringify(data)); } catch(e) {}
+    try { Android.onGameEvent(event, JSON.stringify(data)); } catch(e) { console.error('[Game] notifyAndroid error: ' + e); }
   }
 }
 
@@ -381,10 +382,14 @@ const allComplete = $('allComplete');
 
 // ── Init: receive levels from Android or use fallback ────
 function initGame(levelsJson) {
+  // Yeni set yüklendiğinde tamamlama ekranını gizle
+  allComplete.classList.remove('active');
   try {
+    console.info('[Game] initGame called');
     const data = typeof levelsJson === 'string' ? JSON.parse(levelsJson) : levelsJson;
     levels = data.levels || data;
     const completedIds = data.completed_level_ids || [];
+    console.info('[Game] levels count=' + levels.length + ' completedIds=' + JSON.stringify(completedIds));
 
     state.levelIdx = 0;
     state.progress = {};
@@ -638,6 +643,7 @@ function checkWin() {
       };
     }
 
+    console.info('[Game] checkWin: levelComplete idx=' + state.levelIdx + ' id=' + (lv.id || (state.levelIdx + 1)));
     notifyAndroid('levelComplete', {
       levelId: lv.id || (state.levelIdx + 1),
       stars: stars,
@@ -724,6 +730,7 @@ function showLevelSelect() {
 
 // ── All Complete ─────────────────────────────────────────
 function showAllComplete() {
+  console.info('[Game] showAllComplete called');
   var totalStars = 0;
   var maxStars = levels.length * 3;
   for (var k in state.progress) {

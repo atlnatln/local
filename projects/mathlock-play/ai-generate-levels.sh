@@ -197,7 +197,7 @@ while [ $ATTEMPT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
         echo -e "${RED}[HATA]${NC} kimi-cli bulunamadı!"
         exit 1
     fi
-    "$KIMI_BIN" -p "$PROMPT" --print --final-message-only --model kimi-code/kimi-for-coding 2>&1
+    "$KIMI_BIN" -p "$PROMPT" --print --final-message-only --no-thinking --model kimi-code/kimi-for-coding 2>&1
 
     # ─── 4. Doğrulama ───────────────────────────────────────
     echo -e "\n${YELLOW}[4/5] 🔍 Doğrulama çalıştırılıyor...${NC}"

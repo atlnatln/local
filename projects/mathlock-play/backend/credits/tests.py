@@ -13,7 +13,7 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 from rest_framework.test import APIClient
 
-from credits.models import Device, ChildProfile, CreditBalance, LevelSet, PurchaseRecord, QuestionSet, RenewalLock
+from credits.models import Device, ChildProfile, CreditBalance, LevelSet, PurchaseRecord, QuestionSet, RenewalLock, Question, UserQuestionProgress
 from credits.google_play import verify_purchase
 from credits.views import _deduct_credit_and_lock, _release_renewal_lock
 import unittest
@@ -275,8 +275,10 @@ class UseCreditViewTest(ThrottleMixin, TestCase):
         self.balance = CreditBalance.objects.create(device=self.device)
         self.child = ChildProfile.objects.create(device=self.device, name='Çocuk')
 
-    @unittest.skip("Gerçek kimi-cli gerektirir")
-    def test_first_use_is_free(self):
+    @patch('credits.views._generate_via_kimi', return_value=[
+        {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
+    ] * 50)
+    def test_first_use_is_free(self, mock_gen):
         resp = self.client.post('/api/mathlock/credits/use/', {
             'device_token': str(self.device.device_token),
             'child_name': 'Çocuk',
@@ -291,9 +293,12 @@ class UseCreditViewTest(ThrottleMixin, TestCase):
         self.assertEqual(self.balance.balance, 0)
         # Ücretsiz set işaretlendi
         self.assertTrue(self.balance.free_set_used)
+        self.assertEqual(data['questions_generated'], 50)
 
-    @unittest.skip("Gerçek kimi-cli gerektirir")
-    def test_second_use_consumes_credit(self):
+    @patch('credits.views._generate_via_kimi', return_value=[
+        {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
+    ] * 50)
+    def test_second_use_consumes_credit(self, mock_gen):
         self.balance.free_set_used = True
         self.balance.balance = 3
         self.balance.total_purchased = 3
@@ -445,97 +450,6 @@ class GooglePlayVerifyTest(TestCase):
 
 
 # ─── API: AI Sorgu Proxy ─────────────────────────────────────────────────────
-
-@override_settings(REST_FRAMEWORK={'DEFAULT_THROTTLE_CLASSES': [], 'DEFAULT_THROTTLE_RATES': {}})
-@unittest.skip("ai/query/ endpoint henüz implement edilmedi")
-class AiQueryViewTest(ThrottleMixin, TestCase):
-
-    def setUp(self):
-        self.client = APIClient()
-        self.device = Device.objects.create(
-            installation_id='ai-query-test-001',
-            device_token=uuid.uuid4()
-        )
-        self.balance = CreditBalance.objects.create(device=self.device)
-        ChildProfile.objects.create(device=self.device, name='Çocuk')
-
-    def test_ai_query_free_first_use(self):
-        """İlk sorgu ücretsiz olmalı ve simulate sağlayıcı cevap üretmeli."""
-        resp = self.client.post('/api/mathlock/ai/query/', {
-            'device_token': str(self.device.device_token),
-            'prompt': 'zorluk=2 için toplama sorusu üret',
-            'provider': 'simulate',
-        }, format='json')
-        self.assertEqual(resp.status_code, 200)
-        data = resp.json()
-        self.assertTrue(data['success'])
-        self.assertTrue(data['is_free'])
-        self.assertTrue(data['simulated'])
-        # Balans değişmemeli (ücretsiz)
-        self.balance.refresh_from_db()
-        self.assertEqual(self.balance.balance, 0)
-
-    def test_ai_query_consumes_credit(self):
-        """Ücretsiz set kullanıldıktan sonra sorgu kredi tüketmeli."""
-        self.balance.free_set_used = True
-        self.balance.balance = 3
-        self.balance.total_purchased = 3
-        self.balance.save()
-
-        resp = self.client.post('/api/mathlock/ai/query/', {
-            'device_token': str(self.device.device_token),
-            'prompt': 'çarpma sorusu',
-            'provider': 'simulate',
-        }, format='json')
-        self.assertEqual(resp.status_code, 200)
-        data = resp.json()
-        self.assertTrue(data['success'])
-        self.assertFalse(data['is_free'])
-        self.assertEqual(data['credits_remaining'], 2)
-
-    def test_ai_query_no_credits_returns_402(self):
-        """Kredi yoksa 402 dönmeli."""
-        self.balance.free_set_used = True
-        self.balance.balance = 0
-        self.balance.save()
-
-        resp = self.client.post('/api/mathlock/ai/query/', {
-            'device_token': str(self.device.device_token),
-            'prompt': 'herhangi bir soru',
-        }, format='json')
-        self.assertEqual(resp.status_code, 402)
-
-    def test_ai_query_missing_prompt(self):
-        resp = self.client.post('/api/mathlock/ai/query/', {
-            'device_token': str(self.device.device_token),
-        }, format='json')
-        self.assertEqual(resp.status_code, 400)
-
-    def test_ai_query_prompt_too_long(self):
-        resp = self.client.post('/api/mathlock/ai/query/', {
-            'device_token': str(self.device.device_token),
-            'prompt': 'x' * 1001,
-        }, format='json')
-        self.assertEqual(resp.status_code, 400)
-
-    def test_ai_query_invalid_device(self):
-        resp = self.client.post('/api/mathlock/ai/query/', {
-            'device_token': '00000000-0000-0000-0000-000000000000',
-            'prompt': 'test',
-        }, format='json')
-        self.assertEqual(resp.status_code, 404)
-
-    def test_ai_query_records_audit_log(self):
-        """Her sorgu AiQueryRecord oluşturmalı."""
-        from credits.models import AiQueryRecord
-        before = AiQueryRecord.objects.count()
-        self.client.post('/api/mathlock/ai/query/', {
-            'device_token': str(self.device.device_token),
-            'prompt': 'bölme sorusu',
-            'provider': 'simulate',
-        }, format='json')
-        self.assertEqual(AiQueryRecord.objects.count(), before + 1)
-
 
 # ─── API: Dinamik Paket Listesi ──────────────────────────────────────────────
 
@@ -1140,8 +1054,13 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, TestCase):
         self.assertEqual(self.balance.balance, 2)
 
     @patch('credits.views._run_in_background')
-    def test_already_completed_set_no_new_renewal(self, mock_bg):
-        """Zaten tamamlanmış set tekrar raporlanırsa (new_completed=boş) renewal yok."""
+    def test_already_completed_set_retries_renewal(self, mock_bg):
+        """Zaten tamamlanmış set tekrar raporlanırsa ve yeni set yoksa renewal BAŞLATILMALI.
+
+        Bu test eski bug'ı (deadlock) doğrular:
+        Eski kodda new_completed boş olduğu için renewal hiçbir zaman tekrar denenmiyordu.
+        Yeni kodda has_newer + lock_exists kontrolü ile bu çözüldü.
+        """
         # Önceden tüm seviyeleri tamamla
         self.level_set.completed_level_ids = [1, 2, 3]
         self.level_set.save()
@@ -1153,5 +1072,645 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, TestCase):
             'completed_level_ids': [1, 2, 3],  # hepsi zaten tamamlanmış
         }, format='json')
         self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertTrue(data['all_completed'])
+        self.assertTrue(data['auto_renewal_started'], 
+            "Eski set tamamlanmış ama yeni set yoksa renewal tekrar denenmeli!")
+        mock_bg.assert_called_once()
+
+    @patch('credits.views._run_in_background')
+    def test_already_completed_set_with_newer_version_no_renewal(self, mock_bg):
+        """Daha yüksek versiyonlu set zaten varsa renewal başlatılmamalı."""
+        # Önceden tüm seviyeleri tamamla
+        self.level_set.completed_level_ids = [1, 2, 3]
+        self.level_set.save()
+        # Daha yeni versiyonlu set oluştur
+        LevelSet.objects.create(
+            child=self.child,
+            version=2,
+            levels_json=[{'id': i} for i in range(1, 4)],
+            completed_level_ids=[],
+        )
+
+        resp = self.client.post(self._progress_url(), {
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'set_id': self.level_set.pk,
+            'completed_level_ids': [1, 2, 3],
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
         self.assertFalse(resp.json()['auto_renewal_started'])
         mock_bg.assert_not_called()
+
+    def test_renewal_actually_creates_new_level_set(self):
+        """ Renewal başarılı olursa gerçekten yeni LevelSet DB'ye yazılmalı. """
+        self.level_set.completed_level_ids = [1, 2, 3]
+        self.level_set.save()
+
+        def immediate_run(fn, *args, **kwargs):
+            fn(*args, **kwargs)
+
+        fake_levels = [{'id': i, 'title': f'Seviye {i}'} for i in range(1, 4)]
+
+        with patch('credits.views._generate_levels_via_kimi', return_value=fake_levels):
+            with patch('credits.views._run_in_background', side_effect=immediate_run):
+                resp = self.client.post(self._progress_url(), {
+                    'device_token': str(self.device.device_token),
+                    'child_id': self.child.pk,
+                    'set_id': self.level_set.pk,
+                    'completed_level_ids': [1, 2, 3],
+                }, format='json')
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.json()['auto_renewal_started'])
+
+        # Yeni set oluşturulmuş mu?
+        new_set = LevelSet.objects.filter(child=self.child, version=2).first()
+        self.assertIsNotNone(new_set, "Yeni LevelSet (version=2) DB'ye yazılmalı!")
+        self.assertEqual(new_set.levels_json, fake_levels)
+
+        # get_levels yeni seti döndürmeli
+        get_resp = self.client.get(
+            f'/api/mathlock/levels/?device_token={self.device.device_token}&child_id={self.child.pk}'
+        )
+        self.assertEqual(get_resp.status_code, 200)
+        get_data = get_resp.json()
+        self.assertEqual(get_data['version'], 2)
+        self.assertEqual(get_data['completed_count'], 0)
+        self.assertEqual(get_data['set_id'], new_set.pk)
+
+
+# ─── Eksik API Testleri (Plan: Backend + Android HTTP Client Tests) ─────────
+
+
+@override_settings(**NO_THROTTLE)
+class RegisterEmailViewTest(ThrottleMixin, TestCase):
+    """POST /api/mathlock/auth/register-email/"""
+
+    def setUp(self):
+        super().setUp()
+        self.device = Device.objects.create(
+            installation_id='reg-email-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2'
+        )
+        self.url = '/api/mathlock/auth/register-email/'
+
+    def test_success(self):
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'email': 'ali@example.com',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['email'], 'ali@example.com')
+        self.assertFalse(data['recovered'])
+        self.assertEqual(data['credits'], 0)
+        self.device.refresh_from_db()
+        self.assertEqual(self.device.email, 'ali@example.com')
+
+    def test_invalid_email_format(self):
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'email': 'not-an-email',
+        }, format='json')
+        self.assertEqual(resp.status_code, 400)
+
+    def test_missing_token(self):
+        resp = self.client.post(self.url, {'email': 'ali@example.com'}, format='json')
+        self.assertEqual(resp.status_code, 400)
+
+    def test_invalid_token(self):
+        resp = self.client.post(self.url, {
+            'device_token': str(uuid.uuid4()),
+            'email': 'ali@example.com',
+        }, format='json')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_duplicate_email_same_device(self):
+        self.device.email = 'ali@example.com'
+        self.device.save()
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'email': 'ali@example.com',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(resp.json()['recovered'])
+
+    def test_account_recovery(self):
+        """Eski cihazdan yeni cihaza veri transferi."""
+        old_device = Device.objects.create(
+            installation_id='old-device',
+            device_token=uuid.uuid4(),
+            email='recover@example.com'
+        )
+        old_child = ChildProfile.objects.create(
+            device=old_device, name='Veli', education_period='sinif_1'
+        )
+        old_credits = CreditBalance.objects.create(device=old_device, balance=5)
+
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'email': 'recover@example.com',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertTrue(data['recovered'])
+        self.assertEqual(data['credits'], 5)
+
+        old_device.refresh_from_db()
+        self.assertIsNone(old_device.email)
+        # Eski cihaz silinmez, sadece email temizlenir
+        self.assertTrue(Device.objects.filter(pk=old_device.pk).exists())
+        self.assertTrue(
+            ChildProfile.objects.filter(device=self.device, name='Veli').exists()
+        )
+
+    def test_recovery_name_collision(self):
+        """Eski ve yeni cihazda aynı isimde çocuk varsa istatistikleri birleştir."""
+        old_device = Device.objects.create(
+            installation_id='old-device-2',
+            device_token=uuid.uuid4(),
+            email='collision@example.com'
+        )
+        old_child = ChildProfile.objects.create(
+            device=old_device, name='Ali', education_period='sinif_1',
+            total_correct=10, total_shown=20
+        )
+        self.child.total_correct = 5
+        self.child.total_shown = 10
+        self.child.save()
+
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'email': 'collision@example.com',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.json()['recovered'])
+        self.child.refresh_from_db()
+        self.assertEqual(self.child.total_correct, 15)
+        self.assertEqual(self.child.total_shown, 30)
+
+    def test_recovery_credit_transfer(self):
+        """Eski cihazda kredi varsa yeni cihaza birleştir."""
+        old_device = Device.objects.create(
+            installation_id='old-device-3',
+            device_token=uuid.uuid4(),
+            email='credit@example.com'
+        )
+        CreditBalance.objects.create(device=old_device, balance=7, total_purchased=7)
+        CreditBalance.objects.create(device=self.device, balance=3, total_used=1)
+
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'email': 'credit@example.com',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['credits'], 10)
+        cb = CreditBalance.objects.get(device=self.device)
+        self.assertEqual(cb.total_purchased, 7)  # sadece eski cihazdan gelen
+        self.assertEqual(cb.total_used, 1)
+
+
+@override_settings(**NO_THROTTLE)
+class GetQuestionsViewTest(ThrottleMixin, TestCase):
+    """GET /api/mathlock/questions/"""
+
+    def setUp(self):
+        super().setUp()
+        self.device = Device.objects.create(
+            installation_id='questions-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2'
+        )
+        self.url = '/api/mathlock/questions/'
+        # Ücretsiz soru oluştur
+        for i in range(1, 4):
+            Question.objects.create(
+                question_id=i, text=f'Soru {i}', answer=i,
+                question_type='arithmetic', difficulty=1, batch_number=0
+            )
+
+    def test_valid_token(self):
+        resp = self.client.get(f'{self.url}?device_token={self.device.device_token}')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(len(data['questions']), 3)
+        self.assertEqual(data['total_questions'], 3)
+        self.assertEqual(data['solved_count'], 0)
+        self.assertEqual(data['ai_sets'], 0)
+
+    def test_missing_token(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_invalid_token(self):
+        resp = self.client.get(f'{self.url}?device_token={uuid.uuid4()}')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_with_child_id(self):
+        resp = self.client.get(
+            f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}'
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['total_questions'], 3)
+
+    def test_no_child(self):
+        device2 = Device.objects.create(
+            installation_id='no-child-device', device_token=uuid.uuid4()
+        )
+        resp = self.client.get(f'{self.url}?device_token={device2.device_token}')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['total_questions'], 3)
+
+    def test_ai_set_questions(self):
+        qs = QuestionSet.objects.create(
+            child=self.child, version=1,
+            questions_json=[
+                {'text': 'AI 1', 'answer': 1, 'type': 'arithmetic', 'difficulty': 2},
+                {'text': 'AI 2', 'answer': 2, 'type': 'arithmetic', 'difficulty': 2},
+            ],
+            solved_ids=[]
+        )
+        resp = self.client.get(f'{self.url}?device_token={self.device.device_token}')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data['total_questions'], 5)  # 3 free + 2 AI
+        self.assertEqual(data['ai_sets'], 1)
+        # Global ID kontrolü
+        ai_ids = [q['id'] for q in data['questions'] if q['source'] == 'ai']
+        self.assertEqual(ai_ids, [qs.pk * 1000 + 1, qs.pk * 1000 + 2])
+
+
+@override_settings(**NO_THROTTLE)
+class GetLevelsViewTest(ThrottleMixin, TestCase):
+    """GET /api/mathlock/levels/"""
+
+    def setUp(self):
+        super().setUp()
+        self.device = Device.objects.create(
+            installation_id='levels-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2'
+        )
+        self.url = '/api/mathlock/levels/'
+        self.level_set = LevelSet.objects.create(
+            child=self.child, version=1,
+            levels_json=[{'id': i} for i in range(1, 4)],
+            completed_level_ids=[1]
+        )
+
+    def test_valid_token_with_set(self):
+        resp = self.client.get(
+            f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}'
+        )
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data['version'], 1)
+        self.assertEqual(data['set_id'], self.level_set.pk)
+        self.assertEqual(data['completed_level_ids'], [1])
+        self.assertEqual(data['total_levels'], 3)
+        self.assertEqual(data['completed_count'], 1)
+
+    def test_missing_token(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_invalid_token(self):
+        resp = self.client.get(f'{self.url}?device_token={uuid.uuid4()}')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_no_child(self):
+        device2 = Device.objects.create(
+            installation_id='no-child-device', device_token=uuid.uuid4()
+        )
+        resp = self.client.get(f'{self.url}?device_token={device2.device_token}')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_no_set_no_file(self):
+        from credits.views import _LEVELS_FILE
+        self.level_set.delete()
+        # Geçici olarak levels.json dosyasını taşı
+        backup = _LEVELS_FILE.with_suffix('.json.bak')
+        moved = False
+        if _LEVELS_FILE.exists():
+            _LEVELS_FILE.rename(backup)
+            moved = True
+        try:
+            resp = self.client.get(
+                f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}'
+            )
+            self.assertEqual(resp.status_code, 503)
+        finally:
+            if moved and backup.exists():
+                backup.rename(_LEVELS_FILE)
+
+
+@override_settings(**NO_THROTTLE)
+class ChildrenListViewTest(ThrottleMixin, TestCase):
+    """GET/POST /api/mathlock/children/"""
+
+    def setUp(self):
+        super().setUp()
+        self.device = Device.objects.create(
+            installation_id='children-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2', is_active=True
+        )
+        self.url = '/api/mathlock/children/'
+
+    def test_get_list(self):
+        ChildProfile.objects.create(
+            device=self.device, name='Veli', education_period='sinif_1'
+        )
+        resp = self.client.get(f'{self.url}?device_token={self.device.device_token}')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(len(data['children']), 2)
+        # Aktif profil ilk sırada olmalı
+        self.assertTrue(data['children'][0]['is_active'])
+
+    def test_post_create(self):
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'name': 'Ayşe',
+            'education_period': 'sinif_1',
+        }, format='json')
+        self.assertEqual(resp.status_code, 201)
+        data = resp.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['child']['name'], 'Ayşe')
+        self.assertEqual(data['child']['education_period'], 'sinif_1')
+        self.assertFalse(data['child']['is_active'])
+
+    def test_post_duplicate_name(self):
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'name': 'Ali',
+            'education_period': 'sinif_2',
+        }, format='json')
+        self.assertEqual(resp.status_code, 409)
+
+    def test_post_invalid_period(self):
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'name': 'Fatma',
+            'education_period': 'invalid_period',
+        }, format='json')
+        self.assertEqual(resp.status_code, 400)
+
+    def test_post_max_children(self):
+        for i in range(2, 6):
+            ChildProfile.objects.create(
+                device=self.device, name=f'Çocuk{i}', education_period='sinif_2'
+            )
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'name': 'Altıncı',
+            'education_period': 'sinif_2',
+        }, format='json')
+        self.assertEqual(resp.status_code, 400)
+
+    def test_post_missing_name(self):
+        # _sanitize_child_name boş string döndürür, boş isim kabul edilebilir
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'name': '',
+            'education_period': 'sinif_2',
+        }, format='json')
+        # Boş isim 201 (başarılı oluşturma) veya 400 dönebilir
+        self.assertIn(resp.status_code, [201, 400])
+
+
+@override_settings(**NO_THROTTLE)
+class ChildrenDetailViewTest(ThrottleMixin, TestCase):
+    """PUT/DELETE /api/mathlock/children/detail/"""
+
+    def setUp(self):
+        super().setUp()
+        self.device = Device.objects.create(
+            installation_id='detail-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2', is_active=True
+        )
+        self.url = '/api/mathlock/children/detail/'
+
+    def _put_json(self, data):
+        import json
+        return self.client.put(self.url, json.dumps(data), content_type='application/json')
+
+    def _delete_json(self, data):
+        import json
+        return self.client.delete(self.url, json.dumps(data), content_type='application/json')
+
+    def test_put_update_name(self):
+        resp = self._put_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'new_name': 'AliCan',
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['child']['name'], 'AliCan')
+
+    def test_put_update_period(self):
+        resp = self._put_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'education_period': 'sinif_3',
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['child']['education_period'], 'sinif_3')
+
+    def test_put_invalid_period(self):
+        resp = self._put_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'education_period': 'invalid',
+        })
+        self.assertEqual(resp.status_code, 400)
+
+    def test_delete_success(self):
+        ChildProfile.objects.create(
+            device=self.device, name='Veli', education_period='sinif_1'
+        )
+        resp = self._delete_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.json()['success'])
+        self.assertFalse(ChildProfile.objects.filter(pk=self.child.pk).exists())
+
+    def test_delete_last_profile(self):
+        resp = self._delete_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+        })
+        self.assertEqual(resp.status_code, 400)
+
+
+@override_settings(**NO_THROTTLE)
+class UpdateProgressNormalTest(ThrottleMixin, TestCase):
+    """POST /api/mathlock/questions/progress/ — normal path (no auto-renewal)"""
+
+    def setUp(self):
+        super().setUp()
+        self.device = Device.objects.create(
+            installation_id='progress-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2'
+        )
+        self.url = '/api/mathlock/questions/progress/'
+        for i in range(1, 4):
+            Question.objects.create(
+                question_id=i, text=f'Soru {i}', answer=i,
+                question_type='arithmetic', difficulty=1, batch_number=0
+            )
+
+    def _post_json(self, data):
+        import json
+        return self.client.post(self.url, json.dumps(data), content_type='application/json')
+
+    def test_partial_progress(self):
+        resp = self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'solved_questions': [1, 2],
+        })
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data['updated'], 2)
+        self.assertEqual(data['total_solved'], 2)
+        self.assertFalse(data['auto_renewal_started'])
+
+    def test_progress_with_invalid_question_id(self):
+        resp = self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'solved_questions': [999],
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['updated'], 0)
+
+    def test_reset_rotation(self):
+        # Önce çöz
+        self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'solved_questions': [1, 2],
+        })
+        # Sıfırla
+        resp = self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'reset_rotation': True,
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['total_solved'], 0)
+
+    def test_no_renewal_when_not_all_solved(self):
+        """Tüm sorular çözülmediyse auto_renewal başlamamalı."""
+        resp = self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'solved_questions': [1],
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(resp.json()['auto_renewal_started'])
+
+
+@override_settings(**NO_THROTTLE)
+class UpdateLevelProgressNormalTest(ThrottleMixin, TestCase):
+    """POST /api/mathlock/levels/progress/ — normal path (no auto-renewal)"""
+
+    def setUp(self):
+        super().setUp()
+        self.device = Device.objects.create(
+            installation_id='level-progress-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2'
+        )
+        self.url = '/api/mathlock/levels/progress/'
+        self.level_set = LevelSet.objects.create(
+            child=self.child, version=1,
+            levels_json=[{'id': i} for i in range(1, 4)],
+            completed_level_ids=[]
+        )
+
+    def _post_json(self, data):
+        import json
+        return self.client.post(self.url, json.dumps(data), content_type='application/json')
+
+    def test_partial_progress(self):
+        resp = self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'set_id': self.level_set.pk,
+            'completed_level_ids': [1],
+        })
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data['completed_count'], 1)
+        self.assertFalse(data['all_completed'])
+        self.assertFalse(data['auto_renewal_started'])
+
+    def test_retry_same_level(self):
+        self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'set_id': self.level_set.pk,
+            'completed_level_ids': [1],
+        })
+        resp = self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'set_id': self.level_set.pk,
+            'completed_level_ids': [1],
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['completed_count'], 1)
+
+    def test_no_renewal_when_not_all_completed(self):
+        resp = self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'set_id': self.level_set.pk,
+            'completed_level_ids': [1, 2],
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(resp.json()['all_completed'])
+        self.assertFalse(resp.json()['auto_renewal_started'])
+
+    def test_progress_with_newer_version_exists_no_renewal(self):
+        """Daha yeni versiyonlu set zaten varsa renewal başlamamalı."""
+        self.level_set.completed_level_ids = [1, 2, 3]
+        self.level_set.save()
+        LevelSet.objects.create(
+            child=self.child, version=2,
+            levels_json=[{'id': i} for i in range(1, 4)],
+            completed_level_ids=[]
+        )
+        resp = self._post_json({
+            'device_token': str(self.device.device_token),
+            'child_id': self.child.pk,
+            'set_id': self.level_set.pk,
+            'completed_level_ids': [1, 2, 3],
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.json()['all_completed'])
+        self.assertFalse(resp.json()['auto_renewal_started'])

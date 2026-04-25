@@ -119,6 +119,11 @@ class PurchaseRecord(models.Model):
     credits_added = models.IntegerField(default=0)
     verified = models.BooleanField(default=False)
     consumed = models.BooleanField(default=False)
+    purchase_state = models.IntegerField(
+        default=-1,
+        help_text="Google Play purchaseState: 0=purchased, 1=canceled, 2=pending, -1=unknown"
+    )
+    last_verified_at = models.DateTimeField(null=True, blank=True)
     verification_response = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
