@@ -125,26 +125,15 @@ class RobotopiaActivity : AppCompatActivity() {
                             Log.d(TAG, "Seviye tamamlandı: ${data.optString("category")}/${data.optInt("levelIndex")}, " +
                                     "toplam: ${data.optInt("totalCompleted")}/${data.optInt("totalLevels")}")
 
-                            // Kilit modunda: belirli sayıda seviye tamamlanınca unlock
-                            if (!isPracticeMode && !isTestMode) {
-                                val passScore = com.akn.mathlock.util.PreferenceManager(this@RobotopiaActivity).passScore
-                                if (levelsCompleted >= passScore) {
-                                    unlockAndFinish()
-                                }
-                            }
+                            // NOT: Robotopia artık kilit açma amaçlı kullanılmıyor.
+                            // Kilit açma sadece MathChallengeActivity üzerinden yapılır.
                         }
                         "allComplete" -> {
                             Log.d(TAG, "Tüm seviyeler tamamlandı!")
-                            if (!isPracticeMode && !isTestMode) {
-                                unlockAndFinish()
-                            }
                         }
                         "finish" -> {
-                            if (isPracticeMode || isTestMode) {
-                                finish()
-                            } else {
-                                unlockAndFinish()
-                            }
+                            // Pratik/test modunda veya kilit modunda activity'i kapat
+                            finish()
                         }
                     }
                 } catch (e: Exception) {

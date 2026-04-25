@@ -64,7 +64,9 @@ class ChallengePickerActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // Matematik — görünürlük ebeveyn toggle'ına bağlı
+        // Sadece Matematik kilit açma ekranında gösterilir.
+        // Diğer oyunlar (Sayı Tahmin, Bulmaca, Robotopia) ana ekrandaki pratik modda
+        // erişilebilir ancak kilitli uygulama açmak için kullanılamaz.
         if (prefManager.isMathEnabled) {
             binding.cardMath.visibility = View.VISIBLE
             binding.cardMath.setOnClickListener {
@@ -78,47 +80,10 @@ class ChallengePickerActivity : AppCompatActivity() {
             binding.cardMath.visibility = View.GONE
         }
 
-        // Sayı Tahmin — görünürlük ebeveyn toggle'ına bağlı
-        if (prefManager.isGuessEnabled) {
-            binding.cardGuess.visibility = View.VISIBLE
-            binding.cardGuess.setOnClickListener {
-                val intent = Intent(this, NumberGuessActivity::class.java).apply {
-                    putExtra("locked_package", lockedPackage)
-                    putExtra("timer_expired", timerExpired)
-                }
-                startActivity(intent)
-            }
-        } else {
-            binding.cardGuess.visibility = View.GONE
-        }
-
-        // Bulmaca (Sayı Yolculuğu) — görünürlük ebeveyn toggle'ına bağlı
-        if (prefManager.isPuzzleEnabled) {
-            binding.cardPuzzle.visibility = View.VISIBLE
-            binding.cardPuzzle.setOnClickListener {
-                val intent = Intent(this, SayiYolculuguActivity::class.java).apply {
-                    putExtra("locked_package", lockedPackage)
-                    putExtra("timer_expired", timerExpired)
-                }
-                startActivity(intent)
-            }
-        } else {
-            binding.cardPuzzle.visibility = View.GONE
-        }
-
-        // Robotopia (Kodlama Macerası) — görünürlük ebeveyn toggle'ına bağlı
-        if (prefManager.isRobotopiaEnabled) {
-            binding.cardRobotopia.visibility = View.VISIBLE
-            binding.cardRobotopia.setOnClickListener {
-                val intent = Intent(this, RobotopiaActivity::class.java).apply {
-                    putExtra("locked_package", lockedPackage)
-                    putExtra("timer_expired", timerExpired)
-                }
-                startActivity(intent)
-            }
-        } else {
-            binding.cardRobotopia.visibility = View.GONE
-        }
+        // Kilit açma ekranında diğer oyunlar görünmez
+        binding.cardGuess.visibility = View.GONE
+        binding.cardPuzzle.visibility = View.GONE
+        binding.cardRobotopia.visibility = View.GONE
 
         binding.cardParent.setOnClickListener {
             showParentBiometricAuth()

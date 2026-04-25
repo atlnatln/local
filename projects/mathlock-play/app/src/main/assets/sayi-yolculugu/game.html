@@ -428,7 +428,10 @@ function getLevel() { return levels[state.levelIdx]; }
 
 function loadLevel() {
   const lv = getLevel();
-  if (!lv) return;
+  if (!lv) {
+    showAllComplete();
+    return;
+  }
 
   state.playerX = lv.startX;
   state.playerY = lv.startY;
@@ -628,9 +631,14 @@ function checkWin() {
     else if (usedCmds <= lv.stars[1]) stars = 2;
 
     playerEl.classList.add('success');
+    const isLastLevel = state.levelIdx >= levels.length - 1;
     setTimeout(function() {
       playerEl.classList.remove('success');
-      showWinOverlay(stars);
+      if (isLastLevel) {
+        showAllComplete();
+      } else {
+        showWinOverlay(stars);
+      }
     }, 500);
 
     const prev = state.progress[state.levelIdx];

@@ -110,25 +110,36 @@ Bu proje, MathLock uygulamasının Google Play Store'a uyumlu sürümüdür.
 ```
 📱 Telefon                          🖥️ VPS Sunucu
 ───────────                         ──────────────
-questions.json indir          ←──   nginx /mathlock/data/
+questions.json indir          ←──   Django REST API /api/mathlock/questions/
+levels.json indir             ←──   Django REST API /api/mathlock/levels/
 topics.json indir             ←──   konu anlatımları
 
-Çocuk 50 soru çözer
+Çocuk 50 matematik sorusu veya 12 bulmaca seviyesi çözer
   ├─ Doğru → kilit açılır
   ├─ Yanlış (1.) → 💡 ipucu
   ├─ Yanlış (2.) → 📚 konu anlatımı
   └─ Yanlış (3.) → doğru cevap gösterilir
 
-stats.json yükle              ──→   performans verisi
+stats / level-progress yükle  ──→   performans verisi
 
-                                    ai-generate.sh çalışır:
-                                    ├─ stats analiz et
-                                    ├─ kimi-cli yeni 50 soru üret
-                                    ├─ validate-questions.py doğrula
-                                    └─ questions.json güncelle
+                                    credits/use/ veya progress sonrası:
+                                    ├─ Kredi varsa (veya ilk set ücretsiz)
+                                    ├─ ai-generate.sh / ai-generate-levels.sh çalışır
+                                    ├─ kimi-cli yeni soru/seviye üretir
+                                    ├─ validate-questions.py / validate-levels.py doğrular
+                                    └─ QuestionSet / LevelSet DB'ye kaydeder
 
-Yeni set otomatik indirilir   ←──   yeni questions.json
+Yeni set otomatik indirilir   ←──   API'den yeni set
 ```
+
+### Kredi Sistemi (Google Play Billing)
+
+| Durum | Matematik (50 soru) | Sayı Yolculuğu (12 seviye) |
+|---|---|---|
+| İlk set | Ücretsiz | Ücretsiz |
+| Set biter + kredi var | `POST /credits/use/` → AI yeni 50 soru üretir | `POST /levels/progress/` → AI yeni 12 seviye üretir |
+| Set biter + kredi yok | Aynı sorular tekrar eder (sonsuz döngü) | Aynı seviyeler tekrar eder |
+| Satın alma | `BillingManager` → Google Play → kredi ekle | Aynı kredi havuzu kullanılır |
 
 ## Gerekli İzinler
 

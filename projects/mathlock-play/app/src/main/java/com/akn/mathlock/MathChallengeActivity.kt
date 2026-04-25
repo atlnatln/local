@@ -137,6 +137,13 @@ class MathChallengeActivity : AppCompatActivity() {
     }
 
     private fun showNextJsonQuestion() {
+        // Normal modda set tamamlandıysa onSetComplete çağır
+        // (nextQuestion() index'i 0'a resetler, null dönmez — bu yüzden önce kontrol et)
+        if (!isTestMode && !isPracticeMode && questionManager.isSetComplete()) {
+            onSetComplete()
+            return
+        }
+
         currentJsonQuestion = if (isTestMode) {
             questionManager.peekQuestion(testModeIndex)
         } else {
@@ -507,6 +514,13 @@ class MathChallengeActivity : AppCompatActivity() {
                     Log.d(TAG, "Kredi kullanıldı: kalan=${creditResult.creditsRemaining}, ücretsiz=${creditResult.isFree}, set_version=${creditResult.setVersion}")
                 } else {
                     Log.w(TAG, "Kredi kullanılamadı: ${creditResult.error}")
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@MathChallengeActivity,
+                            "🎉 50 soru tamamlandı! Yeni sorular için kredi satın alabilirsin.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
             // Soruları şimdi sync et — VPS'te yeni set hazır olunca sessizce çeker

@@ -170,10 +170,12 @@ class NumberGuessActivity : AppCompatActivity() {
         }
 
         if (sessionSolvedCount >= requiredCount) {
-            // Yeterli tur tamamlandı — kilidi aç
+            // Yeterli tur tamamlandı — aktiviteyi kapat
+            // NOT: Sayı Tahmin artık kilit açma amaçlı kullanılmıyor.
+            // Kilit açma sadece MathChallengeActivity üzerinden yapılır.
             binding.tvSuccess.visibility = View.VISIBLE
             binding.tvSuccess.text = getString(R.string.guess_correct, attempts)
-            binding.root.postDelayed({ unlockAndLaunchApp() }, 2000)
+            binding.root.postDelayed({ finish() }, 2000)
         } else {
             // Daha tur var — kısa mesaj, sonra yeni oyun
             binding.tvSuccess.visibility = View.VISIBLE
@@ -187,24 +189,6 @@ class NumberGuessActivity : AppCompatActivity() {
                 }
             }, 1500)
         }
-    }
-
-    private fun unlockAndLaunchApp() {
-        if (isTestMode) {
-            Toast.makeText(this, "Test başarılı! Uygulama açılacaktı.", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-
-        lockedPackage?.let { pkg ->
-            LockStateManager.notifyUnlocked(pkg)
-            AppLockService.removeBlockingOverlay()
-            val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
-            if (launchIntent != null) {
-                startActivity(launchIntent)
-            }
-        }
-        finish()
     }
 
     private fun setupListeners() {

@@ -154,6 +154,7 @@ class SayiYolculuguActivity : AppCompatActivity() {
                         val root = JSONObject(json)
                         currentSetId = root.optInt("set_id", 0).takeIf { it > 0 }
                         val idsArr = root.optJSONArray("completed_level_ids")
+                        completedLevelIds.clear()
                         if (idsArr != null) {
                             for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
                         }

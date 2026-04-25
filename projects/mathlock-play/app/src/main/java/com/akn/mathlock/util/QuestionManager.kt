@@ -90,10 +90,17 @@ class QuestionManager(private val context: Context) {
                 val json = conn.inputStream.bufferedReader().readText()
                 conn.disconnect()
                 if (parseApiResponse(json)) {
+                    // Bekleyen çözüm ID'lerini uygula (upload edilmemiş çözümler kaybolmasın)
+                    val pending = getPendingSolvedIds()
+                    if (pending.isNotEmpty()) {
+                        _allQuestions = _allQuestions.map { q ->
+                            if (q.id in pending) q.copy(solved = true) else q
+                        }
+                    }
                     prefs.edit().putString(cacheKey(), json).apply()
                     buildRotationQueue()
                     _isJsonMode = true
-                    Log.d(TAG, "API'den indirildi: ${rotationQueue.size} soru, batches=$_accessibleBatches")
+                    Log.d(TAG, "API'den indirildi: ${rotationQueue.size} soru, batches=$_accessibleBatches, pending=${pending.size}")
                     return true
                 }
             }

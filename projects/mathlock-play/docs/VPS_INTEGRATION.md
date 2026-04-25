@@ -50,24 +50,40 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 
 ---
 
-## Faz 1 — Backend API (Gelecek)
+## Faz 1 — Backend API (Aktif)
 
 ### VPS tarafı: `projects/mathlock-play/backend/`
-- **Teknoloji:** Django (anka/webimar ile tutarlı)
-- **Port:** 8003 (webimar: 8001, anka: 8002)
+- **Teknoloji:** Django REST Framework (anka/webimar ile tutarlı)
+- **Port:** 8003
 - **Docker:** `docker-compose.yml` → `mathlock_play_backend` servisi
+- **Veritabanı:** PostgreSQL (prod) / SQLite (dev)
 
-### Endpoint'ler (ilk aşama)
+### Aktif Endpoint'ler
 
 | Endpoint | Metot | Açıklama |
 |---|---|---|
 | `/api/mathlock/health/` | GET | Sağlık kontrolü |
-| `/api/mathlock/config/` | GET | Uygulama konfigürasyonu |
-| `/api/mathlock/stats/` | POST | Kullanım istatistikleri gönder (anonim) |
+| `/api/mathlock/register/` | POST | Cihaz kaydı (UUID → device_token) |
+| `/api/mathlock/purchase/verify/` | POST | Google Play satın alma doğrulama |
+| `/api/mathlock/credits/` | GET | Kredi bakiyesi sorgulama |
+| `/api/mathlock/credits/use/` | POST | 1 kredi düş → AI 50 soru üret |
+| `/api/mathlock/questions/` | GET | Ücretsiz + AI soruları listele (child-specific) |
+| `/api/mathlock/questions/progress/` | POST | Çözülen soruları raporla, tümü bittiyse auto-renew |
+| `/api/mathlock/levels/` | GET | Bulmaca seviye setini döndür (child-specific) |
+| `/api/mathlock/levels/progress/` | POST | Tamamlanan seviyeleri raporla, tümü bittiyse auto-renew |
+| `/api/mathlock/stats/` | POST | Performans istatistiklerini kaydet |
+| `/api/mathlock/children/` | GET/POST | Çocuk profili listele / oluştur |
+| `/api/mathlock/children/detail/` | PUT/DELETE | Profil güncelle / sil |
+| `/api/mathlock/children/report/` | GET | Performans raporu |
+| `/api/mathlock/packages/` | GET | Satın alma paketleri |
+| `/api/mathlock/auth/register-email/` | POST | Email ile hesap bağlama |
 
-### Android tarafı değişiklik
-- `PreferenceManager.kt`'ye `VPS_API_URL` tercihi ekle (varsayılan: `https://mathlock.com.tr/api/mathlock`)
-- `AppLockService.kt`'de arka planda periyodik stats push (isteğe bağlı, sadece onay verilirse)
+### Android tarafı entegrasyon (Tamamlanan)
+- `MathLockApi.kt` → Tüm API çağrıları (`registerDevice`, `useCredit`, `uploadStats`, vb.)
+- `CreditApiClient.kt` → Kredi kullanma istemcisi
+- `BillingManager.kt` + `BillingHelper.kt` → Google Play Billing entegrasyonu
+- `QuestionManager.kt` → API'den soru çekme + rotasyon + progress upload
+- `SayiYolculuguActivity` → `/levels/` ve `/levels/progress/` entegrasyonu
 
 ---
 
@@ -126,10 +142,56 @@ location /mathlock/health {
     return 200 "mathlock ok\n";
 }
 
-# Faz 1+ (backend eklenince)
+# Faz 1+ (backend aktif)
 location /api/mathlock/ {
     proxy_pass http://mathlock_play_backend:8003;
 }
+```
+
+---
+
+## VPS SSH Erişimi ve Debug
+
+Sunucuya bağlanmak için:
+
+```bash
+ssh akn@89.252.152.222
+```
+
+### Container Durumunu Kontrol Et
+
+```bash
+# Tüm mathlock servisleri
+docker ps | grep mathlock
+
+# Backend logları
+docker logs -f --tail 100 mathlock_backend
+
+# DB sorgusu (Django shell)
+docker exec -it mathlock_backend python manage.py shell
+
+# PostgreSQL doğrudan erişim
+docker exec -it mathlock_db psql -U mathlock -d mathlock
+```
+
+### Örnek: Kullanıcı Hesabını Kontrol Et
+
+```python
+# Django shell içinde
+from credits.models import Device, CreditBalance, ChildProfile, LevelSet, QuestionSet
+
+d = Device.objects.get(email='kullanici@email.com')
+cb = CreditBalance.objects.get(device=d)
+print(f"Kredi: {cb.balance}, Ücretsiz kullanıldı: {cb.free_set_used}")
+
+for child in d.children.all():
+    ls = LevelSet.objects.filter(child=child).order_by('-version').first()
+    qs = QuestionSet.objects.filter(child=child).order_by('-version').first()
+    print(f"Çocuk: {child.name}")
+    if ls:
+        print(f"  Seviyeler: v{ls.version}, {len(ls.completed_level_ids)}/{len(ls.levels_json)} tamamlandı")
+    if qs:
+        print(f"  Sorular: v{qs.version}, {len(qs.solved_ids or [])}/{len(qs.questions_json or [])} çözüldü")
 ```
 
 ---

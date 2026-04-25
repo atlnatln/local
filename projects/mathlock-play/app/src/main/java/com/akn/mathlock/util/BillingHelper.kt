@@ -41,6 +41,7 @@ class BillingHelper(
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     Log.d(TAG, "BillingClient connected")
                     listener.onBillingReady()
+                    queryPurchases() // Önceki consume edilmemiş satın almaları kontrol et
                     queryProducts()
                 } else {
                     Log.e(TAG, "BillingClient setup failed: ${result.debugMessage}")
@@ -57,6 +58,24 @@ class BillingHelper(
     fun disconnect() {
         billingClient?.endConnection()
         billingClient = null
+    }
+
+    private fun queryPurchases() {
+        val client = billingClient ?: return
+        val params = QueryPurchasesParams.newBuilder()
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build()
+
+        client.queryPurchasesAsync(params) { result, purchasesList ->
+            if (result.responseCode == BillingClient.BillingResponseCode.OK && purchasesList != null) {
+                for (purchase in purchasesList) {
+                    if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                        Log.d(TAG, "Önceki satın alma bulundu: ${purchase.products.firstOrNull()}")
+                        handlePurchase(purchase)
+                    }
+                }
+            }
+        }
     }
 
     private fun queryProducts() {
