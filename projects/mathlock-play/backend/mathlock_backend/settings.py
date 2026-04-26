@@ -50,25 +50,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mathlock_backend.wsgi.application'
 
-# Database — production'da PostgreSQL, dev'de SQLite
-if os.environ.get('DATABASE_URL'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'mathlock'),
-            'USER': os.environ.get('DB_USER', 'mathlock'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'HOST': os.environ.get('DB_HOST', 'localhost'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
-        }
+# Database — PostgreSQL only (SQLite removed for production consistency)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'mathlock'),
+        'USER': os.environ.get('DB_USER', 'mathlock'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 LANGUAGE_CODE = 'tr'
 TIME_ZONE = 'Europe/Istanbul'
