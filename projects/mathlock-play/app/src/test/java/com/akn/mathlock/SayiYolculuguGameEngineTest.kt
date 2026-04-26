@@ -61,7 +61,7 @@ class SayiYolculuguGameEngineTest {
                 !state.progress.containsKey(idx)
             }.let { if (it == -1) levels.size else it }
 
-            state.levelIdx = if (firstUncompleted < levels.size) firstUncompleted else 0
+            state.levelIdx = if (firstUncompleted < levels.size) firstUncompleted else levels.size
         }
         return state
     }
@@ -93,14 +93,15 @@ class SayiYolculuguGameEngineTest {
     }
 
     @Test
-    fun `10 seviyelik eski sette tamamlanan 10 seviye varsa basa donmeli`() {
-        // REGRESYON: initGame'de firstUncompleted == levels.length ise state.levelIdx = 0
+    fun `10 seviyelik eski sette tamamlanan 10 seviye varsa allComplete gosterilmeli`() {
+        // REGRESYON: initGame'de firstUncompleted == levels.length ise state.levelIdx = levels.size
+        // loadLevel() getLevel() null döndürür ve showAllComplete() gösterir
         val levels = (1..10).map { Level(id = it) }
         val completedIds = (1..10).toList()
 
         val state = initGameState(levels, completedIds)
 
-        assertEquals("10/10 tamamlandıysa başa dönmeli (yeni set bekleniyor)", 0, state.levelIdx)
+        assertEquals("10/10 tamamlandıysa levelIdx = levels.size (showAllComplete)", levels.size, state.levelIdx)
     }
 
     @Test

@@ -130,6 +130,7 @@ class SayiYolculuguActivity : AppCompatActivity() {
             val arr = JSONArray()
             completedLevelIds.sorted().forEach { arr.put(it) }
             root.put("completed_level_ids", arr)
+            currentSetId?.let { root.put("set_id", it) }
             root.toString()
         } catch (e: Exception) {
             json

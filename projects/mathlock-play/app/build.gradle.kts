@@ -11,7 +11,7 @@ android {
         applicationId = "com.akn.mathlock.play"
         minSdk = 26
         targetSdk = 35
-        versionCode = 55
+        versionCode = 58
         versionName = "1.0.52"
     }
 

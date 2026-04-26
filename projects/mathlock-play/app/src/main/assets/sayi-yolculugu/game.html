@@ -359,6 +359,51 @@ let state = {
   startTime: 0,
   attempts: 0,
 };
+let currentSignature = '';
+
+const STORAGE_KEY = 'sayiYolculuguState';
+
+function getSetSignature(data) {
+  if (data.set_id) return 'set_' + data.set_id;
+  if (levels.length > 0) {
+    const firstId = levels[0].id != null ? levels[0].id : 1;
+    return 'lv_' + firstId + '_' + levels.length;
+  }
+  return 'unknown';
+}
+
+function saveGameState() {
+  try {
+    const payload = {
+      signature: currentSignature,
+      levelIdx: state.levelIdx,
+      queue: state.queue,
+      attempts: state.attempts,
+      progress: state.progress,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch(e) {}
+}
+
+function restoreGameState(signature) {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const payload = JSON.parse(raw);
+    if (payload.signature !== signature) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return payload;
+  } catch(e) {
+    return null;
+  }
+}
+
+function clearGameState() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+}
 
 // ── Android Bridge ───────────────────────────────────────
 // Android injects `Android` object via @JavascriptInterface
@@ -393,6 +438,8 @@ function initGame(levelsJson) {
     const completedIds = data.completed_level_ids || [];
     console.info('[Game] levels count=' + levels.length + ' completedIds=' + JSON.stringify(completedIds));
 
+    currentSignature = getSetSignature(data);
+
     state.levelIdx = 0;
     state.progress = {};
 
@@ -412,8 +459,33 @@ function initGame(levelsJson) {
           break;
         }
       }
-      // Hepsi tamamlandıysa döngüyü sıfırla (yeni set bekleniyor)
-      state.levelIdx = firstUncompleted < levels.length ? firstUncompleted : 0;
+      // Hepsi tamamlandıysa levelIdx'yi levels.length yap (loadLevel showAllComplete göstersin)
+      state.levelIdx = firstUncompleted < levels.length ? firstUncompleted : levels.length;
+    }
+
+    // localStorage'den kaldığı yerden devam et
+    const restored = restoreGameState(currentSignature);
+    if (restored) {
+      const targetIdx = restored.levelIdx;
+      if (targetIdx >= 0 && targetIdx < levels.length) {
+        var lvId = levels[targetIdx].id != null ? levels[targetIdx].id : (targetIdx + 1);
+        var isCompleted = completedIds.indexOf(lvId) !== -1;
+        if (!isCompleted) {
+          state.levelIdx = targetIdx;
+          state.queue = restored.queue || [];
+          state.attempts = restored.attempts || 0;
+          if (restored.progress) {
+            Object.keys(restored.progress).forEach(function(k) {
+              var idx = parseInt(k);
+              if (!state.progress[idx] || (restored.progress[idx].stars > state.progress[idx].stars)) {
+                state.progress[idx] = restored.progress[idx];
+              }
+            });
+          }
+        } else {
+          clearGameState();
+        }
+      }
     }
   } catch(e) {
     levels = [];
@@ -438,10 +510,9 @@ function loadLevel() {
   state.playerX = lv.startX;
   state.playerY = lv.startY;
   state.playerVal = lv.startVal;
-  state.queue = [];
   state.running = false;
   state.startTime = Date.now();
-  state.attempts = 0;
+  // state.queue ve state.attempts'ı KORUYORUZ (initGame'den restore edilmiş olabilir)
 
   $('levelBadge').textContent = 'Seviye ' + (state.levelIdx + 1);
   $('levelTitle').textContent = lv.title || '';
@@ -533,6 +604,7 @@ function addCommand(cmdId) {
   if (state.running || state.queue.length >= lv.maxCmds) return;
   state.queue.push(cmdId);
   renderQueue();
+  saveGameState();
 }
 
 function renderQueue() {
@@ -555,9 +627,9 @@ function renderQueue() {
 
 // ── Execution ────────────────────────────────────────────
 $('btnRun').addEventListener('click', runProgram);
-$('btnClear').addEventListener('click', function() { if (!state.running) { state.queue = []; renderQueue(); } });
-$('btnUndo').addEventListener('click', function() { if (!state.running) { state.queue.pop(); renderQueue(); } });
-$('btnReset').addEventListener('click', function() { if (!state.running) loadLevel(); });
+$('btnClear').addEventListener('click', function() { if (!state.running) { state.queue = []; renderQueue(); saveGameState(); } });
+$('btnUndo').addEventListener('click', function() { if (!state.running) { state.queue.pop(); renderQueue(); saveGameState(); } });
+$('btnReset').addEventListener('click', function() { if (!state.running) { state.queue = []; state.attempts = 0; loadLevel(); saveGameState(); } });
 
 async function runProgram() {
   if (state.running || state.queue.length === 0) return;
@@ -661,6 +733,7 @@ function checkWin() {
       attempts: state.attempts,
       timeSeconds: Math.round((Date.now() - state.startTime) / 1000)
     });
+    saveGameState();
   } else {
     $('overlayTitle').textContent = '😕 Hedefine ulaşamadın';
     $('overlayStars').textContent = '';
@@ -669,6 +742,7 @@ function checkWin() {
       : 'Doğru konuma ulaşamadın. Tekrar dene!';
     $('btnNext').style.display = 'none';
     overlay.classList.add('active');
+    saveGameState();
   }
 
   state.running = false;
@@ -686,14 +760,20 @@ function showWinOverlay(stars) {
 
 $('btnRetry').addEventListener('click', function() {
   overlay.classList.remove('active');
+  state.queue = [];
+  state.attempts = 0;
   loadLevel();
+  saveGameState();
 });
 
 $('btnNext').addEventListener('click', function() {
   overlay.classList.remove('active');
   if (state.levelIdx < levels.length - 1) {
     state.levelIdx++;
+    state.queue = [];
+    state.attempts = 0;
     loadLevel();
+    saveGameState();
   } else {
     showAllComplete();
   }
@@ -762,6 +842,7 @@ function showAllComplete() {
     maxStars: maxStars,
     byLevel: state.progress
   });
+  clearGameState();
 }
 
 function showRenewalLoading() {
