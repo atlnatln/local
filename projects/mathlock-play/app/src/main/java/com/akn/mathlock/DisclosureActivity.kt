@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.databinding.ActivityDisclosureBinding
 import com.akn.mathlock.util.PreferenceManager
 
@@ -18,7 +17,7 @@ import com.akn.mathlock.util.PreferenceManager
  * - Overlay (SYSTEM_ALERT_WINDOW): soru ekranını ve geri sayım göstergesini göstermek için
  * - Matematik performans verisi: güvenli bağlantı (HTTPS) üzerinden AI soru kalitesini iyileştirmek için
  */
-class DisclosureActivity : AppCompatActivity() {
+class DisclosureActivity : BaseActivity() {
 
     private lateinit var binding: ActivityDisclosureBinding
     private lateinit var prefManager: PreferenceManager

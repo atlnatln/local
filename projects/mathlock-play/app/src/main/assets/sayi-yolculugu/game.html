@@ -339,6 +339,78 @@ body {
    Sayı Yolculuğu — WebView Game Engine
    ═══════════════════════════════════════════════════════════ */
 
+const I18N = {
+  tr: {
+    levelBadge: 'Seviye {n}',
+    commands: 'Komutlar',
+    program: 'Programın',
+    run: '▶ Çalıştır',
+    congrats: '🎉 Tebrikler!',
+    retry: '🔄 Tekrar',
+    next: '▶ Sonraki',
+    levelSelect: 'Seviye Seç',
+    close: 'Kapat',
+    allCompleteTitle: '🏆 Harika!',
+    allCompleteMsg: 'Tüm seviyeleri tamamladın!',
+    renewalLoading: '⏳ Yeni seviyeler hazırlanıyor...',
+    renewalLoadingMsg: 'Yapay zeka yeni bulmacalar üretiyor, lütfen bekleyin.',
+    creditRequired: '💎 Kredi Gerekli',
+    creditRequiredMsg: 'Yeni seviyelere geçmek için kredi satın almalısın.',
+    buyCredits: '💎 Kredi Satın Al',
+    error: '⚠️ Hata',
+    errorMsg: 'Yeni seviyeler hazırlanırken bir sorun oluştu. Lütfen tekrar dene.',
+    failTitle: '😕 Hedefine ulaşamadın',
+    failValueMsg: 'Sayın {playerVal} — ama hedef {targetVal} olmalıydı.',
+    failPosMsg: 'Doğru konuma ulaşamadın. Tekrar dene!',
+    winMsgs: ['İyi iş! 💪', 'Harika! 🌟', 'Mükemmel! 🏆'],
+    finish: 'Tamam',
+    targetDesc: 'Hedefe ulaş!',
+    cmdCount: '{current} / {max}',
+  },
+  en: {
+    levelBadge: 'Level {n}',
+    commands: 'Commands',
+    program: 'Your Program',
+    run: '▶ Run',
+    congrats: '🎉 Congratulations!',
+    retry: '🔄 Retry',
+    next: '▶ Next',
+    levelSelect: 'Select Level',
+    close: 'Close',
+    allCompleteTitle: '🏆 Great Job!',
+    allCompleteMsg: 'You completed all levels!',
+    renewalLoading: '⏳ Preparing new levels...',
+    renewalLoadingMsg: 'AI is generating new puzzles, please wait.',
+    creditRequired: '💎 Credits Required',
+    creditRequiredMsg: 'You need to buy credits to unlock new levels.',
+    buyCredits: '💎 Buy Credits',
+    error: '⚠️ Error',
+    errorMsg: 'Something went wrong while preparing new levels. Please try again.',
+    failTitle: "😕 You didn't reach the target",
+    failValueMsg: 'Your number is {playerVal} — but target should be {targetVal}.',
+    failPosMsg: "You didn't reach the right position. Try again!",
+    winMsgs: ['Good job! 💪', 'Great! 🌟', 'Excellent! 🏆'],
+    finish: 'OK',
+    targetDesc: 'Reach the target!',
+    cmdCount: '{current} / {max}',
+  }
+};
+
+let currentLocale = 'tr';
+
+function t(key, vars = {}) {
+  const dict = I18N[currentLocale] || I18N['tr'];
+  let text = dict[key] || I18N['tr'][key] || key;
+  Object.entries(vars).forEach(([k, v]) => {
+    text = text.replace(new RegExp('\\{' + k + '\\}', 'g'), v);
+  });
+  return text;
+}
+
+function setLocale(locale) {
+  currentLocale = I18N[locale] ? locale : 'tr';
+}
+
 const CMDS = {
   'x+': { label: 'x →', css: 'x-plus',  dx: 1,  dy: 0,  dz: 0 },
   'x-': { label: '← x', css: 'x-minus', dx: -1, dy: 0,  dz: 0 },
@@ -438,10 +510,31 @@ function initGame(levelsJson) {
     const completedIds = data.completed_level_ids || [];
     console.info('[Game] levels count=' + levels.length + ' completedIds=' + JSON.stringify(completedIds));
 
+    // Locale ve forceClear
+    if (data.locale) {
+      setLocale(data.locale);
+    }
+    if (data.forceClear) {
+      clearGameState();
+    }
+
     currentSignature = getSetSignature(data);
 
     state.levelIdx = 0;
     state.progress = {};
+
+    // Her zaman signature değişmişse veya forceClear varsa temizle
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (data.forceClear || parsed.signature !== currentSignature) {
+          clearGameState();
+        }
+      } catch(e) {
+        clearGameState();
+      }
+    }
 
     // Tamamlanan seviyeleri state.progress'e yükle ve ilk eksik seviyeyi bul
     if (completedIds.length > 0) {
@@ -491,6 +584,18 @@ function initGame(levelsJson) {
     levels = [];
   }
   if (levels.length === 0) return;
+
+  // Statik UI metinlerini locale'e göre güncelle
+  document.querySelector('.cmd-panel h3').textContent = t('commands');
+  document.querySelector('.cmd-queue-label h3').textContent = t('program');
+  $('btnRun').textContent = t('run');
+  $('btnRetry').textContent = t('retry');
+  $('btnNext').textContent = t('next');
+  document.querySelector('.level-select-card h2').textContent = t('levelSelect');
+  $('btnCloseLevels').textContent = t('close');
+  $('btnFinish').textContent = t('finish');
+  $('btnBuyCredits').textContent = t('buyCredits');
+
   loadLevel();
 }
 
@@ -514,14 +619,14 @@ function loadLevel() {
   state.startTime = Date.now();
   // state.queue ve state.attempts'ı KORUYORUZ (initGame'den restore edilmiş olabilir)
 
-  $('levelBadge').textContent = 'Seviye ' + (state.levelIdx + 1);
+  $('levelBadge').textContent = t('levelBadge', {n: state.levelIdx + 1});
   $('levelTitle').textContent = lv.title || '';
   updateStarsDisplay();
 
-  $('goalDesc').textContent = lv.desc || 'Hedefe ulaş!';
+  $('goalDesc').textContent = lv.desc || t('targetDesc');
   const valText = lv.targetVal != null ? ' = ' + lv.targetVal : '';
   $('goalDetail').textContent = lv.startVal + valText + ' → 🎯';
-  $('moveCounter').textContent = '0 / ' + lv.maxCmds;
+  $('moveCounter').textContent = t('cmdCount', {current: 0, max: lv.maxCmds});
 
   buildGrid(lv);
   updatePlayerPos(false);
@@ -735,11 +840,11 @@ function checkWin() {
     });
     saveGameState();
   } else {
-    $('overlayTitle').textContent = '😕 Hedefine ulaşamadın';
+    $('overlayTitle').textContent = t('failTitle');
     $('overlayStars').textContent = '';
     $('overlayMsg').textContent = posOk && !valOk
-      ? 'Sayın ' + state.playerVal + ' — ama hedef ' + lv.targetVal + ' olmalıydı.'
-      : 'Doğru konuma ulaşamadın. Tekrar dene!';
+      ? t('failValueMsg', {playerVal: state.playerVal, targetVal: lv.targetVal})
+      : t('failPosMsg');
     $('btnNext').style.display = 'none';
     overlay.classList.add('active');
     saveGameState();
@@ -750,10 +855,10 @@ function checkWin() {
 }
 
 function showWinOverlay(stars) {
-  $('overlayTitle').textContent = '🎉 Tebrikler!';
+  $('overlayTitle').textContent = t('congrats');
   $('overlayStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-  var msgs = ['İyi iş! 💪', 'Harika! 🌟', 'Mükemmel! 🏆'];
-  $('overlayMsg').textContent = msgs[stars - 1];
+  var msgs = t('winMsgs');
+  $('overlayMsg').textContent = Array.isArray(msgs) ? msgs[stars - 1] : 'Good job!';
   $('btnNext').style.display = state.levelIdx < levels.length - 1 ? '' : 'none';
   overlay.classList.add('active');
 }
@@ -826,8 +931,8 @@ function showAllComplete() {
   for (var k in state.progress) {
     if (state.progress[k].stars) totalStars += state.progress[k].stars;
   }
-  $('allCompleteTitle').textContent = '🏆 Harika!';
-  $('allCompleteMsg').textContent = 'Tüm seviyeleri tamamladın!';
+  $('allCompleteTitle').textContent = t('allCompleteTitle');
+  $('allCompleteMsg').textContent = t('allCompleteMsg');
   $('totalStarsText').textContent = '⭐ ' + totalStars + ' / ' + maxStars;
   $('totalStarsText').style.display = '';
   $('allCompleteSpinner').style.display = 'none';
@@ -847,8 +952,8 @@ function showAllComplete() {
 
 function showRenewalLoading() {
   console.info('[Game] showRenewalLoading');
-  $('allCompleteTitle').textContent = '⏳ Yeni seviyeler hazırlanıyor...';
-  $('allCompleteMsg').textContent = 'Yapay zeka yeni bulmacalar üretiyor, lütfen bekleyin.';
+  $('allCompleteTitle').textContent = t('renewalLoading');
+  $('allCompleteMsg').textContent = t('renewalLoadingMsg');
   $('totalStarsText').style.display = 'none';
   $('allCompleteSpinner').style.display = 'block';
   $('btnFinish').style.display = 'none';
@@ -858,8 +963,8 @@ function showRenewalLoading() {
 
 function showCreditRequired() {
   console.info('[Game] showCreditRequired');
-  $('allCompleteTitle').textContent = '💎 Kredi Gerekli';
-  $('allCompleteMsg').textContent = 'Yeni seviyelere geçmek için kredi satın almalısın.';
+  $('allCompleteTitle').textContent = t('creditRequired');
+  $('allCompleteMsg').textContent = t('creditRequiredMsg');
   $('totalStarsText').style.display = 'none';
   $('allCompleteSpinner').style.display = 'none';
   $('btnFinish').style.display = 'none';
@@ -869,8 +974,8 @@ function showCreditRequired() {
 
 function showRenewalError() {
   console.info('[Game] showRenewalError');
-  $('allCompleteTitle').textContent = '⚠️ Hata';
-  $('allCompleteMsg').textContent = 'Yeni seviyeler hazırlanırken bir sorun oluştu. Lütfen tekrar dene.';
+  $('allCompleteTitle').textContent = t('error');
+  $('allCompleteMsg').textContent = t('errorMsg');
   $('totalStarsText').style.display = 'none';
   $('allCompleteSpinner').style.display = 'none';
   $('btnFinish').style.display = '';

@@ -2,13 +2,12 @@ package com.akn.mathlock
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.akn.mathlock.databinding.ActivityParentAuthBinding
 
-class ParentAuthActivity : AppCompatActivity() {
+class ParentAuthActivity : BaseActivity() {
 
     private lateinit var binding: ActivityParentAuthBinding
 

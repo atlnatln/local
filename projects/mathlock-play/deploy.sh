@@ -40,6 +40,7 @@ BUILD_TYPE="debug"
 SKIP_ADB=true
 BUILD_ONLY=false
 SYNC_DATA_ONLY=false
+DEPLOY_BACKEND=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -47,12 +48,14 @@ while [[ $# -gt 0 ]]; do
         --adb)           SKIP_ADB=false; shift ;;
         --build-only)    BUILD_ONLY=true; SKIP_ADB=true; shift ;;
         --sync-data)     SYNC_DATA_ONLY=true; shift ;;
+        --backend)       DEPLOY_BACKEND=true; shift ;;
         --help)
             echo "Kullanım: $0 [seçenekler]"
             echo "  --release      Release AAB derle (keystore.jks gerekir)"
             echo "  --adb          Debug APK derle + USB ile telefona kur"
             echo "  --build-only   Sadece derle, yükleme yapma"
             echo "  --sync-data    Sadece VPS data sync (build yok)"
+            echo "  --backend      Backend container'larını yeniden derle ve başlat"
             exit 0
             ;;
         *) log_error "Bilinmeyen seçenek: $1"; exit 1 ;;
@@ -258,3 +261,21 @@ echo -e "${CYAN}Veri Endpoint'leri:${NC}"
 echo -e "  📊 Sorular: https://mathlock.com.tr/mathlock/data/questions.json"
 echo -e "  📚 Konular: https://mathlock.com.tr/mathlock/data/topics.json"
 echo -e "  ❤️  Sağlık:  https://mathlock.com.tr/mathlock/health"
+
+# ─── Backend Deploy ─────────────────────────────────────────────────────────
+if [ "$DEPLOY_BACKEND" = true ]; then
+    log_info "Backend deploy başlatılıyor..."
+    cd "$PROJECT_DIR"
+    docker-compose down
+    docker-compose up -d --build
+    sleep 5
+    docker exec mathlock_backend python manage.py migrate --noinput
+    docker exec mathlock_backend python manage.py compilemessages --ignore=.venv
+    docker exec mathlock_celery celery -A mathlock_backend inspect ping || log_warning "Celery worker yanıt vermiyor"
+    HEALTH=$(curl -s -o /dev/null -w "%{http_code}" https://mathlock.com.tr/api/mathlock/health/ || echo "000")
+    if [ "$HEALTH" = "200" ]; then
+        log_success "Backend sağlıklı (HTTP 200)"
+    else
+        log_warning "Backend health check başarısız (HTTP $HEALTH)"
+    fi
+fi

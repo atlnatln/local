@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.databinding.ActivityAccountBinding
 import com.akn.mathlock.util.AccountManager
 import com.akn.mathlock.util.BillingHelper
@@ -14,7 +13,7 @@ import com.android.billingclient.api.Purchase
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
-class AccountActivity : AppCompatActivity(), BillingHelper.BillingListener {
+class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
 
     private lateinit var binding: ActivityAccountBinding
     private lateinit var accountManager: AccountManager

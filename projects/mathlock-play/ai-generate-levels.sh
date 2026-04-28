@@ -43,6 +43,7 @@ DRY_RUN=false
 SKIP_SYNC=false
 VPS_MODE=false
 EDUCATION_PERIOD="sinif_2"
+LOCALE="tr"
 while [[ $# -gt 0 ]]; do
     case $1 in
         --dry-run)    DRY_RUN=true;  shift ;;
@@ -50,10 +51,12 @@ while [[ $# -gt 0 ]]; do
         --vps-mode)   VPS_MODE=true; shift ;;
         --period)     EDUCATION_PERIOD="$2"; shift 2 ;;
         --data-dir)   DATA_DIR="$2"; shift 2 ;;
+        --locale)     LOCALE="$2"; shift 2 ;;
         --help)
-            echo "Kullanım: $0 [--dry-run] [--skip-sync] [--vps-mode] [--period <dönem>] [--data-dir <dizin>]"
+            echo "Kullanım: $0 [--dry-run] [--skip-sync] [--vps-mode] [--period <dönem>] [--data-dir <dizin>] [--locale <tr|en|de|fr|es>]"
             echo "  --period   Eğitim dönemi: okul_oncesi|sinif_1|sinif_2|sinif_3|sinif_4"
             echo "  --data-dir level-stats/levels yazılacak dizin (varsayılan: ./data)"
+            echo "  --locale   Üretim dili (varsayılan: tr)"
             exit 0
             ;;
         *) echo "Bilinmeyen: $1"; exit 1 ;;
@@ -142,6 +145,7 @@ fi
 
 echo -e "  📦 Mevcut versiyon: v${CURRENT_VERSION} → v${NEW_VERSION}"
 echo -e "  🎯 Yaş grubu: ${AGE_GROUP}"
+echo -e "  🌐 Dil: ${LOCALE}"
 
 if [ "$DRY_RUN" = true ]; then
     echo -e "\n${YELLOW}--dry-run: kimi-cli çalıştırılmadı.${NC}"
@@ -173,9 +177,12 @@ ADIMLAR:
 PARAMETRELER:
 - Yaş grubu: ${AGE_GROUP}
 - Yeni version: ${NEW_VERSION}
+- Dil: ${LOCALE}
 - generatedAt: $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 KRİTİK KURALLAR:
+- Seviye başlıkları ve açıklamaları ${LOCALE} dilinde olmalıdır.
+- Language: ${LOCALE}
 - Sadece ${LEVELS_FILE} değiştir, başka dosyaya dokunma
 - Tam 12 seviye, her biri BFS ile çözülebilir olmalı
 - version = ${NEW_VERSION}

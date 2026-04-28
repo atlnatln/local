@@ -355,6 +355,35 @@ test_play_compliance() {
     fi
 }
 
+# ─── Test: Locale Ayarı ──────────────────────────────────────────────────────
+
+test_locale() {
+    section "Locale Testi"
+    local prefs
+    prefs=$(read_prefs 2>&1)
+    if echo "$prefs" | grep -q "app_locale"; then
+        local locale
+        locale=$(echo "$prefs" | grep "name=\"app_locale\"" | sed 's/.*>\(.*\)<\/string>/\1/' | tr -d '\r')
+        pass "Uygulama locale ayarı: $locale"
+    else
+        info "app_locale henüz ayarlanmamış — varsayılan kullanılıyor"
+    fi
+}
+
+# ─── Test: Backend Health Check ──────────────────────────────────────────────
+
+test_backend_health() {
+    section "Backend Health Check"
+    local health_url="https://mathlock.akn.app/api/mathlock/health/"
+    local status
+    status=$(curl -s -o /dev/null -w "%{http_code}" "$health_url" 2>/dev/null || echo "000")
+    if [[ "$status" == "200" ]]; then
+        pass "Backend health check OK (200)"
+    else
+        fail "Backend health check başarısız: HTTP $status"
+    fi
+}
+
 # ─── Özet ────────────────────────────────────────────────────────────────────
 
 print_summary() {
@@ -381,10 +410,14 @@ case "${1:-all}" in
     crash)      test_no_crashes ;;
     compliance) test_play_compliance ;;
     disclosure) test_disclosure ;;
+    locale)     test_locale ;;
+    backend)    test_backend_health ;;
     all)
         test_service_running
         test_prefs_readable
         test_disclosure
+        test_locale
+        test_backend_health
         test_no_crashes
         test_foreground_detection
         test_play_compliance
@@ -395,7 +428,7 @@ case "${1:-all}" in
         [[ "$run_timer" == "e" || "$run_timer" == "E" ]] && test_timer_expiry
         ;;
     *)
-        echo "Kullanım: $0 [all|timer|bypass|foreground|crash|compliance|disclosure]"
+        echo "Kullanım: $0 [all|timer|bypass|foreground|crash|compliance|disclosure|locale|backend]"
         exit 1
         ;;
 esac

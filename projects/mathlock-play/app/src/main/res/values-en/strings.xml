@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MathLock</string>
+    <string name="app_subtitle">Educational Parental Control</string>
+
+    <!-- Main Screen -->
+    <string name="service_status_active">🛡️ Protection Active</string>
+    <string name="service_status_inactive">⚠️ Protection Off</string>
+    <string name="btn_toggle_service">Toggle Protection</string>
+    <string name="btn_settings">⚙️ Settings</string>
+    <string name="btn_select_apps">📱 Locked Apps</string>
+    <string name="btn_test_math">🧮 Math Test</string>
+    <string name="btn_test_guess">🎯 Number Guess Test</string>
+
+    <!-- Game Selection -->
+    <string name="challenge_picker_title">Game Time! 🎮</string>
+    <string name="challenge_picker_subtitle">Pick a game and unlock!</string>
+    <string name="pick_math">🧮 Math Questions</string>
+    <string name="pick_guess">🎯 Number Guessing Game</string>
+    <string name="pick_parent">🫆 Parent Login</string>
+
+    <!-- Math -->
+    <string name="math_title">🧮 Math Questions</string>
+    <string name="math_subtitle">Answer correctly and unlock!</string>
+    <string name="math_score">Score: %1$d / %2$d</string>
+    <string name="math_question_num">Question %1$d / %2$d</string>
+    <string name="math_correct">Correct! Great job! ⭐</string>
+    <string name="math_wrong">Correct answer is %1$d — catch it next time! 💪</string>
+    <string name="math_success">🎉 Congratulations! You unlocked!</string>
+    <string name="math_fail">Almost there! Try again, you can do it! 💪</string>
+    <string name="btn_check">Check</string>
+    <string name="btn_next">Next →</string>
+    <string name="btn_skip">Skip →</string>
+    <string name="btn_retry">Try Again</string>
+
+    <!-- Practice Mode -->
+    <string name="practice_button_title">Solve Questions! 🌟</string>
+    <string name="practice_button_subtitle">Practice math, boost your score</string>
+    <string name="hint_answer">Type your answer…</string>
+
+    <!-- Number Guess -->
+    <string name="guess_title">🎯 Number Guessing Game</string>
+    <string name="guess_subtitle">I picked a number between 0 and %1$d, guess it!</string>
+    <string name="guess_higher">Higher! ⬆️</string>
+    <string name="guess_lower">Lower! ⬇️</string>
+    <string name="guess_correct">🎉 BRAVO! You found it in %1$d tries!</string>
+    <string name="guess_attempt">Attempt: %1$d</string>
+    <string name="guess_range">Range: %1$d – %2$d</string>
+    <string name="btn_guess">Guess</string>
+    <string name="hint_guess">Type your guess…</string>
+    <string name="guess_invalid">⚠️ Enter a number between 0 and %1$d!</string>
+
+    <!-- Parent Authentication -->
+    <string name="parent_auth_title">🫆 Parent Login</string>
+    <string name="parent_auth_subtitle">Verify your identity</string>
+    <string name="btn_fingerprint">Enter with Fingerprint</string>
+    <string name="btn_pin_login">Enter with PIN</string>
+    <string name="btn_pattern_login">Enter with Pattern</string>
+    <string name="pin_title">PIN Entry</string>
+    <string name="pin_hint">Enter 4-digit PIN</string>
+    <string name="pin_wrong">❌ Wrong PIN!</string>
+    <string name="pin_success">✅ Login successful!</string>
+    <string name="biometric_title">Fingerprint Verification</string>
+    <string name="biometric_subtitle">Place your finger on the sensor</string>
+    <string name="biometric_cancel">Cancel</string>
+
+    <!-- Settings -->
+    <string name="settings_title">⚙️ Settings</string>
+    <string name="settings_pin_section">PIN Settings</string>
+    <string name="settings_pin_hint">New 4-digit PIN</string>
+    <string name="settings_pin_confirm_hint">Re-enter PIN</string>
+    <string name="btn_save_pin">Save PIN</string>
+    <string name="pin_saved">✅ PIN saved!</string>
+    <string name="pin_mismatch">❌ PINs do not match!</string>
+    <string name="pin_too_short">⚠️ PIN must be at least 4 digits!</string>
+    <string name="settings_math_section">Math Settings</string>
+    <string name="settings_guess_max">Number Game Upper Limit: %1$d</string>
+    <string name="settings_guess_rounds">Number Guess: Rounds to solve: %1$d</string>
+    <string name="settings_unlock_duration_title">⏱️ Unlock Duration</string>
+    <string name="settings_unlock_duration_unlimited">Unlimited (no time limit)</string>
+    <string name="settings_unlock_duration_minutes">%1$d minutes</string>
+    <string name="settings_unlock_expired_title">When time expires:</string>
+    <string name="settings_relock">🔒 New question (relock)</string>
+    <string name="settings_close_app">🏠 Go to home screen and lock</string>
+    <string name="settings_pass_score">App Unlock Score: %1$d correct</string>
+    <string name="settings_levels_to_unlock">Number Journey Unlock: %1$d levels</string>
+    <string name="settings_difficulty">Difficulty Level</string>
+    <string name="settings_auth_section">Authentication</string>
+    <string name="settings_enable_fingerprint">Login with Fingerprint</string>
+    <string name="settings_enable_pin">Login with PIN</string>
+    <string name="settings_enable_pattern">Login with Pattern</string>
+
+    <!-- App Selection -->
+    <string name="app_selection_title">📱 Locked Applications</string>
+    <string name="app_selection_subtitle">Select the apps you want to lock</string>
+
+    <!-- Service -->
+    <string name="notification_channel_name">MathLock Protection</string>
+    <string name="notification_title">MathLock Active</string>
+    <string name="notification_text">Educational app lock is running</string>
+
+    <!-- General -->
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_back">Back</string>
+
+    <!-- Number Journey -->
+    <string name="credit_required_toast">💎 Credits required to unlock new levels (remaining: %1$d)</string>
+
+    <!-- Pattern Lock -->
+    <string name="pattern_title">Pattern Login</string>
+    <string name="pattern_draw">Draw your pattern</string>
+    <string name="pattern_wrong">❌ Wrong pattern!</string>
+    <string name="pattern_set_new">Set a new pattern</string>
+    <string name="pattern_confirm">Redraw the pattern</string>
+    <string name="pattern_saved">✅ Pattern saved!</string>
+    <string name="pattern_mismatch">❌ Patterns do not match!</string>
+
+    <!-- Data Usage Disclosure -->
+    <string name="disclosure_title">Data Usage Disclosure</string>
+    <string name="disclosure_subtitle">MathLock needs the following permissions to provide parental control. Please read before continuing.</string>
+
+    <string name="disclosure_apps_title">📱 Installed App List</string>
+    <string name="disclosure_apps_desc">Lists apps on the device so the parent can choose which to lock. This info is processed only on the device, never sent to any server, and not used for ads.</string>
+
+    <string name="disclosure_usage_title">📊 App Usage Status</string>
+    <string name="disclosure_usage_desc">Foreground app info is read to detect when a locked app is opened. This data is used only for the lock mechanism and is not recorded.</string>
+
+    <string name="disclosure_overlay_title">🪟 Screen Overlay</string>
+    <string name="disclosure_overlay_desc">Screen overlay permission is used to display the challenge screen and countdown when a locked app is opened.</string>
+
+    <string name="disclosure_stats_title">📈 Math Performance</string>
+    <string name="disclosure_stats_desc">Statistics such as correct/wrong ratio and solving time are sent securely over HTTPS. This data is used only to improve question quality. Child name, location, or personal info is not collected.</string>
+
+    <string name="disclosure_security_note">🔒 All data transfer is done over encrypted connection (HTTPS).\nApp list and usage data are never sent to the server.</string>
+
+    <string name="disclosure_privacy_link">Read Privacy Policy</string>
+    <string name="disclosure_accept">Accept and Continue</string>
+    <string name="disclosure_decline">Decline</string>
+</resources>

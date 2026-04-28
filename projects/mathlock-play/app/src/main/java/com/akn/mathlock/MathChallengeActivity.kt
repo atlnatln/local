@@ -7,7 +7,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.databinding.ActivityMathChallengeBinding
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.AccountManager
@@ -18,7 +17,7 @@ import com.akn.mathlock.util.StatsTracker
 import com.akn.mathlock.util.TopicHelper
 import com.akn.mathlock.util.CreditApiClient
 
-class MathChallengeActivity : AppCompatActivity() {
+class MathChallengeActivity : BaseActivity() {
 
     companion object {
         private const val TAG = "MathChallenge"

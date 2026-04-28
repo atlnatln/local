@@ -355,6 +355,9 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
   const [uploadedGeoJson, setUploadedGeoJson] = useState<any | null>(null);
   const [uploadedKmlName, setUploadedKmlName] = useState<string | null>(null);
   const [uploadedKmlError, setUploadedKmlError] = useState<string | null>(null);
+  const [manualLat, setManualLat] = useState<string>('');
+  const [manualLng, setManualLng] = useState<string>('');
+  const [coordinateInputError, setCoordinateInputError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_refreshHistoryTrigger, setRefreshHistoryTrigger] = useState<number>(0);
   const mapRef = useRef<MapRef>(null);
@@ -480,9 +483,13 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
       // Form submit işlemini tetikle
       setTimeout(() => {
         const form = document.querySelector('form');
-        if (form) {
-          console.log('🚀 CalculationPage - Form submit tetikleniyor (emsal türü değişikliği)');
-          form.dispatchEvent(new Event('submit', { bubbles: true }));
+        if (form && (form as HTMLFormElement).requestSubmit) {
+          console.log('🚀 CalculationPage - Form requestSubmit tetikleniyor (emsal türü değişikliği)');
+          (form as HTMLFormElement).requestSubmit();
+        } else if (form) {
+          // Fallback: eski yöntem (requestSubmit desteklenmiyorsa)
+          console.log('🚀 CalculationPage - Form dispatchEvent tetikleniyor (fallback)');
+          form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
         } else {
           console.error('❌ CalculationPage - Form bulunamadı, loading durumu sıfırlanıyor');
           setIsLoading(false);
@@ -506,7 +513,8 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
     setIsManualSelection(false); // Manuel seçim flag'ini sıfırla
     
     console.log('✅ CalculationPage - calculationType değişiminde sıfırlama tamamlandı');
-  }, [calculationType, setSelectedPoint]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calculationType]); // setSelectedPoint dependency kaldırıldı - gereksiz re-render'lara neden oluyordu
 
   const handleMapClick = (coordinate: {lat: number, lng: number}) => {
     setSelectedPoint(coordinate);
@@ -599,6 +607,46 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
     setIsManualSelection(false);
     
     console.log(`📍 ${location.mahalle}, ${location.ilce}, ${location.il} seçildi (zoom: ${zoomLevel}) - Marker gösterilmiyor`);
+  };
+
+  const handleCoordinateSubmit = () => {
+    setCoordinateInputError(null);
+    
+    const lat = parseFloat(manualLat.trim().replace(',', '.'));
+    const lng = parseFloat(manualLng.trim().replace(',', '.'));
+    
+    if (isNaN(lat) || isNaN(lng)) {
+      setCoordinateInputError('Lütfen geçerli sayısal değerler girin.');
+      return;
+    }
+    
+    if (lat < -90 || lat > 90) {
+      setCoordinateInputError('Enlem değeri -90 ile 90 arasında olmalıdır.');
+      return;
+    }
+    
+    if (lng < -180 || lng > 180) {
+      setCoordinateInputError('Boylam değeri -180 ile 180 arasında olmalıdır.');
+      return;
+    }
+    
+    // Türkiye yaklaşık sınırları kontrolü (opsiyonel uyarı)
+    if (lat < 35 || lat > 43 || lng < 25 || lng > 45) {
+      console.warn('⚠️ Girilen koordinat Türkiye sınırları dışında görünüyor');
+    }
+    
+    const coordinate = { lat, lng };
+    
+    // Haritada konuma git
+    if (mapRef.current) {
+      mapRef.current.zoomToLocation(lat, lng, 16);
+    }
+    
+    // Konumu seç
+    setSelectedPoint(coordinate);
+    setIsManualSelection(true);
+    
+    console.log('📍 Manuel koordinat girildi:', coordinate);
   };
 
   // Sayfa başlığını dinamik olarak ayarla
@@ -721,6 +769,99 @@ const CalculationPageContent: React.FC<CalculationPageProps> = ({
                 {uploadedKmlError}
               </div>
             )}
+          </div>
+
+          {/* Koordinat Girişi */}
+          <div style={{
+            marginBottom: window.innerWidth <= 600 ? '12px' : '16px',
+            padding: window.innerWidth <= 600 ? '12px' : '16px',
+            background: '#f8f9fa',
+            borderRadius: window.innerWidth <= 600 ? '6px' : '8px',
+            border: '1px solid #e9ecef'
+          }}>
+            <div style={{
+              marginBottom: window.innerWidth <= 600 ? '6px' : '8px',
+              fontSize: window.innerWidth <= 600 ? '12px' : '14px',
+              fontWeight: '600',
+              color: '#2c3e50'
+            }}>
+              🌐 Koordinat ile Konuma Git
+            </div>
+            <div style={{
+              display: 'flex',
+              gap: window.innerWidth <= 600 ? '6px' : '8px',
+              flexWrap: 'wrap',
+              alignItems: 'center'
+            }}>
+              <input
+                type="text"
+                placeholder="Enlem (örn: 38.1436)"
+                value={manualLat}
+                onChange={(e) => setManualLat(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleCoordinateSubmit()}
+                style={{
+                  flex: '1 1 120px',
+                  padding: window.innerWidth <= 600 ? '6px 8px' : '8px 10px',
+                  fontSize: window.innerWidth <= 600 ? '12px' : '13px',
+                  border: '1px solid #ced4da',
+                  borderRadius: 6,
+                  outline: 'none'
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Boylam (örn: 28.7727)"
+                value={manualLng}
+                onChange={(e) => setManualLng(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleCoordinateSubmit()}
+                style={{
+                  flex: '1 1 120px',
+                  padding: window.innerWidth <= 600 ? '6px 8px' : '8px 10px',
+                  fontSize: window.innerWidth <= 600 ? '12px' : '13px',
+                  border: '1px solid #ced4da',
+                  borderRadius: 6,
+                  outline: 'none'
+                }}
+              />
+              <button
+                onClick={handleCoordinateSubmit}
+                style={{
+                  padding: window.innerWidth <= 600 ? '6px 12px' : '8px 16px',
+                  fontSize: window.innerWidth <= 600 ? '12px' : '13px',
+                  fontWeight: 600,
+                  background: '#3498db',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap'
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.background = '#2980b9')}
+                onMouseOut={(e) => (e.currentTarget.style.background = '#3498db')}
+              >
+                📍 Git
+              </button>
+            </div>
+            {coordinateInputError && (
+              <div style={{
+                marginTop: 6,
+                fontSize: window.innerWidth <= 600 ? '11px' : '12px',
+                color: '#842029',
+                background: '#f8d7da',
+                border: '1px solid #f5c2c7',
+                borderRadius: 6,
+                padding: '6px 8px'
+              }}>
+                {coordinateInputError}
+              </div>
+            )}
+            <div style={{
+              marginTop: 6,
+              fontSize: window.innerWidth <= 600 ? '10px' : '11px',
+              color: '#6c757d'
+            }}>
+              💡 Decimal degrees formatında girin (örn: 38.143640, 28.772688)
+            </div>
           </div>
 
           <MapComponent

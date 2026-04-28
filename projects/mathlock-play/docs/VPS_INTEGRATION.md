@@ -1,5 +1,9 @@
 # MathLock Play — VPS Entegrasyon Planı
 
+> **Son güncelleme:** 26 Nisan 2026 — Redis + Celery, i18n, deploy --backend
+
+---
+
 ## Mevcut Durum (Aktif)
 
 Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
@@ -8,23 +12,27 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 
 ```
 📱 Telefon (com.akn.mathlock.play)
-   ├─ Soru indirme:  GET  https://mathlock.com.tr/mathlock/data/questions.json
-   ├─ Konu indirme:  GET  https://mathlock.com.tr/mathlock/data/topics.json
-   ├─ Stats yükleme: PUT  https://mathlock.com.tr/mathlock/data/stats.json
-   └─ Sağlık:        GET  https://mathlock.com.tr/mathlock/health
+   ├─ Soru indirme:  GET  https://mathlock.com.tr/api/mathlock/questions/
+   ├─ Seviye indirme: GET  https://mathlock.com.tr/api/mathlock/levels/
+   ├─ Stats yükleme:  POST https://mathlock.com.tr/api/mathlock/stats/
+   └─ Sağlık:         GET  https://mathlock.com.tr/api/mathlock/health/
 
 🖥️ VPS (nginx — mathlock.com.tr)
    ├─ SSL: Let's Encrypt (certbot)
    ├─ Web: /var/www/mathlock/website/ (privacy, support sayfaları)
-   ├─ Data: /var/www/mathlock/data/ (questions.json, topics.json, stats.json)
+   ├─ API: /api/mathlock/ → Django backend (port 8003)
    └─ Conf: infrastructure/nginx/conf.d/mathlock-play.conf
 
-🤖 AI Pipeline (otomatik)
-   ├─ VPS cron: */5 * * * * mathlock-trigger.sh
-   │   └─ stats.json varsa → ai-generate.sh --vps-mode
-   ├─ Local monitor: mathlock-monitor.sh (systemd user service)
-   │   └─ VPS'teki stats izler → ai-generate.sh yerel
-   └─ kimi-cli: AGENTS.md kurallarıyla 50 soru üretir
+🐳 Docker Compose (4 servis)
+   ├─ mathlock_db      — PostgreSQL 16 (named volume, kalıcı)
+   ├─ mathlock_backend — Django + gunicorn
+   ├─ mathlock_redis   — Redis 7 (Celery broker)
+   └─ mathlock_celery  — Celery worker (AI üretim task'ları)
+
+🤖 AI Pipeline (Celery task queue)
+   ├─ levels/progress/  → generate_level_set.delay()
+   ├─ questions/progress/ → generate_question_set.delay()
+   └─ Celery worker → kimi-cli → questions.json / levels.json → DB
 ```
 
 ### VPS Dizin Yapısı:
@@ -32,8 +40,8 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 | VPS Yolu | İçerik | Kaynak |
 |----------|--------|--------|
 | `/var/www/mathlock/website/` | index.html, privacy.html, support.html | `website/` dizini |
-| `/var/www/mathlock/data/` | questions.json, topics.json, stats.json | AI pipeline |
-| nginx conf | mathlock.com.tr HTTPS config | `website/nginx-mathlock.conf` |
+| `docker-compose.yml` | 4 servis (db, backend, redis, celery) | `projects/mathlock-play/` |
+| nginx conf | mathlock.com.tr HTTPS + /api/mathlock proxy | `infrastructure/nginx/conf.d/mathlock-play.conf` |
 
 ### Deploy Akışı:
 
@@ -46,6 +54,9 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 
 # Sadece data sync
 ./deploy.sh --sync-data
+
+# Backend deploy (docker-compose, migrate, compilemessages, Celery health check)
+./deploy.sh --backend
 ```
 
 ---
@@ -55,22 +66,25 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 ### VPS tarafı: `projects/mathlock-play/backend/`
 - **Teknoloji:** Django REST Framework (anka/webimar ile tutarlı)
 - **Port:** 8003
-- **Docker:** `docker-compose.yml` → `mathlock_play_backend` servisi
-- **Veritabanı:** PostgreSQL (prod) / SQLite (dev)
+- **Docker:** `docker-compose.yml` → `mathlock_backend` + `mathlock_redis` + `mathlock_celery`
+- **Veritabanı:** PostgreSQL (named volume `mathlock_pgdata` — deploy'da silinmez)
+- **Cache/Queue:** Redis 7 (`redis://mathlock_redis:6379/0`)
+- **i18n:** `gettext_lazy` semantic keys + `.po/.mo` dosyaları; `compilemessages` deploy'da otomatik
 
 ### Aktif Endpoint'ler
 
 | Endpoint | Metot | Açıklama |
 |---|---|---|
 | `/api/mathlock/health/` | GET | Sağlık kontrolü |
-| `/api/mathlock/register/` | POST | Cihaz kaydı (UUID → device_token) |
+| `/api/mathlock/register/` | POST | Cihaz kaydı (UUID → device_token). `locale` parametresi kabul eder. |
 | `/api/mathlock/purchase/verify/` | POST | Google Play satın alma doğrulama |
 | `/api/mathlock/credits/` | GET | Kredi bakiyesi sorgulama |
-| `/api/mathlock/credits/use/` | POST | 1 kredi düş → AI 50 soru üret |
-| `/api/mathlock/questions/` | GET | Ücretsiz + AI soruları listele (child-specific) |
+| `/api/mathlock/credits/use/` | POST | 1 kredi düş → AI 50 soru üret (Celery task) |
+| `/api/mathlock/questions/` | GET | Ücretsiz + AI soruları listele (child-specific, `?locale=` destekli) |
 | `/api/mathlock/questions/progress/` | POST | Çözülen soruları raporla, tümü bittiyse auto-renew |
-| `/api/mathlock/levels/` | GET | Bulmaca seviye setini döndür (child-specific) |
+| `/api/mathlock/levels/` | GET | Bulmaca seviye setini döndür (child-specific, `?locale=` destekli) |
 | `/api/mathlock/levels/progress/` | POST | Tamamlanan seviyeleri raporla, tümü bittiyse auto-renew |
+| `/api/mathlock/jobs/<job_id>/status/` | GET | Celery job durum sorgusu (PENDING / SUCCESS / FAILURE) |
 | `/api/mathlock/stats/` | POST | Performans istatistiklerini kaydet |
 | `/api/mathlock/children/` | GET/POST | Çocuk profili listele / oluştur |
 | `/api/mathlock/children/detail/` | PUT/DELETE | Profil güncelle / sil |
@@ -84,6 +98,8 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 - `BillingManager.kt` + `BillingHelper.kt` → Google Play Billing entegrasyonu
 - `QuestionManager.kt` → API'den soru çekme + rotasyon + progress upload
 - `SayiYolculuguActivity` → `/levels/` ve `/levels/progress/` entegrasyonu
+- `BaseActivity` → Tüm Activity'ler `AppCompatActivity` yerine `BaseActivity` extend ediyor (locale wrapping)
+- `LocaleHelper.kt` + `PreferenceManager.appLocale` → Android tarafı i18n
 
 ---
 
@@ -167,6 +183,15 @@ docker ps | grep mathlock
 # Backend logları
 docker logs -f --tail 100 mathlock_backend
 
+# Celery worker logları
+docker logs -f --tail 100 mathlock_celery
+
+# Redis kontrol
+docker exec mathlock_redis redis-cli ping
+
+# Celery health check
+docker exec mathlock_celery celery -A mathlock_backend inspect ping
+
 # DB sorgusu (Django shell)
 docker exec -it mathlock_backend python manage.py shell
 
@@ -187,7 +212,7 @@ print(f"Kredi: {cb.balance}, Ücretsiz kullanıldı: {cb.free_set_used}")
 for child in d.children.all():
     ls = LevelSet.objects.filter(child=child).order_by('-version').first()
     qs = QuestionSet.objects.filter(child=child).order_by('-version').first()
-    print(f"Çocuk: {child.name}")
+    print(f"Çocuk: {child.name}, Locale: {child.locale}")
     if ls:
         print(f"  Seviyeler: v{ls.version}, {len(ls.completed_level_ids)}/{len(ls.levels_json)} tamamlandı")
     if qs:
@@ -204,5 +229,13 @@ Yerel makine
    ├─ ./deploy.sh --adb       → debug APK → telefona ADB
    ├─ ./deploy.sh --release   → AAB → Play Store'a yükle
    ├─ ./deploy.sh --sync-data → VPS ile soru verisi sync
-   └─ Faz 1+: backend/deploy.sh → Docker container → VPS
+   └─ ./deploy.sh --backend   → docker-compose down/up --build, migrate, compilemessages, Celery ping
 ```
+
+### Backend deploy detayı (`--backend`):
+1. `docker-compose down`
+2. `docker-compose up -d --build`
+3. `docker exec mathlock_backend python manage.py migrate --noinput`
+4. `docker exec mathlock_backend python manage.py compilemessages --ignore=.venv`
+5. `docker exec mathlock_celery celery -A mathlock_backend inspect ping` (health check)
+6. HTTP health check `curl -f https://mathlock.com.tr/api/mathlock/health/`

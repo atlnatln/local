@@ -30,6 +30,10 @@ class ChildProfile(models.Model):
 
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='children')
     name = models.CharField(max_length=100, default="Çocuk")
+    locale = models.CharField(
+        max_length=10, default='tr',
+        help_text="UI ve AI içerik dili (ISO 639-1, örn: tr, en, de)"
+    )
     education_period = models.CharField(
         max_length=20, choices=EDUCATION_PERIOD_CHOICES, default='sinif_2',
         help_text="Eğitim dönemi — soru üretimi bu döneme göre yapılır"
@@ -213,7 +217,8 @@ class RenewalLock(models.Model):
     yalnızca biri kredi düşer, diğeri kilitli görüp gerisiz döner.
 
     content_type: 'questions' | 'levels'
-    TTL: 15 dakika (generation timeout'dan fazla) — sunucu çökerse otomatik temizlenir.
+    TTL: 20 dakika (AI üretimi 10 dk + tampon) — sunucu çökerse otomatik temizlenir.
+    Ayrıca 2×TTL'den eski kilidler saat senkronizasyonu sorunlarına karşı temizlenir.
     """
     child = models.ForeignKey(
         ChildProfile, on_delete=models.CASCADE, related_name='renewal_locks'

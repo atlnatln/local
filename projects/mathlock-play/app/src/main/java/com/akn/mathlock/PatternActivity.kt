@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.GridLayout
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.databinding.ActivityPatternBinding
 import com.akn.mathlock.util.PreferenceManager
 import com.google.android.material.button.MaterialButton
 
-class PatternActivity : AppCompatActivity() {
+class PatternActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPatternBinding
     private lateinit var prefManager: PreferenceManager

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -14,7 +13,7 @@ import com.akn.mathlock.databinding.ActivityChallengePickerBinding
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.PreferenceManager
 
-class ChallengePickerActivity : AppCompatActivity() {
+class ChallengePickerActivity : BaseActivity() {
 
     private lateinit var binding: ActivityChallengePickerBinding
     private var lockedPackage: String? = null

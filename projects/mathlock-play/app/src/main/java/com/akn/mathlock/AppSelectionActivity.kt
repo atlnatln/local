@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akn.mathlock.databinding.ActivityAppSelectionBinding
@@ -20,7 +19,7 @@ data class AppInfo(
     var isLocked: Boolean
 )
 
-class AppSelectionActivity : AppCompatActivity() {
+class AppSelectionActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAppSelectionBinding
     private lateinit var prefManager: PreferenceManager

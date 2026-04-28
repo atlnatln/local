@@ -32,6 +32,7 @@ class PreferenceManager(context: Context) {
         private const val KEY_ACTIVE_CHILD_ID = "active_child_id"
         private const val KEY_ACTIVE_CHILD_NAME = "active_child_name"
         private const val KEY_ACTIVE_EDUCATION_PERIOD = "active_education_period"
+        private const val KEY_APP_LOCALE = "app_locale"
 
         private const val DEFAULT_PASS_SCORE = 3
         private const val DEFAULT_LEVELS_TO_UNLOCK = 3
@@ -184,6 +185,10 @@ class PreferenceManager(context: Context) {
     var activeEducationPeriod: String
         get() = prefs.getString(KEY_ACTIVE_EDUCATION_PERIOD, "sinif_2") ?: "sinif_2"
         set(value) = prefs.edit().putString(KEY_ACTIVE_EDUCATION_PERIOD, value).apply()
+
+    var appLocale: String
+        get() = prefs.getString(KEY_APP_LOCALE, java.util.Locale.getDefault().language) ?: "tr"
+        set(value) = prefs.edit().putString(KEY_APP_LOCALE, value).apply()
 
     // --- Hash Yardımcısı ---
 

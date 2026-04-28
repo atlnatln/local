@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.util.AccountManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
@@ -17,7 +16,7 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-class PerformanceReportActivity : AppCompatActivity() {
+class PerformanceReportActivity : BaseActivity() {
 
     companion object {
         private const val TAG = "PerfReport"

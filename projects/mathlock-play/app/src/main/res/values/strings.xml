@@ -105,6 +105,9 @@
     <string name="btn_save">Kaydet</string>
     <string name="btn_back">Geri</string>
 
+    <!-- Sayı Yolculuğu -->
+    <string name="credit_required_toast">💎 Yeni seviyelere geçmek için kredi gerekli (kalan: %1$d)</string>
+
     <!-- Desen Kilidi -->
     <string name="pattern_title">Desen ile Giriş</string>
     <string name="pattern_draw">Deseninizi çizin</string>

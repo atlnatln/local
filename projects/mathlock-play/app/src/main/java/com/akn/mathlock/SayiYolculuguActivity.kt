@@ -12,7 +12,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.api.ApiClient
 import com.akn.mathlock.api.RealApiClient
 import com.akn.mathlock.service.AppLockService
@@ -21,7 +20,7 @@ import com.akn.mathlock.util.PreferenceManager
 import org.json.JSONArray
 import org.json.JSONObject
 
-class SayiYolculuguActivity : AppCompatActivity() {
+class SayiYolculuguActivity : BaseActivity() {
 
     companion object {
         private const val TAG = "SayiYolculugu"
@@ -81,10 +80,17 @@ class SayiYolculuguActivity : AppCompatActivity() {
 
     private fun loadLevelsIntoGame() {
         Thread {
+            val oldSetId = currentSetId
             val levels = fetchLevels()
+            val isNewSet = currentSetId != null && currentSetId != oldSetId
             runOnUiThread {
                 if (levels != null) {
-                    val escaped = levels
+                    val locale = PreferenceManager(this).appLocale
+                    val payload = JSONObject(levels).apply {
+                        put("locale", locale)
+                        put("forceClear", isNewSet)
+                    }
+                    val escaped = payload.toString()
                         .replace("\\", "\\\\")
                         .replace("'", "\\'")
                         .replace("\n", "\\n")
@@ -92,9 +98,19 @@ class SayiYolculuguActivity : AppCompatActivity() {
                     webView.evaluateJavascript("initGame('$escaped');", null)
                 } else {
                     try {
-                        val json = assets.open("sayi-yolculugu/fallback-levels.json")
-                            .bufferedReader().readText()
-                        val escaped = json
+                        val locale = PreferenceManager(this).appLocale
+                        val path = "sayi-yolculugu/fallback-levels/$locale.json"
+                        val json = try {
+                            assets.open(path).bufferedReader().readText()
+                        } catch (_: Exception) {
+                            assets.open("sayi-yolculugu/fallback-levels/tr.json")
+                                .bufferedReader().readText()
+                        }
+                        val payload = JSONObject(json).apply {
+                            put("locale", locale)
+                            put("forceClear", true)
+                        }
+                        val escaped = payload.toString()
                             .replace("\\", "\\\\")
                             .replace("'", "\\'")
                             .replace("\n", "\\n")
@@ -145,41 +161,60 @@ class SayiYolculuguActivity : AppCompatActivity() {
             token = accountManager.getOrRegister()
         }
         val childId = prefManager.activeChildId
+        System.out.println("[SY-FETCH] token=${token?.take(8)} childId=$childId")
 
         if (!token.isNullOrBlank()) {
             try {
+                val locale = PreferenceManager(this).appLocale
                 var path = "/levels/?device_token=${token.trim()}"
                 if (childId > 0) path += "&child_id=$childId"
+                path += "&locale=$locale"
+                System.out.println("[SY-FETCH] GET $path")
                 val response = apiClient.get(path)
+                System.out.println("[SY-FETCH] response code=${response.statusCode} body=${response.body.toString().take(120)}")
                 if (response.statusCode == 200) {
                     val json = response.body.toString()
                     try {
                         val root = JSONObject(json)
-                        currentSetId = root.optInt("set_id", 0).takeIf { it > 0 }
+                        val serverSetId = root.optInt("set_id", 0).takeIf { it > 0 }
+                        val isNewSet = (serverSetId != null && serverSetId != currentSetId)
                         val idsArr = root.optJSONArray("completed_level_ids")
-                        // Server'dan gelen verileri al ama local'deki daha güncel verileri koru
-                        // (Kullanıcı uygulamayı kapatırsa upload thread kesilebilir)
+                        // Server'dan gelen verileri al
                         completedLevelIds.clear()
                         if (idsArr != null) {
                             for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
                         }
-                        // Local cache'teki tamamlanan ID'leri de ekle (merge)
-                        val localRaw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                            .getString(KEY_COMPLETED_IDS, "") ?: ""
-                        localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
-                            .forEach { completedLevelIds.add(it) }
+                        if (!isNewSet) {
+                            // Aynı set: local cache'teki tamamlanan ID'leri de ekle (merge)
+                            // (Kullanıcı uygulamayı kapatırsa upload thread kesilebilir)
+                            val localRaw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                                .getString(KEY_COMPLETED_IDS, "") ?: ""
+                            localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
+                                .forEach { completedLevelIds.add(it) }
+                        } else {
+                            // Yeni set: eski local tamamlanmış seviyeleri temizle
+                            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                                .edit().remove(KEY_COMPLETED_IDS).apply()
+                        }
                         saveCompletedLevels()
-                        Log.i(TAG, "Seviye ilerlemesi birleştirildi: server=${idsArr?.length() ?: 0} + local=${localRaw.split(",").count { it.trim().toIntOrNull() != null }} → toplam=${completedLevelIds.size}")
-                    } catch (_: Exception) {}
+                        currentSetId = serverSetId
+                        System.out.println("[SY-FETCH] API OK set_id=$currentSetId isNewSet=$isNewSet completed=${completedLevelIds.size}")
+                    } catch (e: Exception) {
+                        System.out.println("[SY-FETCH] API parse exception: ${e.message}")
+                    }
                     val injected = injectCompletedIds(json)
                     getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                         .edit().putString(KEY_CACHED_LEVELS, injected).apply()
-                    Log.i(TAG, "API'den seviyeler indirildi (set=$currentSetId, tamamlanan=${completedLevelIds.size})")
+                    System.out.println("[SY-FETCH] cached and returning injected")
                     return injected
+                } else {
+                    System.out.println("[SY-FETCH] API non-200 status=${response.statusCode}")
                 }
             } catch (e: Exception) {
-                Log.w(TAG, "API bağlantısı başarısız: ${e.message}")
+                System.out.println("[SY-FETCH] API exception: ${e.javaClass.simpleName} ${e.message}")
             }
+        } else {
+            System.out.println("[SY-FETCH] token blank/null")
         }
 
         val cached = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
@@ -187,23 +222,31 @@ class SayiYolculuguActivity : AppCompatActivity() {
         if (cached != null) {
             try {
                 val root = JSONObject(cached)
-                currentSetId = root.optInt("set_id", 0).takeIf { it > 0 }
+                val cachedSetId = root.optInt("set_id", 0).takeIf { it > 0 }
+                val isNewSet = (cachedSetId != null && cachedSetId != currentSetId)
                 val idsArr = root.optJSONArray("completed_level_ids")
                 completedLevelIds.clear()
                 if (idsArr != null) {
                     for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
                 }
-                // Local cache'teki tamamlanan ID'leri de ekle (merge)
-                val localRaw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                    .getString(KEY_COMPLETED_IDS, "") ?: ""
-                localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
-                    .forEach { completedLevelIds.add(it) }
+                if (!isNewSet) {
+                    // Aynı set: local cache'tekileri merge et
+                    val localRaw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                        .getString(KEY_COMPLETED_IDS, "") ?: ""
+                    localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
+                        .forEach { completedLevelIds.add(it) }
+                } else {
+                    // Yeni set: eski local tamamlanmış seviyeleri temizle
+                    getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                        .edit().remove(KEY_COMPLETED_IDS).apply()
+                }
                 saveCompletedLevels()
+                currentSetId = cachedSetId
             } catch (_: Exception) {}
             val injected = injectCompletedIds(cached)
             getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                 .edit().putString(KEY_CACHED_LEVELS, injected).apply()
-            Log.d(TAG, "Cache'ten seviyeler yüklendi (set=$currentSetId, tamamlanan=${completedLevelIds.size})")
+            System.out.println("[SY-FETCH] cache loaded set=$currentSetId completed=${completedLevelIds.size}")
             return injected
         }
 
@@ -314,10 +357,11 @@ class SayiYolculuguActivity : AppCompatActivity() {
                     token = accountManager.getOrRegister()
                 }
                 if (token.isNullOrBlank()) {
-                    Log.w(TAG, "Device token alınamadı, level progress gönderilemiyor")
+                    System.out.println("[SY-UPLOAD] no token")
                     return@Thread
                 }
                 val childId = prefManager.activeChildId
+                System.out.println("[SY-UPLOAD] set_id=$currentSetId childId=$childId completed=${completedLevelIds.sorted()}")
 
                 val body = JSONObject().apply {
                     put("device_token", token)
@@ -326,11 +370,12 @@ class SayiYolculuguActivity : AppCompatActivity() {
                     val arr = JSONArray()
                     completedLevelIds.forEach { arr.put(it) }
                     put("completed_level_ids", arr)
+                    put("locale", PreferenceManager(this@SayiYolculuguActivity).appLocale)
                 }
                 val response = apiClient.post("/levels/progress/", body)
                 val code = response.statusCode
                 val responseText = response.body.toString()
-                Log.i(TAG, "Level progress gönderildi (kod=$code, tamamlanan=${completedLevelIds.size}, body=$responseText)")
+                System.out.println("[SY-UPLOAD] response code=$code body=${responseText.take(120)}")
 
                 if (code in 200..299 && responseText.isNotBlank()) {
                     try {
@@ -366,10 +411,19 @@ class SayiYolculuguActivity : AppCompatActivity() {
             webView.evaluateJavascript("showCreditRequired();", null)
             Toast.makeText(
                 this,
-                "💎 Yeni seviyelere geçmek için kredi gerekli (kalan: $creditsRemaining)",
+                getString(R.string.credit_required_toast, creditsRemaining),
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        webView.evaluateJavascript("clearGameState();", null)
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit()
+            .remove(KEY_CACHED_LEVELS)
+            .remove(KEY_COMPLETED_IDS)
+            .apply()
     }
 
     private fun showRenewalError() {
@@ -379,8 +433,8 @@ class SayiYolculuguActivity : AppCompatActivity() {
     }
 
     private fun pollForNewSet(attempt: Int = 0) {
-        if (attempt >= 20) {
-            Log.w(TAG, "Yeni set 60 sn içinde gelmedi, hata gösteriliyor")
+        if (attempt >= 120) {
+            Log.w(TAG, "Yeni set 10 dk içinde gelmedi, hata gösteriliyor")
             showRenewalError()
             return
         }
@@ -406,17 +460,17 @@ class SayiYolculuguActivity : AppCompatActivity() {
                             Log.d(TAG, "Set hâlâ tamamlanmış, tekrar deneniyor (deneme=${attempt + 1})")
                             Handler(Looper.getMainLooper()).postDelayed({
                                 pollForNewSet(attempt + 1)
-                            }, 3000)
+                            }, 5000)
                         }
                     } catch (_: Exception) {
                         Handler(Looper.getMainLooper()).postDelayed({
                             pollForNewSet(attempt + 1)
-                        }, 3000)
+                        }, 5000)
                     }
                 } else {
                     Handler(Looper.getMainLooper()).postDelayed({
                         pollForNewSet(attempt + 1)
-                    }, 3000)
+                    }, 5000)
                 }
             }
         }.start()

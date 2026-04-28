@@ -6,13 +6,12 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.databinding.ActivityNumberGuessBinding
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.PreferenceManager
 import kotlin.random.Random
 
-class NumberGuessActivity : AppCompatActivity() {
+class NumberGuessActivity : BaseActivity() {
 
     private lateinit var binding: ActivityNumberGuessBinding
     private lateinit var prefManager: PreferenceManager

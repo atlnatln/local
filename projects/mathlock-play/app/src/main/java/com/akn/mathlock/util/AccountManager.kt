@@ -60,6 +60,7 @@ class AccountManager(
         return try {
             val response = apiClient.post("/register/", JSONObject().apply {
                 put("installation_id", installationId)
+                put("locale", PreferenceManager(context).appLocale)
             })
             if (response.statusCode in 200..299) {
                 val token = response.body.getString("device_token")
@@ -77,6 +78,7 @@ class AccountManager(
                     for (i in 0 until children.length()) {
                         val c = children.getJSONObject(i)
                         if (c.optBoolean("is_active", false)) {
+                            prefManager.activeChildId = c.optInt("id", 0)
                             prefManager.activeChildName = c.optString("name", "Çocuk")
                             prefManager.activeEducationPeriod = c.optString("education_period", "sinif_2")
                             break

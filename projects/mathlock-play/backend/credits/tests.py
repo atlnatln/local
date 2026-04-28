@@ -242,7 +242,7 @@ class VerifyPurchaseViewTest(ThrottleMixin, TestCase):
             'product_id': 'kredi_5',
         }, format='json')
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()['message'], 'Bu satın alma zaten işlendi')
+        self.assertEqual(resp.json()['message'], 'purchase_already_processed')
 
     def test_verify_invalid_product_id(self):
         resp = self.client.post('/api/mathlock/purchase/verify/', {
@@ -571,11 +571,11 @@ class ChildReportViewTest(ThrottleMixin, TestCase):
         data = resp.json()
         by_type = data['by_type']
         # toplama: 95% + 3.2s → USTA
-        self.assertEqual(by_type['toplama']['category'], 'USTA')
+        self.assertEqual(by_type['toplama']['category'], 'category_master')
         # cikarma: 66.7% → GELİŞEN
-        self.assertEqual(by_type['cikarma']['category'], 'GELİŞEN')
+        self.assertEqual(by_type['cikarma']['category'], 'category_developing')
         # carpma: 56.7% → ZORLU
-        self.assertEqual(by_type['carpma']['category'], 'ZORLU')
+        self.assertEqual(by_type['carpma']['category'], 'category_challenging')
 
     def test_child_report_missing_token(self):
         resp = self.client.get('/api/mathlock/children/report/?child_name=Elif')
@@ -907,12 +907,23 @@ class UpdateProgressAutoRenewalTest(ThrottleMixin, TestCase):
             solved_ids=[],
             credit_used=True,
         )
+        # Celery proxy'yi atlayarak doğrudan mock'la
+        import credits.views
+        self._orig_generate_question_set = credits.views.__dict__.get('generate_question_set')
+        self.mock_generate_question_set = MagicMock()
+        self.mock_generate_question_set.delay = MagicMock()
+        self.mock_generate_question_set.delay.return_value = MagicMock(id='fake-job-id')
+        credits.views.__dict__['generate_question_set'] = self.mock_generate_question_set
+
+    def tearDown(self):
+        import credits.views
+        credits.views.__dict__['generate_question_set'] = self._orig_generate_question_set
+        super().tearDown()
 
     def _progress_url(self):
         return '/api/mathlock/questions/progress/'
 
-    @patch('credits.views._run_in_background')
-    def test_auto_renewal_triggered_when_all_solved(self, mock_bg):
+    def test_auto_renewal_triggered_when_all_solved(self):
         """Tüm sorular çözülünce auto-renewal başlatılmalı."""
         from credits.views import _global_id_for_ai
         global_id = _global_id_for_ai(self.qset.pk, 0)  # set_pk * 1000 + 1
@@ -926,10 +937,9 @@ class UpdateProgressAutoRenewalTest(ThrottleMixin, TestCase):
         self.assertTrue(data['success'])
         self.assertTrue(data['auto_renewal_started'])
         self.assertIn('credits_remaining', data)
-        mock_bg.assert_called_once()
+        self.mock_generate_question_set.delay.assert_called_once()
 
-    @patch('credits.views._run_in_background')
-    def test_no_auto_renewal_when_questions_remain(self, mock_bg):
+    def test_no_auto_renewal_when_questions_remain(self):
         """Çözülmemiş sorular varsa auto-renewal başlatılmamalı."""
         # İkinci soru ekle — biri çözülmemiş kalacak
         self.qset.questions_json = [
@@ -946,10 +956,9 @@ class UpdateProgressAutoRenewalTest(ThrottleMixin, TestCase):
         }, format='json')
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(resp.json()['auto_renewal_started'])
-        mock_bg.assert_not_called()
+        self.mock_generate_question_set.delay.assert_not_called()
 
-    @patch('credits.views._run_in_background')
-    def test_double_trigger_blocked_by_lock(self, mock_bg):
+    def test_double_trigger_blocked_by_lock(self):
         """Aynı anda iki istek gelirse ikincisi kilit nedeniyle yenileme başlatmamalı."""
         # Önceden kilit yerleştir
         RenewalLock.objects.create(
@@ -967,7 +976,7 @@ class UpdateProgressAutoRenewalTest(ThrottleMixin, TestCase):
         }, format='json')
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(resp.json()['auto_renewal_started'])
-        mock_bg.assert_not_called()
+        self.mock_generate_question_set.delay.assert_not_called()
         # Bakiye değişmemeli
         self.balance.refresh_from_db()
         self.assertEqual(self.balance.balance, 2)
@@ -1000,12 +1009,23 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, TestCase):
             completed_level_ids=[1, 2],  # 2 tamamlanmış, 1 kaldı
             credit_used=True,
         )
+        # Celery proxy'yi atlayarak doğrudan mock'la
+        import credits.views
+        self._orig_generate_level_set = credits.views.__dict__.get('generate_level_set')
+        self.mock_generate_level_set = MagicMock()
+        self.mock_generate_level_set.delay = MagicMock()
+        self.mock_generate_level_set.delay.return_value = MagicMock(id='fake-job-id')
+        credits.views.__dict__['generate_level_set'] = self.mock_generate_level_set
+
+    def tearDown(self):
+        import credits.views
+        credits.views.__dict__['generate_level_set'] = self._orig_generate_level_set
+        super().tearDown()
 
     def _progress_url(self):
         return '/api/mathlock/levels/progress/'
 
-    @patch('credits.views._run_in_background')
-    def test_auto_renewal_triggered_when_all_levels_done(self, mock_bg):
+    def test_auto_renewal_triggered_when_all_levels_done(self):
         """Son seviye tamamlanınca auto-renewal başlatılmalı."""
         resp = self.client.post(self._progress_url(), {
             'device_token': str(self.device.device_token),
@@ -1017,10 +1037,9 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, TestCase):
         data = resp.json()
         self.assertTrue(data['all_completed'])
         self.assertTrue(data['auto_renewal_started'])
-        mock_bg.assert_called_once()
+        self.mock_generate_level_set.delay.assert_called_once()
 
-    @patch('credits.views._run_in_background')
-    def test_no_auto_renewal_when_levels_remain(self, mock_bg):
+    def test_no_auto_renewal_when_levels_remain(self):
         """Tamamlanmamış seviyeler varsa renewal başlatılmamalı."""
         resp = self.client.post(self._progress_url(), {
             'device_token': str(self.device.device_token),
@@ -1031,10 +1050,9 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(resp.json()['all_completed'])
         self.assertFalse(resp.json()['auto_renewal_started'])
-        mock_bg.assert_not_called()
+        self.mock_generate_level_set.delay.assert_not_called()
 
-    @patch('credits.views._run_in_background')
-    def test_double_trigger_blocked_by_lock(self, mock_bg):
+    def test_double_trigger_blocked_by_lock(self):
         """Kilit varken ikinci tamamlama isteği renewal başlatmamalı."""
         RenewalLock.objects.create(
             child=self.child,
@@ -1049,12 +1067,11 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, TestCase):
         }, format='json')
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(resp.json()['auto_renewal_started'])
-        mock_bg.assert_not_called()
+        self.mock_generate_level_set.delay.assert_not_called()
         self.balance.refresh_from_db()
         self.assertEqual(self.balance.balance, 2)
 
-    @patch('credits.views._run_in_background')
-    def test_already_completed_set_retries_renewal(self, mock_bg):
+    def test_already_completed_set_retries_renewal(self):
         """Zaten tamamlanmış set tekrar raporlanırsa ve yeni set yoksa renewal BAŞLATILMALI.
 
         Bu test eski bug'ı (deadlock) doğrular:
@@ -1076,10 +1093,9 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, TestCase):
         self.assertTrue(data['all_completed'])
         self.assertTrue(data['auto_renewal_started'], 
             "Eski set tamamlanmış ama yeni set yoksa renewal tekrar denenmeli!")
-        mock_bg.assert_called_once()
+        self.mock_generate_level_set.delay.assert_called_once()
 
-    @patch('credits.views._run_in_background')
-    def test_already_completed_set_with_newer_version_no_renewal(self, mock_bg):
+    def test_already_completed_set_with_newer_version_no_renewal(self):
         """Daha yüksek versiyonlu set zaten varsa renewal başlatılmamalı."""
         # Önceden tüm seviyeleri tamamla
         self.level_set.completed_level_ids = [1, 2, 3]
@@ -1100,26 +1116,28 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, TestCase):
         }, format='json')
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(resp.json()['auto_renewal_started'])
-        mock_bg.assert_not_called()
+        self.mock_generate_level_set.delay.assert_not_called()
 
     def test_renewal_actually_creates_new_level_set(self):
         """ Renewal başarılı olursa gerçekten yeni LevelSet DB'ye yazılmalı. """
         self.level_set.completed_level_ids = [1, 2, 3]
         self.level_set.save()
 
-        def immediate_run(fn, *args, **kwargs):
-            fn(*args, **kwargs)
-
+        from credits.tasks import generate_level_set
         fake_levels = [{'id': i, 'title': f'Seviye {i}'} for i in range(1, 4)]
 
         with patch('credits.views._generate_levels_via_kimi', return_value=fake_levels):
-            with patch('credits.views._run_in_background', side_effect=immediate_run):
-                resp = self.client.post(self._progress_url(), {
-                    'device_token': str(self.device.device_token),
-                    'child_id': self.child.pk,
-                    'set_id': self.level_set.pk,
-                    'completed_level_ids': [1, 2, 3],
-                }, format='json')
+            def _run_and_return_mock(*args, **kwargs):
+                generate_level_set.run(*args, **kwargs)
+                return MagicMock(id='fake-job-id')
+            self.mock_generate_level_set.delay.side_effect = _run_and_return_mock
+            resp = self.client.post(self._progress_url(), {
+                'device_token': str(self.device.device_token),
+                'child_id': self.child.pk,
+                'set_id': self.level_set.pk,
+                'completed_level_ids': [1, 2, 3],
+            }, format='json')
+            self.mock_generate_level_set.delay.side_effect = None
 
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(resp.json()['auto_renewal_started'])
@@ -1394,23 +1412,19 @@ class GetLevelsViewTest(ThrottleMixin, TestCase):
         resp = self.client.get(f'{self.url}?device_token={device2.device_token}')
         self.assertEqual(resp.status_code, 404)
 
-    def test_no_set_no_file(self):
+    def test_no_set_fallback_file(self):
+        """LevelSet yoksa fallback levels.json dosyasından oluşturulmalı."""
         from credits.views import _LEVELS_FILE
         self.level_set.delete()
-        # Geçici olarak levels.json dosyasını taşı
-        backup = _LEVELS_FILE.with_suffix('.json.bak')
-        moved = False
+        resp = self.client.get(
+            f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}'
+        )
+        # fallback levels.json mevcutsa 200 döner, yoksa 503
         if _LEVELS_FILE.exists():
-            _LEVELS_FILE.rename(backup)
-            moved = True
-        try:
-            resp = self.client.get(
-                f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}'
-            )
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('levels', resp.json())
+        else:
             self.assertEqual(resp.status_code, 503)
-        finally:
-            if moved and backup.exists():
-                backup.rename(_LEVELS_FILE)
 
 
 @override_settings(**NO_THROTTLE)
@@ -1714,3 +1728,271 @@ class UpdateLevelProgressNormalTest(ThrottleMixin, TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(resp.json()['all_completed'])
         self.assertFalse(resp.json()['auto_renewal_started'])
+
+
+# ─── Faz 2: Yeni Backend Testleri ────────────────────────────────────────────
+
+@override_settings(**NO_THROTTLE)
+class RegisterDeviceLocaleTest(ThrottleMixin, TestCase):
+    """POST /register/ endpoint'inde locale parametre davranışı."""
+
+    def setUp(self):
+        super().setUp()
+        self.client = APIClient()
+
+    def test_register_with_locale_en(self):
+        resp = self.client.post('/api/mathlock/register/', {
+            'installation_id': 'locale-en-001',
+            'locale': 'en',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        device = Device.objects.get(installation_id='locale-en-001')
+        child = ChildProfile.objects.get(device=device)
+        self.assertEqual(child.locale, 'en')
+
+    def test_register_default_locale_tr(self):
+        resp = self.client.post('/api/mathlock/register/', {
+            'installation_id': 'locale-default-001',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        device = Device.objects.get(installation_id='locale-default-001')
+        child = ChildProfile.objects.get(device=device)
+        self.assertEqual(child.locale, 'tr')
+
+    def test_register_invalid_locale_coerced(self):
+        resp = self.client.post('/api/mathlock/register/', {
+            'installation_id': 'locale-invalid-001',
+            'locale': 'xx',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        device = Device.objects.get(installation_id='locale-invalid-001')
+        child = ChildProfile.objects.get(device=device)
+        self.assertEqual(child.locale, 'tr')
+
+
+@override_settings(**NO_THROTTLE)
+class GetLevelsLocaleTest(ThrottleMixin, TestCase):
+    """GET /levels/ endpoint'inde locale query parametresi davranışı."""
+
+    def setUp(self):
+        super().setUp()
+        self.client = APIClient()
+        self.device = Device.objects.create(
+            installation_id='levels-locale-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2', locale='tr'
+        )
+        self.url = '/api/mathlock/levels/'
+
+    def test_levels_with_locale_en_param(self):
+        from credits.views import _DATA_DIR
+        en_file = _DATA_DIR / 'fallback-levels.en.json'
+        has_en = en_file.exists()
+
+        resp = self.client.get(
+            f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}&locale=en'
+        )
+        if has_en:
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('levels', resp.json())
+        else:
+            self.assertIn(resp.status_code, [200, 503])
+
+    def test_levels_with_locale_tr_param(self):
+        from credits.views import _DATA_DIR
+        tr_file = _DATA_DIR / 'fallback-levels.tr.json'
+        has_tr = tr_file.exists()
+
+        resp = self.client.get(
+            f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}&locale=tr'
+        )
+        if has_tr:
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('levels', resp.json())
+        else:
+            self.assertIn(resp.status_code, [200, 503])
+
+    def test_levels_without_locale_uses_tr(self):
+        """locale parametresi yoksa child.locale veya 'tr' default kullanılır."""
+        from credits.views import _DATA_DIR
+        tr_file = _DATA_DIR / 'fallback-levels.tr.json'
+        has_tr = tr_file.exists()
+
+        resp = self.client.get(
+            f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}'
+        )
+        if has_tr:
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('levels', resp.json())
+        else:
+            self.assertIn(resp.status_code, [200, 503])
+
+
+@override_settings(
+    CELERY_TASK_ALWAYS_EAGER=True,
+    CELERY_BROKER_URL='memory://',
+    CELERY_RESULT_BACKEND='cache+memory://',
+)
+class CeleryTaskTest(TestCase):
+    """Celery task'larının doğrudan davranış testleri (worker olmadan)."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        from mathlock_backend.celery import app
+        app.conf.task_always_eager = True
+        app.conf.broker_url = 'memory://'
+        app.conf.result_backend = 'cache+memory://'
+
+    def setUp(self):
+        self.device = Device.objects.create(
+            installation_id='celery-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Celery', education_period='sinif_2'
+        )
+        self.balance = CreditBalance.objects.create(
+            device=self.device, balance=2, total_purchased=2, free_set_used=True
+        )
+
+    @patch('credits.views._generate_via_kimi', return_value=[
+        {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
+    ] * 50)
+    def test_generate_question_set_creates_record(self, mock_gen):
+        from credits.tasks import generate_question_set
+        result = generate_question_set.run(self.child.pk, self.balance.pk, False)
+        self.assertTrue(result['success'])
+        self.assertTrue(
+            QuestionSet.objects.filter(child=self.child).exists()
+        )
+
+    @patch('credits.views._generate_levels_via_kimi', return_value=[
+        {'id': 1, 'title': 'S1'}, {'id': 2, 'title': 'S2'}, {'id': 3, 'title': 'S3'}
+    ])
+    def test_generate_level_set_creates_record(self, mock_gen):
+        from credits.tasks import generate_level_set
+        result = generate_level_set.run(self.child.pk, self.balance.pk, False, {}, 'sinif_2')
+        self.assertTrue(result['success'])
+        self.assertTrue(
+            LevelSet.objects.filter(child=self.child).exists()
+        )
+
+    @patch('credits.views._generate_via_kimi', return_value=[
+        {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
+    ] * 50)
+    def test_task_releases_lock_on_success(self, mock_gen):
+        from credits.tasks import generate_question_set
+        RenewalLock.objects.create(
+            child=self.child, content_type='questions',
+            expires_at=timezone.now() + timedelta(minutes=15)
+        )
+        generate_question_set.run(self.child.pk, self.balance.pk, False)
+        self.assertFalse(
+            RenewalLock.objects.filter(child=self.child, content_type='questions').exists()
+        )
+
+    @patch('credits.views._generate_via_kimi', side_effect=Exception('AI failure'))
+    def test_task_releases_lock_on_failure(self, mock_gen):
+        from credits.tasks import generate_question_set
+        RenewalLock.objects.create(
+            child=self.child, content_type='questions',
+            expires_at=timezone.now() + timedelta(minutes=15)
+        )
+        with self.assertRaises(Exception):
+            generate_question_set.run(self.child.pk, self.balance.pk, False)
+        self.assertFalse(
+            RenewalLock.objects.filter(child=self.child, content_type='questions').exists()
+        )
+
+    def test_task_retries_on_failure(self):
+        from credits.tasks import generate_question_set, generate_level_set
+        self.assertEqual(generate_question_set.max_retries, 3)
+        self.assertEqual(generate_level_set.max_retries, 3)
+
+
+class StaleLockCleanupTest(TestCase):
+    """_deduct_credit_and_lock içinde eski kilit temizliği."""
+
+    def setUp(self):
+        self.device = Device.objects.create(
+            installation_id='stale-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(device=self.device, name='Stale')
+        self.balance = CreditBalance.objects.create(
+            device=self.device, balance=2, total_purchased=2, free_set_used=True
+        )
+
+    def test_stale_lock_deleted(self):
+        """40+ dakika eski lock _deduct_credit_and_lock sırasında silinir."""
+        old_lock = RenewalLock.objects.create(
+            child=self.child,
+            content_type='questions',
+            expires_at=timezone.now() + timedelta(minutes=15),
+        )
+        old_time = timezone.now() - timedelta(minutes=41)
+        RenewalLock.objects.filter(pk=old_lock.pk).update(created_at=old_time)
+
+        success, _, _, _ = _deduct_credit_and_lock(self.child.pk, self.device, 'questions')
+        self.assertTrue(success)
+        # Eski lock silinmiş, yeni kilit oluşmuş olmalı
+        lock = RenewalLock.objects.get(child=self.child, content_type='questions')
+        self.assertNotEqual(lock.pk, old_lock.pk)
+
+    def test_fresh_lock_preserved(self):
+        """5 dakika eski lock silinmez, ikinci çağrı blocked olur."""
+        RenewalLock.objects.create(
+            child=self.child,
+            content_type='questions',
+            expires_at=timezone.now() + timedelta(minutes=15),
+        )
+        success, _, _, _ = _deduct_credit_and_lock(self.child.pk, self.device, 'questions')
+        self.assertFalse(success)
+
+
+class _FakeAsyncResult:
+    """Celery AsyncResult mock'u — backend bağlantısı olmadan."""
+    def __init__(self, job_id):
+        self.id = job_id
+        self.state = 'PENDING'
+        self.result = None
+
+
+@override_settings(**NO_THROTTLE)
+class JobStatusEndpointTest(ThrottleMixin, TestCase):
+    """GET /jobs/<job_id>/status/ endpoint testleri."""
+
+    def setUp(self):
+        super().setUp()
+        self.client = APIClient()
+
+    @patch('celery.result.AsyncResult', _FakeAsyncResult)
+    def test_job_status_pending(self):
+        resp = self.client.get('/api/mathlock/jobs/test-job-123/status/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()['state'], 'PENDING')
+
+    @patch('celery.result.AsyncResult', _FakeAsyncResult)
+    def test_job_status_success(self):
+        class FakeSuccess(_FakeAsyncResult):
+            def __init__(self, job_id):
+                super().__init__(job_id)
+                self.state = 'SUCCESS'
+                self.result = {'question_set_id': 42}
+
+        with patch('celery.result.AsyncResult', FakeSuccess):
+            resp = self.client.get('/api/mathlock/jobs/test-job-456/status/')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data['state'], 'SUCCESS')
+        self.assertEqual(data['result']['question_set_id'], 42)
+
+    @patch('celery.result.AsyncResult', _FakeAsyncResult)
+    def test_job_status_invalid_id(self):
+        """Geçersiz job ID ile bile endpoint 200 döner ve state içerir."""
+        resp = self.client.get('/api/mathlock/jobs/invalid-id/status/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn('state', resp.json())

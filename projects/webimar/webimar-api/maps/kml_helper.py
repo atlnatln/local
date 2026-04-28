@@ -95,7 +95,15 @@ def _read_kml_content(file_path: str) -> Optional[str]:
 
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-            return f.read()
+            content = f.read()
+        # xsi namespace tanımını ekle (eğer yoksa)
+        if 'xmlns:xsi=' not in content and 'xsi:schemaLocation' in content:
+            content = content.replace(
+                '<kml xmlns=',
+                '<kml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns=',
+                1
+            )
+        return content
     except Exception as exc:
         print(f"KML okunamadı: {file_path}: {exc}")
         return None
@@ -122,13 +130,13 @@ def load_kml_file(file_path):
         for placemark in root.findall('.//kml:Placemark', ns):
             name = _resolve_placemark_name(placemark, ns)
 
-            # Polygon koordinatlarını bul
-            coordinates_elem = placemark.find('.//kml:coordinates', ns)
-            if coordinates_elem is not None:
-                polygon = parse_kml_coordinates(coordinates_elem.text)
-                if polygon:
-                    polygons.append(polygon)
-                    names.append(name)
+            # Tüm Polygon koordinatlarını bul (MultiGeometry desteği)
+            for coordinates_elem in placemark.findall('.//kml:coordinates', ns):
+                if coordinates_elem is not None and coordinates_elem.text:
+                    polygon = parse_kml_coordinates(coordinates_elem.text)
+                    if polygon:
+                        polygons.append(polygon)
+                        names.append(name)
 
     except ET.ParseError as e:
         print(f"KML dosyası ayrıştırma hatası {file_path}: {e}")

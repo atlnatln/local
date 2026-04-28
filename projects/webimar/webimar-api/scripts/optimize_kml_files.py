@@ -151,36 +151,40 @@ def kml_to_geojson(kml_file: str, preserve_all_points: bool = True) -> Dict[str,
     for placemark in root.findall('.//{http://www.opengis.net/kml/2.2}Placemark'):
         name = _resolve_placemark_name(placemark)
         
-        # Koordinatları bul
-        coordinates_elem = placemark.find('.//{http://www.opengis.net/kml/2.2}coordinates')
-        if coordinates_elem is None:
+        # Tüm Polygon koordinatlarını bul (MultiGeometry desteği)
+        coordinates_elems = placemark.findall('.//{http://www.opengis.net/kml/2.2}coordinates')
+        if not coordinates_elems:
             continue
         
-        coords = parse_kml_coordinates(coordinates_elem.text)
-        if len(coords) < 3:
-            continue
-        
-        total_points += len(coords)
-        
-        # Shapely Polygon oluştur (sadece geometri validasyonu için)
-        try:
-            polygon = Polygon(coords)
+        for coordinates_elem in coordinates_elems:
+            if coordinates_elem is None or not coordinates_elem.text:
+                continue
             
-            # GeoJSON feature oluştur - AYNEN TÜM NOKTALARI KULLAN
-            feature = {
-                'type': 'Feature',
-                'properties': {
-                    'name': name,
-                    'point_count': len(coords)
-                },
-                'geometry': mapping(polygon)  # Orijinal polygon, simplify YOK
-            }
+            coords = parse_kml_coordinates(coordinates_elem.text)
+            if len(coords) < 3:
+                continue
             
-            features.append(feature)
+            total_points += len(coords)
             
-        except Exception as e:
-            print(f"   ⚠️  Polygon oluşturulamadı ({name}): {e}")
-            continue
+            # Shapely Polygon oluştur (sadece geometri validasyonu için)
+            try:
+                polygon = Polygon(coords)
+                
+                # GeoJSON feature oluştur - AYNEN TÜM NOKTALARI KULLAN
+                feature = {
+                    'type': 'Feature',
+                    'properties': {
+                        'name': name,
+                        'point_count': len(coords)
+                    },
+                    'geometry': mapping(polygon)  # Orijinal polygon, simplify YOK
+                }
+                
+                features.append(feature)
+                
+            except Exception as e:
+                print(f"   ⚠️  Polygon oluşturulamadı ({name}): {e}")
+                continue
     
     # İstatistikler
     print(f"   ✅ {len(features)} polygon işlendi")

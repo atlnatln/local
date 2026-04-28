@@ -1,7 +1,7 @@
 # MathLock — Çoklu Çocuk Profili, Eğitim Dönemi & Ebeveyn Rapor Mimarisi
 
-Oluşturulma: 18 Nisan 2026
-Son güncelleme: 18 Nisan 2026
+Oluşturulma: 18 Nisan 2026  
+Son güncelleme: 26 Nisan 2026 — `ChildProfile.locale`, i18n, Celery + Redis
 
 ## İmplementasyon Durumu
 
@@ -9,18 +9,22 @@ Son güncelleme: 18 Nisan 2026
 |---------|-------|--------|
 | Müfredat JSON dosyaları (`agents/curriculum/`) | ✅ Tamamlandı | 5 dönem tanımlandı |
 | Dönem bazlı agent dosyaları (`agents/questions-*.agents.md`) | ✅ Tamamlandı | 4 yeni + mevcut sinif_2 |
-| Backend model değişiklikleri + migration | ✅ Tamamlandı | `0004_childprofile_education_period_and_more.py` |
+| Backend model değişiklikleri + migration | ✅ Tamamlandı | `0004_childprofile_education_period_and_more.py` + `locale` alanı |
 | Backend API endpoint'leri (children/, detail/, report/) | ✅ Tamamlandı | `urls.py` + `views.py` |
 | `ai-generate.sh` `--period` desteği | ✅ Tamamlandı | Dönem bazlı agent swap + prompt |
 | `validate-questions.py` dönem desteği | ✅ Tamamlandı | `--period` flag, değişken soru sayısı, yeni tipler |
 | Android `ChildProfilesActivity` | ✅ Tamamlandı | CRUD + aktif profil seçimi |
-| Android `PreferenceManager` güncelleme | ✅ Tamamlandı | `activeChildId`, `activeEducationPeriod` |
+| Android `PreferenceManager` güncelleme | ✅ Tamamlandı | `activeChildId`, `activeEducationPeriod`, `appLocale` |
 | SettingsActivity "Çocuk Profilleri" kartı | ✅ Tamamlandı | Kart + navigasyon |
 | PostgreSQL kalıcı DB (named volume) | ✅ Tamamlandı | `docker-compose.yml` + `.env.example` |
 | AI rapor üretimi (report.json) | ✅ Tamamlandı | Agent §14 + ai-generate.sh sync |
 | QuestionManager profil entegrasyonu | ✅ Tamamlandı | `child_id` parametresi API isteklerinde |
 | StatsTracker profil + süre takibi | ✅ Tamamlandı | `childId`, `educationPeriod`, session timer |
 | İstatistik dashboard (grafik/tablo) | ✅ Tamamlandı | StatsDashboardActivity + MPAndroidChart |
+| i18n (tr/en) | ✅ Tamamlandı | `ChildProfile.locale`, `values-en/strings.xml`, `BaseActivity` locale wrapping |
+| Celery + Redis task queue | ✅ Tamamlandı | `generate_level_set` / `generate_question_set` task'ları |
+
+---
 
 ## 1. Genel Bakış
 
@@ -32,6 +36,8 @@ Bu doküman şu özelliklerin MathLock'a eklenmesini planlar:
 4. **Kalıcı veritabanı** — Deploy'larda silinmeyen PostgreSQL + volume
 5. **Ebeveyn performans raporu** — AI tarafından üretilen çocuk gelişim raporu
 6. **İstatistik dashboard** — Grafik/tablo ile günlük/haftalık takip
+7. **Uluslararasılaştırma (i18n)** — Türkçe ve İngilizce dil desteği
+8. **Reliable AI üretimi** — Celery + Redis ile arka plan task kuyruğu
 
 ---
 
@@ -109,7 +115,7 @@ Her `curriculum/*.json` formatı:
 
 - `ChildProfile` modeli zaten `device` FK + `name` ile `unique_together` → çoklu profil DB'de destekleniyor
 - Register endpoint'i otomatik "Çocuk" adıyla tek profil oluşturuyor
-- Android tarafında profil seçimi yok
+- Android tarafında profil seçimi var (`ChildProfilesActivity`)
 
 ### 3.2 Hedef Akış
 
@@ -151,6 +157,9 @@ class ChildProfile(models.Model):
         default='sinif_2',
     )
     
+    # YENİ: UI dili (i18n)
+    locale = models.CharField(max_length=10, default='tr')
+    
     # YENİ: Aktif profil mi (cihaz başına 1 aktif)
     is_active = models.BooleanField(default=True)
     
@@ -180,8 +189,8 @@ class ChildProfile(models.Model):
 | Endpoint | Method | Açıklama |
 |----------|--------|----------|
 | `children/` | GET | Cihazın tüm çocuk profillerini listele |
-| `children/` | POST | Yeni çocuk profili oluştur (`name`, `education_period`) |
-| `children/<id>/` | PATCH | Profil güncelle (ad, dönem, aktif durumu) |
+| `children/` | POST | Yeni çocuk profili oluştur (`name`, `education_period`, `locale`) |
+| `children/<id>/` | PATCH | Profil güncelle (ad, dönem, aktif durumu, locale) |
 | `children/<id>/activate/` | POST | Bu profili aktif yap (diğerleri pasif) |
 | `children/<id>/report/` | GET | AI performans raporunu getir |
 | `children/<id>/stats-history/` | GET | Günlük/haftalık istatistik geçmişi |
@@ -190,10 +199,12 @@ class ChildProfile(models.Model):
 
 1. **`ChildProfileActivity.kt`** (yeni) — Profil listesi, ekleme, dönem seçimi
 2. **`SettingsActivity.kt`** — "Çocuk Profilleri" kartı eklenir
-3. **`PreferenceManager.kt`** — `activeChildId` ve `activeEducationPeriod` eklenir
+3. **`PreferenceManager.kt`** — `activeChildId`, `activeEducationPeriod`, `appLocale` eklenir
 4. **`QuestionManager.kt`** — Aktif çocuğun dönemine göre soru çekme
 5. **`StatsTracker.kt`** — Aktif çocuğun ID'siyle stats gönderme + süre takibi
 6. **`AccountActivity.kt`** — Çocuk profil yönetimi bölümü eklenir
+7. **`BaseActivity.kt`** — Tüm Activity'ler locale-aware context wrapping alır
+8. **`LocaleHelper.kt`** — Context'e locale uygulama utility'si
 
 ---
 
@@ -213,6 +224,11 @@ if [ ! -f "$AGENTS_FILE" ]; then
 fi
 
 agents_swap_in "$AGENTS_FILE"
+```
+
+`ai-generate-levels.sh` ayrıca `--locale` parametresi alır (tr/en):
+```bash
+./ai-generate-levels.sh --locale en --period sinif_2
 ```
 
 ### 4.2 Dönem Başına Agent Farklılıkları
@@ -238,14 +254,15 @@ agents_swap_in "$AGENTS_FILE"
 
 ### 5.1 Mevcut Durum
 - Dev: SQLite (`db.sqlite3` — container içinde, deploy'da silinir)
-- Prod: PostgreSQL ayarı `settings.py`'de var ama yapılandırılmamış
+- Prod: PostgreSQL (named volume `mathlock_pgdata` — docker compose down ile silinmez)
 
 ### 5.2 Hedef Mimari
 
 ```yaml
-# docker-compose.yml değişikliği
+# docker-compose.yml
+docker-compose.yml
 services:
-  mathlock-db:
+  mathlock_db:
     image: postgres:16-alpine
     restart: always
     environment:
@@ -253,32 +270,54 @@ services:
       POSTGRES_USER: mathlock
       POSTGRES_PASSWORD: ${MATHLOCK_DB_PASSWORD}
     volumes:
-      - mathlock_pgdata:/var/lib/postgresql/data  # Named volume → deploy'da silinmez
+      - mathlock_pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mathlock"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  mathlock-backend:
+  mathlock_backend:
     build: ./backend
     depends_on:
-      mathlock-db:
+      mathlock_db:
+        condition: service_healthy
+      mathlock_redis:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgres://mathlock:${MATHLOCK_DB_PASSWORD}@mathlock-db:5432/mathlock
+      DATABASE_URL: postgres://mathlock:${MATHLOCK_DB_PASSWORD}@mathlock_db:5432/mathlock
     # ...
+
+  mathlock_redis:
+    image: redis:7-alpine
+    restart: always
+    volumes:
+      - mathlock_redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+
+  mathlock_celery:
+    build: ./backend
+    command: celery -A mathlock_backend worker -l info
+    depends_on:
+      - mathlock_db
+      - mathlock_redis
+    environment:
+      CELERY_BROKER_URL: redis://mathlock_redis:6379/0
+      CELERY_RESULT_BACKEND: redis://mathlock_redis:6379/0
 
 volumes:
   mathlock_pgdata:
-    name: mathlock_pgdata  # Named volume — docker compose down ile silinmez
+    name: mathlock_pgdata
+  mathlock_redisdata:
+    name: mathlock_redisdata
 ```
 
 ### 5.3 Yedekleme Stratejisi
 
 ```bash
 # Günlük otomatik yedekleme (cron)
-0 3 * * * docker exec mathlock-db pg_dump -U mathlock mathlock | gzip > /home/akn/backups/mathlock/mathlock_$(date +\%Y\%m\%d).sql.gz
+0 3 * * * docker exec mathlock_db pg_dump -U mathlock mathlock | gzip > /home/akn/backups/mathlock/mathlock_$(date +\%Y\%m\%d).sql.gz
 
 # Son 30 yedeği tut
 find /home/akn/backups/mathlock/ -name "*.sql.gz" -mtime +30 -delete
@@ -288,9 +327,13 @@ find /home/akn/backups/mathlock/ -name "*.sql.gz" -mtime +30 -delete
 
 Deploy scriptinde:
 ```bash
-# deploy.sh'a eklenecek
-docker compose exec mathlock-backend python manage.py migrate --no-input
-# ↑ Sadece yeni migration'lar uygulanır, veri silinmez
+# deploy.sh --backend
+
+docker-compose down
+docker-compose up -d --build
+docker exec mathlock_backend python manage.py migrate --noinput
+docker exec mathlock_backend python manage.py compilemessages --ignore=.venv
+docker exec mathlock_celery celery -A mathlock_backend inspect ping
 ```
 
 ---
@@ -425,9 +468,35 @@ fun endSession() {
 
 ---
 
-## 8. Uygulama Karmaşıklığını Yönetme
+## 8. Uluslararasılaştırma (i18n)
 
-### 8.1 "Basit Tutma" Prensibi
+### 8.1 Backend i18n
+
+- **Dil desteği:** `tr`, `en`
+- **Kullanım:** `gettext_lazy` semantic keys (~80 adet `views.py`'de)
+- **Dosyalar:** `locale/tr/LC_MESSAGES/django.po`, `locale/en/LC_MESSAGES/django.po`
+- **Derleme:** `python manage.py compilemessages` (deploy'da otomatik)
+- **API:** `?locale=en` query parametresi veya `Accept-Language` header
+
+### 8.2 Android i18n
+
+- **String kaynakları:** `values/strings.xml` (tr, varsayılan), `values-en/strings.xml` (en, 138+ string)
+- **Locale yönetimi:** `PreferenceManager.appLocale` (tr/en)
+- **Context wrapping:** `BaseActivity.attachBaseContext()` → `LocaleHelper.setLocale()`
+- **Tüm Activity'ler:** `BaseActivity`'den extend ediyor
+
+### 8.3 WebView i18n
+
+- **Oyun motoru:** `game.html` içinde `I18N` sözlüğü (tr/en)
+- **Helper:** `t(key, vars)` fonksiyonu interpolasyon destekli
+- **Locale değişimi:** `setLocale(locale)` + `renderUI()`
+- **Payload:** `initGame` JSON'unda `locale` ve `forceClear` alanları
+
+---
+
+## 9. Uygulama Karmaşıklığını Yönetme
+
+### 9.1 "Basit Tutma" Prensibi
 
 Çocuk tarafı **hiçbir şekilde karmaşıklaşmaz** — profil seçimi sadece ebeveyn panelinde:
 
@@ -442,59 +511,71 @@ Ebeveyn açısından:
   → Dönem değiştir / Rapor gör
 ```
 
-### 8.2 Varsayılan Davranış
+### 9.2 Varsayılan Davranış
 
-- İlk kurulumda: Tek çocuk profili ("Çocuk", sinif_2) — mevcut gibi
+- İlk kurulumda: Tek çocuk profili ("Çocuk", sinif_2, locale='tr') — mevcut gibi
 - Ebeveyn isterse: "Çocuk Profilleri"nden yeni ekler
 - Çoklu çocuk varsa: Son aktif profil otomatik seçili
 - Ebeveyn hiçbir şey yapmazsa: Mevcut deneyim aynı kalır (backward compatible)
 
 ---
 
-## 9. Uygulama Fazları / Yol Haritası
+## 10. Uygulama Fazları / Yol Haritası
 
-### Faz 1 — Temel Altyapı (Öncelik: YÜKSEK)
+### Faz 1 — Temel Altyapı (Öncelik: YÜKSEK) ✅
 1. PostgreSQL + named volume kurulumu
-2. `ChildProfile` modeline `education_period`, `is_active`, `daily_stats`, `total_time_seconds` ekleme
+2. `ChildProfile` modeline `education_period`, `is_active`, `daily_stats`, `total_time_seconds`, `locale` ekleme
 3. Migration oluşturma ve mevcut verileri koruma
 4. Yedekleme cron'u kurma
 5. Çocuk profili CRUD API endpoint'leri
+6. **i18n altyapısı** — `gettext_lazy`, `.po/.mo`, `LANGUAGES`, `LOCALE_PATHS`
 
-### Faz 2 — Müfredat Araştırması (Öncelik: YÜKSEK)
+### Faz 2 — Müfredat Araştırması (Öncelik: YÜKSEK) ✅
 1. Playwright-MCP ile MEB müfredatı araştırması (5 dönem)
 2. `agents/curriculum/*.json` dosyaları oluşturma
 3. Her dönem için `questions-<donem>.agents.md` yazma
 4. `validate-questions.py`'yi dönem-aware yapma
 5. `ai-generate.sh`'ı dönem parametresi alacak şekilde güncelleme
 
-### Faz 3 — Android Profil Yönetimi (Öncelik: ORTA)
+### Faz 3 — Android Profil Yönetimi (Öncelik: ORTA) ✅
 1. `ChildProfilesActivity.kt` — profil listesi + ekleme
 2. Eğitim dönemi seçim UI (Spinner/Dropdown)
-3. `PreferenceManager` — aktif çocuk ID takibi
+3. `PreferenceManager` — aktif çocuk ID + locale takibi
 4. `QuestionManager` + `StatsTracker` — profil-aware
 5. `SettingsActivity` — "Çocuk Profilleri" kartı
+6. **BaseActivity migration** — Tüm Activity'ler `BaseActivity`'den extend ediyor
 
-### Faz 4 — Performans Raporu (Öncelik: ORTA)
+### Faz 4 — Performans Raporu (Öncelik: ORTA) ✅
 1. AGENTS.md'lere rapor üretim adımı ekleme
 2. Backend'de rapor endpoint'i
 3. `PerformanceReportActivity.kt` — rapor görüntüleme
 4. Rapor paylaşma (PDF/resim)
 
-### Faz 5 — İstatistik Dashboard (Öncelik: DÜŞÜK)
+### Faz 5 — İstatistik Dashboard (Öncelik: DÜŞÜK) ✅
 1. MPAndroidChart entegrasyonu
 2. `StatsDashboardActivity.kt` — grafikler
 3. Süre takibi (StatsTracker session timer)
 4. Günlük/haftalık seri (streak) hesaplama
 5. Push notification — "Elif bugün henüz çalışmadı"
 
+### Faz 6 — Reliability & i18n (Öncelik: YÜKSEK) ✅
+1. **Celery + Redis** — `generate_level_set` / `generate_question_set` task'ları
+2. **RenewalLock TTL 20 dk** + stale lock cleanup (2×TTL)
+3. **WebView `onDestroy` cleanup** — `localStorage` + `SharedPreferences` temizlik
+4. **Polling 10 dk** — `120 × 5s` sorgu limiti
+5. **`fallback-levels.{locale}.json`** — Yerel yedek seviye setleri
+6. **`ai-generate-levels.sh --locale`** — Çok dilli seviye üretimi
+7. **Deploy automation** — `deploy.sh --backend` (docker-compose, migrate, compilemessages)
+
 ---
 
-## 10. Veritabanı Şeması (Güncellenmiş)
+## 11. Veritabanı Şeması (Güncellenmiş)
 
 ```
 Device (1) ──→ (N) ChildProfile ──→ (N) QuestionSet
    │                    │                     
    │                    ├── education_period
+   │                    ├── locale              # YENİ
    │                    ├── is_active
    │                    ├── daily_stats (JSON: {date: {solved, correct, time_s}})
    │                    ├── weekly_report_json (AI rapor)
@@ -509,29 +590,39 @@ Device (1) ──→ (N) ChildProfile ──→ (N) QuestionSet
 - Kredi bakiyesi **cihaz** bazlı kalır (aile paylaşımlı)
 - Soru setleri **çocuk** bazlı (zaten öyle)
 - Eğitim dönemi **çocuk** bazlı
+- Locale **çocuk** bazlı
 - Rapor **çocuk** bazlı
 - İstatistikler **çocuk** bazlı
 
 ---
 
-## 11. API Sözleşmeleri (Taslak)
+## 12. API Sözleşmeleri (Taslak)
+
+### POST /api/mathlock/register/
+```json
+// Request
+{"installation_id": "...", "device_token": "...", "locale": "en"}
+
+// Response 201
+{"device_token": "...", "children": [{"id": 1, "name": "Child", "locale": "en"}]}
+```
 
 ### POST /api/mathlock/children/
 ```json
 // Request
-{"name": "Elif", "education_period": "sinif_2"}
+{"name": "Elif", "education_period": "sinif_2", "locale": "tr"}
 
 // Response 201
-{"id": 3, "name": "Elif", "education_period": "sinif_2", "is_active": true}
+{"id": 3, "name": "Elif", "education_period": "sinif_2", "locale": "tr", "is_active": true}
 ```
 
 ### GET /api/mathlock/children/
 ```json
 // Response
 [
-  {"id": 1, "name": "Elif", "education_period": "sinif_2", "is_active": true,
+  {"id": 1, "name": "Elif", "education_period": "sinif_2", "locale": "tr", "is_active": true,
    "total_correct": 150, "total_shown": 200, "accuracy": 75.0},
-  {"id": 2, "name": "Ahmet", "education_period": "okul_oncesi", "is_active": false,
+  {"id": 2, "name": "Ahmet", "education_period": "okul_oncesi", "locale": "en", "is_active": false,
    "total_correct": 30, "total_shown": 50, "accuracy": 60.0}
 ]
 ```
@@ -572,13 +663,13 @@ Device (1) ──→ (N) ChildProfile ──→ (N) QuestionSet
 // Request — artık child_id zorunlu
 {"child_id": 1}
 
-// Response — education_period'a göre agent seçilir
+// Response — education_period'a ve locale'e göre agent seçilir
 {"questions": [...], "version": 6, "report": {...}}
 ```
 
 ---
 
-## 12. Güvenlik ve Gizlilik Notları
+## 13. Güvenlik ve Gizlilik Notları
 
 - Çocuk adları sadece cihaz + sunucu arasında kalır, üçüncü tarafa gönderilmez
 - Performans verileri anonim analiz için kullanılmaz

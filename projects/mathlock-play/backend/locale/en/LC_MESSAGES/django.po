@@ -1,0 +1,122 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"MIME-Version: 1.0\n"
+
+msgid "cannot_delete_last_profile"
+msgstr "Cannot delete the last profile"
+
+msgid "category_challenging"
+msgstr "CHALLENGING"
+
+msgid "category_critical"
+msgstr "CRITICAL"
+
+msgid "category_developing"
+msgstr "DEVELOPING"
+
+msgid "category_master"
+msgstr "MASTER"
+
+msgid "category_secure"
+msgstr "SECURE"
+
+msgid "child_profile_not_found"
+msgstr "Profile named {child_name} not found"
+
+msgid "completed_level_ids_must_be_list"
+msgstr "completed_level_ids must be a list"
+
+msgid "concurrent_purchase_conflict"
+msgstr "This token was processed by another concurrent request, please check your balance"
+
+msgid "debug_token_not_allowed"
+msgstr "Debug token is not allowed in production"
+
+msgid "default_child_name"
+msgstr "Child"
+
+msgid "device_token_and_child_id_required"
+msgstr "device_token and child_id are required"
+
+msgid "device_token_required"
+msgstr "Device token is required"
+
+msgid "email_required"
+msgstr "Email is required"
+
+msgid "email_too_long"
+msgstr "Email is too long"
+
+msgid "installation_id_required"
+msgstr "Installation ID is required"
+
+msgid "invalid_completed_level_ids"
+msgstr "completed_level_ids is invalid"
+
+msgid "invalid_device_token"
+msgstr "Invalid device token"
+
+msgid "invalid_education_period"
+msgstr "Invalid education_period. Valid: {valid}"
+
+msgid "invalid_email_format"
+msgstr "Invalid email format"
+
+msgid "invalid_product_id"
+msgstr "Invalid product_id: {product_id}"
+
+msgid "invalid_solved_questions"
+msgstr "solved_questions is invalid"
+
+msgid "levels_not_found"
+msgstr "Level data not found"
+
+msgid "max_children_reached"
+msgstr "Maximum 5 child profiles allowed"
+
+msgid "no_credits"
+msgstr "No credits remaining"
+
+msgid "package_standard"
+msgstr "Standard Package"
+
+msgid "package_starter"
+msgstr "Starter Package"
+
+msgid "package_super"
+msgstr "Super Package"
+
+msgid "profile_name_exists"
+msgstr "Profile named {name} already exists"
+
+msgid "profile_name_in_use"
+msgstr "Name {name} is already in use"
+
+msgid "profile_not_found"
+msgstr "Profile not found"
+
+msgid "purchase_already_processed"
+msgstr "This purchase has already been processed"
+
+msgid "purchase_fields_required"
+msgstr "device_token, purchase_token and product_id are required"
+
+msgid "purchase_invalid_state"
+msgstr "Invalid purchase (state={state})"
+
+msgid "purchase_pending"
+msgstr "Purchase is pending"
+
+msgid "purchase_refunded_or_cancelled"
+msgstr "Purchase has been refunded or cancelled"
+
+msgid "purchase_token_pending"
+msgstr "This purchase_token is already registered but not verified"
+
+msgid "solved_questions_must_be_list"
+msgstr "solved_questions must be a list"
+
+msgid "verification_failed"
+msgstr "Verification failed"
+

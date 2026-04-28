@@ -1,0 +1,122 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"MIME-Version: 1.0\n"
+
+msgid "cannot_delete_last_profile"
+msgstr "Son profil silinemez"
+
+msgid "category_challenging"
+msgstr "ZORLU"
+
+msgid "category_critical"
+msgstr "KRİTİK"
+
+msgid "category_developing"
+msgstr "GELİŞEN"
+
+msgid "category_master"
+msgstr "USTA"
+
+msgid "category_secure"
+msgstr "GÜVENLİ"
+
+msgid "child_profile_not_found"
+msgstr "{child_name} isimli profil bulunamadı"
+
+msgid "completed_level_ids_must_be_list"
+msgstr "completed_level_ids liste olmalı"
+
+msgid "concurrent_purchase_conflict"
+msgstr "Bu token eşzamanlı başka bir istek tarafından işlendi, lütfen bakiyenizi kontrol edin"
+
+msgid "debug_token_not_allowed"
+msgstr "Debug token üretimde geçersiz"
+
+msgid "default_child_name"
+msgstr "Çocuk"
+
+msgid "device_token_and_child_id_required"
+msgstr "device_token ve child_id gerekli"
+
+msgid "device_token_required"
+msgstr "device_token gerekli"
+
+msgid "email_required"
+msgstr "email gerekli"
+
+msgid "email_too_long"
+msgstr "Email çok uzun"
+
+msgid "installation_id_required"
+msgstr "installation_id gerekli"
+
+msgid "invalid_completed_level_ids"
+msgstr "completed_level_ids geçersiz"
+
+msgid "invalid_device_token"
+msgstr "Geçersiz device_token"
+
+msgid "invalid_education_period"
+msgstr "Geçersiz education_period. Geçerli: {valid}"
+
+msgid "invalid_email_format"
+msgstr "Geçersiz email formatı"
+
+msgid "invalid_product_id"
+msgstr "Geçersiz product_id: {product_id}"
+
+msgid "invalid_solved_questions"
+msgstr "solved_questions geçersiz"
+
+msgid "levels_not_found"
+msgstr "Seviye verisi bulunamadı"
+
+msgid "max_children_reached"
+msgstr "Maksimum 5 çocuk profili oluşturulabilir"
+
+msgid "no_credits"
+msgstr "Kredi yok"
+
+msgid "package_standard"
+msgstr "Standart Paket"
+
+msgid "package_starter"
+msgstr "Başlangıç Paketi"
+
+msgid "package_super"
+msgstr "Süper Paket"
+
+msgid "profile_name_exists"
+msgstr "{name} isimli profil zaten mevcut"
+
+msgid "profile_name_in_use"
+msgstr "{name} ismi zaten kullanılıyor"
+
+msgid "profile_not_found"
+msgstr "Profil bulunamadı"
+
+msgid "purchase_already_processed"
+msgstr "Bu satın alma zaten işlendi"
+
+msgid "purchase_fields_required"
+msgstr "device_token, purchase_token ve product_id gerekli"
+
+msgid "purchase_invalid_state"
+msgstr "Satın alma geçersiz (state={state})"
+
+msgid "purchase_pending"
+msgstr "Satın alma beklemede"
+
+msgid "purchase_refunded_or_cancelled"
+msgstr "Satın alma iade edilmiş veya iptal edilmiş"
+
+msgid "purchase_token_pending"
+msgstr "Bu purchase_token zaten kayıtlı ama doğrulanmamış"
+
+msgid "solved_questions_must_be_list"
+msgstr "solved_questions liste olmalı"
+
+msgid "verification_failed"
+msgstr "Doğrulama başarısız"
+

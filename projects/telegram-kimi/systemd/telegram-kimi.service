@@ -1,0 +1,24 @@
+[Unit]
+Description=Telegram Kimi Bridge Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=akn
+Group=akn
+WorkingDirectory=/home/akn/vps/projects/telegram-kimi
+
+EnvironmentFile=/home/akn/vps/projects/telegram-kimi/.env
+Environment=PATH=/home/akn/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+ExecStart=/home/akn/vps/projects/telegram-kimi/venv/bin/python /home/akn/vps/projects/telegram-kimi/bot.py
+Restart=always
+RestartSec=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=telegram-kimi
+
+[Install]
+WantedBy=multi-user.target

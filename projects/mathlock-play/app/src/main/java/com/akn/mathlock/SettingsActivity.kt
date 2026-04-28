@@ -11,14 +11,13 @@ import android.os.Process
 import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.databinding.ActivitySettingsBinding
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.AccountManager
 import com.akn.mathlock.util.PreferenceManager
 import com.akn.mathlock.util.QuestionManager
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
     private lateinit var prefManager: PreferenceManager

@@ -17,11 +17,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
+from django.utils.translation import gettext_lazy as _
 
 from .models import (ChildProfile, CreditBalance, CreditPackage,
                      Device, LevelSet, PurchaseRecord, Question, QuestionSet,
                      RenewalLock, UserQuestionProgress)
 from .google_play import verify_purchase
+from .tasks import generate_level_set, generate_question_set
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +36,7 @@ def _sanitize_child_name(name: str) -> str:
     """Çocuk adını sanitize et — max 100 karakter, zararlı karakter temizle."""
     name = str(name).strip()[:100]
     name = _SAFE_NAME_RE.sub('', name)
-    return name or 'Çocuk'
+    return name or _('default_child_name')
 
 
 # ─── Soru Üretimi (kimi-cli + AGENTS.md) ──────────────────────────────────
@@ -58,8 +60,8 @@ _GENERATE_LEVELS_SCRIPT = _PROJECT_DIR / 'ai-generate-levels.sh'
 _LEVELS_FILE = _DATA_DIR / 'levels.json'
 _LEVELS_COUNT = 12  # Her sette 12 seviye
 
-# Yenileme kilidi TTL: 15 dakika (generation timeout 3 dk + tampon)
-_RENEWAL_LOCK_TTL = 15 * 60  # saniye
+# Yenileme kilidi TTL: 20 dakika (AI üretimi 10 dk + tampon)
+_RENEWAL_LOCK_TTL = 20 * 60  # saniye
 
 # Dönem bazlı soru sayıları
 _QUESTION_COUNTS = {
@@ -103,7 +105,7 @@ def _generate_via_kimi(child_stats: dict, education_period: str = 'sinif_2') -> 
 
         # ai-generate.sh çalıştır
         if not _GENERATE_SCRIPT.exists():
-            raise RuntimeError("ai-generate.sh bulunamadı")
+            raise RuntimeError(_('ai_generate_script_not_found'))
 
         try:
             result = subprocess.run(
@@ -115,23 +117,23 @@ def _generate_via_kimi(child_stats: dict, education_period: str = 'sinif_2') -> 
             )
         except subprocess.TimeoutExpired:
             logger.error("ai-generate.sh %d saniye zaman aşımı", _GENERATE_TIMEOUT)
-            raise RuntimeError("Soru üretimi zaman aşımına uğradı")
+            raise RuntimeError(_('question_generation_timeout'))
 
         if result.returncode != 0:
             logger.error("ai-generate.sh başarısız (rc=%d): %s",
                          result.returncode, result.stderr[-500:] if result.stderr else "")
-            raise RuntimeError("Soru üretimi başarısız")
+            raise RuntimeError(_('question_generation_failed'))
 
         # Üretilen soruları oku
         questions_file = tmpdir / 'questions.json'
         if not questions_file.exists():
-            raise RuntimeError("questions.json üretilmedi")
+            raise RuntimeError(_('questions_json_not_generated'))
 
         data = json.loads(questions_file.read_text(encoding='utf-8'))
         questions = data.get('questions', [])
 
         if len(questions) < expected_count:
-            raise RuntimeError(f"Yetersiz soru: {len(questions)}/{expected_count}")
+            raise RuntimeError(_('insufficient_questions').format(got=len(questions), expected=expected_count))
 
         logger.info(
             "kimi-cli soru üretimi başarılı: v%s, %d soru, dönem=%s",
@@ -174,7 +176,7 @@ def _generate_levels_via_kimi(level_stats: dict = None, education_period: str = 
         education_period = 'sinif_2'
 
     if not _GENERATE_LEVELS_SCRIPT.exists():
-        raise RuntimeError("ai-generate-levels.sh bulunamadı")
+        raise RuntimeError(_('ai_generate_levels_script_not_found'))
 
     tmpdir = Path(tempfile.mkdtemp(prefix='mathlock-levels-gen-'))
     try:
@@ -195,22 +197,22 @@ def _generate_levels_via_kimi(level_stats: dict = None, education_period: str = 
             )
         except subprocess.TimeoutExpired:
             logger.error("ai-generate-levels.sh %d saniye zaman aşımı", _GENERATE_TIMEOUT)
-            raise RuntimeError("Seviye üretimi zaman aşımına uğradı")
+            raise RuntimeError(_('level_generation_timeout'))
 
         if result.returncode != 0:
             logger.error("ai-generate-levels.sh başarısız (rc=%d): %s",
                          result.returncode, result.stderr[-500:] if result.stderr else "")
-            raise RuntimeError("Seviye üretimi başarısız")
+            raise RuntimeError(_('level_generation_failed'))
 
         levels_file = tmpdir / 'levels.json'
         if not levels_file.exists():
-            raise RuntimeError("levels.json üretilmedi")
+            raise RuntimeError(_('levels_json_not_generated'))
 
         data = json.loads(levels_file.read_text(encoding='utf-8'))
         levels = data.get('levels', [])
 
         if len(levels) < _LEVELS_COUNT:
-            raise RuntimeError(f"Yetersiz seviye: {len(levels)}/{_LEVELS_COUNT}")
+            raise RuntimeError(_('insufficient_levels').format(got=len(levels), expected=_LEVELS_COUNT))
 
         logger.info(
             "Seviye üretimi başarılı: v%s, %d seviye", data.get('version', '?'), len(levels)
@@ -447,7 +449,7 @@ def _deduct_credit_and_lock(child_pk: int, device, content_type: str) -> tuple:
       - Kredi yok
 
     Kilit, arka plan thread'i tamamlanınca _release_renewal_lock ile serbest bırakılır.
-    Sunucu çökerse _RENEWAL_LOCK_TTL (15 dk) sonra otomatik geçersiz sayılır.
+    Sunucu çökerse _RENEWAL_LOCK_TTL (20 dk) sonra otomatik geçersiz sayılır.
     """
     now = timezone.now()
     expires_at = now + timedelta(seconds=_RENEWAL_LOCK_TTL)
@@ -466,13 +468,29 @@ def _deduct_credit_and_lock(child_pk: int, device, content_type: str) -> tuple:
             )
             return False, False, 0, 0
 
-        # Süresi dolmuş kilidi temizle
+        # 1. Çok eski (2×TTL) kilidi temizle — saat senkronizasyonu sorunlarına karşı güvenlik
+        very_old = now - timedelta(seconds=_RENEWAL_LOCK_TTL * 2)
+        RenewalLock.objects.filter(
+            child_id=child_pk, content_type=content_type, created_at__lt=very_old
+        ).delete()
+
+        # 2. Süresi dolmuş kilidi temizle
         RenewalLock.objects.filter(
             child_id=child_pk, content_type=content_type, expires_at__lt=now
         ).delete()
 
-        # Kilit var mı?
-        if RenewalLock.objects.filter(child_id=child_pk, content_type=content_type).exists():
+        # 3. Kilit var mı? (double-check: gerçekten aktif mi)
+        lock = RenewalLock.objects.filter(child_id=child_pk, content_type=content_type).first()
+        if lock:
+            if lock.expires_at > now:
+                logger.info(
+                    "Yenileme zaten devam ediyor, atlandı: child_pk=%d, type=%s, expires=%s",
+                    child_pk, content_type, lock.expires_at.isoformat(),
+                )
+                return False, False, 0, 0
+            else:
+                # Stale lock (race condition sonrası), sil ve devam et
+                lock.delete()
             logger.info(
                 "Yenileme zaten devam ediyor, atlandı: child_pk=%d, type=%s",
                 child_pk, content_type,
@@ -536,12 +554,12 @@ def _check_and_auto_renew_after_purchase(device_pk: int):
             total_q = total_free + total_ai
             solved_q = free_solved + ai_solved
             if total_q > 0 and solved_q >= total_q:
-                success, is_free, cb_pk, _ = _deduct_credit_and_lock(child.pk, device, 'questions')
+                success, is_free, cb_pk, _remaining = _deduct_credit_and_lock(child.pk, device, 'questions')
                 if success:
-                    _run_in_background(_auto_renew_questions, child.pk, cb_pk, is_free)
+                    task = generate_question_set.delay(child.pk, cb_pk, is_free)
                     logger.info(
-                        "Satın alma sonrası matematik yenileme başlatıldı: child=%s, is_free=%s",
-                        child.name, is_free,
+                        "Satın alma sonrası matematik yenileme başlatıldı (Celery): child=%s, is_free=%s, job=%s",
+                        child.name, is_free, task.id,
                     )
                 else:
                     logger.info("Satın alma sonrası yenileme: kredi yetmedi veya kilitli (child=%s)", child.name)
@@ -552,12 +570,12 @@ def _check_and_auto_renew_after_purchase(device_pk: int):
                 total_lvl = len(latest_ls.levels_json or [])
                 done_lvl = len(latest_ls.completed_level_ids or [])
                 if total_lvl > 0 and done_lvl >= total_lvl:
-                    success, is_free, cb_pk, _ = _deduct_credit_and_lock(child.pk, device, 'levels')
+                    success, is_free, cb_pk, _remaining = _deduct_credit_and_lock(child.pk, device, 'levels')
                     if success:
-                        _run_in_background(_auto_renew_levels, child.pk, cb_pk, is_free, _build_level_stats(child))
+                        task = generate_level_set.delay(child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period)
                         logger.info(
-                            "Satın alma sonrası seviye yenileme başlatıldı: child=%s, is_free=%s",
-                            child.name, is_free,
+                            "Satın alma sonrası seviye yenileme başlatıldı (Celery): child=%s, is_free=%s, job=%s",
+                            child.name, is_free, task.id,
                         )
                     else:
                         logger.info(
@@ -595,7 +613,7 @@ def register_device(request):
     """
     installation_id = request.data.get('installation_id')
     if not installation_id or not isinstance(installation_id, str):
-        return Response({'error': 'installation_id gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('installation_id_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     # Sanitize
     installation_id = installation_id.strip()[:255]
@@ -605,9 +623,21 @@ def register_device(request):
         defaults={'device_token': uuid.uuid4()}
     )
 
+    # Cihaz locale'ini al (Android'den gelir)
+    device_locale = str(request.data.get('locale', 'tr')).strip().lower()[:10]
+    if device_locale not in ('tr', 'en', 'de', 'fr', 'es'):
+        device_locale = 'tr'
+
     # Yeni cihaz için kredi bakiyesi ve çocuk profili oluştur
-    credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
-    child, _ = ChildProfile.objects.get_or_create(device=device, name="Çocuk")
+    credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
+    child, _created = ChildProfile.objects.get_or_create(
+        device=device, name="Çocuk",
+        defaults={'locale': device_locale}
+    )
+    # Locale güncelle (varsa)
+    if child.locale != device_locale:
+        child.locale = device_locale
+        child.save(update_fields=['locale'])
 
     if not created:
         device.save(update_fields=['last_seen'])
@@ -618,6 +648,7 @@ def register_device(request):
         'free_set_used': credit_balance.free_set_used,
         'child_name': child.name,
         'education_period': child.education_period,
+        'locale': child.locale,
         'children': [
             {
                 'id': c.id,
@@ -652,7 +683,7 @@ def verify_purchase_view(request):
 
     if not all([device_token, purchase_token, product_id]):
         return Response(
-            {'error': 'device_token, purchase_token ve product_id gerekli'},
+            {'error': _('purchase_fields_required')},
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -660,13 +691,13 @@ def verify_purchase_view(request):
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     # Ürün ID → kredi miktarı (erken kontrol — DB'ye gitmeden önce geçersiz ürünü reddet)
     credits_map = getattr(settings, 'CREDITS_PER_PURCHASE', {})
     credits_to_add = credits_map.get(product_id, 0)
     if credits_to_add == 0:
-        return Response({'error': f'Geçersiz product_id: {product_id}'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('invalid_product_id').format(product_id=product_id)}, status=status.HTTP_400_BAD_REQUEST)
 
     DEBUG_TOKEN_PREFIX = "DEBUG_TEST_TOKEN_"
 
@@ -682,15 +713,15 @@ def verify_purchase_view(request):
             if existing:
                 if existing.verified:
                     _check_refunded_purchases(device)
-                    credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
+                    credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
                     return Response({
                         'success': True,
                         'credits_added': existing.credits_added,
                         'total_credits': credit_balance.balance,
-                        'message': 'Bu satın alma zaten işlendi',
+                        'message': _('purchase_already_processed'),
                     })
                 return Response(
-                    {'error': 'Bu purchase_token zaten kayıtlı ama doğrulanmamış'},
+                    {'error': _('purchase_token_pending')},
                     status=status.HTTP_409_CONFLICT,
                 )
 
@@ -698,7 +729,7 @@ def verify_purchase_view(request):
             if purchase_token.startswith(DEBUG_TOKEN_PREFIX):
                 if not settings.DEBUG:
                     logger.warning("Üretim ortamında debug token reddedildi: %s", purchase_token[:30])
-                    return Response({'error': 'Debug token üretimde geçersiz'}, status=status.HTTP_403_FORBIDDEN)
+                    return Response({'error': _('debug_token_not_allowed')}, status=status.HTTP_403_FORBIDDEN)
                 logger.info("DEV DEBUG: Test token kabul edildi: %s", purchase_token[:40])
                 PurchaseRecord.objects.create(
                     device=device,
@@ -711,7 +742,7 @@ def verify_purchase_view(request):
                     last_verified_at=timezone.now(),
                     verification_response={"debug": True},
                 )
-                credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
+                credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
                 credit_balance.add_credits(credits_to_add)
                 _run_in_background(_check_and_auto_renew_after_purchase, device.pk)
                 return Response({
@@ -735,7 +766,7 @@ def verify_purchase_view(request):
             record.last_verified_at = timezone.now()
 
             if not verification.get('valid'):
-                error_msg = verification.get('error', 'Doğrulama başarısız')
+                error_msg = verification.get('error', _('verification_failed'))
                 logger.warning("Satın alma doğrulanamadı: device=%s, product=%s, error=%s, purchase_state=%s",
                                device.installation_id[:12], product_id, error_msg, record.purchase_state)
                 record.save()
@@ -748,7 +779,7 @@ def verify_purchase_view(request):
                 record.credits_added = credits_to_add
                 record.save()
 
-                credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
+                credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
                 credit_balance.add_credits(credits_to_add)
 
                 logger.info("Satın alma doğrulandı: device=%s, product=%s, credits=%d",
@@ -764,8 +795,8 @@ def verify_purchase_view(request):
                 })
             else:
                 record.save()
-                state_map = {1: 'Satın alma iade edilmiş veya iptal edilmiş', 2: 'Satın alma beklemede'}
-                error_msg = state_map.get(record.purchase_state, f'Satın alma geçersiz (state={record.purchase_state})')
+                state_map = {1: _('purchase_refunded_or_cancelled'), 2: _('purchase_pending')}
+                error_msg = state_map.get(record.purchase_state, _('purchase_invalid_state').format(state=record.purchase_state))
                 logger.warning("Satın alma reddedildi: device=%s, product=%s, state=%s",
                                device.installation_id[:12], product_id, record.purchase_state)
                 return Response({'success': False, 'error': error_msg},
@@ -776,7 +807,7 @@ def verify_purchase_view(request):
         logger.warning("Race condition yakalandı — aynı purchase_token eşzamanlı işlendi: %s",
                        purchase_token[:40])
         return Response(
-            {'error': 'Bu token eşzamanlı başka bir istek tarafından işlendi, lütfen bakiyenizi kontrol edin'},
+            {'error': _('concurrent_purchase_conflict')},
             status=status.HTTP_409_CONFLICT,
         )
 
@@ -839,16 +870,16 @@ def get_credits(request):
     """
     device_token = request.query_params.get('device_token')
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     _check_refunded_purchases(device)
 
-    credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
+    credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
 
     return Response({
         'credits': credit_balance.balance,
@@ -876,21 +907,21 @@ def use_credit(request):
     }
     """
     device_token = request.data.get('device_token')
-    child_name = _sanitize_child_name(request.data.get('child_name', 'Çocuk'))
+    child_name = _sanitize_child_name(request.data.get('child_name', _('default_child_name')))
     stats = request.data.get('stats', {})
 
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, name=child_name)
     except ChildProfile.DoesNotExist:
-        return Response({'error': f'"{child_name}" isimli profil bulunamadı'},
+        return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
                         status=status.HTTP_404_NOT_FOUND)
 
     # İstatistikleri güncelle
@@ -915,7 +946,7 @@ def use_credit(request):
                 credit_balance.save(update_fields=['balance', 'total_used', 'updated_at'])
             else:
                 return Response({
-                    'error': 'Kredi yok',
+                    'error': _('no_credits'),
                     'credits_remaining': 0,
                 }, status=status.HTTP_402_PAYMENT_REQUIRED)
 
@@ -982,22 +1013,22 @@ def upload_stats(request):
     }
     """
     device_token = request.data.get('device_token')
-    child_name = _sanitize_child_name(request.data.get('child_name', 'Çocuk'))
+    child_name = _sanitize_child_name(request.data.get('child_name', _('default_child_name')))
     stats = request.data.get('stats', {})
     question_version = request.data.get('question_version', 0)
 
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, name=child_name)
     except ChildProfile.DoesNotExist:
-        return Response({'error': f'"{child_name}" isimli profil bulunamadı'},
+        return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
                         status=status.HTTP_404_NOT_FOUND)
 
     # Kümülatif istatistik güncelle
@@ -1097,9 +1128,9 @@ def get_packages(request):
 
     # Makul bir görüntü adı üret
     display_names = {
-        'kredi_1': 'Başlangıç Paketi',
-        'kredi_5': 'Standart Paket',
-        'kredi_10': 'Süper Paket',
+        'kredi_1': _('package_starter'),
+        'kredi_5': _('package_standard'),
+        'kredi_10': _('package_super'),
     }
 
     data = sorted(
@@ -1135,20 +1166,20 @@ def register_email(request):
     email = request.data.get('email', '').strip().lower()
 
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
     if not email:
-        return Response({'error': 'email gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('email_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     # Basit email doğrulama
     if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
-        return Response({'error': 'Geçersiz email formatı'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('invalid_email_format')}, status=status.HTTP_400_BAD_REQUEST)
     if len(email) > 254:
-        return Response({'error': 'Email çok uzun'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('email_too_long')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     # Email zaten başka bir cihazda kullanılıyor mu?
     # Eğer varsa → veriyi eski cihazdan yeni cihaza transfer et (hesap kurtarma)
@@ -1175,6 +1206,7 @@ def register_email(request):
                     existing_child.save()
                     # Eski çocuğun QuestionSet'lerini yeni çocuğa taşı
                     child.question_sets.update(child=existing_child)
+                    child.level_sets.update(child=existing_child)
                     child.delete()
                 else:
                     child.device = device
@@ -1183,7 +1215,7 @@ def register_email(request):
             # CreditBalance transfer: bakiyeleri birleştir
             old_credits = CreditBalance.objects.filter(device=old_device).first()
             if old_credits:
-                new_credits, _ = CreditBalance.objects.get_or_create(device=device)
+                new_credits, _created = CreditBalance.objects.get_or_create(device=device)
                 new_credits.balance += old_credits.balance
                 new_credits.total_purchased += old_credits.total_purchased
                 new_credits.total_used += old_credits.total_used
@@ -1233,7 +1265,7 @@ def register_email(request):
     device.save(update_fields=['email', 'last_seen'])
 
     # Transfer sonrası güncel bakiyeyi döndür
-    credit_balance, _ = CreditBalance.objects.get_or_create(device=device)
+    credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
 
     logger.info("Email kaydedildi: device=%s, email=%s, recovered=%s",
                 device.installation_id[:12], email, recovered)
@@ -1284,12 +1316,12 @@ def get_questions(request):
     """
     device_token = request.query_params.get('device_token')
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     question_list = []
 
@@ -1378,19 +1410,19 @@ def update_progress(request):
     reset_rotation = request.data.get('reset_rotation', False)
 
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
     if not isinstance(solved_ids, list):
-        return Response({'error': 'solved_questions liste olmalı'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('solved_questions_must_be_list')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         solved_ids = [int(qid) for qid in solved_ids[:500]]
     except (ValueError, TypeError):
-        return Response({'error': 'solved_questions geçersiz'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('invalid_solved_questions')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     # child_id varsa onu kullan, yoksa aktif profili bul
     child_id_param = request.data.get('child_id')
@@ -1439,7 +1471,7 @@ def update_progress(request):
             # Hangi set'lere ait olduklarını grupla
             sets_to_update = {}  # set_pk → [global_id, ...]
             for gid in ai_ids:
-                set_pk, _ = _parse_ai_global_id(gid)
+                set_pk, _ignored = _parse_ai_global_id(gid)
                 if set_pk:
                     sets_to_update.setdefault(set_pk, []).append(gid)
 
@@ -1481,11 +1513,21 @@ def update_progress(request):
             )
             if success:
                 auto_renewal_started = True
-                _run_in_background(_auto_renew_questions, _target_child.pk, cb_pk, is_free)
+                task = generate_question_set.delay(_target_child.pk, cb_pk, is_free)
                 logger.info(
-                    "Otomatik matematik yenileme başlatıldı: child=%s, is_free=%s",
-                    _target_child.name, is_free
+                    "Otomatik matematik yenileme başlatıldı (Celery): child=%s, is_free=%s, job=%s",
+                    _target_child.name, is_free, task.id
                 )
+                return Response({
+                    'success': True,
+                    'updated': updated,
+                    'total_solved': free_solved + ai_solved,
+                    'total_accessible': total_free + total_ai,
+                    'auto_renewal_started': True,
+                    'job_id': task.id,
+                    'check_url': f'/jobs/{task.id}/status/',
+                    'credits_remaining': credits_remaining or 0,
+                })
 
     return Response({
         'success': True,
@@ -1511,12 +1553,12 @@ def children_list(request):
     """
     device_token = request.data.get('device_token') or request.query_params.get('device_token')
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         children = device.children.all().order_by('-is_active', 'name')
@@ -1546,13 +1588,13 @@ def children_list(request):
 
     if education_period not in _VALID_EDUCATION_PERIODS:
         return Response(
-            {'error': f'Geçersiz education_period. Geçerli: {sorted(_VALID_EDUCATION_PERIODS)}'},
+            {'error': _('invalid_education_period').format(valid=sorted(_VALID_EDUCATION_PERIODS))},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     # Max 5 çocuk profili
     if device.children.count() >= 5:
-        return Response({'error': 'Maksimum 5 çocuk profili oluşturulabilir'},
+        return Response({'error': _('max_children_reached')},
                         status=status.HTTP_400_BAD_REQUEST)
 
     try:
@@ -1560,7 +1602,7 @@ def children_list(request):
             device=device, name=name, education_period=education_period, is_active=False,
         )
     except IntegrityError:
-        return Response({'error': f'"{name}" isimli profil zaten mevcut'},
+        return Response({'error': _('profile_name_exists').format(name=name)},
                         status=status.HTTP_409_CONFLICT)
 
     return Response({
@@ -1590,22 +1632,22 @@ def children_detail(request):
     child_id = request.query_params.get('child_id') or request.data.get('child_id')
 
     if not device_token or not child_id:
-        return Response({'error': 'device_token ve child_id gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_and_child_id_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, id=child_id)
     except (ChildProfile.DoesNotExist, ValueError):
-        return Response({'error': 'Profil bulunamadı'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('profile_not_found')}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'DELETE':
         # Son profil silinemez
         if device.children.count() <= 1:
-            return Response({'error': 'Son profil silinemez'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': _('cannot_delete_last_profile')}, status=status.HTTP_400_BAD_REQUEST)
         was_active = child.is_active
         child.delete()
         # Silinen aktifse başkasını aktif yap
@@ -1623,7 +1665,7 @@ def children_detail(request):
     if new_name:
         new_name = _sanitize_child_name(new_name)
         if ChildProfile.objects.filter(device=device, name=new_name).exclude(pk=child.pk).exists():
-            return Response({'error': f'"{new_name}" ismi zaten kullanılıyor'},
+            return Response({'error': _('profile_name_in_use').format(name=new_name)},
                             status=status.HTTP_409_CONFLICT)
         child.name = new_name
         update_fields.append('name')
@@ -1672,20 +1714,20 @@ def child_report(request):
     }
     """
     device_token = request.query_params.get('device_token')
-    child_name = request.query_params.get('child_name', 'Çocuk')
+    child_name = request.query_params.get('child_name', _('default_child_name'))
 
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, name=child_name)
     except ChildProfile.DoesNotExist:
-        return Response({'error': f'"{child_name}" isimli profil bulunamadı'},
+        return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
                         status=status.HTTP_404_NOT_FOUND)
 
     # Tip bazlı istatistik analizi
@@ -1706,15 +1748,15 @@ def child_report(request):
             avg_time = 0.0
 
         if accuracy >= 85 and avg_time < 5:
-            category = 'USTA'
+            category = _('category_master')
         elif accuracy >= 85:
-            category = 'GÜVENLİ'
+            category = _('category_secure')
         elif accuracy >= 60:
-            category = 'GELİŞEN'
+            category = _('category_developing')
         elif accuracy >= 40:
-            category = 'ZORLU'
+            category = _('category_challenging')
         else:
-            category = 'KRİTİK'
+            category = _('category_critical')
 
         by_type[tip] = {
             'shown': shown,
@@ -1759,20 +1801,20 @@ def stats_history(request):
     GET /api/mathlock/children/stats-history/?device_token=uuid&child_name=Ali
     """
     device_token = request.query_params.get('device_token')
-    child_name = request.query_params.get('child_name', 'Çocuk')
+    child_name = request.query_params.get('child_name', _('default_child_name'))
 
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, name=child_name)
     except ChildProfile.DoesNotExist:
-        return Response({'error': f'"{child_name}" isimli profil bulunamadı'},
+        return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
                         status=status.HTTP_404_NOT_FOUND)
 
     # Günlük istatistikler
@@ -1795,7 +1837,7 @@ def stats_history(request):
     from datetime import date, timedelta
     streak = 0
     check_date = date.today()
-    for _ in range(365):
+    for __ in range(365):
         date_str = check_date.isoformat()
         day_data = daily_stats.get(date_str, {})
         if isinstance(day_data, dict) and day_data.get('solved', 0) > 0:
@@ -1835,12 +1877,12 @@ def get_levels(request):
     """
     device_token = request.query_params.get('device_token')
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     child_id = request.query_params.get('child_id')
     if child_id:
@@ -1849,25 +1891,33 @@ def get_levels(request):
         child = device.children.filter(is_active=True).first() or device.children.first()
 
     if not child:
-        return Response({'error': 'Profil bulunamadı'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('profile_not_found')}, status=status.HTTP_404_NOT_FOUND)
 
     level_set = LevelSet.objects.filter(child=child).order_by('-version').first()
 
+    # Locale'e göre fallback levels dosyasını seç
+    locale = request.query_params.get('locale', child.locale)[:10]
+    if locale not in ('tr', 'en', 'de', 'fr', 'es'):
+        locale = 'tr'
+    fallback_locale_file = _DATA_DIR / f'fallback-levels.{locale}.json'
+    if not fallback_locale_file.exists():
+        fallback_locale_file = _DATA_DIR / 'fallback-levels.tr.json'
+
     if not level_set:
-        # İlk erişim: static levels.json'dan kişisel set oluştur
+        # İlk erişim: locale'e özgü fallback levels'dan kişisel set oluştur
         try:
-            if _LEVELS_FILE.exists():
-                data = json.loads(_LEVELS_FILE.read_text(encoding='utf-8'))
+            if fallback_locale_file.exists():
+                data = json.loads(fallback_locale_file.read_text(encoding='utf-8'))
                 levels = data.get('levels', [])[:_LEVELS_COUNT]
             else:
                 levels = []
         except Exception as e:
-            logger.error("levels.json okunamadı: %s", e)
+            logger.error("fallback levels okunamadı (%s): %s", fallback_locale_file.name, e)
             levels = []
 
         if not levels:
             return Response(
-                {'error': 'Seviye verisi bulunamadı'},
+                {'error': _('levels_not_found')},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
 
@@ -1889,6 +1939,7 @@ def get_levels(request):
         'completed_level_ids': completed,
         'total_levels': len(level_set.levels_json or []),
         'completed_count': len(completed),
+        'locale': child.locale,
     })
 
 
@@ -1917,12 +1968,12 @@ def update_level_progress(request):
     """
     device_token = request.data.get('device_token')
     if not device_token:
-        return Response({'error': 'device_token gerekli'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         device = Device.objects.get(device_token=device_token)
     except (Device.DoesNotExist, ValidationError):
-        return Response({'error': 'Geçersiz device_token'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     child_id = request.data.get('child_id')
     if child_id:
@@ -1931,7 +1982,7 @@ def update_level_progress(request):
         child = device.children.filter(is_active=True).first() or device.children.first()
 
     if not child:
-        return Response({'error': 'Profil bulunamadı'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': _('profile_not_found')}, status=status.HTTP_404_NOT_FOUND)
 
     # İlerleme verilerini al
     set_id = request.data.get('set_id')
@@ -1939,12 +1990,12 @@ def update_level_progress(request):
     level_stats = request.data.get('level_stats', {})
 
     if not isinstance(completed_ids_raw, list):
-        return Response({'error': 'completed_level_ids liste olmalı'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('completed_level_ids_must_be_list')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         completed_ids = [int(lid) for lid in completed_ids_raw[:50]]
     except (ValueError, TypeError):
-        return Response({'error': 'completed_level_ids geçersiz'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': _('invalid_completed_level_ids')}, status=status.HTTP_400_BAD_REQUEST)
 
     # Level set'i bul, yoksa oluştur
     if set_id:
@@ -1953,20 +2004,27 @@ def update_level_progress(request):
         level_set = LevelSet.objects.filter(child=child).order_by('-version').first()
 
     if not level_set:
-        # İlk erişim: static levels.json'dan kişisel set oluştur
+        # İlk erişim: locale'e özgü fallback levels'dan kişisel set oluştur
+        locale = request.data.get('locale', child.locale)[:10]
+        if locale not in ('tr', 'en', 'de', 'fr', 'es'):
+            locale = 'tr'
+        fallback_locale_file = _DATA_DIR / f'fallback-levels.{locale}.json'
+        if not fallback_locale_file.exists():
+            fallback_locale_file = _DATA_DIR / 'fallback-levels.tr.json'
+
         try:
-            if _LEVELS_FILE.exists():
-                data = json.loads(_LEVELS_FILE.read_text(encoding='utf-8'))
+            if fallback_locale_file.exists():
+                data = json.loads(fallback_locale_file.read_text(encoding='utf-8'))
                 levels = data.get('levels', [])[:_LEVELS_COUNT]
             else:
                 levels = []
         except Exception as e:
-            logger.error("levels.json okunamadı: %s", e)
+            logger.error("fallback levels okunamadı (%s): %s", fallback_locale_file.name, e)
             levels = []
 
         if not levels:
             return Response(
-                {'error': 'Seviye verisi bulunamadı'},
+                {'error': _('levels_not_found')},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
 
@@ -1977,7 +2035,7 @@ def update_level_progress(request):
             is_ai_generated=False,
             credit_used=False,
         )
-        logger.info("İlk seviye seti oluşturuldu (update_progress): child=%s", child.name)
+        logger.info("İlk seviye seti oluşturuldu (update_progress): child=%s, locale=%s", child.name, locale)
 
     # İlerlemeyi güncelle
     existing = set(level_set.completed_level_ids or [])
@@ -2000,6 +2058,17 @@ def update_level_progress(request):
     # Yerine: daha yüksek versiyonlu set var mı + kilit var mı kontrolü eklendi.
     if all_completed:
         has_newer = LevelSet.objects.filter(child=child, version__gt=level_set.version).exists()
+        # Süresi dolmuş ve çok eski kilitleri temizle (saat senkronizasyonu sorunlarına karşı)
+        now = timezone.now()
+        very_old = now - timedelta(seconds=_RENEWAL_LOCK_TTL * 2)
+        RenewalLock.objects.filter(
+            child_id=child.pk, content_type='levels',
+            expires_at__lt=now
+        ).delete()
+        RenewalLock.objects.filter(
+            child_id=child.pk, content_type='levels',
+            created_at__lt=very_old
+        ).delete()
         lock_exists = RenewalLock.objects.filter(child_id=child.pk, content_type='levels').exists()
 
         if has_newer:
@@ -2021,26 +2090,46 @@ def update_level_progress(request):
             )
             if success:
                 auto_renewal_started = True
-                _run_in_background(
-                    _auto_renew_levels, child.pk, cb_pk, is_free, _build_level_stats(child)
+                task = generate_level_set.delay(
+                    child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period
                 )
                 logger.info(
-                    "Otomatik seviye yenileme başlatıldı (kredili): "
-                    "child=%s, is_free=%s, version=%d → %d",
-                    child.name, is_free, level_set.version, level_set.version + 1
+                    "Otomatik seviye yenileme başlatıldı (Celery): "
+                    "child=%s, is_free=%s, version=%d → %d, job=%s",
+                    child.name, is_free, level_set.version, level_set.version + 1, task.id
                 )
+                return Response({
+                    'success': True,
+                    'completed_count': completed_count,
+                    'total_levels': total_levels,
+                    'all_completed': all_completed,
+                    'auto_renewal_started': True,
+                    'job_id': task.id,
+                    'check_url': f'/jobs/{task.id}/status/',
+                    'credits_remaining': credits_remaining or 0,
+                })
             else:
                 # Kredi yoksa bile ücretsiz yenile — Sayı Yolculuğu her zaman devam edebilmeli
                 auto_renewal_started = True
                 credits_remaining = credits_remaining or 0
-                _run_in_background(
-                    _auto_renew_levels, child.pk, 0, True, _build_level_stats(child)
+                task = generate_level_set.delay(
+                    child.pk, 0, True, _build_level_stats(child), child.education_period
                 )
                 logger.info(
-                    "Otomatik seviye yenileme başlatıldı (ücretsiz): "
-                    "child=%s, version=%d → %d",
-                    child.name, level_set.version, level_set.version + 1
+                    "Otomatik seviye yenileme başlatıldı (Celery ücretsiz): "
+                    "child=%s, version=%d → %d, job=%s",
+                    child.name, level_set.version, level_set.version + 1, task.id
                 )
+                return Response({
+                    'success': True,
+                    'completed_count': completed_count,
+                    'total_levels': total_levels,
+                    'all_completed': all_completed,
+                    'auto_renewal_started': True,
+                    'job_id': task.id,
+                    'check_url': f'/jobs/{task.id}/status/',
+                    'credits_remaining': 0,
+                })
 
     return Response({
         'success': True,
@@ -2051,3 +2140,25 @@ def update_level_progress(request):
         **(({'credits_remaining': credits_remaining}) if auto_renewal_started else {}),
     })
 
+
+
+# ─── Celery Job Durumu ───────────────────────────────────────────────────────
+
+@api_view(['GET'])
+def job_status(request, job_id):
+    """
+    Celery task durumunu sorgula.
+
+    GET /api/mathlock/jobs/<job_id>/status/
+    Response: { "state": "PENDING"|"SUCCESS"|"FAILURE", "result": {...} }
+    """
+    from celery.result import AsyncResult
+    from .tasks import generate_level_set, generate_question_set
+
+    result = AsyncResult(job_id)
+    response = {'state': result.state}
+    if result.state == 'SUCCESS':
+        response['result'] = result.result
+    elif result.state == 'FAILURE':
+        response['error'] = str(result.result)
+    return Response(response)

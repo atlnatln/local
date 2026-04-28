@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.akn.mathlock.util.AccountManager
 import com.akn.mathlock.util.PreferenceManager
 import com.akn.mathlock.util.QuestionManager
@@ -21,7 +20,7 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-class ChildProfilesActivity : AppCompatActivity() {
+class ChildProfilesActivity : BaseActivity() {
 
     companion object {
         private const val TAG = "ChildProfiles"

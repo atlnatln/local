@@ -21,4 +21,5 @@ urlpatterns = [
     path('children/detail/', views.children_detail),
     path('children/report/', views.child_report),
     path('children/stats-history/', views.stats_history),
+    path('jobs/<str:job_id>/status/', views.job_status),
 ]
