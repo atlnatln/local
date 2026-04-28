@@ -393,7 +393,27 @@ Telegram rapor(lar)ı yapıştırıldığında şu adımları izle:
 - Report düzeltme: scripts/critical_security_alert.py
 - Testler: sec-agent/tests/ altında ilgili test dosyası
 
+### Adım 6: Takip Listesi Güncelleme (Hafıza)
+Her analiz sonunda bu prompt dosyasının en altındaki **AÇIK KONULAR** bölümünü güncelle:
+- Çözülen konuları `Durum: kapatıldı` olarak işaretle, not ekle
+- Yeni tespit edilen açık konuları ekle
+- `Beklemede` olan konuların durumunu yeni rapora göre değerlendir
+- Bir sonraki analizde önce bu listeyi oku, takip edilmesi gereken IP'leri ve konuları kontrol et
+
 ---
+
+## 11a. AÇIK KONULAR / TAKİP LİSTESİ
+
+Bu bölüm geçmiş analizlerden kalan açık konuları, takip edilmesi gereken IP'leri ve planlanan eylemleri içerir. **Her analiz sonunda güncellenir.**
+
+| ID | Konu | İlk Tespit | Durum | Son Kontrol | Notlar / Eylem |
+|----|------|-----------|-------|-------------|----------------|
+| TK-001 | 188.132.132.225 tekrar eden saldırgan — 3 pencerede göründü, 3 kez bloklandı (block_count=3), her seferinde 1440dk blok aldı. Blok süresi dolunca tekrar geliyor. | 2026-04-24 | açık | 2026-04-28 | Persistent attacker ladder: 10+ blok → 7 gün. Şu an 3. blokta (24 saat). Eğer tekrar gelirse escalation kritik. Son görülme: 26 Nisan. Bir sonraki raporda hâlâ "Tekrar Edenler" listesinde mi kontrol et. |
+| TK-002 | Stale IP'ler state'te birikiyor — 185.177.72.11/66, 188.132.132.225 gibi IP'ler artık aktif değil ama skorları ~9500. IP State sayısı 865'e çıktı. | 2026-04-28 | açık | 2026-04-28 | `prune_ip_state_bounded()` çalışıyor mu? `max_ip_state_entries` değerini kontrol et. Decay uygulanıyor ama pruning daha agresif olabilir. LRU eviction tetikleniyor mu kontrol et. |
+| TK-003 | BLOCK sayısı düşük kalıyor — 28 Nisan'da 9 BLOCK (57,908 event'e karşı). | 2026-04-28 | beklemede | 2026-04-28 | `already_blocked` bug'ı düzeltildi (2026-04-28). Bir sonraki raporda BLOCK sayısı normale döndü mü? Kontrol et. Hâlâ düşükse rate limit, blast radius veya threshold ayarlaması gerekebilir. |
+| TK-004 | Volumetrik saldırgan rotasyonu — Her gün farklı bir IP dominant: 188.132.132.225 (Nisan 24-26), 176.88.28.225 (Nisan 27), 78.173.48.188 (Nisan 28). Hepsi Türk Telekom altyapısından gibi görünüyor. | 2026-04-28 | açık | 2026-04-28 | Bu IP'lerin hepsi aynı botnet'e mi ait? Subnet pattern'i var mı? (188.132.x, 176.88.x, 78.173.x). Bir sonraki raporda yeni bir dominant IP var mı kontrol et. Türk Telekom IP aralıklarına özel bir guardrail gerekli mi değerlendir. |
+| TK-005 | 94.54.4.207 aktif bloklu — 11,880 event, skor 9885, 24 saatlik blok (28 Nisan 06:43). | 2026-04-28 | açık | 2026-04-28 | Blok süresi 29 Nisan 06:43'te doluyor. Bir sonraki raporda bu IP hâlâ saldırıyor mu? Tekrar bloklandı mı? Takip et. |
+
 
 ## 12. DOSYA YAPISI
 
