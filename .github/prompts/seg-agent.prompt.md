@@ -241,6 +241,8 @@ seen_offsets = {
 - **Aynı IP her gün raporda:** Blok süresi yeterli değil, escalation gerekli
 - **IP skoru 0 ama binlerce event'i var:** Decay çok hızlı veya state sıfırlanmış
 - **PHP/webshell path'leri (cabs.php, xwx1.php) yakalanmadı:** FORBIDDEN_REGEX eksik
+- **Persistent attacker ALERT'leri bloklanmamış ama `guardrail: escalation_cooldown` yazıyor:** `decide()`'da `already_blocked` kontrolü `weak_signals_only` path'inde atlanıyor (düzeltildi 2026-04-28)
+- **decision.log'da `BLOCK` yok ama state'te `block_count > 0`:** Eski log rotate edilmiş olabilir. `zgrep` ile `.gz` arşivlerini de kontrol et
 
 ---
 
@@ -278,7 +280,8 @@ print(json.dumps(data.get(ip, 'NOT FOUND'), indent=2))
 ssh akn@89.252.152.222 "grep '95.70.138.188' /opt/sec-agent/logs/decision.log | tail -5"
 
 # Belirli IP'nin kaç kez bloklandığını bul
-ssh akn@89.252.152.222 "grep '95.70.138.188' /opt/sec-agent/logs/decision.log | grep 'action=block' | wc -l"
+# NOT: decision.log formati 'BLOCK <ip>' seklinde (action=block icermez)
+ssh akn@89.252.152.222 "grep 'BLOCK 95.70.138.188' /opt/sec-agent/logs/decision.log | wc -l"
 
 # Belirli IP'nin nginx erişim logundaki istekleri
 ssh akn@89.252.152.222 "grep '95.70.138.188' /var/lib/docker/volumes/vps_nginx_logs/_data/webimar_access.log | tail -10"
@@ -354,6 +357,9 @@ ssh akn@89.252.152.222 "ls -lh /opt/sec-agent/store/sec_agent.db"
 - decision.log logrotate: `size 50M, copytruncate, daily, rotate 7` — yoğun dönemlerde 154MB'ye çıkabilir (daily rotate arasında)
 - Büyük batch (~80k event): ~15dk işlem süresi, 30dk timeout'a yaklaşabilir
 - Türk Telekom IP'leri (95.70.x.x, 78.189.x.x): Gerçek kullanıcı bot benzeri davranış yapabiliyor (/api/accounts/me/ tekrarlayan istekler)
+
+### Yeni Düzeltilen Hatalar (2026-04-28)
+11. **`already_blocked` kontrol sırası:** `decide()`'da `already_blocked` ve `min_events_for_block` kontrolleri `weak_signals_only` path'inden SONRA geliyordu. Bu, zaten bloklu IP'lerin `persistent_attacker` detection'a takılıp gereksiz ALERT loglarına (ve decision.log şişmesine) yol açıyordu. Ayrıca `min_events_for_block` indentation hatası nedeniyle unreachable code olarak kalmıştı. **Fix:** Her iki kontrol `weak_signals_only` path'inden ÖNCEYE taşındı.
 
 ---
 
@@ -445,16 +451,16 @@ ops-bot/systemd/
 
 ```bash
 # Tüm testleri çalıştır (~250+ test)
-cd /home/akn/vps/ops-bot/sec-agent && pytest tests/ -v
+cd /home/akn/vps/ops-bot/sec-agent && PYTHONPATH=/home/akn/vps/ops-bot/sec-agent python3 -m pytest tests/ -v
 
 # Belirli test dosyası
-pytest tests/test_scorer.py -v
+PYTHONPATH=/home/akn/vps/ops-bot/sec-agent python3 -m pytest tests/test_scorer.py -v
 
 # Belirli test
-pytest tests/test_decision.py -v -k "test_persistent_attacker"
+PYTHONPATH=/home/akn/vps/ops-bot/sec-agent python3 -m pytest tests/test_engine.py -v -k "test_scoring_decision"
 
 # Coverage
-pytest tests/ --cov=engine --cov=actions --cov-report=term-missing
+PYTHONPATH=/home/akn/vps/ops-bot/sec-agent python3 -m pytest tests/ --cov=engine --cov=actions --cov-report=term-missing
 ```
 
 ---
