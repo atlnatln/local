@@ -24,13 +24,13 @@ kimi
 
 ### Temel Komutlar
 
-| Komut | Açıklama | Örnek |
-|-------|----------|-------|
-| `/wiki ingest` | Tüm projelerde değişiklik tara, wiki'yi güncelle | `/wiki ingest` |
-| `/wiki ingest <proje>` | Sadece bir projeyi işle | `/wiki ingest ops-bot` |
-| `/wiki query "<soru>"` | Wiki'den cevap ara ve sentezle | `/wiki query "deploy nasıl çalışıyor?"` |
-| `/wiki lint` | Wiki sağlık kontrolü (10 madde) | `/wiki lint` |
-| `/wiki status` | Checkpoint'leri ve sayfa sayısını göster | `/wiki status` |
+| Komut | Türkçe | Açıklama | Örnek |
+|-------|--------|----------|-------|
+| `wiki ingest` | `wiki güncelle`, `wiki topla`, `wiki ekle` | Tüm projelerde değişiklik tara, wiki'yi güncelle | `wiki topla` |
+| `wiki ingest <proje>` | `wiki güncelle <proje>` | Sadece bir projeyi işle | `wiki güncelle ops-bot` |
+| `wiki query "<soru>"` | `wiki sor`, `wiki ara` | Wiki'den cevap ara ve sentezle | `wiki sor "deploy nasıl çalışıyor?"` |
+| `wiki lint` | `wiki kontrol`, `wiki tara` | Wiki sağlık kontrolü (10 madde) | `wiki kontrol` |
+| `wiki status` | `wiki durum`, `wiki özet` | Checkpoint'leri ve sayfa sayısını göster | `wiki durum` |
 
 ---
 
@@ -41,15 +41,15 @@ Kod değiştikçe wiki'yi güncel tutmak için en önemli komut.
 ### Ne Zaman Çalıştırılır?
 
 - **Bir projede önemli değişiklik yaptıktan sonra**: yeni modül, refactor, deploy script değişikliği
-- **Yeni bir proje eklediğinde**: `wiki ingest <proje>`
-- **Haftalık bakım**: tüm projelerin son durumunu yakalamak için `/wiki ingest`
+- **Yeni bir proje eklediğinde**: `wiki güncelle <proje>`
+- **Haftalık bakım**: tüm projelerin son durumunu yakalamak için `wiki topla`
 
 ### Nasıl Çalışır?
 
 1. Ajan her proje için `git diff --name-status` çalıştırır (son checkpoint'ten bu yana)
 2. Değişen dosyaları analiz eder (A=eklendi, M=değiştirildi, D=silindi, R=ad değiştirildi)
 3. İlgili wiki sayfalarını günceller veya yeni sayfa oluşturur
-4. Çapraz referansları (`[[wikilink]]`) yeniler
+4. Çapraz referansları (çift köşeli parantez linkleri) yeniler
 5. `wiki/log.md`'ye kayıt atar
 6. Checkpoint SHA'sını günceller
 
@@ -72,10 +72,10 @@ Wiki'ye soru sormak için. Ajan önce `index.md`'yi okur, ilgili sayfaları bulu
 
 ### Örnek Sorular
 
-- `/wiki query "ops-bot hangi servisleri yönetiyor?"`
-- `/wiki query "webimar'da kaç farklı yapı türü hesaplanıyor?"`
-- `/wiki query "anka'nın 3 aşamalı doğrulama hattı nedir?"`
-- `/wiki query "mathlock AI soru döngüsü nasıl çalışıyor?"`
+- `wiki sor "ops-bot hangi servisleri yönetiyor?"`
+- `wiki sor "webimar'da kaç farklı yapı türü hesaplanıyor?"`
+- `wiki sor "anka'nın 3 aşamalı doğrulama hattı nedir?"`
+- `wiki sor "mathlock AI soru döngüsü nasıl çalışıyor?"`
 
 ### Cevabı Wiki'ye Kaydetme
 
@@ -108,10 +108,10 @@ Wiki'nin yapısal bütünlüğünü denetler. 10 madde kontrol edilir:
 
 ## Obsidian ile Açma
 
-Wiki dizini standart Markdown + `[[wikilink]]` formatında. Obsidian'da açmak için:
+Wiki dizini standart Markdown + çift köşeli parantez link formatında. Obsidian'da açmak için:
 
 1. Obsidian → "Open folder as vault" → `/home/akn/local/wiki` seç
-2. Settings → Files and links → "Use [[Wikilinks]]" açık olduğundan emin ol
+2. Settings → Files and links → "Use Wikilinks" açık olduğundan emin ol
 3. Graph View (Ctrl+G) ile bilgi ağını görselleştir
 
 ### Faydalı Obsidian Eklentileri
@@ -140,19 +140,7 @@ sources:
 ---
 ```
 
-### Alan Açıklamaları
-
-| Alan | Zorunlu | Açıklama |
-|------|---------|----------|
-| `title` | Evet | Görünen başlık (60 karakter altı) |
-| `created` | Evet | Oluşturma tarihi (`YYYY-MM-DD`) |
-| `updated` | Evet | Son güncelleme tarihi |
-| `type` | Evet | `project`, `concept`, `decision`, `index`, `log` |
-| `tags` | Evet | Etiket dizisi. En az bir proje veya konsept etiketi |
-| `related` | Evet | İlgili sayfalar (düz metin, wikilink body'de) |
-| `sources` | Hayır | Ham kaynak dosya yolları |
-| `contested` | Hayır | `true` = çelişkili bilgi var |
-| `status` | Hayır | `active`, `stale`, `archived`, `needs-review` |
+Detaylı şema için bkz. [[SCHEMA]].
 
 ### Wikilink Kullanımı
 
@@ -171,56 +159,42 @@ Dosya adları `kebab-case.md`; link hedefleri `TitleCase` veya `kebab-case` olab
 
 ```
 wiki/
-├── README.md              ← Bu dosya
-├── SCHEMA.md              ← Wiki kuralları, etiket taksonomisi
-├── index.md               ← İçerik kataloğu (tüm sayfalar burada listelenir)
-├── log.md                 ← Kronolojik işlem kaydı (append-only)
-├── system-overview.md     ← VPS genel mimarisi
-├── projects/              ← Proje sayfaları
-│   ├── index.md
-│   ├── ops-bot.md
-│   ├── webimar.md
-│   ├── anka.md
-│   ├── mathlock-play.md
-│   └── infrastructure.md
-├── concepts/              ← Çapraz konseptler
-│   └── deployment.md
-├── decisions/             ← Mimari kararlar (ADR)
-├── raw/                   ← Değişmez kaynak kopyaları (ajana dokunma)
-│   └── articles/
-└── .checkpoints/          ← Git checkpoint hash'leri
-    ├── local.sha
-    ├── ops-bot.sha
-    └── webimar.sha
+├── README.md          ← Bu dosya
+├── SCHEMA.md          ← Wiki kuralları
+├── index.md           ← İçerik kataloğu
+├── log.md             ← İşlem kaydı
+├── system-overview.md ← VPS mimarisi
+├── projects/          ← Proje sayfaları
+├── concepts/          ← Çapraz konseptler
+├── decisions/         ← Mimari kararlar
+├── raw/               ← Kaynak kopyaları
+└── .checkpoints/      ← Git checkpoint'leri
 ```
 
 ---
 
 ## Sık Sorulan Sorular
 
-**S: Kimi CLI açıldığında wiki skill'i otomatik mi çalışıyor?**  
-C: Evet. `~/.kimi/skills/local-wiki/SKILL.md` dosyası otomatik keşfedilir. Sadece `/wiki ...` komutu verdiğinde aktif olur.
+**S: Wiki sayfalarını ben mi yazıyorum, ajan mı?**
+C: Ajan yazıyor (ingest/query sırasında). Sen komut verip doğruluyorsun.
 
-**S: Wiki sayfalarını ben mi yazıyorum, ajan mı?**  
-C: Ajan yazıyor (ingest/query sırasında). Sen sadece komut veriyorsun, içeriği doğruluyorsun, yönlendiriyorsun.
+**S: Manuel düzenleme yapabilir miyim?**
+C: Evet. `decisions/` ve `README.md` senin alanınız. `updated` tarihini güncellemeyi unutma.
 
-**S: Manuel düzenleme yapabilir miyim?**  
-C: Evet. Özellikle `decisions/` altındaki ADR sayfaları ve `README.md` senin alanın. Ajanın yazdığı sayfaları da düzeltebilirsin — sadece `updated` tarihini güncellemeyi unutma.
+**S: Yeni proje eklemek istiyorum.**
+C: `projects/` altına koy, sonra `wiki ingest <proje>` çalıştır.
 
-**S: Yeni proje eklemek istiyorum.**  
-C: Projeyi `projects/` altına koy, sonra `wiki ingest <proje-adi>` komutunu çalıştır. Ajan sayfa oluşturur.
-
-**S: log.md çok uzun oldu.**  
-C: `/wiki lint` çalıştır. 500 girişi aştığında ajan otomatik rotate önerir.
+**S: log.md çok uzun oldu.**
+C: `wiki kontrol` çalıştır. 500 girişi aştığında rotate önerir.
 
 ---
 
 ## Sonraki Adımlar
 
 1. `kimi` çalıştır
-2. `/wiki status` ile mevcut durumu gör
+2. `wiki durum` ile mevcut durumu gör
 3. Bir projede değişiklik yap
-4. `/wiki ingest` ile wiki'yi güncelle
+4. `wiki güncelle` ile wiki'yi güncelle
 5. Obsidian'da `wiki/` dizinini vault olarak aç ve Graph View'i keşfet
 
-> **İpucu:** Her hafta sonu `/wiki ingest && /wiki lint` komutlarını çalıştırmak wiki'yi taze ve tutarlı tutar.
+> **İpucu:** Her hafta sonu `wiki topla && wiki kontrol` komutlarını çalıştırmak wiki'yi taze ve tutarlı tutar.

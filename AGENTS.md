@@ -184,7 +184,7 @@ pytest
 - [ ] Kod derleniyor / testler geçiyor
 - [ ] `.env.example` güncel
 - [ ] Nginx config test geçiyor: `docker exec vps_nginx_main nginx -t`
-- [ ] Wiki ingest yapıldı (eğer proje docs'u değiştiyse): `/wiki ingest <proje>`
+- [ ] Wiki ingest yapıldı (eğer proje docs'u değiştiyse): `wiki ingest <proje>`
 
 ---
 
@@ -192,13 +192,15 @@ pytest
 
 `/home/akn/local/wiki` — Kimi CLI tarafından yönetilen bilgi tabanı.
 
-| Komut | Açıklama |
-|-------|----------|
-| `/wiki ingest` | Tüm projelerde değişiklik tara, wiki'yi güncelle |
-| `/wiki ingest <proje>` | Tek proje işle (ops-bot, webimar, anka, mathlock-play, infrastructure) |
-| `/wiki query "soru"` | Wiki'den cevap ara ve sentezle |
-| `/wiki lint` | Sağlık kontrolü (10/10 check) |
-| `/wiki status` | Checkpoint'leri ve sayfa sayısını göster |
+| Komut | Türkçe | Açıklama |
+|-------|--------|----------|
+| `wiki ingest` | `wiki güncelle`, `wiki topla`, `wiki ekle` | Tüm projelerde değişiklik tara, wiki'yi güncelle |
+| `wiki ingest <proje>` | `wiki güncelle <proje>` | Tek proje işle |
+| `wiki query "soru"` | `wiki sor`, `wiki ara` | Wiki'den cevap ara ve sentezle |
+| `wiki lint` | `wiki kontrol`, `wiki tara` | Sağlık kontrolü (10/10 check) |
+| `wiki status` | `wiki durum`, `wiki özet` | Checkpoint'leri ve sayfa sayısını göster |
+
+**Not:** Kimi-cli'de `/` ile başlayan her şey built-in slash komutudur. Skill'ler slash komutu register etmez. Wiki komutlarını `/wiki` yerine `wiki` (slashsız) olarak yazın. Alternatif: `/skill:local-wiki wiki ingest` (explicit skill loading).
 
 **Ne zaman wiki ingest yapılır:**
 - Yeni modül eklendiğinde / refactor sonrası
