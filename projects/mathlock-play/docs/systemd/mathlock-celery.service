@@ -1,0 +1,18 @@
+[Unit]
+Description=MathLock Play Celery Worker
+After=network.target
+
+[Service]
+Type=simple
+User=akn
+Group=akn
+WorkingDirectory=/home/akn/local/projects/mathlock-play/backend
+Environment="PATH=/home/akn/.local/share/uv/tools/kimi-cli/bin:/home/akn/local/projects/mathlock-play/backend/.venv/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="DJANGO_DEBUG=False"
+EnvironmentFile=/home/akn/local/projects/mathlock-play/backend/.env
+ExecStart=/home/akn/local/projects/mathlock-play/backend/.venv/bin/celery -A mathlock_backend worker -l info -Q celery,levels,questions -n mathlock-celery
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

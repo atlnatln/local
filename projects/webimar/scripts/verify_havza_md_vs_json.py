@@ -18,8 +18,8 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-MD_PATH = Path("/home/akn/vps/projects/webimar/webimar-nextjs/data/2026 havza ürün deseni.md")
-JSON_PATH = Path("/home/akn/vps/projects/webimar/webimar-nextjs/public/havza_urun_desen.json")
+MD_PATH = Path("/home/akn/local/projects/webimar/webimar-nextjs/data/2026 havza ürün deseni.md")
+JSON_PATH = Path("/home/akn/local/projects/webimar/webimar-nextjs/public/havza_urun_desen.json")
 
 # Üretim scripti ile aynı düzeltmeler
 TURKISH_FIXES = {

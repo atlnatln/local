@@ -2077,12 +2077,28 @@ def update_level_progress(request):
                 "child=%s, version=%d",
                 child.name, level_set.version
             )
+            return Response({
+                'success': True,
+                'completed_count': completed_count,
+                'total_levels': total_levels,
+                'all_completed': all_completed,
+                'auto_renewal_started': True,
+                'credits_remaining': device.credits.balance,
+            })
         elif lock_exists:
             logger.info(
                 "Seviye seti tamamlandı ama yenileme zaten devam ediyor: "
                 "child=%s, version=%d",
                 child.name, level_set.version
             )
+            return Response({
+                'success': True,
+                'completed_count': completed_count,
+                'total_levels': total_levels,
+                'all_completed': all_completed,
+                'auto_renewal_started': True,
+                'credits_remaining': device.credits.balance,
+            })
         else:
             # Önce kredi düşmeyi dene (kredi varsa)
             success, is_free, cb_pk, credits_remaining = _deduct_credit_and_lock(

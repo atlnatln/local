@@ -7,12 +7,12 @@ Wants=network-online.target
 Type=simple
 User=akn
 Group=akn
-WorkingDirectory=/home/akn/vps/projects/telegram-kimi
+WorkingDirectory=/home/akn/local/projects/telegram-kimi
 
-EnvironmentFile=/home/akn/vps/projects/telegram-kimi/.env
+EnvironmentFile=/home/akn/local/projects/telegram-kimi/.env
 Environment=PATH=/home/akn/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-ExecStart=/home/akn/vps/projects/telegram-kimi/venv/bin/python /home/akn/vps/projects/telegram-kimi/bot.py
+ExecStart=/home/akn/local/projects/telegram-kimi/venv/bin/python /home/akn/local/projects/telegram-kimi/bot.py
 Restart=always
 RestartSec=5
 

@@ -1,5 +1,6 @@
 package com.akn.mathlock
 
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.biometric.BiometricManager
@@ -35,9 +36,14 @@ class ParentAuthActivity : BaseActivity() {
     }
 
     private fun canUseBiometric(): Boolean {
+        val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
+        } else {
+            BiometricManager.Authenticators.BIOMETRIC_STRONG
+        }
         val bm = BiometricManager.from(this)
-        return bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
-                BiometricManager.BIOMETRIC_SUCCESS
+        return bm.canAuthenticate(authenticators) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
     private fun showBiometricPrompt() {
@@ -61,18 +67,25 @@ class ParentAuthActivity : BaseActivity() {
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    binding.tvAuthStatus.text = "❌ Parmak izi tanınmadı, tekrar deneyin"
+                    binding.tvAuthStatus.text = "❌ Kimlik doğrulama başarısız, tekrar deneyin"
                     binding.tvAuthStatus.setTextColor(getColor(R.color.wrong_red))
                 }
             })
 
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+        val promptInfoBuilder = BiometricPrompt.PromptInfo.Builder()
             .setTitle(getString(R.string.biometric_title))
             .setSubtitle(getString(R.string.biometric_subtitle))
-            .setNegativeButtonText(getString(R.string.biometric_cancel))
-            .build()
 
-        prompt.authenticate(promptInfo)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            promptInfoBuilder.setAllowedAuthenticators(
+                BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                        BiometricManager.Authenticators.DEVICE_CREDENTIAL
+            )
+        } else {
+            promptInfoBuilder.setNegativeButtonText(getString(R.string.biometric_cancel))
+        }
+
+        prompt.authenticate(promptInfoBuilder.build())
     }
 
     private fun onAuthSuccess() {

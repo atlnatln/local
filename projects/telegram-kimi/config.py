@@ -16,7 +16,7 @@ for uid in os.getenv("AUTHORIZED_USERS", "").split(","):
         except ValueError:
             pass
 
-WORK_DIR = os.getenv("WORK_DIR", "/home/akn/vps")
+WORK_DIR = os.getenv("WORK_DIR", "/home/akn/local")
 KIMI_CMD = os.getenv("KIMI_CMD", "kimi")
 KIMI_ARGS = os.getenv("KIMI_ARGS", "acp").split()
 
@@ -33,4 +33,4 @@ LOCAL_SSH_HOST = os.getenv("LOCAL_SSH_HOST", "localhost")
 LOCAL_SSH_PORT = int(os.getenv("LOCAL_SSH_PORT", "9876"))
 LOCAL_SSH_USER = os.getenv("LOCAL_SSH_USER", "akn")
 LOCAL_SSH_KEY = os.getenv("LOCAL_SSH_KEY", "~/.ssh/id_ed25519_kimibot")
-LOCAL_SSH_WORK_DIR = os.getenv("LOCAL_SSH_WORK_DIR", "/home/akn/vps")
+LOCAL_SSH_WORK_DIR = os.getenv("LOCAL_SSH_WORK_DIR", "/home/akn/local")

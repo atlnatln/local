@@ -832,3 +832,20 @@ try:
     admin.site.register(UserSession)
 except:
     pass
+
+# JWT Token Blacklist Admin (sektör standartlarında token yönetimi)
+try:
+    from django.contrib.admin import site
+    from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
+    from .admin_token_blacklist import OutstandingTokenAdmin, BlacklistedTokenAdmin
+    
+    # Eğer token_blacklist app'i kendi default admin'iyle register ettiyse önce kaldır
+    if OutstandingToken in site._registry:
+        site.unregister(OutstandingToken)
+    if BlacklistedToken in site._registry:
+        site.unregister(BlacklistedToken)
+    
+    site.register(OutstandingToken, OutstandingTokenAdmin)
+    site.register(BlacklistedToken, BlacklistedTokenAdmin)
+except Exception:
+    pass

@@ -19,12 +19,63 @@ Bu proje, MathLock uygulamasının Google Play Store'a uyumlu sürümüdür.
 
 ## Ön Gereksinimler
 
-### Domain ve SSL (mathlock.com.tr)
+### VPS Sunucu Kurulumu (Host-based Deployment)
+
+> **29 Nisan 2026'dan itibaren** backend (Django + Celery) konteyner dışında, host üzerinde systemd servisi olarak çalışıyor.  
+> Sebep: `kimi-cli` (AI üretim aracı) sadece host'ta kurulu ve konteyner içinden erişilemiyordu.  
+> Detaylı bilgi: `docs/HOST_MIGRATION.md`
+
+#### 1. Altyapı Servisleri (Docker)
+
+Sadece PostgreSQL ve Redis konteynerda:
+
+```bash
+cd /home/akn/vps/projects/mathlock-play
+docker-compose up -d   # mathlock_db + mathlock_redis
+```
+
+Portlar host'a açık: `5432` (PostgreSQL), `6379` (Redis).
+
+#### 2. Python Virtual Environment (Host)
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+#### 3. Systemd Servisleri (Host)
+
+```bash
+sudo cp docs/systemd/*.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now mathlock-backend
+sudo systemctl enable --now mathlock-celery
+```
+
+Servis detayları: `docs/systemd/mathlock-backend.service`, `docs/systemd/mathlock-celery.service`
+
+#### 4. Nginx (Konteyner → Host Unix Socket)
+
+Nginx `vps_nginx_main` konteyneri içinden backend'e **Unix socket** üzerinden erişir:
+- Host socket: `/home/akn/vps/projects/mathlock-play/backend/run/gunicorn.sock`
+- Container mount: `/var/run/mathlock/gunicorn.sock`
+- `proxy_pass http://unix:/var/run/mathlock/gunicorn.sock:/api/mathlock/;`
+
+#### 5. kimi-cli (AI Pipeline)
+
+`kimi-cli` host'ta `uv tool` ile kurulu:
+- Yol: `/home/akn/.local/share/uv/tools/kimi-cli/bin/kimi`
+- PATH'e eklenmeli (systemd servislerinde tanımlı)
+- Login durumu: `~/.kimi/credentials/` altında
+
+#### 6. Domain ve SSL (mathlock.com.tr)
 
 1. DNS propagasyonunun tamamlanmasını bekle
-2. VPS'te nginx config'i aktif et
-3. SSL sertifikası al: `certbot --nginx -d mathlock.com.tr -d www.mathlock.com.tr`
-4. Web sitesi dosyalarını deploy et: `scp -r website/*.html user@vps:/var/www/mathlock/website/`
+2. nginx config aktif: `infrastructure/nginx/conf.d/mathlock-play.conf`
+3. SSL sertifikası: `/home/akn/vps/infrastructure/ssl/mathlock.com.tr/`
+4. Web sitesi: `website/*.html` → `/var/www/mathlock/website/`
 
 ## Build
 

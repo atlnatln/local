@@ -1,0 +1,18 @@
+[Unit]
+Description=MathLock Play Django Backend
+After=network.target
+
+[Service]
+Type=simple
+User=akn
+Group=akn
+WorkingDirectory=/home/akn/local/projects/mathlock-play/backend
+Environment="PATH=/home/akn/.local/share/uv/tools/kimi-cli/bin:/home/akn/local/projects/mathlock-play/backend/.venv/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="DJANGO_DEBUG=False"
+EnvironmentFile=/home/akn/local/projects/mathlock-play/backend/.env
+ExecStart=/home/akn/local/projects/mathlock-play/backend/.venv/bin/gunicorn mathlock_backend.wsgi:application --bind unix:/home/akn/local/projects/mathlock-play/backend/run/gunicorn.sock --workers 2 --access-logfile - --error-logfile -
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -450,7 +450,7 @@ def _get_context_usage(session_id: Optional[str]) -> tuple[int, int]:
         return 0, 0
 
     # 1. Find context.jsonl
-    work_dir = config.WORK_DIR or "/home/akn/vps"
+    work_dir = config.WORK_DIR or "/home/akn/local"
     path_md5 = hashlib.md5(work_dir.encode("utf-8")).hexdigest()
     sessions_dir = Path.home() / ".kimi" / "sessions" / path_md5
     context_file = sessions_dir / session_id / "context.jsonl"

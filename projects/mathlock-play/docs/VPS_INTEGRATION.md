@@ -6,6 +6,10 @@
 
 ## Mevcut Durum (Aktif)
 
+> **29 Nisan 2026:** Backend (Django + Celery) konteyner dışına çıkarıldı.
+> `kimi-cli` host'ta kurulu ve login olduğu için, AI seviye üretimi konteyner içinde çalışmıyordu.
+> Artık sadece PostgreSQL ve Redis konteynerda; Django ve Celery host üzerinde systemd servisi olarak çalışıyor.
+
 Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 
 ### Aktif Sistem:
@@ -20,19 +24,21 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 🖥️ VPS (nginx — mathlock.com.tr)
    ├─ SSL: Let's Encrypt (certbot)
    ├─ Web: /var/www/mathlock/website/ (privacy, support sayfaları)
-   ├─ API: /api/mathlock/ → Django backend (port 8003)
+   ├─ API: /api/mathlock/ → Django backend (unix socket)
    └─ Conf: infrastructure/nginx/conf.d/mathlock-play.conf
 
-🐳 Docker Compose (4 servis)
-   ├─ mathlock_db      — PostgreSQL 16 (named volume, kalıcı)
-   ├─ mathlock_backend — Django + gunicorn
-   ├─ mathlock_redis   — Redis 7 (Celery broker)
-   └─ mathlock_celery  — Celery worker (AI üretim task'ları)
+🐳 Docker Compose (2 servis — sadece altyapı)
+   ├─ mathlock_db    — PostgreSQL 16 (named volume, kalıcı, port 5432)
+   └─ mathlock_redis — Redis 7 (Celery broker, port 6379)
+
+⚙️ Host Systemd Servisleri (konteyner dışı)
+   ├─ mathlock-backend.service — Django + gunicorn (unix socket)
+   └─ mathlock-celery.service  — Celery worker (queues: celery,levels,questions)
 
 🤖 AI Pipeline (Celery task queue)
    ├─ levels/progress/  → generate_level_set.delay()
    ├─ questions/progress/ → generate_question_set.delay()
-   └─ Celery worker → kimi-cli → questions.json / levels.json → DB
+   └─ Celery worker → kimi-cli (host PATH) → questions.json / levels.json → DB
 ```
 
 ### VPS Dizin Yapısı:
@@ -40,8 +46,10 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 | VPS Yolu | İçerik | Kaynak |
 |----------|--------|--------|
 | `/var/www/mathlock/website/` | index.html, privacy.html, support.html | `website/` dizini |
-| `docker-compose.yml` | 4 servis (db, backend, redis, celery) | `projects/mathlock-play/` |
+| `docker-compose.yml` | 2 servis (db, redis) | `projects/mathlock-play/` |
+| systemd servisleri | backend + celery | `/etc/systemd/system/mathlock-*.service` |
 | nginx conf | mathlock.com.tr HTTPS + /api/mathlock proxy | `infrastructure/nginx/conf.d/mathlock-play.conf` |
+| backend socket | gunicorn unix socket | `/home/akn/vps/projects/mathlock-play/backend/run/gunicorn.sock` |
 
 ### Deploy Akışı:
 
@@ -61,14 +69,17 @@ Play Store sürümü HTTPS üzerinden `mathlock.com.tr` domaini ile çalışır.
 
 ---
 
-## Faz 1 — Backend API (Aktif)
+## Faz 1 — Backend API (Aktif — Host-based)
+
+> **29 Nisan 2026:** Backend konteyner dışına çıkarıldı. Detay: `docs/HOST_MIGRATION.md`
 
 ### VPS tarafı: `projects/mathlock-play/backend/`
 - **Teknoloji:** Django REST Framework (anka/webimar ile tutarlı)
-- **Port:** 8003
-- **Docker:** `docker-compose.yml` → `mathlock_backend` + `mathlock_redis` + `mathlock_celery`
-- **Veritabanı:** PostgreSQL (named volume `mathlock_pgdata` — deploy'da silinmez)
-- **Cache/Queue:** Redis 7 (`redis://mathlock_redis:6379/0`)
+- **Socket:** `/home/akn/vps/projects/mathlock-play/backend/run/gunicorn.sock` (unix domain socket)
+- **Systemd:** `mathlock-backend.service` (host üzerinde `.venv`)
+- **Veritabanı:** PostgreSQL (Docker, named volume `mathlock_pgdata` — deploy'da silinmez, `localhost:5432`)
+- **Cache/Queue:** Redis 7 (Docker, `redis://localhost:6379/0`)
+- **Celery Worker:** `mathlock-celery.service` (host üzerinde, queues: `celery`, `levels`, `questions`)
 - **i18n:** `gettext_lazy` semantic keys + `.po/.mo` dosyaları; `compilemessages` deploy'da otomatik
 
 ### Aktif Endpoint'ler
@@ -147,10 +158,10 @@ Android AppLockService
 
 ## Nginx Yönlendirme
 
-`website/nginx-mathlock.conf` (deploy.sh ile VPS'e kopyalanır):
+`infrastructure/nginx/conf.d/mathlock-play.conf` (VPS üzerinde doğrudan düzenlenir):
 
 ```nginx
-# Mevcut (aktif)
+# Statik veriler
 location /mathlock/data/ {
     alias /var/www/mathlock/data/;
 }
@@ -158,11 +169,19 @@ location /mathlock/health {
     return 200 "mathlock ok\n";
 }
 
-# Faz 1+ (backend aktif)
+# Backend API (unix socket üzerinden)
 location /api/mathlock/ {
-    proxy_pass http://mathlock_play_backend:8003;
+    proxy_pass http://unix:/var/run/mathlock/gunicorn.sock:/api/mathlock/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 30s;
 }
 ```
+
+> **Not:** Backend konteyner dışında olduğu için nginx container'a socket dizini volume olarak mount edilir:
+> `- /home/akn/vps/projects/mathlock-play/backend/run:/var/run/mathlock:ro`
 
 ---
 
@@ -174,29 +193,35 @@ Sunucuya bağlanmak için:
 ssh akn@89.252.152.222
 ```
 
-### Container Durumunu Kontrol Et
+### Servis Durumunu Kontrol Et
 
 ```bash
 # Tüm mathlock servisleri
+systemctl status mathlock-backend --no-pager
+systemctl status mathlock-celery --no-pager
 docker ps | grep mathlock
 
 # Backend logları
-docker logs -f --tail 100 mathlock_backend
+sudo journalctl -u mathlock-backend -f --no-pager
 
 # Celery worker logları
-docker logs -f --tail 100 mathlock_celery
+sudo journalctl -u mathlock-celery -f --no-pager
 
 # Redis kontrol
 docker exec mathlock_redis redis-cli ping
 
-# Celery health check
-docker exec mathlock_celery celery -A mathlock_backend inspect ping
+# Celery health check (host üzerinden)
+cd /home/akn/vps/projects/mathlock-play/backend
+.venv/bin/celery -A mathlock_backend inspect ping
 
-# DB sorgusu (Django shell)
-docker exec -it mathlock_backend python manage.py shell
+# DB sorgusu (Django shell — host üzerinden)
+cd /home/akn/vps/projects/mathlock-play/backend
+.venv/bin/python manage.py shell
 
 # PostgreSQL doğrudan erişim
 docker exec -it mathlock_db psql -U mathlock -d mathlock
+# veya host üzerinden:
+psql -h localhost -U mathlock -d mathlock
 ```
 
 ### Örnek: Kullanıcı Hesabını Kontrol Et
@@ -229,13 +254,38 @@ Yerel makine
    ├─ ./deploy.sh --adb       → debug APK → telefona ADB
    ├─ ./deploy.sh --release   → AAB → Play Store'a yükle
    ├─ ./deploy.sh --sync-data → VPS ile soru verisi sync
-   └─ ./deploy.sh --backend   → docker-compose down/up --build, migrate, compilemessages, Celery ping
+   └─ ./deploy.sh --backend   → rsync backend + AI pipeline dosyaları, migrate, systemd restart, health check
 ```
 
 ### Backend deploy detayı (`--backend`):
-1. `docker-compose down`
-2. `docker-compose up -d --build`
-3. `docker exec mathlock_backend python manage.py migrate --noinput`
-4. `docker exec mathlock_backend python manage.py compilemessages --ignore=.venv`
-5. `docker exec mathlock_celery celery -A mathlock_backend inspect ping` (health check)
-6. HTTP health check `curl -f https://mathlock.com.tr/api/mathlock/health/`
+1. `git pull` (yerelden VPS'ye kod sync)
+2. `sudo systemctl restart mathlock-backend`
+3. `sudo systemctl restart mathlock-celery`
+4. `cd backend && .venv/bin/python manage.py migrate --noinput`
+5. `cd backend && .venv/bin/python manage.py compilemessages --ignore=.venv`
+6. `.venv/bin/celery -A mathlock_backend inspect ping` (health check)
+7. HTTP health check `curl -f https://mathlock.com.tr/api/mathlock/health/`
+
+### İlk Kurulum (Host-based)
+
+```bash
+# 1. Veritabanı ve Redis konteynerlarını başlat
+cd /home/akn/vps/projects/mathlock-play
+docker-compose up -d
+
+# 2. Python venv oluştur
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Django migrate + static
+python manage.py migrate --noinput
+python manage.py collectstatic --noinput
+
+# 4. Systemd servislerini kopyala ve başlat
+sudo cp docs/systemd/*.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now mathlock-backend
+sudo systemctl enable --now mathlock-celery
+```

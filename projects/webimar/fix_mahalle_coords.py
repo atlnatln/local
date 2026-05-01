@@ -23,12 +23,12 @@ except ImportError:
 csv.field_size_limit(sys.maxsize)
 
 # === Yollar ===
-WEBIMAR_CSV = Path("/home/akn/vps/projects/webimar/webimar-nextjs/public/kml_places_final.csv")
-OUTPUT_CSV = Path("/home/akn/vps/projects/webimar/webimar-nextjs/public/kml_places_final_cleaned.csv")
-REMOVED_CSV = Path("/home/akn/vps/projects/webimar/webimar-nextjs/public/kml_places_removed.csv")
+WEBIMAR_CSV = Path("/home/akn/local/projects/webimar/webimar-nextjs/public/kml_places_final.csv")
+OUTPUT_CSV = Path("/home/akn/local/projects/webimar/webimar-nextjs/public/kml_places_final_cleaned.csv")
+REMOVED_CSV = Path("/home/akn/local/projects/webimar/webimar-nextjs/public/kml_places_removed.csv")
 
-IL_GEOJSON = "/home/akn/vps/projects/webimar/webimar-api/static/kml/turkey-provinces.geojson"
-ILCE_GEOJSON = "/home/akn/vps/projects/webimar/webimar-api/static/kml/turkey-districts.geojson"
+IL_GEOJSON = "/home/akn/local/projects/webimar/webimar-api/static/kml/turkey-provinces.geojson"
+ILCE_GEOJSON = "/home/akn/local/projects/webimar/webimar-api/static/kml/turkey-districts.geojson"
 
 OSM_KML_FILES = [
     "/home/akn/Genel/kml/export(5).kml",

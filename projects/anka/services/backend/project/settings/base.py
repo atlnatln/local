@@ -159,6 +159,7 @@ REST_FRAMEWORK = {
         'user': '120/minute',
         'auth': '10/minute',      # login/register endpoints
         'sensitive': '5/minute',   # password change, token refresh
+        'me_endpoint': '30/minute',  # /api/auth/me/ profile endpoint
     },
 }
 

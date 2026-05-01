@@ -422,6 +422,8 @@ class CurrentUserView(APIView):
         }
     """
     permission_classes = (IsAuthenticated,)
+    throttle_classes = (ScopedRateThrottle,)
+    throttle_scope = 'me_endpoint'
     
     @extend_schema(responses={200: UserDetailSerializer})
     def get(self, request):

@@ -5,7 +5,7 @@ from django.db import connection
 logger = logging.getLogger(__name__)
 
 
-@shared_task(bind=True, max_retries=3)
+@shared_task(bind=True, max_retries=3, queue='levels')
 def generate_level_set(self, child_pk, credit_balance_pk, is_free, level_stats, education_period='sinif_2'):
     """Celery task: AI seviye üretimi."""
     # Lazy import circular dependency önlemek için
@@ -42,7 +42,7 @@ def generate_level_set(self, child_pk, credit_balance_pk, is_free, level_stats, 
         connection.close()
 
 
-@shared_task(bind=True, max_retries=3)
+@shared_task(bind=True, max_retries=3, queue='questions')
 def generate_question_set(self, child_pk, credit_balance_pk, is_free):
     """Celery task: AI soru üretimi."""
     # Lazy import circular dependency önlemek için

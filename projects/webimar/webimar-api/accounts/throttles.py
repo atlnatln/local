@@ -126,6 +126,62 @@ class EmailVerificationRateThrottle(AnonRateThrottle):
         }
 
 
+class MeEndpointRateThrottle(UserRateThrottle):
+    """/api/accounts/me/ endpoint'i için kullanıcı bazlı rate throttle.
+    
+    Kullanıcı başına 30 istek/dakika. IP değil user_id bazlı çalışır
+    çünkü kullanıcı mobil/wifi değiştirebilir.
+    """
+    scope = 'me_endpoint'
+    
+    def allow_request(self, request, view):
+        # Test ortamında veya development bypass aktifse throttling'i devre dışı bırak
+        if (getattr(settings, 'TESTING', False) or 
+            getattr(settings, 'DEBUG', False) or 
+            getattr(settings, 'DEVELOPMENT_BYPASS_LIMITS', False)):
+            return True
+        # Superuser bypass
+        if request.user and request.user.is_authenticated and request.user.is_superuser:
+            return True
+        return super().allow_request(request, view)
+    
+    def get_cache_key(self, request, view):
+        """User ID bazlı cache key — IP değil, kullanıcıyı takip et"""
+        if request.user and request.user.is_authenticated:
+            ident = f"user_{request.user.pk}"
+        else:
+            # Anonymous ise IP bazlı fallback
+            ident = self.get_ident(request)
+        return self.cache_format % {
+            'scope': self.scope,
+            'ident': ident
+        }
+
+
+class SensitiveEndpointThrottle(UserRateThrottle):
+    """Hassas endpoint'ler için ek throttle (şifre değiştirme, hesap silme vb.)"""
+    scope = 'sensitive_endpoint'
+    
+    def allow_request(self, request, view):
+        if (getattr(settings, 'TESTING', False) or 
+            getattr(settings, 'DEBUG', False) or 
+            getattr(settings, 'DEVELOPMENT_BYPASS_LIMITS', False)):
+            return True
+        if request.user and request.user.is_authenticated and request.user.is_superuser:
+            return True
+        return super().allow_request(request, view)
+    
+    def get_cache_key(self, request, view):
+        if request.user and request.user.is_authenticated:
+            ident = f"user_{request.user.pk}"
+        else:
+            ident = self.get_ident(request)
+        return self.cache_format % {
+            'scope': self.scope,
+            'ident': ident
+        }
+
+
 def handle_throttle_exception(view_func):
     """
     Throttle exception'ını yakalar ve 429 hatası için

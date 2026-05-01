@@ -110,7 +110,7 @@ province_by_norm = {normalize_key(p): p for p in all_provinces}
 ilce_fixes_by_norm = {normalize_key(k): v for k, v in ilce_fixes.items()}
 
 # Markdown dosyasını oku
-with open("/home/akn/vps/projects/webimar/webimar-nextjs/data/2026 havza ürün deseni.md", "r", encoding="utf-8") as f:
+with open("/home/akn/local/projects/webimar/webimar-nextjs/data/2026 havza ürün deseni.md", "r", encoding="utf-8") as f:
     markdown_content = f.read()
 
 # Yeni JSON oluştur (tüm şehirlerle başla)
@@ -191,7 +191,7 @@ for prov in all_provinces:
     if prov in json_data:
         final_data[prov] = json_data[prov]
 
-with open("/home/akn/vps/projects/webimar/webimar-nextjs/public/havza_urun_desen.json", "w", encoding="utf-8") as f:
+with open("/home/akn/local/projects/webimar/webimar-nextjs/public/havza_urun_desen.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
 print("JSON dosyası güncellendi!")

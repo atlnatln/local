@@ -32,7 +32,7 @@ if os.environ.get('PYTEST_CURRENT_TEST') or os.environ.get('DJANGO_TESTING'):
     TESTING = True
 
 # Geliştirme ortamında limit kontrollerini bypass etme
-DEVELOPMENT_BYPASS_LIMITS = config('DEVELOPMENT_BYPASS_LIMITS', default=True, cast=bool)
+DEVELOPMENT_BYPASS_LIMITS = config('DEVELOPMENT_BYPASS_LIMITS', default=False, cast=bool)
 
 def _parse_allowed_hosts(value: str | None) -> list[str]:
     if not value:
@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     
     # Third party packages
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     
     # Local apps
@@ -110,6 +111,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'accounts.request_tracking_middleware.ApiRequestTrackingMiddleware',
     'accounts.middleware.SecurityLoggingMiddleware',
+    'accounts.middleware_token_abuse.TokenAbuseDetectionMiddleware',
     'calculations.middleware.CalculationLimitMiddleware',  # Hesaplama limit kontrolü
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -161,12 +163,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 12,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        # Custom validator: en az 1 büyük harf, 1 küçük harf, 1 rakam, 1 özel karakter
+        'NAME': 'accounts.validators.StrongPasswordValidator',
     },
 ]
 
@@ -213,7 +222,9 @@ throttle_rates_config = {
     'email_verification': '1000/min' if TESTING else '10/min',
     'calculation_feedback': '1000/min' if TESTING else '1/min',
     'anon': '10000/hour' if TESTING else '100/hour',
-    'user': '10000/hour' if TESTING else '1000/hour'
+    'user': '10000/hour' if TESTING else '1000/hour',
+    'me_endpoint': '10000/minute' if TESTING else '30/minute',
+    'sensitive_endpoint': '10000/minute' if TESTING else '10/minute'
 } if not TESTING else {}
 
 REST_FRAMEWORK = {
@@ -238,7 +249,7 @@ if not TESTING:
     REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'] = throttle_rates_config
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

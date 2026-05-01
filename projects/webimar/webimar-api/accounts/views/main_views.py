@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, permission_classes, throttle_cla
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
-from accounts.throttles import RegisterRateThrottle, handle_throttle_exception, EmailVerificationRateThrottle
+from accounts.throttles import RegisterRateThrottle, handle_throttle_exception, EmailVerificationRateThrottle, MeEndpointRateThrottle, SensitiveEndpointThrottle
 from accounts.test_decorators import conditional_throttle_classes, conditional_handle_throttle_exception
 from django.contrib.auth.password_validation import validate_password
 from django.conf import settings
@@ -227,6 +227,7 @@ def health_check(request):
 
 @api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
+@throttle_classes([MeEndpointRateThrottle])
 def me(request):
     user = request.user
     
@@ -400,6 +401,75 @@ def logout(request):
             'detail': 'Çıkış işlemi sırasında hata oluştu.',
             'error': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@throttle_classes([SensitiveEndpointThrottle])
+def logout_all_sessions(request):
+    """Kullanıcının TÜM oturumlarını sonlandır ve TÜM JWT token'larını invalidate et.
+    
+    Sektör standardı: Token blacklist kullanarak tüm cihazlardan çıkış yapma.
+    """
+    user = request.user
+    revoked_count = 0
+    session_count = 0
+    
+    try:
+        # 1. Django session'ları sonlandır
+        from django.contrib.sessions.models import Session
+        from django.utils import timezone
+        
+        # Mevcut session hariç tüm session'ları sonlandır
+        current_session_key = getattr(request, 'session', None)
+        current_session_key = current_session_key.session_key if current_session_key else None
+        
+        sessions = Session.objects.filter(
+            expire_date__gte=timezone.now()
+        )
+        for session in sessions:
+            data = session.get_decoded()
+            if str(data.get('_auth_user_id')) == str(user.pk):
+                if session.session_key != current_session_key:
+                    session.delete()
+                    session_count += 1
+        
+        # 2. UserSession kayıtlarını pasif yap
+        UserSession.objects.filter(user=user, is_active=True).update(is_active=False)
+        
+        # 3. JWT OutstandingToken'ları blacklist'e ekle (sektör standardı)
+        try:
+            from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
+            outstanding_tokens = OutstandingToken.objects.filter(user=user)
+            for token in outstanding_tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
+                revoked_count += 1
+        except ImportError:
+            logger.warning('token_blacklist app yüklü değil, JWT revoke edilemedi')
+        except Exception as e:
+            logger.exception('JWT token blacklist işlemi sırasında hata: %s', e)
+        
+        # 4. Aktivite logu
+        log_user_activity(
+            user=user,
+            activity_type='logout',
+            description='Tüm oturumları sonlandırdı (logout-all)',
+            request=request
+        )
+        
+        return Response({
+            'detail': 'Tüm oturumlar sonlandırıldı.',
+            'revoked_tokens': revoked_count,
+            'terminated_sessions': session_count,
+        })
+        
+    except Exception as e:
+        logger.exception('Logout-all sırasında hata oluştu.')
+        return Response({
+            'detail': 'Tüm oturumları sonlandırma sırasında hata oluştu.',
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

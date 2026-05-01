@@ -329,16 +329,17 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Ebeveyn erişim butonu: küçük, soluk, ekranın altında -->
+        <!-- Ebeveyn erişim butonu -->
         <TextView
             android:id="@+id/btnParentAccess"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="🫆"
-            android:textSize="22sp"
-            android:alpha="0.35"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:textSize="40sp"
+            android:alpha="0.6"
+            android:padding="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="Ebeveyn Girişi" />

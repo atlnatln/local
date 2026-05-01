@@ -41,6 +41,7 @@ SKIP_ADB=true
 BUILD_ONLY=false
 SYNC_DATA_ONLY=false
 DEPLOY_BACKEND=false
+SKIP_SYSTEMD=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -49,13 +50,14 @@ while [[ $# -gt 0 ]]; do
         --build-only)    BUILD_ONLY=true; SKIP_ADB=true; shift ;;
         --sync-data)     SYNC_DATA_ONLY=true; shift ;;
         --backend)       DEPLOY_BACKEND=true; shift ;;
+        --no-systemd)    SKIP_SYSTEMD=true; shift ;;
         --help)
             echo "Kullanım: $0 [seçenekler]"
             echo "  --release      Release AAB derle (keystore.jks gerekir)"
             echo "  --adb          Debug APK derle + USB ile telefona kur"
             echo "  --build-only   Sadece derle, yükleme yapma"
             echo "  --sync-data    Sadece VPS data sync (build yok)"
-            echo "  --backend      Backend container'larını yeniden derle ve başlat"
+            echo "  --backend      Backend systemd servislerini yeniden başlat (host-based)"
             exit 0
             ;;
         *) log_error "Bilinmeyen seçenek: $1"; exit 1 ;;
@@ -264,14 +266,73 @@ echo -e "  ❤️  Sağlık:  https://mathlock.com.tr/mathlock/health"
 
 # ─── Backend Deploy ─────────────────────────────────────────────────────────
 if [ "$DEPLOY_BACKEND" = true ]; then
-    log_info "Backend deploy başlatılıyor..."
-    cd "$PROJECT_DIR"
-    docker-compose down
-    docker-compose up -d --build
-    sleep 5
-    docker exec mathlock_backend python manage.py migrate --noinput
-    docker exec mathlock_backend python manage.py compilemessages --ignore=.venv
-    docker exec mathlock_celery celery -A mathlock_backend inspect ping || log_warning "Celery worker yanıt vermiyor"
+    log_info "Backend deploy başlatılıyor (host-based systemd)..."
+    
+    # Kod sync (backend + AI pipeline dosyaları)
+    log_info "Kod VPS'e senkronize ediliyor..."
+    
+    # Django backend
+    # -I: ignore-times (sunucudaki daha yeni dosyaları da üzerine yaz)
+    # agents/ ve data/ hariç: bunlar root'a ait, timestamp hatası verir; zaten ayrı sync ediliyor
+    rsync -avz -I --exclude='.venv' --exclude='__pycache__' --exclude='*.pyc' --exclude='agents' --exclude='data' --exclude='.env' \
+        "$PROJECT_DIR/backend/" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/backend/" 2>/dev/null || \
+        log_warning "rsync backend başarısız"
+    
+    # AI pipeline dosyaları (kök dizinden)
+    for f in ai-generate.sh ai-generate-levels.sh validate-questions.py validate-levels.py AGENTS.md docker-compose.yml; do
+        if [ -f "$PROJECT_DIR/$f" ]; then
+            scp "$PROJECT_DIR/$f" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/$f" 2>/dev/null && \
+                log_success "$f sync edildi" || log_warning "$f sync başarısız"
+        fi
+    done
+    
+    # Fallback level dosyaları (data/ altından)
+    for f in data/fallback-levels.tr.json data/fallback-levels.en.json; do
+        if [ -f "$PROJECT_DIR/$f" ]; then
+            scp "$PROJECT_DIR/$f" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/$f" 2>/dev/null && \
+                log_success "$f sync edildi" || log_warning "$f sync başarısız"
+        fi
+    done
+    
+    # agents dizini
+    if [ -d "$PROJECT_DIR/agents" ]; then
+        rsync -avz "$PROJECT_DIR/agents/" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/agents/" 2>/dev/null || \
+            log_warning "agents/ sync başarısız"
+    fi
+    
+    # Systemd servis şablonlarını güncelle (docs/systemd/ → /etc/systemd/system/)
+    if [ "$SKIP_SYSTEMD" = false ]; then
+        for svc in mathlock-backend.service mathlock-celery.service; do
+            if [ -f "$PROJECT_DIR/docs/systemd/$svc" ]; then
+                scp "$PROJECT_DIR/docs/systemd/$svc" "${VPS_HOST}:/tmp/$svc" 2>/dev/null
+                ssh "$VPS_HOST" "sudo cp /tmp/$svc /etc/systemd/system/$svc && rm /tmp/$svc" 2>/dev/null && \
+                    log_success "systemd $svc güncellendi" || log_warning "$svc güncellenemedi"
+            fi
+        done
+    fi
+    
+    # Systemd servislerini yeniden başlat
+    ssh "$VPS_HOST" "
+        cd /home/akn/vps/projects/mathlock-play/backend
+        
+        # Migrate
+        .venv/bin/python manage.py migrate --noinput
+        
+        # Static files
+        .venv/bin/python manage.py collectstatic --noinput 2>/dev/null || true
+        
+        # Restart services
+        sudo systemctl daemon-reload
+        sudo systemctl restart mathlock-backend
+        sudo systemctl restart mathlock-celery
+        
+        sleep 3
+        
+        # Health checks
+        .venv/bin/celery -A mathlock_backend inspect ping || echo 'CELERY_PING_FAILED'
+    " 2>/dev/null
+    
+    # HTTP health check
     HEALTH=$(curl -s -o /dev/null -w "%{http_code}" https://mathlock.com.tr/api/mathlock/health/ || echo "000")
     if [ "$HEALTH" = "200" ]; then
         log_success "Backend sağlıklı (HTTP 200)"

@@ -2,10 +2,12 @@ services:
   mathlock_db:
     image: postgres:16-alpine
     container_name: mathlock_db
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_DB=mathlock
       - POSTGRES_USER=mathlock
-      - POSTGRES_PASSWORD=${MATHLOCK_DB_PASSWORD:-mathlock_dev_pass}
+      - POSTGRES_PASSWORD=${MATHLOCK_DB_PASSWORD:?MATHLOCK_DB_PASSWORD required}
     volumes:
       - mathlock_pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -20,86 +22,21 @@ services:
   mathlock_redis:
     image: redis:7-alpine
     container_name: mathlock_redis
-    networks:
-      - default
-    restart: unless-stopped
-
-  mathlock_backend:
-    build: ./backend
-    container_name: mathlock_backend
     ports:
-      - "8003:8003"
-    depends_on:
-      mathlock_db:
-        condition: service_healthy
-      mathlock_redis:
-        condition: service_started
-    environment:
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret-change-in-production}
-      - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
-      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,mathlock.com.tr
-      - GOOGLE_PLAY_SERVICE_ACCOUNT_JSON=/app/google-service-account.json
-      - DATABASE_URL=postgres://mathlock:${MATHLOCK_DB_PASSWORD:-mathlock_dev_pass}@mathlock_db:5432/mathlock
-      - DB_HOST=mathlock_db
-      - DB_NAME=mathlock
-      - DB_USER=mathlock
-      - DB_PASSWORD=${MATHLOCK_DB_PASSWORD:-mathlock_dev_pass}
-      - DB_PORT=5432
-      - REDIS_URL=redis://mathlock_redis:6379/0
-      - CELERY_BROKER_URL=redis://mathlock_redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://mathlock_redis:6379/0
-    volumes:
-      - ./backend:/app
-      - ./data:/app/data
-      - ./ai-generate.sh:/app/ai-generate.sh
-      - ./ai-generate-levels.sh:/app/ai-generate-levels.sh
-      - ./validate-questions.py:/app/validate-questions.py
-      - ./validate-levels.py:/app/validate-levels.py
-      - ./agents:/app/agents
+      - "6379:6379"
     networks:
       - default
-      - vps_infrastructure_network
     restart: unless-stopped
 
-  mathlock_celery:
-    build: ./backend
-    container_name: mathlock_celery
-    command: celery -A mathlock_backend worker -l info -Q celery,levels,questions
-    depends_on:
-      mathlock_db:
-        condition: service_healthy
-      mathlock_redis:
-        condition: service_started
-    environment:
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret-change-in-production}
-      - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
-      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,mathlock.com.tr
-      - GOOGLE_PLAY_SERVICE_ACCOUNT_JSON=/app/google-service-account.json
-      - DATABASE_URL=postgres://mathlock:${MATHLOCK_DB_PASSWORD:-mathlock_dev_pass}@mathlock_db:5432/mathlock
-      - DB_HOST=mathlock_db
-      - DB_NAME=mathlock
-      - DB_USER=mathlock
-      - DB_PASSWORD=${MATHLOCK_DB_PASSWORD:-mathlock_dev_pass}
-      - DB_PORT=5432
-      - REDIS_URL=redis://mathlock_redis:6379/0
-      - CELERY_BROKER_URL=redis://mathlock_redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://mathlock_redis:6379/0
-    volumes:
-      - ./backend:/app
-      - ./data:/app/data
-      - ./ai-generate.sh:/app/ai-generate.sh
-      - ./ai-generate-levels.sh:/app/ai-generate-levels.sh
-      - ./validate-questions.py:/app/validate-questions.py
-      - ./validate-levels.py:/app/validate-levels.py
-      - ./agents:/app/agents
-    networks:
-      - default
-    restart: unless-stopped
+  # NOT: mathlock_backend ve mathlock_celery artık konteyner dışında
+  # host üzerinde systemd servisleri olarak çalışıyor.
+  # Sebep: kimi-cli host'ta kurulu ve login olmuş durumda,
+  # konteyner içinden erişilemiyor.
+  # Bakınız: docs/VPS_INTEGRATION.md
 
 volumes:
   mathlock_pgdata:
     name: mathlock_pgdata
 
 networks:
-  vps_infrastructure_network:
-    external: true
+  default:

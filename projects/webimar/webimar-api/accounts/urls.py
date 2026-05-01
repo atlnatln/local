@@ -24,6 +24,7 @@ urlpatterns = [
     path('me/sessions/', views.user_sessions, name='user_sessions'),
     path('me/sessions/<str:session_key>/', views.terminate_session, name='terminate_session'),
     path('me/logout/', views.logout, name='logout'),
+    path('me/logout-all/', views.logout_all_sessions, name='logout_all_sessions'),
     path('me/delete-account/', views.delete_account, name='delete_account'),
     path('check-username/', views.check_username_unique, name='check_username_unique'),
     path('check-email/', views.check_email_unique, name='check_email_unique'),
