@@ -22,9 +22,9 @@ Deployment, bir yazilim projesinin uretim ortamina (VPS) kurulmasi, yapilandiril
 Bu konsept asagidaki projelerde kullanilmaktadir:
 
 - [[ops-bot]] — PM2 ile Node.js process yonetimi
-- [[webimar]] — Next.js build + nginx ters proxy
-- [[sayi-yolculugu]] — Sayi yolculugu projesi deployment
-- [[infrastructure]] — nginx, SSL ve sistem servisleri yapilandirmasi
+- webimar — Next.js build + nginx ters proxy
+- sayi-yolculugu — Sayi yolculugu projesi deployment
+- infrastructure — nginx, SSL ve sistem servisleri yapilandirmasi
 
 ## Notlar
 

@@ -17,3 +17,35 @@ tags: [meta, log]
 - Skill: local-wiki
 - Checkpoint dosyaları hazırlandı
 - Bir sonraki adım: `/wiki ingest ops-bot` ile ilk pilot ingest'i çalıştır
+
+## [2025-05-01 19:25] ingest | ops-bot | ab28161 | 1
+- Files: A:0 M:0 D:0 (checkpoint = HEAD, full scan)
+- Pages created: [[ops-bot]]
+- Pages updated: —
+- Pages archived: —
+- Diff summary: Full ingest of ops-bot project. Created project page with stack, agent system, services, deploy flow, and sec-agent architecture.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+## [2026-05-01 19:23] lint | 3/10
+- Orphan pages: 4 ([[ops-bot-deploy-script]], [[ops-bot-readme]], [[ops-bot-systemd-service]], [[system-overview]])
+- Broken links: 16
+- Missing from index: 3
+- Frontmatter errors: 3
+- Stale pages: 1
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 1 (python)
+- Raw existence: 0
+- Log size: 2 entries
+
+## [2026-05-01 19:24] lint | 5/10
+- Orphan pages: 4 ([[ops-bot-deploy-script]], [[ops-bot-readme]], [[ops-bot-systemd-service]], [[system-overview]])
+- Broken links: 7
+- Missing from index: 3
+- Frontmatter errors: 3
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 3 entries
+

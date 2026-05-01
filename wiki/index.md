@@ -17,7 +17,7 @@ Master content catalog for `local-wiki`. All pages are reachable via wikilink.
 
 | Proje | Tip | Özet | Son Güncelleme |
 |-------|-----|------|----------------|
-| [[ops-bot]] | project | (boş — ingest gerekiyor) | - |
+| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent | 2025-05-01 |
 | [[webimar]] | project | (boş — ingest gerekiyor) | - |
 | [[anka]] | project | (boş — ingest gerekiyor) | - |
 | [[mathlock-play]] | project | (boş — ingest gerekiyor) | - |

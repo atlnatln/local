@@ -18,12 +18,12 @@ related:
 | Proje | Aciklama |
 |-------|----------|
 | [[ops-bot]] | Telegram operations bot — Python, systemd |
-| [[webimar]] | Agriculture platform — Django + Next.js + React |
-| [[anka]] | Sector analysis platform — Django + Next.js |
-| [[mathlock-play]] | Android math game + Django backend |
-| [[telegram-kimi]] | Telegram Kimi bot |
-| [[sayi-yolculugu]] | Sayi yolculugu projesi |
-| [[infrastructure]] | Paylasilan VPS altyapisi — nginx, SSL, Docker, systemd |
+| webimar | Agriculture platform — Django + Next.js + React |
+| anka | Sector analysis platform — Django + Next.js |
+| mathlock-play | Android math game + Django backend |
+| telegram-kimi | Telegram Kimi bot |
+| sayi-yolculugu | Sayi yolculugu projesi |
+| infrastructure | Paylasilan VPS altyapisi — nginx, SSL, Docker, systemd |
 
 ## Altyapi
 
