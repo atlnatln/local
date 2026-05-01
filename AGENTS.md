@@ -188,6 +188,51 @@ pytest
 
 ---
 
+## Session Başlangıç Temizliği
+
+Her session başında ÖNCE şunu yap:
+- `rm -f ~/.wiki-skip-session 2>/dev/null` → Önceki session'dan kalan skip flag'ini temizle
+- Sonra "Proaktif Wiki Kontrolü" adımlarına devam et
+
+Neden: Kullanıcı "bu session'da tekrar sorma" dedi, kapattı, ertesi gün açtı. Eğer bu dosya kalırsa wiki bir daha asla sormaz. Her yeni session'da otomatik silinmeli.
+
+## Proaktif Wiki Kontrolü (Auto-Prompt)
+
+Kullanıcıya ilk yanıt vermeden ÖNCE aşağıdaki adımları takip et:
+
+### Skip Koşulları (Proaktif Kontrolü Atlama)
+Aşağıdaki durumlarda proaktif kontrolü ATLA:
+- Kullanıcı direkt `wiki ...` komutu söylediyse (örn. `wiki durum`, `wiki topla`). Zaten wiki ile ilgileniyor, tekrar sorma.
+- `~/.wiki-skip-session` dosyası varsa (kullanıcı "bu session'da tekrar sorma" dedi).
+
+### Kontrol Adımları
+1. `cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"` çalıştır
+2. Eğer çıktı `EMPTY` değilse:
+   - Satır sayısını say → kaç commit bekliyor
+   - Repo isimlerini parse et → kaç proje etkilenmiş
+   - `AskUserQuestion` ile kullanıcıya sor:
+     - **Soru:** "Wiki güncellemesi bekliyor: {X} proje, {Y} commit. Ne yapayım?"
+     - **Seçenekler:**
+       1. "Evet, hepsini topla (wiki topla)" (Recommended)
+       2. "Sadece bir projeyi güncelle" → proje adı iste
+       3. "Durumu göster" → `wiki durum` çalıştır, sonra tekrar bu soruyu sor
+       4. "Şimdi değil (bir sonraki seansta tekrar sor)" → sessizce devam et, marker'ı koru
+       5. "Bu session'da tekrar sorma" → `touch ~/.wiki-skip-session`, sessizce devam et
+3. Seçenek 1, 2 veya 3 seçilirse:
+   - `local-wiki` skill'ini lazy-load et (SKILL.md oku)
+   - Orientation Ritual'ı takip et: CONVENTIONS.md → SCHEMA.md → index.md → log.md
+   - WORKFLOW.md'ye göre ingest çalıştır
+   - **Başarılı ingest sonrası** marker dosyasını temizle: `> /home/akn/local/wiki/.pending`
+4. Seçenek 4 ("Şimdi değil") seçilirse:
+   - Marker'ı silme (bir sonraki seansta tekrar sorulacak)
+   - Kullanıcının orijinal sorusuna/söylediğine geç
+5. Seçenek 5 ("Bu session'da tekrar sorma") seçilirse:
+   - `touch ~/.wiki-skip-session`
+   - Marker'ı silme (bir sonraki session'da tekrar sorulacak, ama bu session'da atlanacak)
+   - Kullanıcının orijinal sorusuna/söylediğine geç
+
+---
+
 ## Wiki Kullanımı (local-wiki)
 
 `/home/akn/local/wiki` — Kimi CLI tarafından yönetilen bilgi tabanı.
