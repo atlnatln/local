@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "79524288207",
+    "project_id": "mathlock-play-47d8c",
+    "storage_bucket": "mathlock-play-47d8c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79524288207:android:467112310920f38c1d89ba",
+        "android_client_info": {
+          "package_name": "com.akn.mathlock.play"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIwWsqC2I2oPysIUZlgP8v4YygcVCSWPk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

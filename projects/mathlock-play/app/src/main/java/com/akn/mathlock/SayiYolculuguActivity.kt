@@ -38,6 +38,7 @@ class SayiYolculuguActivity : BaseActivity() {
     private var currentSetId: Int? = null
     private val completedLevelIds = mutableSetOf<Int>()
     private val apiClient: ApiClient = RealApiClient()
+    private val handler = Handler(Looper.getMainLooper())
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -418,12 +419,22 @@ class SayiYolculuguActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        webView.evaluateJavascript("clearGameState();", null)
+        // Polling handler'ını temizle — activity öldükten sonra callback çalışmasın
+        handler.removeCallbacksAndMessages(null)
+
+        // WebView temizlik
+        webView.stopLoading()
+        webView.loadUrl("about:blank")
+        webView.clearHistory()
+        webView.removeAllViews()
+        webView.destroy()
+
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit()
             .remove(KEY_CACHED_LEVELS)
             .remove(KEY_COMPLETED_IDS)
             .apply()
+
+        super.onDestroy()
     }
 
     private fun showRenewalError() {
@@ -458,17 +469,17 @@ class SayiYolculuguActivity : BaseActivity() {
                             webView.evaluateJavascript("initGame('$escaped');", null)
                         } else {
                             Log.d(TAG, "Set hâlâ tamamlanmış, tekrar deneniyor (deneme=${attempt + 1})")
-                            Handler(Looper.getMainLooper()).postDelayed({
+                            handler.postDelayed({
                                 pollForNewSet(attempt + 1)
                             }, 5000)
                         }
                     } catch (_: Exception) {
-                        Handler(Looper.getMainLooper()).postDelayed({
+                        handler.postDelayed({
                             pollForNewSet(attempt + 1)
                         }, 5000)
                     }
                 } else {
-                    Handler(Looper.getMainLooper()).postDelayed({
+                    handler.postDelayed({
                         pollForNewSet(attempt + 1)
                     }, 5000)
                 }

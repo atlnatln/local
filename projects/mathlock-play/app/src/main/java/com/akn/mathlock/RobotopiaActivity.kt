@@ -108,6 +108,15 @@ class RobotopiaActivity : BaseActivity() {
         }
     }
 
+    override fun onDestroy() {
+        webView.stopLoading()
+        webView.loadUrl("about:blank")
+        webView.clearHistory()
+        webView.removeAllViews()
+        webView.destroy()
+        super.onDestroy()
+    }
+
     // ── JavaScript Bridge ────────────────────────────────
     inner class GameBridge {
         @JavascriptInterface

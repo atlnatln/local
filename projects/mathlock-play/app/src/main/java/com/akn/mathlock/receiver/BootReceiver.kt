@@ -12,7 +12,11 @@ class BootReceiver : BroadcastReceiver() {
         val prefManager = PreferenceManager(context)
         if (prefManager.isServiceEnabled) {
             android.util.Log.d("BootReceiver", "Servis başlatılıyor (tetikleyen: BOOT)")
-            AppLockService.start(context)
+            try {
+                AppLockService.start(context)
+            } catch (e: Exception) {
+                android.util.Log.e("BootReceiver", "Servis başlatılamadı: ${e.message}")
+            }
         }
     }
 }

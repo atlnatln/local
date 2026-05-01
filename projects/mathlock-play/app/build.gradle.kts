@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -65,6 +67,9 @@ dependencies {
 
     // Grafik kütüphanesi (Dashboard)
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // Firebase Crashlytics (Kotlin 1.9 uyumlu explicit version)
+    implementation("com.google.firebase:firebase-crashlytics:18.6.4")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")
