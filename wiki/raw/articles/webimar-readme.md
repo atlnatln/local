@@ -1,7 +1,12 @@
 ---
-source_url: local
-ingested: 2026-05-01
+title: "webimar-readme"
+created: 2026-05-01
+updated: 2026-05-01
+type: raw
+tags: [raw]
+related: []
 ---
+
 
 # Tarım İmar - Tarımsal Yapılaşma Hesaplama Sistemi
 
@@ -137,7 +142,3 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 - Website: https://tarimimar.com.tr
 - Email: info@tarimimar.com.tr
 - LinkedIn: [Tarım İmar](https://linkedin.com/company/tarim-imar)
-
----
-
-⭐ **Bu proje açık kaynak kodludur ve topluluk katkıları memnuniyetle karşılanır!**

@@ -1,7 +1,12 @@
 ---
-source_url: local
-ingested: 2026-05-01
+title: "ops-bot-deploy-script"
+created: 2026-05-01
+updated: 2026-05-01
+type: raw
+tags: [raw]
+related: []
 ---
+
 
 #!/bin/bash
 # ========================================

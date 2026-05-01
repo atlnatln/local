@@ -49,7 +49,7 @@ All tags are flat strings. Namespaces below are organizational conventions only.
 Project tags bind a note to a specific codebase or service.
 
 ### Stack
-`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python`
+`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin`
 
 Technology tags describe the toolchain a note touches.
 

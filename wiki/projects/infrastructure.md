@@ -62,7 +62,7 @@ curl -f http://localhost:8080/nginx-health
 ## Dependencies
 
 - [[deployment]] — VPS kurulum prosedürleri
-- [[ssl-certbot]] — SSL sertifika yönetimi
+- ssl-certbot — SSL sertifika yönetimi
 
 ## Recent Commits
 

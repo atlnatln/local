@@ -70,3 +70,51 @@ tags: [meta, log]
 - Pages created: [[infrastructure]]
 - Diff summary: Full ingest of infrastructure. Shared VPS reverse proxy, SSL, and Docker network.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+## [2026-05-01 19:27] lint | 4/10
+- Orphan pages: 9 ([[anka-readme]], [[infrastructure-docker-compose]], [[infrastructure-setup-script]], [[mathlock-play-readme]], [[ops-bot-deploy-script]]...)
+- Broken links: 7
+- Missing from index: 8
+- Frontmatter errors: 8
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 2
+- Unknown tags: 1 (kotlin)
+- Raw existence: 0
+- Log size: 8 entries
+
+## [2026-05-01 19:27] lint | 5/10
+- Orphan pages: 9 ([[anka-readme]], [[infrastructure-docker-compose]], [[infrastructure-setup-script]], [[mathlock-play-readme]], [[ops-bot-deploy-script]]...)
+- Broken links: 6
+- Missing from index: 8
+- Frontmatter errors: 8
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 2
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 9 entries
+
+## [2026-05-01 19:28] lint | 4/10
+- Orphan pages: 9 ([[anka-readme]], [[infrastructure-docker-compose]], [[infrastructure-setup-script]], [[mathlock-play-readme]], [[ops-bot-deploy-script]]...)
+- Broken links: 6
+- Missing from index: 8
+- Frontmatter errors: 8
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 1 (raw)
+- Raw existence: 0
+- Log size: 10 entries
+
+## [2026-05-01 19:28] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 11 entries
+
