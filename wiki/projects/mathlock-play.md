@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play"
 created: 2026-05-01
-updated: 2026-05-01
+updated: 2026-05-02
 type: project
 tags: [mathlock-play, android, django, kotlin, systemd]
 related:
@@ -23,13 +23,14 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 
 | Katman | Teknoloji |
 |--------|-----------|
-| Android App | Kotlin, Material Design 3, Target SDK 34 |
+| Android App | Kotlin, Material Design 3, Target SDK 35 |
 | Kilit Mekanizması | UsageStatsManager + Foreground Service |
 | Backend | Django + Django REST Framework |
 | Database | PostgreSQL (Docker) |
 | Cache/Queue | Redis (Docker) |
 | AI Pipeline | kimi-cli (`kimi-for-coding`) |
 | Deploy | systemd servisleri (host-based) |
+| Crash Reporting | Firebase Crashlytics 18.6.4 |
 
 ## AI Soru Döngüsü
 
@@ -73,6 +74,16 @@ sudo systemctl restart mathlock-backend mathlock-celery
 - [[infrastructure]] — nginx, SSL, mathlock.com.tr domain
 - [[deployment]] — VPS deploy
 
+## Crash Prevention (2026-05-02)
+
+v1.0.67 sürümünde stabilite düzeltmeleri:
+- **ProGuard:** Billing, Biometric, JS Bridge, MPAndroidChart için `keep` kuralları eklendi — release build R8 kırılmaları önlendi
+- **WebView Memory Leak:** `SayiYolculuguActivity` ve `RobotopiaActivity`'de `onDestroy()`'da `webView.destroy()` + `removeAllViews()` eklendi
+- **Handler Leak:** `pollForNewSet()` recursive polling'i activity-level `Handler`'a taşındı; `onDestroy()`'da `removeCallbacksAndMessages(null)` ile temizleniyor
+- **BootReceiver:** Android 14 `ForegroundServiceStartNotAllowedException` riski `try/catch` ile kapatıldı
+- **Firebase Crashlytics:** `com.google.firebase:firebase-crashlytics:18.6.4` + Google Services plugin 4.4.4 entegre edildi
+
 ## Recent Commits
 
-- (monorepo içinde izleniyor)
+- `11df330e` fix(mathlock): crash prevention + Firebase Crashlytics (2026-05-02)
+- `9587a67a` chore(mathlock): bump version to 1.0.67 (67) (2026-05-02)

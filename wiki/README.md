@@ -3,7 +3,7 @@ title: "Wiki Kullanım Kılavuzu"
 created: 2026-05-01
 updated: 2026-05-01
 type: index
-tags: [meta, guide]
+tags: [meta, guide, local-wiki]
 related: []
 ---
 
@@ -15,7 +15,7 @@ related: []
 
 ## Hızlı Başlangıç
 
-Kimi CLI'yi `/home/akn/local` dizininde açtığında ajan otomatik olarak wiki skill'ini keşfeder. Şu komutları kullanabilirsin:
+Kimi CLI `/home/akn/local` dizininde açıldığında wiki skill'i otomatik keşfedilir:
 
 ```bash
 cd /home/akn/local
@@ -36,26 +36,23 @@ kimi
 
 ## Ingest (Veri Alımı)
 
-Kod değiştikçe wiki'yi güncel tutmak için en önemli komut.
+Kod değiştikçe wiki'yi güncel tutan komut.
 
 ### Ne Zaman Çalıştırılır?
 
-- **Bir projede önemli değişiklik yaptıktan sonra**: yeni modül, refactor, deploy script değişikliği
-- **Yeni bir proje eklediğinde**: `wiki güncelle <proje>`
-- **Haftalık bakım**: tüm projelerin son durumunu yakalamak için `wiki topla`
+- **Değişiklik sonrası**: yeni modül, refactor, deploy script
+- **Yeni proje**: `wiki güncelle <proje>`
+- **Haftalık bakım**: `wiki topla`
 
 ### Nasıl Çalışır?
 
-1. Ajan her proje için `git diff --name-status` çalıştırır (son checkpoint'ten bu yana)
-2. Değişen dosyaları analiz eder (A=eklendi, M=değiştirildi, D=silindi, R=ad değiştirildi)
-3. İlgili wiki sayfalarını günceller veya yeni sayfa oluşturur
-4. Çapraz referansları (çift köşeli parantez linkleri) yeniler
-5. `wiki/log.md`'ye kayıt atar
-6. Checkpoint SHA'sını günceller
+1. `git diff --name-status` ile değişen dosyaları tespit eder
+2. Wiki sayfalarını günceller, cross-link'leri yeniler
+3. `log.md`'ye kayıt atar, checkpoint SHA'sını günceller
 
 ### Checkpoint Nedir?
 
-`.checkpoints/` dizinindeki `.sha` dosyaları, her projenin son işlendiği git commit hash'ini tutar. Böylece ajan sadece değişen dosyaları işler, her seferinde tüm repoyu baştan taramaz.
+`.checkpoints/` dizinindeki `.sha` dosyaları son işlenen commit hash'ini tutar. Ajan sadece değişen dosyaları işler.
 
 ```bash
 wiki/.checkpoints/
@@ -73,9 +70,7 @@ Wiki'ye soru sormak için. Ajan önce `index.md`'yi okur, ilgili sayfaları bulu
 ### Örnek Sorular
 
 - `wiki sor "ops-bot hangi servisleri yönetiyor?"`
-- `wiki sor "webimar'da kaç farklı yapı türü hesaplanıyor?"`
 - `wiki sor "anka'nın 3 aşamalı doğrulama hattı nedir?"`
-- `wiki sor "mathlock AI soru döngüsü nasıl çalışıyor?"`
 
 ### Cevabı Wiki'ye Kaydetme
 
@@ -100,134 +95,89 @@ Wiki'nin yapısal bütünlüğünü denetler. 10 madde kontrol edilir:
 
 ### Ne Zaman Çalıştırılır?
 
-- **Haftalık bakım** rutininin bir parçası olarak
-- **Büyük bir ingest sonrası** (10+ sayfa değiştiğinde)
-- **Wiki'de bir şeyler tuhaf göründüğünde**
+- **Haftalık bakım**, büyük ingest sonrası, veya tuhaf bir durum fark edildiğinde
 
 ---
 
 ## Obsidian ile Açma
 
-Wiki dizini standart Markdown + çift köşeli parantez link formatında. Obsidian'da açmak için:
-
-1. Obsidian → "Open folder as vault" → `/home/akn/local/wiki` seç
-2. Settings → Files and links → "Use Wikilinks" açık olduğundan emin ol
-3. Graph View (Ctrl+G) ile bilgi ağını görselleştir
-
-### Faydalı Obsidian Eklentileri
-
-- **Dataview** — YAML frontmatter üzerinden sorgu (`TABLE tags FROM "projects"`)
-- **Graph Analysis** — Merkezi sayfaları ve orphamları görsel tespit
+Wiki'yi Obsidian'da vault olarak aç: `/home/akn/local/wiki` → Graph View ile bilgi ağını görselleştir.
 
 ---
 
 ## Wiki Sayfa Yapısı
 
-Her sayfa YAML frontmatter ile başlar:
+Her sayfa YAML frontmatter ile başlar. Detaylı şema: [[SCHEMA]].
 
-```yaml
----
-title: "Sayfa Başlığı"
-created: 2026-05-01
-updated: 2026-05-01
-type: project        # project | concept | decision | index | log
-tags: [ops-bot, python, systemd]
-related:
-  - infrastructure
-  - deployment
-sources:
-  - raw/articles/kaynak-dosya.md
----
-```
-
-Detaylı şema için bkz. [[SCHEMA]].
-
-### Wikilink Kullanımı
-
-Sayfalar arası bağlantı için çift köşeli parantez:
-
-```markdown
-[[ops-bot]] sayfasına git
-[[deployment]] konseptini incele
-```
-
-Dosya adları `kebab-case.md`; link hedefleri `TitleCase` veya `kebab-case` olabilir, büyük-küçük harf duyarsız çözülür.
+Sayfalar arası bağlantı için çift köşeli parantez: `\[\[sayfa-adi\]\]`. Dosya adları `kebab-case.md`; link hedefleri büyük-küçük harf duyarsız çözülür.
 
 ---
 
-## Dizin Yapısı
+## Wiki Organizasyon Kuralları
 
-```
-wiki/
-├── README.md          ← Bu dosya
-├── SCHEMA.md          ← Wiki kuralları
-├── index.md           ← İçerik kataloğu
-├── log.md             ← İşlem kaydı
-├── system-overview.md ← VPS mimarisi
-├── projects/          ← Proje sayfaları
-├── concepts/          ← Çapraz konseptler
-├── decisions/         ← Mimari kararlar
-├── raw/               ← Kaynak kopyaları
-└── .checkpoints/      ← Git checkpoint'leri
-```
+Wiki tutarlılığı için bağlayıcı kurallar.
 
----
+### 1. Genelden Özele Sıralama (index.md)
 
-## Sık Sorulan Sorular
+`index.md` sırası: **System → Infrastructure & Platform → Concepts → Decisions → Projects**
 
-**S: Wiki sayfalarını ben mi yazıyorum, ajan mı?**
-C: Ajan yazıyor (ingest/query sırasında). Sen komut verip doğruluyorsun.
+Kural: Bir sayfa ne kadar çok projeye hizmet ediyorsa, o kadar yukarıda listelenir.
 
-**S: Manuel düzenleme yapabilir miyim?**
-C: Evet. `decisions/` ve `README.md` senin alanınız. `updated` tarihini güncellemeyi unutma.
+### 2. Sayfa Tipleri
 
-**S: Yeni proje eklemek istiyorum.**
-C: `projects/` altına koy, sonra `wiki ingest <proje>` çalıştır.
+| Tip | Amaç | Max | Bakım |
+|-----|------|-----|-------|
+| `project` | Proje özet | 200 satır | Agent (ingest) |
+| `concept` | Çapraz süreç | 200 satır | Agent / İnsan |
+| `decision` | Mimari karar | 150 satır | İnsan |
+| `index` | Katalog | 250 satır | Agent + İnsan |
+| `log` | İşlem kaydı | 500 giriş | Agent |
 
-**S: log.md çok uzun oldu.**
-C: `wiki kontrol` çalıştır. 500 girişi aştığında rotate önerir.
+### 3. Yeni Sayfa Checklist'i
+
+- [ ] Frontmatter tam, tag'ler `SCHEMA.md`'de var
+- [ ] `index.md`'de genelden özele sıraya kondu
+- [ ] Cross-link'ler mevcut sayfalara eklendi
+- [ ] `log.md`'ye kayıt atıldı, lint 10/10 geçildi
+
+### 4. infrastructure Ayrımı
+
+`[[infrastructure]]` altyapı katmanı olduğu için `index.md`'de projelerden ayrı, "Infrastructure & Platform" bölümünde gösterilir.
 
 ---
 
 ## Proaktif Güncelleme (Auto-Prompt)
 
-Git commit attığında kimi-cli bir sonraki açılışında otomatik olarak "wiki güncelleyelim mi?" diye sorar.
+Git commit sonrası kimi-cli bir sonraki açılışında "wiki güncelleyelim mi?" diye sorar.
 
-### Nasıl Çalışır?
+### Akış
 
-1. **Git hook** (`post-commit`): Her commit sonrası `wiki/.pending` marker dosyasına kayıt atar
-2. **Session başlangıcı**: `~/.wiki-skip-session` varsa temizlenir (önceki session'dan kalan)
-3. **Kullanıcı mesajı**: Eğer marker doluysa ve kullanıcı `wiki ...` komutu söylemediyse, AI proaktif olarak sorar:
-   - "Wiki güncellemesi bekliyor: X proje, Y commit. Ne yapayım?"
-4. **Seçenekler:**
-   - **Evet, hepsini topla** → `wiki topla` çalıştırır, marker temizlenir
-   - **Sadece bir projeyi güncelle** → Belirtilen projeyi işler
-   - **Durumu göster** → `wiki durum`, sonra tekrar sorar
-   - **Şimdi değil** → Sonraki session'da tekrar sorulacak
-   - **Bu session'da tekrar sorma** → Bu session'da atla, sonrakinde sorulacak
+1. `post-commit` hook → `wiki/.pending` marker dosyasına kayıt atar
+2. Yeni session'da marker temizlenir (`~/.wiki-skip-session` silinir)
+3. Eğer marker doluysa, AI proaktif sorar: "Wiki güncellemesi bekliyor. Ne yapayım?"
 
-### Git Hook'ların Yönetimi
+### Seçenekler
 
-```bash
-# Hook'ların kurulu olduğu repo'lar
-/home/akn/local/.git/hooks/post-commit          # anka, mathlock, telegram-kimi, sayi-yolculugu, infrastructure
-/home/akn/local/ops-bot/.git/hooks/post-commit  # ops-bot
-/home/akn/local/projects/webimar/.git/hooks/post-commit  # webimar
+- **Evet** → `wiki topla`, marker temizlenir
+- **Tek proje** → Belirtilen projeyi işler
+- **Durum** → `wiki durum`, sonra tekrar sorar
+- **Şimdi değil** → Sonraki session'da tekrar sorulacak
+- **Bu session sorma** → `~/.wiki-skip-session` oluşturulur
 
-# Hook script (tek kaynak)
-/home/akn/local/scripts/wiki-post-commit.sh
-```
+### Git Hook'lar
 
-> **Not:** Commit IDE üzerinden veya `--no-verify` ile atılırsa hook çalışmaz. Bu durumda manuel `wiki güncelle` kullanın.
+| Repo | Hook |
+|------|------|
+| `local` (monorepo) | `.git/hooks/post-commit` |
+| `ops-bot` | `ops-bot/.git/hooks/post-commit` |
+| `webimar` | `projects/webimar/.git/hooks/post-commit` |
+
+Kaynak: `/home/akn/local/scripts/wiki-post-commit.sh`
+
+> **Not:** `--no-verify` ile atılan commit'lerde hook çalışmaz. Manuel `wiki güncelle` kullanın.
 
 ---
 
 ## Sonraki Adımlar
 
-1. `kimi` çalıştır
-2. `wiki durum` ile mevcut durumu gör
-3. Bir projede değişiklik yap ve `git commit` at
-4. Yeni `kimi` seansında proaktif prompt bekleyin
-5. Obsidian'da `wiki/` dizinini vault olarak aç ve Graph View'i keşfet
-
-> **İpucu:** Her hafta sonu `wiki topla && wiki kontrol` komutlarını çalıştırmak wiki'yi taze ve tutarlı tutar.
+`wiki durum` ile başla, değişiklik yap, commit at, proaktif prompt bekle. Haftalık: `wiki topla && wiki kontrol`.

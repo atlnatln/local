@@ -1,13 +1,12 @@
 ---
 title: "Webimar"
 created: 2026-05-01
-updated: 2026-05-01
+updated: 2026-05-02
 type: project
 tags: [webimar, django, nextjs, react, docker, nginx]
 related:
   - infrastructure
   - deployment
-  - ssl-certbot
 sources:
   - raw/articles/webimar-readme.md
 ---
@@ -28,7 +27,8 @@ Tarımsal arazilerde yapılaşma süreçlerinde güncel mevzuata ve bilimsel esa
 | Frontend | Next.js 15 (App Router) + TypeScript + Styled Components |
 | Hesaplamalar | React SPA (ayrı uygulama) |
 | Database | PostgreSQL / SQLite |
-| Auth | JWT |
+| Auth | JWT (SimpleJWT) + Google OAuth 2.0 |
+| Permissions | DRF `IsAuthenticated` default + explicit `AllowAny` on public endpoints |
 | DevOps | Docker Compose, Nginx reverse proxy |
 
 ## Entry Points
@@ -70,6 +70,16 @@ Open Graph, Twitter Card, JSON-LD schema, sitemap.xml, robots.txt, lazy loading,
 - [[infrastructure]] — nginx ters proxy, SSL
 - [[deployment]] — VPS deploy prosedürleri
 
+## Security Hardening (2026-05-02)
+
+Production API güvenlik sıkılaştırması:
+- `settings.py`: `DEBUG` default `False`, `SECRET_KEY` default kaldırıldı (zorunlu env), `GOOGLE_OAUTH_CLIENT_ID` default boş string yapıldı
+- `settings.py`: `TRACKING_LOG_RESPONSE_BODY` default `False` — varsayılan olarak response body loglama kapalı
+- `settings.py`: CORS `http://` production origin'leri (`tarimimar.com.tr`, `tarlada-ruhsat.com.tr`) kaldırıldı
+- **Permission flip:** `DEFAULT_PERMISSION_CLASSES` `AllowAny` → `IsAuthenticated`. Tüm public endpoint'lere (hesaplama, health, flowering, maps vb.) explicit `@permission_classes([AllowAny])` eklendi
+- **.env cleanup:** Git'te takip edilen `.env` dosyaları (`webimar-react/.env`, `webimar-nextjs/.env.production`, `.env.local.backup`) silindi. Sadece `.env.production.example` şablonu bırakıldı
+
 ## Recent Commits
 
-- `2eb3dfa` chore: sync all local changes before deploy (2026-04-30)
+- `e22b7782` security(phase-1): harden defaults, CORS, tracking, add AllowAny to public endpoints (2026-05-02)
+- `416474ac` security(phase-2): flip DEFAULT_PERMISSION_CLASSES to IsAuthenticated + cleanup .env files (2026-05-02)

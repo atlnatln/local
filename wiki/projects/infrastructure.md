@@ -6,7 +6,6 @@ type: project
 tags: [infrastructure, nginx, docker, ssl, monitoring]
 related:
   - deployment
-  - ssl-certbot
 sources:
   - raw/articles/infrastructure-docker-compose.md
   - raw/articles/infrastructure-setup-script.md
@@ -62,7 +61,14 @@ curl -f http://localhost:8080/nginx-health
 ## Dependencies
 
 - [[deployment]] — VPS kurulum prosedürleri
-- ssl-certbot — SSL sertifika yönetimi
+- [[nginx-routing]] — Domain config'leri, upstream, rate limiting
+- [[ssl-automation]] — Certbot, sertifika yenileme, cron
+- [[monitoring]] — Prometheus, Grafana, health check'ler
+- [[log-management]] — nginx log rotasyonu, Loki/Promtail
+
+## Yapılandırma Detayları
+
+Detaylı nginx, SSL, log ve monitoring yapılandırması için ilgili konsept sayfalarına bakınız.
 
 ## Recent Commits
 

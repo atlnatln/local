@@ -7,7 +7,6 @@ tags: [ops-bot, python, telegram-bot, systemd, security]
 related:
   - infrastructure
   - deployment
-  - ssl-certbot
 sources:
   - raw/articles/ops-bot-readme.md
   - raw/articles/ops-bot-deploy-script.md
@@ -98,6 +97,7 @@ Deploy akışı:
 
 ## Recent Commits
 
+- `3bb05f9` test: trigger wiki ingest (2026-05-02)
 - `ab28161` chore: sync all local changes before deploy (2025-04-30)
 - `ad62f2a` ops-bot: resolve_model_name() bilinmeyen model ID'lerini DEFAULT_MODEL'e düşürür
 - `5b8b80c` ops-bot: fallback unknown model IDs to DEFAULT_MODEL in get_user_model()

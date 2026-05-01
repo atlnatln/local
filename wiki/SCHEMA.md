@@ -1,3 +1,12 @@
+---
+title: "SCHEMA"
+created: "2026-05-01"
+updated: "2026-05-01"
+type: index
+tags: [meta, guide]
+related: []
+---
+
 # SCHEMA
 
 ## Wiki Purpose
@@ -22,9 +31,8 @@
 │   └── infrastructure.md # Shared VPS infra
 ├── concepts/
 │   ├── deployment.md
-│   ├── django-nextjs-pattern.md
-│   ├── ssl-certbot.md
-│   ├── multi-web-project-system.md
+│   ├── git-workflow.md
+│   ├── proactive-wiki.md
 │   └── ...
 ├── decisions/
 │   ├── adr-001-vps-rename-local.md
@@ -49,17 +57,17 @@ All tags are flat strings. Namespaces below are organizational conventions only.
 Project tags bind a note to a specific codebase or service.
 
 ### Stack
-`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin`
+`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript`
 
 Technology tags describe the toolchain a note touches.
 
 ### Concepts
-`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security`
+`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging`
 
 Domain tags classify the subject matter independent of any project.
 
 ### Meta
-`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide`
+`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot`
 
 Lifecycle tags track note maturity and provenance.
 
@@ -75,15 +83,15 @@ Lifecycle tags track note maturity and provenance.
 | Who | Primarily AI ingest agents; human edits for decisions and corrections |
 | When | After every meaningful code change; at minimum before VPS maintenance |
 | How | Markdown files are plain text; edit in-place, append to `log.md`, update frontmatter `updated` |
-| Validation | Prefer wikilinks over URLs; all `[[PageName]]` targets must correspond to existing `.md` files |
+| Validation | Prefer wikilinks over URLs; all `\[\[PageName\]\]` targets must correspond to existing `.md` files |
 
 ## Wikilink Convention
 
 Use double-bracket syntax for internal links:
 
 ```markdown
-[[PageName]]           → links to PageName.md
-[[PageName#Section]]   → links to heading within PageName.md
+\[\[PageName\]\]           → links to PageName.md
+\[\[PageName#Section\]\]   → links to heading within PageName.md
 ```
 
 Wikilinks are resolved case-insensitively. File names are `kebab-case.md`; link targets use `TitleCase` or `kebab-case` and are normalized at render time.
@@ -114,7 +122,7 @@ status: "active"       # active | stale | archived | needs-review
 | `updated` | Yes | Last update date (YYYY-MM-DD) |
 | `type` | Yes | Content category; drives template selection |
 | `tags` | Yes | Array of taxonomy tags; minimum one project or concept |
-| `related` | Yes | Array of [[PageName]] wikilinks to related pages |
+| `related` | Yes | Array of `\[\[PageName\]\]` wikilinks to related pages |
 | `sources` | No | Paths to raw archived source files |
 | `contested` | No | Set `true` when conflicting info exists |
 | `st

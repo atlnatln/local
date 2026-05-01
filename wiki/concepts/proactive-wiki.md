@@ -5,7 +5,7 @@ updated: "2026-05-01"
 type: concept
 tags: [meta, automation, git-hook, local-wiki]
 related:
-  - local-wiki
+  - README
   - git-workflow
   - deployment
   - README
@@ -126,6 +126,6 @@ Kullanıcı onayı olmadan wiki'ye yazmak riskli olabilir. Her zaman kullanıcı
 
 ## İlgili Sayfalar
 
-- [[local-wiki]] — Skill tanımı ve komut rehberi
+- [[README]] — Skill tanımı ve komut rehberi
 - [[git-workflow]] — Monorepo git stratejisi
 - [[deployment]] — Deploy süreçleri ve otomasyon

@@ -21,8 +21,8 @@ related:
 | [[webimar]] | Tarım İmar — Django + Next.js + React |
 | [[anka]] | Anka Data — B2B veri servisi, Django + Next.js |
 | [[mathlock-play]] | MathLock Play — Android math game + Django backend |
-| telegram-kimi | Telegram Kimi bot — henüz ingest edilmedi |
-| sayi-yolculugu | Sayı yolculuğu — henüz ingest edilmedi |
+| [[telegram-kimi]] | Telegram Kimi Bridge — Python, systemd, ACP |
+| [[sayi-yolculugu]] | HTML5 matematik eğitim oyunu |
 | [[infrastructure]] | Paylaşılan VPS altyapısı — nginx, SSL, Docker |
 
 ## Altyapı

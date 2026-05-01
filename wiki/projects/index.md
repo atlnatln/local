@@ -1,7 +1,7 @@
 ---
 title: "Projeler"
 created: 2025-05-01
-updated: 2025-05-01
+updated: 2026-05-01
 type: index
 tags: [meta, index, projects]
 related: []
@@ -13,10 +13,10 @@ related: []
 
 | Proje | Tip | Açıklama | Son Güncelleme |
 |-------|-----|----------|----------------|
-| [[ops-bot]] | Node.js/PM2 | Telegram operasyon botu (ingest bekleniyor) | - |
-| [[webimar]] | Next.js + Django | E-ticaret platformu (ingest bekleniyor) | - |
-| [[anka]] | Flutter/Dart | Kart oyunu motoru (ingest bekleniyor) | - |
-| [[mathlock-play]] | Flutter + systemd | MathLock oyun sunucusu (ingest bekleniyor) | - |
-| [[telegram-kimi]] | Python | Telegram botu (ingest bekleniyor) | - |
-| [[sayi-yolculugu]] | Python | Sayi yolculugu projesi (ingest bekleniyor) | - |
-| [[infrastructure]] | nginx/Docker/systemd | Paylaşılan VPS altyapısı (ingest bekleniyor) | - |
+| [[ops-bot]] | Python/systemd | Telegram operations bot + sec-agent güvenlik izleme | 2026-05-01 |
+| [[webimar]] | Django/Next.js/React | Tarım İmar — 20+ yapı türü hesaplama platformu | 2026-05-01 |
+| [[anka]] | Django/Next.js | B2B veri servisi — 3 aşamalı doğrulama hattı | 2026-05-01 |
+| [[mathlock-play]] | Android/Django | Çocuklar için matematik oyunu + AI soru üretimi | 2026-05-01 |
+| [[telegram-kimi]] | Python/systemd | Telegram Kimi Bridge — ACP protokol köprüsü | 2026-05-01 |
+| [[sayi-yolculugu]] | HTML5/JavaScript | HTML5 matematik eğitim oyunu | 2026-05-01 |
+| [[infrastructure]] | nginx/Docker | Paylaşılan VPS altyapısı — SSL, reverse proxy | 2026-05-01 |
