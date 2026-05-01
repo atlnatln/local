@@ -59,7 +59,7 @@ Technology tags describe the toolchain a note touches.
 Domain tags classify the subject matter independent of any project.
 
 ### Meta
-`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated`
+`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide`
 
 Lifecycle tags track note maturity and provenance.
 

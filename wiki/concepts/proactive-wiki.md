@@ -10,7 +10,8 @@ related:
   - deployment
   - README
 sources:
-  - raw/articles/scripts/wiki-post-commit.sh
+  - raw/articles/wiki-post-commit.sh
+  - raw/articles/AGENTS.md
 ---
 
 # Proaktif Wiki Yöneticisi
@@ -30,7 +31,7 @@ Kod yazarken wiki'yi güncellemeyi unutmak kolay. Commit atıp saatler sonra kim
 | Bileşen | Görev | Konum |
 |---------|-------|-------|
 | Git post-commit hook | Commit sonrası marker yazar | `scripts/wiki-post-commit.sh` |
-| Marker dosyası | Bekleyen commit'leri biriktirir | `wiki/.pending` |
+| Marker dosyası | Bekleyen commit'leri biriktirir | `wiki/.pending` (`.gitignore`'da) |
 | AGENTS.md talimatı | Session başında kontrol eder, kullanıcıya sorar | `AGENTS.md` Proaktif Wiki Kontrolü bölümü |
 | Skip flag | "Bu session'da sorma" için | `~/.wiki-skip-session` |
 

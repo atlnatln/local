@@ -162,3 +162,12 @@ tags: [meta, log]
 - Components: scripts/wiki-post-commit.sh, 3 repo hooks (local, ops-bot, webimar)
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 
+
+## [2026-05-01 21:58] ingest | local | f33ae5a | 1 sayfa
+- Files: A:2 M:1 D:0
+- Pages created: 
+- Pages updated: [[proactive-wiki]]
+- Pages archived: 
+- Diff summary: AGENTS.md ve wiki-post-commit.sh raw arşivine eklendi. proactive-wiki sources alanı güncellendi. .gitignore'da wiki/.pending eklendi.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+- Revert: git checkout 4db9944234eda3c61604b1ccb595388adf5aa59a -- wiki/
