@@ -49,3 +49,24 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 3 entries
 
+
+## [2026-05-01 19:30] ingest | webimar | 2eb3dfa | 1
+- Files: A:0 M:0 D:0 (checkpoint = HEAD, full scan)
+- Pages created: [[webimar]]
+- Diff summary: Full ingest of webimar project. Agriculture calculation platform with Django + Next.js + React.
+
+## [2026-05-01 19:31] ingest | anka | 4db9944 | 1
+- Files: A:0 M:0 D:0 (checkpoint = HEAD, full scan)
+- Pages created: [[anka]]
+- Diff summary: Full ingest of anka project. B2B data service with 3-stage verification pipeline.
+
+## [2026-05-01 19:32] ingest | mathlock-play | 4db9944 | 1
+- Files: A:0 M:0 D:0 (checkpoint = HEAD, full scan)
+- Pages created: [[mathlock-play]]
+- Diff summary: Full ingest of mathlock-play project. Android math game with AI-powered question generation.
+
+## [2026-05-01 19:33] ingest | infrastructure | 4db9944 | 1
+- Files: A:0 M:0 D:0 (checkpoint = HEAD, full scan)
+- Pages created: [[infrastructure]]
+- Diff summary: Full ingest of infrastructure. Shared VPS reverse proxy, SSL, and Docker network.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash

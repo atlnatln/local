@@ -1,7 +1,7 @@
 ---
 title: "Wiki Index"
-created: 2025-05-01
-updated: 2025-05-01
+created: 2026-05-01
+updated: 2026-05-01
 type: index
 tags: [meta, index]
 related: []
@@ -17,13 +17,13 @@ Master content catalog for `local-wiki`. All pages are reachable via wikilink.
 
 | Proje | Tip | Özet | Son Güncelleme |
 |-------|-----|------|----------------|
-| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent | 2025-05-01 |
-| [[webimar]] | project | (boş — ingest gerekiyor) | - |
-| [[anka]] | project | (boş — ingest gerekiyor) | - |
-| [[mathlock-play]] | project | (boş — ingest gerekiyor) | - |
-| [[telegram-kimi]] | project | (boş — ingest gerekiyor) | - |
-| [[sayi-yolculugu]] | project | (boş — ingest gerekiyor) | - |
-| [[infrastructure]] | project | (boş — ingest gerekiyor) | - |
+| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent | 2026-05-01 |
+| [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-01 |
+| [[anka]] | project | B2B veri servisi — Django + Next.js | 2026-05-01 |
+| [[mathlock-play]] | project | Android math game + Django backend | 2026-05-01 |
+| [[infrastructure]] | project | VPS altyapısı — nginx, SSL, Docker | 2026-05-01 |
+| telegram-kimi | project | Henüz ingest edilmedi | - |
+| sayi-yolculugu | project | Henüz ingest edilmedi | - |
 
 ## Concepts
 
@@ -44,7 +44,11 @@ Master content catalog for `local-wiki`. All pages are reachable via wikilink.
 
 ## Recently Updated
 
-Henüz ingest yapılmadı.
+- [[ops-bot]] — Full ingest (2026-05-01)
+- [[webimar]] — Full ingest (2026-05-01)
+- [[anka]] — Full ingest (2026-05-01)
+- [[mathlock-play]] — Full ingest (2026-05-01)
+- [[infrastructure]] — Full ingest (2026-05-01)
 
 ## Log
 

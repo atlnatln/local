@@ -1,7 +1,7 @@
 ---
-title: "Sistem Genel Gorunumu"
-created: 2025-05-01
-updated: 2025-05-01
+title: "Sistem Genel Görünümü"
+created: 2026-05-01
+updated: 2026-05-01
 type: concept
 tags: [meta, overview, infrastructure]
 related:
@@ -9,33 +9,32 @@ related:
   - deployment
 ---
 
-# Sistem Genel Gorunumu
+# Sistem Genel Görünümü
 
-`/home/akn/local`, VPS uzerindeki merkezi kontrol noktasidir. Birden fazla projeyi, paylasilan altyapiyi ve ortak yapilandirmalari tek bir monorepo catisi altinda barindirir.
+`/home/akn/local`, VPS üzerindeki merkezi kontrol noktasıdır. Birden fazla projeyi, paylaşılan altyapıyı ve ortak yapılandırmaları tek bir monorepo çatısı altında barındırır.
 
-## Proje Haritasi
+## Proje Haritası
 
-| Proje | Aciklama |
+| Proje | Açıklama |
 |-------|----------|
-| [[ops-bot]] | Telegram operations bot — Python, systemd |
-| webimar | Agriculture platform — Django + Next.js + React |
-| anka | Sector analysis platform — Django + Next.js |
-| mathlock-play | Android math game + Django backend |
-| telegram-kimi | Telegram Kimi bot |
-| sayi-yolculugu | Sayi yolculugu projesi |
-| infrastructure | Paylasilan VPS altyapisi — nginx, SSL, Docker, systemd |
+| [[ops-bot]] | Telegram operations bot — Python, systemd, sec-agent |
+| [[webimar]] | Tarım İmar — Django + Next.js + React |
+| [[anka]] | Anka Data — B2B veri servisi, Django + Next.js |
+| [[mathlock-play]] | MathLock Play — Android math game + Django backend |
+| telegram-kimi | Telegram Kimi bot — henüz ingest edilmedi |
+| sayi-yolculugu | Sayı yolculuğu — henüz ingest edilmedi |
+| [[infrastructure]] | Paylaşılan VPS altyapısı — nginx, SSL, Docker |
 
-## Altyapi
+## Altyapı
 
-- **nginx** — Ters proxy, statik dosya servisi, coklu proje yonlendirmesi
-- **SSL (Certbot)** — Otomatik sertifika yenileme, HTTPS yonlendirmesi
-- **Docker** — Container yonetimi (secili projeler icin)
-- **systemd** — Servis yonetimi, otomatik baslatma, log rotasyonu
+- **nginx** — Ters proxy, statik dosya servisi, çoklu proje yönlendirmesi
+- **SSL (Certbot)** — Otomatik sertifika yenileme, HTTPS yönlendirmesi
+- **Docker** — Container yönetimi (seçili projeler için)
+- **systemd** — Servis yönetimi, otomatik başlatma
 
-## Git Yapisi
+## Git Yapısı
 
-- Bazi projeler kendi `.git` reposuna sahip: `ops-bot`, `webimar`
-- Diger projeler ana monorepo icinde izlenmektedir
-- `infrastructure` yapilandirmalari ana repo kokundedir
+- Ayrı git repo: `ops-bot`, `webimar`
+- Monorepo içinde: `anka`, `mathlock-play`, `telegram-kimi`, `sayi-yolculugu`, `infrastructure`
 
-> **Not:** Bu sayfa ingest islemleriyle otomatik guncellenecektir.
+> **Not:** Bu sayfa ingest işlemleriyle otomatik güncellenecektir.
