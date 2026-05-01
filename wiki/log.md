@@ -118,3 +118,47 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 11 entries
 
+## [2026-05-01 20:51] lint | 5/10
+- Orphan pages: 1 ([[README]])
+- Broken links: 3
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 1 (guide)
+- Raw existence: 0
+- Log size: 12 entries
+
+## [2026-05-01 20:52] lint | 8/10
+- Orphan pages: 1 ([[README]])
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 13 entries
+
+## [2026-05-01 20:53] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 14 entries
+
+## [2026-05-01 21:57] ingest | local | f33ae5a9 | 4
+- Files: A:1 M:3 D:0
+- Pages created: [[proactive-wiki]]
+- Pages updated: [[README]], [[index]], [[log]]
+- Diff summary: Proaktif Wiki Yöneticisi (Auto-Prompt) implementasyonu — git post-commit hooks, marker file (wiki/.pending), AGENTS.md proactive check, skip-session flag
+- Components: scripts/wiki-post-commit.sh, 3 repo hooks (local, ops-bot, webimar)
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+

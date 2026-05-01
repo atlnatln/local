@@ -189,12 +189,45 @@ C: `wiki kontrol` çalıştır. 500 girişi aştığında rotate önerir.
 
 ---
 
+## Proaktif Güncelleme (Auto-Prompt)
+
+Git commit attığında kimi-cli bir sonraki açılışında otomatik olarak "wiki güncelleyelim mi?" diye sorar.
+
+### Nasıl Çalışır?
+
+1. **Git hook** (`post-commit`): Her commit sonrası `wiki/.pending` marker dosyasına kayıt atar
+2. **Session başlangıcı**: `~/.wiki-skip-session` varsa temizlenir (önceki session'dan kalan)
+3. **Kullanıcı mesajı**: Eğer marker doluysa ve kullanıcı `wiki ...` komutu söylemediyse, AI proaktif olarak sorar:
+   - "Wiki güncellemesi bekliyor: X proje, Y commit. Ne yapayım?"
+4. **Seçenekler:**
+   - **Evet, hepsini topla** → `wiki topla` çalıştırır, marker temizlenir
+   - **Sadece bir projeyi güncelle** → Belirtilen projeyi işler
+   - **Durumu göster** → `wiki durum`, sonra tekrar sorar
+   - **Şimdi değil** → Sonraki session'da tekrar sorulacak
+   - **Bu session'da tekrar sorma** → Bu session'da atla, sonrakinde sorulacak
+
+### Git Hook'ların Yönetimi
+
+```bash
+# Hook'ların kurulu olduğu repo'lar
+/home/akn/local/.git/hooks/post-commit          # anka, mathlock, telegram-kimi, sayi-yolculugu, infrastructure
+/home/akn/local/ops-bot/.git/hooks/post-commit  # ops-bot
+/home/akn/local/projects/webimar/.git/hooks/post-commit  # webimar
+
+# Hook script (tek kaynak)
+/home/akn/local/scripts/wiki-post-commit.sh
+```
+
+> **Not:** Commit IDE üzerinden veya `--no-verify` ile atılırsa hook çalışmaz. Bu durumda manuel `wiki güncelle` kullanın.
+
+---
+
 ## Sonraki Adımlar
 
 1. `kimi` çalıştır
 2. `wiki durum` ile mevcut durumu gör
-3. Bir projede değişiklik yap
-4. `wiki güncelle` ile wiki'yi güncelle
+3. Bir projede değişiklik yap ve `git commit` at
+4. Yeni `kimi` seansında proaktif prompt bekleyin
 5. Obsidian'da `wiki/` dizinini vault olarak aç ve Graph View'i keşfet
 
 > **İpucu:** Her hafta sonu `wiki topla && wiki kontrol` komutlarını çalıştırmak wiki'yi taze ve tutarlı tutar.

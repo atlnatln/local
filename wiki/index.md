@@ -31,6 +31,7 @@ Master content catalog for `local-wiki`. All pages are reachable via wikilink.
 - [[django-nextjs-pattern]] — Django backend + Next.js frontend entegrasyon deseni
 - [[ssl-certbot]] — SSL sertifika yönetimi ve Certbot yapılandırması
 - [[multi-web-project-system]] — Tek VPS üzerinde çoklu proje yönetimi
+- [[proactive-wiki]] — Git commit sonrası otomatik wiki güncelleme önerisi (Auto-Prompt)
 
 ## Decisions
 
@@ -39,16 +40,17 @@ Master content catalog for `local-wiki`. All pages are reachable via wikilink.
 
 ## System
 
+- [[README]] — Wiki kullanım kılavuzu
 - [[system-overview]] — VPS genel mimarisi ve proje haritası
 - [[SCHEMA]] — Wiki yapı tanımı, etiket taksonomisi ve frontmatter şeması
 
 ## Recently Updated
 
+- [[proactive-wiki]] — Konsept sayfası oluşturuldu (2026-05-01)
+- [[README]] — Proaktif güncelleme bölümü eklendi (2026-05-01)
 - [[ops-bot]] — Full ingest (2026-05-01)
 - [[webimar]] — Full ingest (2026-05-01)
 - [[anka]] — Full ingest (2026-05-01)
-- [[mathlock-play]] — Full ingest (2026-05-01)
-- [[infrastructure]] — Full ingest (2026-05-01)
 
 ## Log
 
