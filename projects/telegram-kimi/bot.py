@@ -8,6 +8,7 @@ import html
 import json
 import logging
 import re
+import shlex
 import threading
 from pathlib import Path
 from typing import List, Optional
@@ -259,17 +260,19 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
     # Build ACP client based on mode
     if mode == "local":
+        inner_cmd = f"exec {config.KIMI_CMD} {' '.join(shlex.quote(a) for a in config.KIMI_ARGS)}"
+        ssh_cmd = (
+            f"ssh -p {shlex.quote(str(config.LOCAL_SSH_PORT))} "
+            f"-i {shlex.quote(config.LOCAL_SSH_KEY)} "
+            f"-o ConnectTimeout=2 "
+            f"-o StrictHostKeyChecking=accept-new "
+            f"-tt "
+            f"{shlex.quote(f'{config.LOCAL_SSH_USER}@{config.LOCAL_SSH_HOST}')} "
+            f"bash -lc {shlex.quote(inner_cmd)}"
+        )
         _state.acp = AcpClient(
-            cmd="ssh",
-            args=[
-                "-p", str(config.LOCAL_SSH_PORT),
-                "-i", config.LOCAL_SSH_KEY,
-                "-o", "ConnectTimeout=2",
-                "-o", "StrictHostKeyChecking=accept-new",
-                "-tt",
-                f"{config.LOCAL_SSH_USER}@{config.LOCAL_SSH_HOST}",
-                "bash", "-lc", f"exec {config.KIMI_CMD} {' '.join(config.KIMI_ARGS)}",
-            ],
+            cmd="script",
+            args=["-q", "-c", ssh_cmd, "/dev/null"],
             cwd=config.LOCAL_SSH_WORK_DIR,
             notification_handler=_state._on_acp_notification,
         )
@@ -282,17 +285,19 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         )
     else:  # auto
         # Try local first (via reverse SSH tunnel)
+        inner_cmd = f"exec {config.KIMI_CMD} {' '.join(shlex.quote(a) for a in config.KIMI_ARGS)}"
+        ssh_cmd = (
+            f"ssh -p {shlex.quote(str(config.LOCAL_SSH_PORT))} "
+            f"-i {shlex.quote(config.LOCAL_SSH_KEY)} "
+            f"-o ConnectTimeout=2 "
+            f"-o StrictHostKeyChecking=accept-new "
+            f"-tt "
+            f"{shlex.quote(f'{config.LOCAL_SSH_USER}@{config.LOCAL_SSH_HOST}')} "
+            f"bash -lc {shlex.quote(inner_cmd)}"
+        )
         local_acp = AcpClient(
-            cmd="ssh",
-            args=[
-                "-p", str(config.LOCAL_SSH_PORT),
-                "-i", config.LOCAL_SSH_KEY,
-                "-o", "ConnectTimeout=2",
-                "-o", "StrictHostKeyChecking=accept-new",
-                "-tt",
-                f"{config.LOCAL_SSH_USER}@{config.LOCAL_SSH_HOST}",
-                "bash", "-lc", f"exec {config.KIMI_CMD} {' '.join(config.KIMI_ARGS)}",
-            ],
+            cmd="script",
+            args=["-q", "-c", ssh_cmd, "/dev/null"],
             cwd=config.LOCAL_SSH_WORK_DIR,
             notification_handler=_state._on_acp_notification,
         )
@@ -303,7 +308,13 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
             mode = "local"
         else:
             local_acp.close()
-            await update.message.reply_text("⚠️ Local bilgisayar erişilemez, VPS moduna geçiliyor...")
+            error_detail = local_acp.last_start_error or "Bilinmeyen hata"
+            logger.warning("Local mode failed: %s", error_detail)
+            await update.message.reply_text(
+                f"⚠️ Local bağlantı başarısız:\n`{html.escape(error_detail)}`\n\n"
+                f"VPS moduna geçiliyor...",
+                parse_mode=ParseMode.MARKDOWN,
+            )
             _state.acp = AcpClient(
                 cmd=config.KIMI_CMD,
                 args=config.KIMI_ARGS,
@@ -320,7 +331,12 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if not started:
         ok = _state.acp.start()
         if not ok:
-            await update.message.reply_text("❌ Kimi başlatılamadı. Logları kontrol edin.")
+            error_detail = _state.acp.last_start_error or "Bilinmeyen hata"
+            logger.error("Kimi start failed: %s", error_detail)
+            await update.message.reply_text(
+                f"❌ Kimi başlatılamadı:\n`{html.escape(error_detail)}`",
+                parse_mode=ParseMode.MARKDOWN,
+            )
             _state.acp = None
             return
 

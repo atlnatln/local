@@ -57,21 +57,18 @@
 
 ## 2. AKTİF SORUNLAR
 
-### 🔴 KRİTİK: Local Mod Çalışmıyor
-**Durum:** Bot `/start` komutunda "Local bilgisayar erişilemez" hatası veriyor.
+### 🟢 KRİTİK: Local Mod Çalışmıyor → ÇÖZÜLDÜ
+**Durum:** Bot `/start` komutunda "Local bilgisayar erişilemez" hatası veriyordu.
 
-**Neden:** `AcpClient` `subprocess.Popen` ile `ssh` çalıştırırken, `stdout` PIPE'ından veri okuyamıyor. `readline()` boş string (`EOF`) dönüyor. `kimi acp` remote process hemen sonlanıyor gibi görünüyor.
+**Neden:** `AcpClient` `subprocess.Popen` ile `ssh` çalıştırırken, `stdin=subprocess.PIPE` nedeniyle `kimi acp` EOF alıp hemen çıkıyordu. `ssh -tt` pseudo-terminal allocate etse bile, subprocess PIPE ile PTY arasında veri iletilemiyordu.
 
-**Yapılan denemeler:**
-- `stderr=subprocess.PIPE` → process bloklanıyordu
-- `stderr=subprocess.DEVNULL` → `ssh -tt` ile çakışıyordu
-- `stderr=subprocess.STDOUT` → hala `EOF`
-- `bash -lc "exec kimi acp"` → PATH sorunu çözüldü
-- `-tt` pseudo-terminal → hala çözülmedi
+**Çözüm:** `bot.py`'de `ssh` komutu yerine `script -q -c "ssh ..." /dev/null` pseudo-terminal wrapper kullanıldı. `script` komutu gerçek bir TTY oluşturduğu için `kimi acp` düzgün çalışıyor.
 
-**Manuel test:** `script -q -c "ssh ..." /dev/null` ile **çalışıyor** (`initialize` yanıtı geldi).
-
-**Çözüm yolu:** `AcpClient`'in `subprocess.Popen` yerine `script` komutu ile pseudo-terminal wrapper kullanması.
+**Yapılan değişiklik:**
+- `bot.py`: `import shlex` eklendi
+- Local mod `AcpClient` yapılandırması `cmd="script", args=["-q", "-c", ssh_cmd, "/dev/null"]` olarak değiştirildi
+- `ssh_cmd` `shlex.quote` ile güvenli şekilde oluşturuluyor
+- Aynı değişiklik `auto` modda local fallback için de uygulandı
 
 ---
 
@@ -91,7 +88,7 @@
 ## 3. GELECEKTE YAPILACAKLAR
 
 ### 3.1 Kısa Vade (Bu hafta)
-- [ ] **Local mod düzeltmesi** — `script` veya `pty` ile pseudo-terminal wrapper
+- [x] **Local mod düzeltmesi** — `script` ile pseudo-terminal wrapper uygulandı
 - [ ] Bot loglarının detaylı izlenmesi (`LOG_LEVEL=DEBUG` geçici)
 - [ ] `/help` komutunu güncelle (yeni komutlar)
 
