@@ -1,0 +1,26 @@
+"""Startup'ta bir kez yüklenir. Modül import sırası sorunu yok."""
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+
+class Config:
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN")
+    ALLOWED_USER_ID = int(os.getenv("ALLOWED_USER_ID", "0"))
+
+    REPO_ROOT = os.getenv("OPS_BOT_REPO_ROOT", os.getcwd())
+    TEST_MODE = os.getenv("OPS_BOT_TEST_MODE", "0").lower() in ("1", "true", "yes", "on")
+
+    # Test modunda timeout'ları kısalt (hızlı test için)
+    _timeout_default = 30 if TEST_MODE else 180
+    _timeout_ops = 60 if TEST_MODE else 300
+    _timeout_fix = 90 if TEST_MODE else 600
+    _timeout_db = 30 if TEST_MODE else 120
+
+    KIMI_TIMEOUT_DEFAULT = int(os.getenv("OPS_BOT_KIMI_TIMEOUT_DEFAULT_SECONDS", str(_timeout_default)))
+    KIMI_TIMEOUT_OPS = int(os.getenv("OPS_BOT_KIMI_TIMEOUT_OPS_SECONDS", str(_timeout_ops)))
+    KIMI_TIMEOUT_FIX = int(os.getenv("OPS_BOT_KIMI_TIMEOUT_FIX_SECONDS", str(_timeout_fix)))
+    KIMI_TIMEOUT_DATABASE = int(os.getenv("OPS_BOT_KIMI_TIMEOUT_DATABASE_SECONDS", str(_timeout_db)))
+
+    USE_SUDO = os.getenv("OPS_BOT_USE_SUDO", "1").lower() in ("1", "true", "yes", "on")

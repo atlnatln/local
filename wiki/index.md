@@ -68,7 +68,7 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 | Proje | Tip | Açıklama | Son Güncelleme |
 |-------|-----|----------|----------------|
-| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent | 2026-05-03 |
+| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (30 test) | 2026-05-03 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-02 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-01 |
 | [[anka]] | project | B2B veri servisi — Django + Next.js | 2026-05-01 |
@@ -78,6 +78,7 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 ## Recently Updated
 
+- [[ops-bot]] — Security prompt merge (explain+observe), deploy fix, 30 test suite (2026-05-03)
 - [[ops-bot]] — Tek beyin mimarisi, güvenlik filtreleri, tool limit, memory trim (2026-05-03)
 - [[ops-bot]] — V2 routing, timeout fixes, keywords_tr, embedding router aktifleştirildi (2026-05-03)
 - [[adr-002-sec-agent-daily-report-agent-router]] — Yeni ADR oluşturuldu (2026-05-02)

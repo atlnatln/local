@@ -1,0 +1,178 @@
+"""Pytest fixtures for ops-bot integration and unit tests."""
+from __future__ import annotations
+
+import os
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+import pytest_asyncio
+
+# Ensure repo root is on path for bot.* imports
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+# ---------------------------------------------------------------------------
+# Test constants
+# ---------------------------------------------------------------------------
+
+TEST_USER_ID = 123456789
+TEST_TELEGRAM_TOKEN = "test-token-12345"
+
+
+@pytest.fixture(scope="session", autouse=True)
+def env_patch():
+    """Patch environment for the entire test session."""
+    env = {
+        "TELEGRAM_TOKEN": TEST_TELEGRAM_TOKEN,
+        "ALLOWED_USER_ID": str(TEST_USER_ID),
+        "OPS_BOT_REPO_ROOT": os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "OPS_BOT_TEST_MODE": "true",
+        "OPS_BOT_USE_SUDO": "0",
+        "OPS_BOT_KIMI_TIMEOUT_DEFAULT_SECONDS": "30",
+        "OPS_BOT_KIMI_TIMEOUT_OPS_SECONDS": "60",
+        "OPS_BOT_KIMI_TIMEOUT_FIX_SECONDS": "90",
+        "OPS_BOT_KIMI_TIMEOUT_DATABASE_SECONDS": "30",
+    }
+    with patch.dict(os.environ, env, clear=False):
+        yield
+
+
+@pytest.fixture
+def test_user_id() -> int:
+    return TEST_USER_ID
+
+
+# ---------------------------------------------------------------------------
+# Telegram mock fixtures
+# ---------------------------------------------------------------------------
+
+@pytest_asyncio.fixture
+async def telegram_app():
+    """Build TelegramBot Application with mocked Bot API.
+
+    Yields a tuple (TelegramBot, Application).  The Application is
+    initialized on entry and shut down on exit.  All Bot network calls
+    are mocked so no real Telegram traffic is sent.
+    """
+    from bot.telegram import TelegramBot
+
+    tb = TelegramBot()
+    app = tb.build()
+
+    # Mock every network method we might hit.
+    # ExtBot is frozen by default — we temporarily disable freezing.
+    app.bot._frozen = False
+    app.bot.send_message = AsyncMock(return_value=MagicMock(message_id=1))
+    app.bot.delete_message = AsyncMock(return_value=True)
+    app.bot.edit_message_text = AsyncMock(return_value=MagicMock(message_id=1))
+    app.bot._frozen = True
+
+    # Skip real network initialization (getMe call) — we never talk to Telegram servers
+    from telegram import User
+
+    # Temporarily unfreeze so we can inject the cached bot user
+    app.bot._frozen = False
+    app.bot._bot_user = User(id=1, is_bot=True, first_name="TestBot", username="test_bot")
+    app.bot._initialized = True
+    app.bot._frozen = True
+
+    app.initialize = AsyncMock()
+    app.shutdown = AsyncMock()
+    app._initialized = True
+    yield tb, app
+
+
+def _make_update(payload: dict, bot) -> "Update":
+    """Helper: build a python-telegram-bot Update from a JSON-like dict."""
+    from telegram import Update
+
+    return Update.de_json(payload, bot)
+
+
+@pytest.fixture
+def mock_update_text(telegram_app):
+    """Factory fixture returning a callable that builds text-message Updates."""
+    _, app = telegram_app
+
+    def _factory(text: str, user_id: int = TEST_USER_ID) -> "Update":
+        return _make_update(
+            {
+                "update_id": 1,
+                "message": {
+                    "message_id": 1,
+                    "date": 1700000000,
+                    "chat": {"id": user_id, "type": "private"},
+                    "from": {
+                        "id": user_id,
+                        "is_bot": False,
+                        "first_name": "TestUser",
+                    },
+                    "text": text,
+                },
+            },
+            app.bot,
+        )
+
+    return _factory
+
+
+@pytest.fixture
+def mock_update_command(telegram_app):
+    """Factory fixture returning a callable that builds command Updates."""
+    _, app = telegram_app
+
+    def _factory(command: str, user_id: int = TEST_USER_ID) -> "Update":
+        # Command entities are required for CommandHandler to match
+        text = command
+        offset = 0
+        length = len(command)
+        return _make_update(
+            {
+                "update_id": 1,
+                "message": {
+                    "message_id": 1,
+                    "date": 1700000000,
+                    "chat": {"id": user_id, "type": "private"},
+                    "from": {
+                        "id": user_id,
+                        "is_bot": False,
+                        "first_name": "TestUser",
+                    },
+                    "text": text,
+                    "entities": [
+                        {
+                            "type": "bot_command",
+                            "offset": offset,
+                            "length": length,
+                        }
+                    ],
+                },
+            },
+            app.bot,
+        )
+
+    return _factory
+
+
+# ---------------------------------------------------------------------------
+# Router / low-level fixtures
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def bot_router():
+    from bot.router import BotRouter
+
+    return BotRouter()
+
+
+@pytest.fixture
+def acp_executor():
+    from bot.acp_executor import AcpExecutor
+
+    executor = AcpExecutor()
+    try:
+        yield executor
+    finally:
+        executor.close()

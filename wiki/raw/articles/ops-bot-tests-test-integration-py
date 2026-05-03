@@ -1,0 +1,145 @@
+"""Integration tests for the full Telegram → Router → ACP pipeline.
+
+These tests exercise the REAL kimi-cli ACP process but mock the Telegram
+Bot API so no network traffic is sent to Telegram servers.
+
+Mark slow tests with ``pytest.mark.slow`` so they can be skipped via::
+
+    pytest -m "not slow"
+"""
+from __future__ import annotations
+
+import pytest
+
+
+# ---------------------------------------------------------------------------
+# Smoke tests — fast, no kimi-cli involved
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_cmd_start(telegram_app, mock_update_command, test_user_id):
+    """/start should reply with a help text."""
+    _, app = telegram_app
+    update = mock_update_command("/start", user_id=test_user_id)
+
+    await app.process_update(update)
+
+    assert app.bot.send_message.called
+    call = app.bot.send_message.call_args
+    assert call.kwargs["chat_id"] == test_user_id
+    assert "Ops Bot V2" in call.kwargs["text"]
+
+
+@pytest.mark.asyncio
+async def test_cmd_end(telegram_app, mock_update_command, test_user_id):
+    """/end should clear legacy memory and reply."""
+    _, app = telegram_app
+    update = mock_update_command("/end", user_id=test_user_id)
+
+    await app.process_update(update)
+
+    assert app.bot.send_message.called
+    call = app.bot.send_message.call_args
+    assert call.kwargs["chat_id"] == test_user_id
+    assert "hafıza temizlendi" in call.kwargs["text"].lower()
+
+
+@pytest.mark.asyncio
+async def test_unauthorized_user_ignored(telegram_app, mock_update_text):
+    """Messages from unauthorized users should be silently ignored."""
+    _, app = telegram_app
+    update = mock_update_text("hello", user_id=999999999)
+
+    await app.process_update(update)
+
+    # Bot should never send a message for unauthorized users
+    for call in app.bot.send_message.call_args_list:
+        assert call.kwargs.get("chat_id") != 999999999
+
+
+@pytest.mark.asyncio
+async def test_explicit_agent_routing(telegram_app, mock_update_text, test_user_id):
+    """An explicit @agent tag should trigger the ACP executor path."""
+    _, app = telegram_app
+    update = mock_update_text("@docker hello", user_id=test_user_id)
+
+    await app.process_update(update)
+
+    # ACK + final reply (or error) = at least 1 send_message call
+    assert app.bot.send_message.called
+
+
+# ---------------------------------------------------------------------------
+# Slow tests — REAL kimi-cli ACP process is spawned
+# ---------------------------------------------------------------------------
+
+@pytest.mark.slow
+@pytest.mark.asyncio
+async def test_cmd_iptal(telegram_app, mock_update_command, test_user_id):
+    """/iptal should discard ACP sessions and clear memory."""
+    _, app = telegram_app
+    update = mock_update_command("/iptal", user_id=test_user_id)
+
+    await app.process_update(update)
+
+    assert app.bot.send_message.called
+    call = app.bot.send_message.call_args
+    assert call.kwargs["chat_id"] == test_user_id
+    assert "hafıza temizlendi" in call.kwargs["text"]
+
+
+@pytest.mark.slow
+@pytest.mark.asyncio
+async def test_e2e_docker_agent(telegram_app, mock_update_text, test_user_id):
+    """Send a real @docker query and verify kimi-cli produces a response.
+
+    This test spawns a genuine kimi-cli ACP subprocess, so it may take
+    10–30 seconds depending on model latency.
+    """
+    _, app = telegram_app
+    update = mock_update_text("@docker Merhaba, şu an çalışan container'ları listele", user_id=test_user_id)
+
+    await app.process_update(update)
+
+    # Pipeline verification: ACK + at least one follow-up (or error/timeout)
+    # Note: In test env ACP client may auto-reject risky shell commands,
+    # which results in an empty response — that's still a valid pipeline run.
+    calls = app.bot.send_message.call_args_list
+    assert len(calls) >= 1  # ACK must be sent
+
+    final_call = calls[-1]
+    text = final_call.kwargs.get("text", "")
+    # Response can be empty if permission was rejected or timed out.
+    # We only assert the pipeline didn't crash (no exception raised).
+
+
+@pytest.mark.slow
+@pytest.mark.asyncio
+async def test_e2e_security_agent(telegram_app, mock_update_text, test_user_id):
+    """Send a real @security query through the full pipeline."""
+    _, app = telegram_app
+    update = mock_update_text("@security Son birkaç saatin olay özetini ver", user_id=test_user_id)
+
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    assert len(calls) >= 2
+
+    final_text = calls[-1].kwargs.get("text", "")
+    assert len(final_text) > 0
+
+
+@pytest.mark.slow
+@pytest.mark.asyncio
+async def test_e2e_master_fallback(telegram_app, mock_update_text, test_user_id):
+    """A message without @agent should route to master and still get a reply."""
+    _, app = telegram_app
+    update = mock_update_text("Merhaba, bugün hava nasıl?", user_id=test_user_id)
+
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    assert len(calls) >= 2
+
+    final_text = calls[-1].kwargs.get("text", "")
+    assert len(final_text) > 0

@@ -1,0 +1,18 @@
+# Test environment for ops-bot
+# Source this before running tests:
+#   set -a && source .env.test && set +a
+
+TELEGRAM_TOKEN=test-token-12345
+ALLOWED_USER_ID=123456789
+
+OPS_BOT_REPO_ROOT=/home/akn/local/ops-bot
+OPS_BOT_TEST_MODE=true
+
+# Short timeouts for fast tests
+OPS_BOT_KIMI_TIMEOUT_DEFAULT_SECONDS=30
+OPS_BOT_KIMI_TIMEOUT_OPS_SECONDS=60
+OPS_BOT_KIMI_TIMEOUT_FIX_SECONDS=90
+OPS_BOT_KIMI_TIMEOUT_DATABASE_SECONDS=30
+
+# Disable sudo for tests (run kimi-cli directly)
+OPS_BOT_USE_SUDO=0

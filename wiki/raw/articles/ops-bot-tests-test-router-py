@@ -1,0 +1,129 @@
+"""Unit tests for bot/router.py — fast, no external deps."""
+from __future__ import annotations
+
+import pytest
+
+from bot.router import extract_explicit_agent, BotRouter
+
+
+class TestExtractExplicitAgent:
+    """Tests for the low-level regex-based agent extractor."""
+
+    def test_empty_query(self):
+        agent, cleaned = extract_explicit_agent("")
+        assert agent is None
+        assert cleaned == ""
+
+    def test_no_mention(self):
+        agent, cleaned = extract_explicit_agent("hello world")
+        assert agent is None
+        assert cleaned == "hello world"
+
+    def test_explicit_docker(self):
+        agent, cleaned = extract_explicit_agent("@docker list containers")
+        assert agent == "docker"
+        assert cleaned == "list containers"
+
+    def test_explicit_security(self):
+        agent, cleaned = extract_explicit_agent("@security analyze logs")
+        assert agent == "security"
+        assert cleaned == "analyze logs"
+
+    def test_explicit_monitor(self):
+        agent, cleaned = extract_explicit_agent("@monitor cpu usage")
+        assert agent == "monitor"
+        assert cleaned == "cpu usage"
+
+    def test_explicit_database(self):
+        agent, cleaned = extract_explicit_agent("@database show tables")
+        assert agent == "database"
+        assert cleaned == "show tables"
+
+    def test_explicit_incident(self):
+        agent, cleaned = extract_explicit_agent("@incident 502 error")
+        assert agent == "incident"
+        assert cleaned == "502 error"
+
+    def test_explicit_fix(self):
+        agent, cleaned = extract_explicit_agent("@fix bug in auth")
+        assert agent == "fix"
+        assert cleaned == "bug in auth"
+
+    def test_explicit_ip_query(self):
+        agent, cleaned = extract_explicit_agent("@ip-query 1.2.3.4")
+        assert agent == "ip-query"
+        assert cleaned == "1.2.3.4"
+
+    def test_explicit_forensic(self):
+        agent, cleaned = extract_explicit_agent("@forensic deep dive")
+        assert agent == "forensic"
+        assert cleaned == "deep dive"
+
+    def test_explicit_seo(self):
+        agent, cleaned = extract_explicit_agent("@seo sitemap check")
+        assert agent == "seo"
+        assert cleaned == "sitemap check"
+
+    def test_explicit_case_insensitive(self):
+        agent, cleaned = extract_explicit_agent("@DOCKER ps")
+        assert agent == "docker"
+        assert cleaned == "ps"
+
+    def test_explicit_with_hyphen(self):
+        agent, cleaned = extract_explicit_agent("@ip-query traffic")
+        assert agent == "ip-query"
+        assert cleaned == "traffic"
+
+    def test_ops_prefix_alias(self):
+        # ops-docker-agent maps back to docker
+        agent, cleaned = extract_explicit_agent("@ops-docker-agent restart nginx")
+        assert agent == "ops-docker-agent"
+        assert cleaned == "restart nginx"
+
+    def test_unknown_agent_ignored(self):
+        # Unknown agents are rejected and the raw text is preserved
+        agent, cleaned = extract_explicit_agent("@unknownagent do stuff")
+        assert agent is None
+        assert cleaned == "@unknownagent do stuff"
+
+    def test_multiple_mentions_all_stripped(self):
+        # The regex strips ALL @mentions from the query, not just the first
+        agent, cleaned = extract_explicit_agent("@docker ps @security logs")
+        assert agent == "docker"
+        assert cleaned == "ps logs"
+
+    def test_mention_in_middle(self):
+        agent, cleaned = extract_explicit_agent("please @monitor the server")
+        assert agent == "monitor"
+        assert cleaned == "please the server"
+
+    def test_mention_with_extra_spaces(self):
+        agent, cleaned = extract_explicit_agent("@docker    ps")
+        assert agent == "docker"
+        assert cleaned == "ps"
+
+
+class TestBotRouter:
+    """Tests for the BotRouter.select high-level API."""
+
+    def test_select_explicit(self, bot_router):
+        agent, method, confidence = bot_router.select("@docker ps", user_id=1)
+        assert agent == "docker"
+        assert method == "explicit"
+        assert confidence == 1.0
+
+    def test_select_master_fallback(self, bot_router):
+        agent, method, confidence = bot_router.select("hello there", user_id=1)
+        assert agent is None
+        assert method == "master"
+        assert confidence == 1.0
+
+    def test_select_explicit_security(self, bot_router):
+        agent, method, confidence = bot_router.select("@security analyze", user_id=1)
+        assert agent == "security"
+        assert method == "explicit"
+
+    def test_select_with_mention_only(self, bot_router):
+        agent, method, confidence = bot_router.select("@monitor", user_id=1)
+        assert agent == "monitor"
+        assert method == "explicit"

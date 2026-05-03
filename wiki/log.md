@@ -1248,3 +1248,21 @@ tags: [meta, log]
 - Pages updated: [[ops-bot]]
 - Diff summary: Industry-standard documentation overhaul. README rewritten with architecture/setup/usage. .env.example synced to V2 ACP reality. AGENTS.md fixed /end command and added test step. CHANGELOG.md created (Keep a Changelog format). agent-transformation-plan.md marked as historical archive.
 - Lint: 7/10 passing, 3 warnings (page size, tag audit, raw existence — pre-existing)
+## [2026-05-03 16:10] ingest | ops-bot | d28a8db | 1
+- Files: A:5 M:3 R:2 (.env.test, pytest.ini, tests/*, bot/config.py, deploy.sh, agents/prompts/ops-security-agent.md, ops-security-explain.md → _archive, ops-security-observe.md → _archive)
+- Pages updated: [[ops-bot]]
+- Diff summary: Security prompt unified (explain+observe → single ops-security-agent.md, ~40KB data recovery). Deploy script fixed to include bot/, agents/, tests/, docs/. Test suite added (30 tests, pytest-asyncio). Raw archive updated with 8 new source snapshots.
+- Lint: pending
+- Revert: git checkout 644ef939 -- wiki/
+## [2026-05-03 16:11] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
+- Raw existence: 4
+- Log size: 108 entries
+
