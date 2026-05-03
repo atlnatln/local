@@ -305,7 +305,7 @@ if [ "$DEPLOY_BACKEND" = true ]; then
         for svc in mathlock-backend.service mathlock-celery.service; do
             if [ -f "$PROJECT_DIR/docs/systemd/$svc" ]; then
                 scp "$PROJECT_DIR/docs/systemd/$svc" "${VPS_HOST}:/tmp/$svc" 2>/dev/null
-                ssh "$VPS_HOST" "sudo cp /tmp/$svc /etc/systemd/system/$svc && rm /tmp/$svc" 2>/dev/null && \
+                ssh "$VPS_HOST" "sed -i 's|/home/akn/local/projects/mathlock-play|/home/akn/vps/projects/mathlock-play|g' /tmp/$svc && sudo cp /tmp/$svc /etc/systemd/system/$svc && rm /tmp/$svc" 2>/dev/null && \
                     log_success "systemd $svc güncellendi" || log_warning "$svc güncellenemedi"
             fi
         done

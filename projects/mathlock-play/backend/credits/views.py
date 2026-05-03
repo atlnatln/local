@@ -10,11 +10,11 @@ from datetime import timedelta
 from pathlib import Path
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.decorators import api_view, throttle_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from django.utils.translation import gettext_lazy as _
@@ -22,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from .models import (ChildProfile, CreditBalance, CreditPackage,
                      Device, LevelSet, PurchaseRecord, Question, QuestionSet,
                      RenewalLock, UserQuestionProgress)
+from .authentication import DeviceTokenSigner
 from .google_play import verify_purchase
 from .tasks import generate_level_set, generate_question_set
 
@@ -62,6 +63,9 @@ _LEVELS_COUNT = 12  # Her sette 12 seviye
 
 # Yenileme kilidi TTL: 20 dakika (AI üretimi 10 dk + tampon)
 _RENEWAL_LOCK_TTL = 20 * 60  # saniye
+
+# Satın alma doğrulama: test token prefix (sadece DEBUG=True iken geçerli)
+DEBUG_TOKEN_PREFIX = "DEBUG_TEST_TOKEN_"
 
 # Dönem bazlı soru sayıları
 _QUESTION_COUNTS = {
@@ -358,67 +362,6 @@ def _refresh_weekly_report(child) -> None:
         logger.warning("Haftalık rapor güncellenemedi (child=%s): %s", child.name, e)
 
 
-def _auto_renew_questions(child_pk: int, credit_balance_pk: int, is_free: bool):
-    """Background thread: matematik soru seti yenile."""
-    from django.db import connection
-    try:
-        child = ChildProfile.objects.get(pk=child_pk)
-        child_stats = _build_child_stats(child)
-        questions = _generate_via_kimi(child_stats, child.education_period)
-
-        latest = QuestionSet.objects.filter(child=child).order_by('-version').first()
-        next_version = (latest.version + 1) if latest else 1
-
-        QuestionSet.objects.create(
-            child=child,
-            version=next_version,
-            questions_json=questions,
-            is_ai_generated=True,
-            credit_used=not is_free,
-        )
-        logger.info(
-            "Otomatik soru yenileme başarılı: child=%s, v%d, %d soru",
-            child.name, next_version, len(questions)
-        )
-    except Exception as exc:
-        logger.error("Otomatik soru yenileme hatası: %s", exc)
-        _refund_credit(credit_balance_pk, is_free)
-    finally:
-        _release_renewal_lock(child_pk, 'questions')
-        from django.db import connection as _conn
-        _conn.close()
-
-
-def _auto_renew_levels(child_pk: int, credit_balance_pk: int, is_free: bool, level_stats: dict):
-    """Background thread: bulmaca seviye seti yenile."""
-    try:
-        child = ChildProfile.objects.get(pk=child_pk)
-        levels = _generate_levels_via_kimi(level_stats, child.education_period)
-
-        latest = LevelSet.objects.filter(child=child).order_by('-version').first()
-        next_version = (latest.version + 1) if latest else 1
-
-        LevelSet.objects.create(
-            child=child,
-            version=next_version,
-            levels_json=levels,
-            is_ai_generated=True,
-            credit_used=not is_free,
-        )
-        logger.info(
-            "Otomatik seviye yenileme başarılı: child=%s, v%d, %d seviye",
-            child.name, next_version, len(levels)
-        )
-    except Exception as exc:
-        logger.error("Otomatik seviye yenileme hatası: %s", exc)
-        if credit_balance_pk:
-            _refund_credit(credit_balance_pk, is_free)
-    finally:
-        _release_renewal_lock(child_pk, 'levels')
-        from django.db import connection as _conn
-        _conn.close()
-
-
 def _run_in_background(fn, *args, **kwargs):
     """Django ORM ile güvenli daemon thread başlat."""
     def wrapper():
@@ -491,11 +434,10 @@ def _deduct_credit_and_lock(child_pk: int, device, content_type: str) -> tuple:
             else:
                 # Stale lock (race condition sonrası), sil ve devam et
                 lock.delete()
-            logger.info(
-                "Yenileme zaten devam ediyor, atlandı: child_pk=%d, type=%s",
-                child_pk, content_type,
-            )
-            return False, False, 0, 0
+                logger.info(
+                    "Stale kilit silindi, devam ediliyor: child_pk=%d, type=%s",
+                    child_pk, content_type,
+                )
 
         # Kilidi oluştur
         RenewalLock.objects.create(
@@ -602,6 +544,7 @@ class PurchaseThrottle(AnonRateThrottle):
 # ─── Cihaz Kayıt ────────────────────────────────────────────────────────────
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 @throttle_classes([RegisterThrottle])
 def register_device(request):
     """
@@ -642,8 +585,12 @@ def register_device(request):
     if not created:
         device.save(update_fields=['last_seen'])
 
+    signer = DeviceTokenSigner()
+    access_token = signer.sign(str(device.device_token))
+
     return Response({
         'device_token': str(device.device_token),
+        'access_token': access_token,
         'credits': credit_balance.balance,
         'free_set_used': credit_balance.free_set_used,
         'child_name': child.name,
@@ -677,29 +624,21 @@ def verify_purchase_view(request):
     }
     Response: { "success": true, "credits_added": 10, "total_credits": 10 }
     """
-    device_token = request.data.get('device_token')
+    device = request.user
     purchase_token = request.data.get('purchase_token')
     product_id = request.data.get('product_id')
 
-    if not all([device_token, purchase_token, product_id]):
+    if not all([purchase_token, product_id]):
         return Response(
             {'error': _('purchase_fields_required')},
             status=status.HTTP_400_BAD_REQUEST
         )
-
-    # Cihaz doğrulama
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     # Ürün ID → kredi miktarı (erken kontrol — DB'ye gitmeden önce geçersiz ürünü reddet)
     credits_map = getattr(settings, 'CREDITS_PER_PURCHASE', {})
     credits_to_add = credits_map.get(product_id, 0)
     if credits_to_add == 0:
         return Response({'error': _('invalid_product_id').format(product_id=product_id)}, status=status.HTTP_400_BAD_REQUEST)
-
-    DEBUG_TOKEN_PREFIX = "DEBUG_TEST_TOKEN_"
 
     # ─── Tek atomic blok: race condition'ı önler ──────────────────────────
     # select_for_update(): aynı token'ın eşzamanlı işlenmesini DB seviyesinde kilitler.
@@ -823,8 +762,6 @@ def _check_refunded_purchases(device):
       - purchase_state=-1 veya last_verified_at 24 saatten eskiyse tekrar doğrula
       - purchase_state=1 (canceled) ise krediyi düşür, verified=False yap
     """
-    from datetime import timedelta
-
     for record in device.purchases.filter(verified=True):
         needs_check = (
             record.purchase_state == -1
@@ -865,17 +802,10 @@ def get_credits(request):
     """
     Kredi bakiyesini sorgula.
 
-    GET /api/mathlock/credits/?device_token=uuid
+    GET /api/mathlock/credits/
     Response: { "credits": 10, "total_purchased": 10, "total_used": 0, "free_set_used": false }
     """
-    device_token = request.query_params.get('device_token')
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
+    device = request.user
 
     _check_refunded_purchases(device)
 
@@ -906,17 +836,9 @@ def use_credit(request):
         "set_version": 2
     }
     """
-    device_token = request.data.get('device_token')
+    device = request.user
     child_name = _sanitize_child_name(request.data.get('child_name', _('default_child_name')))
     stats = request.data.get('stats', {})
-
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, name=child_name)
@@ -966,7 +888,7 @@ def use_credit(request):
                 cb.total_used -= 1
                 cb.save(update_fields=['balance', 'total_used', 'updated_at'])
         return Response(
-            {'error': f'Soru üretimi başarısız: {exc}', 'credits_refunded': True},
+            {'error': _('question_generation_failed'), 'credits_refunded': True},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
 
@@ -1006,24 +928,15 @@ def upload_stats(request):
 
     POST /api/mathlock/stats/
     Body: {
-        "device_token": "uuid",
         "child_name": "Çocuk",
         "question_version": 1,
         "stats": { ... StatsTracker formatında ... }
     }
     """
-    device_token = request.data.get('device_token')
+    device = request.user
     child_name = _sanitize_child_name(request.data.get('child_name', _('default_child_name')))
     stats = request.data.get('stats', {})
     question_version = request.data.get('question_version', 0)
-
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, name=child_name)
@@ -1083,6 +996,7 @@ def upload_stats(request):
 # ─── Sağlık Kontrolü ────────────────────────────────────────────────────────
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def health(request):
     """GET /api/mathlock/health/"""
     return Response({'status': 'ok', 'service': 'mathlock-backend'})
@@ -1091,6 +1005,7 @@ def health(request):
 # ─── Dinamik Paket Listesi ───────────────────────────────────────────────────
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_packages(request):
     """
     Güncel kredi paket listesini döndür.
@@ -1159,14 +1074,12 @@ def register_email(request):
     Cihaza e-posta bağla — kredi satın almak için gerekli.
 
     POST /api/mathlock/auth/register-email/
-    Body: { "device_token": "uuid", "email": "user@example.com" }
+    Body: { "email": "user@example.com" }
     Response: { "success": true, "email": "user@example.com" }
     """
-    device_token = request.data.get('device_token')
+    device = request.user
     email = request.data.get('email', '').strip().lower()
 
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
     if not email:
         return Response({'error': _('email_required')}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -1175,11 +1088,6 @@ def register_email(request):
         return Response({'error': _('invalid_email_format')}, status=status.HTTP_400_BAD_REQUEST)
     if len(email) > 254:
         return Response({'error': _('email_too_long')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     # Email zaten başka bir cihazda kullanılıyor mu?
     # Eğer varsa → veriyi eski cihazdan yeni cihaza transfer et (hesap kurtarma)
@@ -1268,7 +1176,7 @@ def register_email(request):
     credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
 
     logger.info("Email kaydedildi: device=%s, email=%s, recovered=%s",
-                device.installation_id[:12], email, recovered)
+                device.installation_id[:12], email[:3] + "***@" + email.split("@")[-1], recovered)
     return Response({
         'success': True,
         'email': email,
@@ -1305,7 +1213,7 @@ def get_questions(request):
     """
     Cihazın erişebildiği soruları döndür: ücretsiz batch 0 + AI per-user setleri.
 
-    GET /api/mathlock/questions/?device_token=uuid
+    GET /api/mathlock/questions/
     Response: {
         "questions": [ { id, text, answer, type, difficulty, hint, batch, solved, source } ],
         "total_questions": 100,
@@ -1314,21 +1222,17 @@ def get_questions(request):
         "ai_sets": 2
     }
     """
-    device_token = request.query_params.get('device_token')
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
+    device = request.user
 
     question_list = []
 
     # Aktif çocuğu belirle (tüm sorgularda kullanılacak)
     child_id = request.query_params.get('child_id')
     if child_id:
-        child = ChildProfile.objects.filter(device=device, id=child_id).first()
+        try:
+            child = device.children.get(id=child_id)
+        except ChildProfile.DoesNotExist:
+            return Response({'error': _('child_not_found')}, status=status.HTTP_404_NOT_FOUND)
     else:
         child = device.children.filter(is_active=True).first() or device.children.first()
 
@@ -1400,17 +1304,14 @@ def update_progress(request):
 
     POST /api/mathlock/questions/progress/
     Body: {
-        "device_token": "uuid",
         "solved_questions": [1, 3, 7, 1002, 1005],  // global ID'ler
         "reset_rotation": false
     }
     """
-    device_token = request.data.get('device_token')
+    device = request.user
     solved_ids = request.data.get('solved_questions', [])
     reset_rotation = request.data.get('reset_rotation', False)
 
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
     if not isinstance(solved_ids, list):
         return Response({'error': _('solved_questions_must_be_list')}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -1419,15 +1320,13 @@ def update_progress(request):
     except (ValueError, TypeError):
         return Response({'error': _('invalid_solved_questions')}, status=status.HTTP_400_BAD_REQUEST)
 
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
-
     # child_id varsa onu kullan, yoksa aktif profili bul
     child_id_param = request.data.get('child_id')
     if child_id_param:
-        _target_child = ChildProfile.objects.filter(device=device, id=child_id_param).first()
+        try:
+            _target_child = device.children.get(id=child_id_param)
+        except ChildProfile.DoesNotExist:
+            return Response({'error': _('child_not_found')}, status=status.HTTP_404_NOT_FOUND)
     else:
         _target_child = device.children.filter(is_active=True).first() or device.children.first()
 
@@ -1544,21 +1443,14 @@ def update_progress(request):
 @api_view(['GET', 'POST'])
 def children_list(request):
     """
-    GET  /api/mathlock/children/?device_token=uuid
+    GET  /api/mathlock/children/
          Cihaza bağlı tüm çocuk profillerini listele.
 
     POST /api/mathlock/children/
          Yeni çocuk profili oluştur.
-         Body: { "device_token": "uuid", "name": "Ali", "education_period": "sinif_1" }
+         Body: { "name": "Ali", "education_period": "sinif_1" }
     """
-    device_token = request.data.get('device_token') or request.query_params.get('device_token')
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
+    device = request.user
 
     if request.method == 'GET':
         children = device.children.all().order_by('-is_active', 'name')
@@ -1621,23 +1513,18 @@ def children_detail(request):
     """
     PUT  /api/mathlock/children/detail/
          Çocuk profilini güncelle (isim, dönem, aktif profil seç).
-         Body: { "device_token": "uuid", "name": "Ali",
+         Body: { "name": "Ali",
                  "new_name": "Veli", "education_period": "sinif_3", "set_active": true }
 
     DELETE /api/mathlock/children/detail/
          Çocuk profilini sil.
-         Body: { "device_token": "uuid", "name": "Ali" }
+         Body: { "name": "Ali" }
     """
-    device_token = request.data.get('device_token') or request.query_params.get('device_token')
+    device = request.user
     child_id = request.query_params.get('child_id') or request.data.get('child_id')
 
-    if not device_token or not child_id:
-        return Response({'error': _('device_token_and_child_id_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
+    if not child_id:
+        return Response({'error': _('child_id_required')}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         child = ChildProfile.objects.get(device=device, id=child_id)
@@ -1704,7 +1591,7 @@ def child_report(request):
     """
     Çocuğun performans raporunu döndür.
 
-    GET /api/mathlock/children/report/?device_token=uuid&child_name=Ali
+    GET /api/mathlock/children/report/?child_name=Ali
     Response: {
         "child": { name, education_period, accuracy, ... },
         "summary": { ... },
@@ -1713,16 +1600,8 @@ def child_report(request):
         "daily_history": [ ... ]
     }
     """
-    device_token = request.query_params.get('device_token')
+    device = request.user
     child_name = request.query_params.get('child_name', _('default_child_name'))
-
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, name=child_name)
@@ -1798,18 +1677,10 @@ def stats_history(request):
     """
     Çocuğun günlük/haftalık istatistik geçmişini döndür (grafik verisi).
 
-    GET /api/mathlock/children/stats-history/?device_token=uuid&child_name=Ali
+    GET /api/mathlock/children/stats-history/?child_name=Ali
     """
-    device_token = request.query_params.get('device_token')
+    device = request.user
     child_name = request.query_params.get('child_name', _('default_child_name'))
-
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         child = ChildProfile.objects.get(device=device, name=child_name)
@@ -1865,7 +1736,7 @@ def get_levels(request):
     Çocuğun mevcut bulmaca seviye setini döndür.
     İlk istekte static levels.json'dan kişisel LevelSet oluşturulur.
 
-    GET /api/mathlock/levels/?device_token=uuid[&child_id=N]
+    GET /api/mathlock/levels/[?child_id=N]
     Response: {
         "levels": [...],
         "version": 1,
@@ -1875,14 +1746,7 @@ def get_levels(request):
         "completed_count": 3
     }
     """
-    device_token = request.query_params.get('device_token')
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
+    device = request.user
 
     child_id = request.query_params.get('child_id')
     if child_id:
@@ -1951,7 +1815,6 @@ def update_level_progress(request):
 
     POST /api/mathlock/levels/progress/
     Body: {
-        "device_token": "uuid",
         "child_id": 1,
         "set_id": 5,
         "completed_level_ids": [1, 2, ..., 12],
@@ -1966,14 +1829,7 @@ def update_level_progress(request):
         "credits_remaining": 4
     }
     """
-    device_token = request.data.get('device_token')
-    if not device_token:
-        return Response({'error': _('device_token_required')}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        device = Device.objects.get(device_token=device_token)
-    except (Device.DoesNotExist, ValidationError):
-        return Response({'error': _('invalid_device_token')}, status=status.HTTP_404_NOT_FOUND)
+    device = request.user
 
     child_id = request.data.get('child_id')
     if child_id:
@@ -2169,7 +2025,6 @@ def job_status(request, job_id):
     Response: { "state": "PENDING"|"SUCCESS"|"FAILURE", "result": {...} }
     """
     from celery.result import AsyncResult
-    from .tasks import generate_level_set, generate_question_set
 
     result = AsyncResult(job_id)
     response = {'state': result.state}

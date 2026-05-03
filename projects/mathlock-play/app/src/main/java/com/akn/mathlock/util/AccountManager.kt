@@ -59,7 +59,7 @@ class AccountManager(
      * Cihazı VPS'e kaydet ve device_token al.
      * Daha önce kaydedildiyse mevcut token'ı döndürür.
      * IO thread'den çağır.
-     * @return device_token veya null (ağ hatası)
+     * @return access_token (imzalı) veya null (ağ hatası)
      */
     fun getOrRegister(): String? {
         val existing = getAccessToken()
@@ -97,8 +97,8 @@ class AccountManager(
                         }
                     }
                 }
-                Log.d(TAG, "Cihaz kaydedildi: token=${token.take(8)}...")
-                token
+                Log.d(TAG, "Cihaz kaydedildi: accessToken=${accessToken.take(8)}...")
+                accessToken
             } else {
                 Log.w(TAG, "Cihaz kaydı başarısız: ${response.statusCode}")
                 null
