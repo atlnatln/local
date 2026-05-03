@@ -28,7 +28,7 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | Backend | Django + Django REST Framework |
 | Database | PostgreSQL (Docker) |
 | Cache/Queue | Redis (Docker) |
-| AI Pipeline | kimi-cli (`kimi-for-coding`) |
+| AI Pipeline | [[kimi-code-cli|kimi-cli]] (`kimi-for-coding`) |
 | Deploy | systemd servisleri (host-based) |
 | Crash Reporting | Firebase Crashlytics 18.6.4 |
 
@@ -37,7 +37,7 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 ```
 Telefon ← VPS: questions.json, levels.json, topics.json
 Çocuk 50 soru çözer → stats.json VPS'e yüklenir
-VPS: AI (kimi-cli) yeni soru seti üretir → validate → DB
+VPS: AI ([[kimi-code-cli|kimi-cli]]) yeni soru seti üretir → validate → DB
 Telefon yeni seti indirir
 ```
 

@@ -70,6 +70,10 @@ curl -f http://localhost:8080/nginx-health
 
 Detaylı nginx, SSL, log ve monitoring yapılandırması için ilgili konsept sayfalarına bakınız.
 
+## Decisions
+
+- [[adr-001-monorepo-hybrid-structure]] — Monorepo + ayrı repo karışık yapısı kararı
+
 ## Recent Commits
 
 - (monorepo içinde izleniyor)

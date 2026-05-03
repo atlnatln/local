@@ -50,6 +50,10 @@ type(scope): description
 - **post-commit**: Commit sonrası `wiki/.pending` marker dosyasına kayıt yazar.
 - Konumlar: `local/.git/hooks/post-commit`, `ops-bot/.git/hooks/post-commit`, `webimar/.git/hooks/post-commit`
 
+## Related Decisions
+
+- [[adr-001-monorepo-hybrid-structure]] — Monorepo + ayrı repo karışık yapısı kararı
+
 ## İlgili Sayfalar
 
 - [[proactive-wiki]] — Git commit sonrası otomatik wiki güncelleme önerisi

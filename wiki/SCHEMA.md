@@ -1,7 +1,7 @@
 ---
 title: "SCHEMA"
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-05-02"
 type: index
 tags: [meta, guide]
 related: []
@@ -35,9 +35,7 @@ related: []
 │   ├── proactive-wiki.md
 │   └── ...
 ├── decisions/
-│   ├── adr-001-vps-rename-local.md
-│   ├── adr-002-mathlock-systemd.md
-│   └── ...
+│   └── adr-NNN-kisa-baslik.md  # Mimari karar kayitlari (ADR)
 ├── raw/
 │   └── articles/       # Unprocessed source material
 ├── _archive/           # Soft-deleted pages
@@ -52,22 +50,22 @@ related: []
 All tags are flat strings. Namespaces below are organizational conventions only.
 
 ### Projects
-`ops-bot` `webimar` `anka` `mathlock-play` `telegram-kimi` `sayi-yolculugu` `infrastructure`
+`ops-bot` `webimar` `anka` `mathlock-play` `telegram-kimi` `sayi-yolculugu` `infrastructure` `sec-agent`
 
 Project tags bind a note to a specific codebase or service.
 
 ### Stack
-`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript`
+`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript` `kimi-cli` `tool`
 
 Technology tags describe the toolchain a note touches.
 
 ### Concepts
-`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging`
+`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging` `agent` `ai`
 
 Domain tags classify the subject matter independent of any project.
 
 ### Meta
-`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot`
+`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot` `reference`
 
 Lifecycle tags track note maturity and provenance.
 
@@ -125,4 +123,6 @@ status: "active"       # active | stale | archived | needs-review
 | `related` | Yes | Array of `\[\[PageName\]\]` wikilinks to related pages |
 | `sources` | No | Paths to raw archived source files |
 | `contested` | No | Set `true` when conflicting info exists |
-| `st
+| `status` | No | Page state: `active`, `stale`, `archived`, `needs-review`. For `type: decision`: `Active`, `Superseded`, `Deprecated` |
+| `supersedes` | No | For ADR only. Wikilink to the decision this replaces. Example: `adr-XXX-old-title` |
+| `superseded_by` | No | For ADR only. Wikilink to the decision that replaces this. Example: `adr-YYY-new-title` |

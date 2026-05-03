@@ -1,7 +1,7 @@
 ---
 title: "Telegram Kimi"
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-05-02"
 type: project
 tags: [telegram-kimi, python, telegram-bot, systemd, security]
 related:
@@ -15,11 +15,11 @@ sources:
 
 # [[Telegram-Kimi]]
 
-VPS'deki [Kimi Code CLI](https://github.com/MoonshotAI/kimi-cli)'yi Telegram üzerinden kullanmanızı sağlayan köprü botudur. Yetkili kullanıcılar doğrudan mesajlaşarak kimi ile sohbet edebilir, dosya gönderebilir ve context/token kullanımını izleyebilir.
+VPS'deki [[kimi-code-cli|Kimi Code CLI]]'yi Telegram üzerinden kullanmanızı sağlayan köprü botudur. Yetkili kullanıcılar doğrudan mesajlaşarak kimi ile sohbet edebilir, dosya gönderebilir ve context/token kullanımını izleyebilir.
 
 ## Purpose
 
-Telegram botu aracılığıyla Kimi CLI'ye uzaktan erişim sağlar. Özellikle mobil cihazlardan VPS'teki AI asistanına doğal dilde komut göndermeyi mümkün kılar. Uzun yanıtlar otomatik parçalanır, dosya okuma desteği vardır.
+Telegram botu aracılığıyla [[kimi-code-cli|Kimi CLI]]'ye uzaktan erişim sağlar. Özellikle mobil cihazlardan VPS'teki AI asistanına doğal dilde komut göndermeyi mümkün kılar. Uzun yanıtlar otomatik parçalanır, dosya okuma desteği vardır.
 
 ## Stack
 
@@ -36,14 +36,14 @@ Telegram botu aracılığıyla Kimi CLI'ye uzaktan erişim sağlar. Özellikle m
 
 | Dosya | Görev |
 |-------|-------|
-| `projects/telegram-kimi/bot.py` | Async Telegram bot (2399 satır) |
+| `projects/telegram-kimi/bot.py` | Async Telegram bot (676 satır) |
 | `projects/telegram-kimi/acp_client.py` | ACP JSON-RPC stdio client |
 | `projects/telegram-kimi/config.py` | Ortam değişkenleri yönetimi |
 | `projects/telegram-kimi/systemd/telegram-kimi.service` | systemd unit dosyası |
 
 ## ACP Entegrasyonu
 
-Bot, Kimi CLI'nin `kimi acp` modunu kullanır. Akış:
+Bot, [[kimi-code-cli|Kimi CLI]]'nin `kimi acp` modunu kullanır. Akış:
 
 ```
 initialize → session/new → session/prompt
@@ -71,6 +71,7 @@ session/request_permission: InlineKeyboard (✅ Onayla / ❌ Reddet)
 - `.txt` dosya okuma (max 1MB / 30K karakter)
 - `.xlsx`, `.xlsm`, `.xls` — Sheet isimleri, satır/sütun, ilk 20 satır
 - ````vba` blokları otomatik `.vba` dosyası olarak gönderilir
+- `.png`, `.jpg` fotoğraflar (caption ile birlikte gönderilir)
 
 ## Context & Token Takibi
 

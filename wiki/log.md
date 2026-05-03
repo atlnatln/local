@@ -680,3 +680,518 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 63 entries
 
+## [2026-05-02 03:25] lint | 9/10
+- Orphan pages: 0
+- Broken links: 2
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 64 entries
+
+## [2026-05-02 03:25] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 65 entries
+
+## [2026-05-02 03:35] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 66 entries
+
+
+## [2026-05-02 03:30] decision | adr-001 | infrastructure
+- Type: new-adr
+- Page: [[adr-001-monorepo-hybrid-structure]]
+- Status: Active
+- Scope: infrastructure, git-workflow
+- Summary: Monorepo + ayrı repo karışık yapısı kararı. Büyük projeler (ops-bot, webimar) ayrı repo; küçük projeler ve altyapı tek monorepo altında.
+## [2026-05-02 03:48] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 68 entries
+
+## [2026-05-02 03:48] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 69 entries
+
+## [2026-05-02 03:54] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 70 entries
+
+## [2026-05-02 12:08] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 71 entries
+
+
+## [2026-05-02 12:09] ingest | local | e2a6cc7 | 26
+- Files: A:9 M:16 D:0 (wiki docs + telegram-kimi code)
+- Pages created: [[sayi-yolculugu]], [[telegram-kimi]], [[git-workflow]], [[log-management]], [[monitoring]], [[nginx-routing]], [[ssl-automation]]
+- Pages updated: [[index]], [[system-overview]], [[infrastructure]], [[mathlock-play]], [[ops-bot]], [[webimar]], [[proactive-wiki]], [[deployment]], [[README]], [[SCHEMA]]
+- Pages archived: —
+- Diff summary: Incremental ingest. telegram-kimi bot.py and PLAN.md updated (local/ssh-tt mode, photo support). Wiki concepts and project pages synced from monorepo.
+- Lint: 10/10 passing
+## [2026-05-02 12:08] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 73 entries
+
+2026-05-02 — concept: [[security-ai-reporting]] eklendi. sec-agent günlük rapor → kimi-cli AI analizi → Telegram bildirim akışı dökümante edildi. (projects/ops-bot.md, index.md güncellendi)
+## [2026-05-02 14:13] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 2
+- Log size: 74 entries
+
+## [2026-05-02 14:14] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 75 entries
+
+
+## [2026-05-02 19:31] update | ops-bot | vps-deploy-dizini | runtime
+- Sayfa: [[ops-bot]]
+- Değişiklik: VPS Dizin Yapısı ve Troubleshooting bölümleri eklendi
+- Sebep: `/home/akn/local/ops-bot/` silinmişti, systemd servisi `Result: resources` ile başlayamıyordu
+- Çözüm: Eski `local/ops-bot/data/` dosyaları `vps/ops-bot/data/` altına kopyalandı; `/home/akn/local/ops-bot` symlink olarak `/home/akn/vps/ops-bot`'a bağlandı
+- Servis: `ops-bot.service` `active (running)` — Telegram token doğrulandı, Application started
+- Kaynak: `systemd/ops-bot.service` incelemesi + VPS shell komutları + deploy script davranışı
+## [2026-05-02 19:35] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 77 entries
+
+
+## [2026-05-02 19:35] create | sec-agent | yeni-proje-sayfasi
+- Sayfa: [[sec-agent]] oluşturuldu
+- Sayfa: [[ops-bot]] güncellendi (Security bölümü kısaltıldı, sec-agent wikilink eklendi)
+- Sayfa: [[index]] güncellendi (sec-agent Projects tablosuna eklendi)
+- İçerik: Pipeline mimarisi, VPS dizin yapısı (deploy vs /opt), components, guardrails, systemd servisleri, resource limits, operations, troubleshooting
+- Kaynak: VPS `/opt/sec-agent/` incelemesi, yerel `ops-bot/sec-agent/` yapısı, `move-sec-agent-to-opt.sh`, systemd unit dosyaları
+## [2026-05-02 19:42] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 79 entries
+
+
+## [2026-05-02 19:45] update | sec-agent | normal-kullanici-false-positive
+- Sayfa: [[sec-agent]] güncellendi
+- Değişiklik: Configuration tablosuna scoring ve thresholds satırları eklendi; Troubleshooting bölümüne "Normal kullanıcı yüksek skorla engellendi" case'i eklendi
+- Runtime düzeltmeleri:
+  - `config/scoring.yaml`: high_volume_threshold 500→5000, high_volume 2→0.5
+  - `config/agent.yaml`: decay.points_per_hour 10.0→50.0
+  - `config/thresholds.yaml`: persistence_score_threshold 500→2000
+  - `config/ignore.yaml`: 188.132.132.225/32 eklendi
+  - UFW + iptables'dan 188.132.132.225 kaldırıldı
+- Sebep: 62,398 event atanmış normal kullanıcı, tüm flag'ler false iken skor 9750+ olmuştu. scorer.py high_volume mantığı event sayısına bakıyordu, flag'e değil.
+- Kaynak: VPS `/opt/sec-agent/` incelemesi, events.jsonl analizi, engine/scorer.py kod incelemesi
+## [2026-05-02 19:50] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 81 entries
+
+
+## [2026-05-02 19:50] update | sec-agent | whitelist-yaklasimi-kaldirildi
+- Sayfa: [[sec-agent]] güncellendi
+- Değişiklik: Troubleshooting bölümünde "Bloklanmaması gereken IP engellendi" case'i yeniden yazıldı
+- Prensip eklendi: "Yanlış block'lar whitelist'e çözüm değildir. Root cause sistem ayarlarındadır."
+- Normal kullanıcı case'inde "Whitelist'e ekle" adımı kaldırıldı; yerine "Aktif block'u kaldır + config düzelt" önerisi kondu
+- Runtime: `config/ignore.yaml`'dan 188.132.132.225/32 kaldırıldı (VPS + yerel repo)
+- Kaynak: Kullanıcı geri bildirimi — IP bazlı workaround yerine sistematik düzeltme prensibi
+## [2026-05-02 19:53] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 83 entries
+
+
+## [2026-05-02 19:55] update | adr-002 | host-duzeyi-kimi-cli
+- Sayfa: [[adr-002-sec-agent-daily-report-agent-router]] güncellendi
+- Değişiklik: Yürütme modeline "kimi-cli host düzeyinde çalışır" kısıtlaması eklendi
+- Consequences/Riskler bölümlerine host düzeyinde çalışmanın etkileri eklendi
+- VPS doğrulaması: `/home/akn/.local/bin/kimi` ve `/home/akn/.local/bin/kimi-cli` symlink'leri mevcut
+- Kaynak: Kullanıcı geri bildirimi — kimi-cli'nin container/izole ortam yerine host düzeyinde çalışması zorunluluğu
+## [2026-05-02 20:02] lint | 7/10
+- Orphan pages: 1 ([[adr-002-sec-agent-daily-report-agent-router]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 2 (ai, sec-agent)
+- Raw existence: 0
+- Log size: 85 entries
+
+## [2026-05-02 20:02] lint | 7/10
+- Orphan pages: 1 ([[adr-002-sec-agent-daily-report-agent-router]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 2 (ai, sec-agent)
+- Raw existence: 0
+- Log size: 86 entries
+
+## [2026-05-02 20:02] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 2 (ai, sec-agent)
+- Raw existence: 0
+- Log size: 87 entries
+
+## [2026-05-02 20:44] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 2 (ai, sec-agent)
+- Raw existence: 0
+- Log size: 88 entries
+
+
+## [2026-05-02 20:40] update | sec-agent | scorer-guard-dinamik-ip-prensipleri
+- Sayfa: [[sec-agent]] güncellendi
+- Değişiklikler:
+  - Yeni "Kritik Prensipler" bölümü eklendi: dinamik IP realitesi, coğrafi konum ≠ güven, behavior > volume > coğrafya
+  - Configuration tablosu güncellendi: decay 100, high_volume 0, max_ip_score 5000
+  - Engine tablosu güncellendi: scorer.py explicit guard (`added == 0.0` ise skor artmaz)
+  - Store bölümü güncellendi: SQLite yapısı (`key`, `value_json`, `updated_at`), ip_state.json root sahipliği
+  - Operations bölümüne "Skor Reset (Manuel)" prosedürü eklendi
+  - Troubleshooting güncellendi: kök çözüm detayları (high_volume 0, decay 100, max_ip_score 5000, scorer guard)
+- Runtime değişiklikler:
+  - `engine/scorer.py`: Explicit guard eklendi (flag=false ise skor artmaz)
+  - `config/scoring.yaml`: high_volume 0, max_ip_score 5000
+  - `config/agent.yaml`: decay.points_per_hour 100
+  - `188.132.132.225` skoru manuel sıfırlandı (sec_agent.db + ip_state.json)
+- Kaynak: VPS `engine/scorer.py` kod incelemesi, config dosya analizi, runtime testleri
+## [2026-05-02 23:52] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 2 (ai, sec-agent)
+- Raw existence: 0
+- Log size: 90 entries
+
+## [2026-05-02 23:46] kimi-cli docs ingest
+- Kimi Code CLI docs 23 sayfa okundu: https://www.kimi.com/code/docs/en/kimi-code-cli/
+- Yeni sayfalar oluşturuldu:
+  - `concepts/kimi-code-cli.md` — Genel bakış, amaç, kurulum, core operations, customisation
+  - `concepts/kimi-code-cli-reference.md` — Slash commands, keyboard shortcuts, skills, MCP referansı
+  - `raw/articles/kimi-code-cli-docs.md` — Kaynak URL listesi
+- `index.md` Concepts bölümüne 2 yeni giriş eklendi
+- Projelerde kullanım tablosu: local monorepo, ops-bot, mathlock-play, telegram-kimi
+
+## [2026-05-02 23:52] lint | 9/10
+- Yeni sayfalar eklendi: concepts/kimi-code-cli.md, concepts/kimi-code-cli-reference.md
+- Tag taxonomy güncellendi: kimi-cli, tool, agent, reference, ai, sec-agent
+- Lint: 9/10 passing, 1 warning (sec-agent.md oversized — pre-existing)
+
+## [2026-05-02 23:59] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 6 (agent, ai, kimi-cli, reference, sec-agent, tool)
+- Raw existence: 0
+- Log size: 93 entries
+
+## [2026-05-02 23:59] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 2 (ai, sec-agent)
+- Raw existence: 0
+- Log size: 94 entries
+
+## [2026-05-02 23:59] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 95 entries
+
+## [2026-05-03 00:00] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 96 entries
+
+2026-05-03 00:28 | wiki | ops-bot Phase 1 files created (uncommitted) — checkpoint already current
+2026-05-03 00:46 | wiki | ops-bot V2 deployed — 6 phase POC complete (48 files, +7953 lines) | checkpoint=28ea20e2
+## [2026-05-03 01:30] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 97 entries
+
+## [2026-05-03 02:30] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 2
+- Unknown tags: 1 (acp)
+- Raw existence: 0
+- Log size: 98 entries
+
+
+## 2026-05-03 — Ops-Bot V2 Routing & Timeout Fixes
+
+- Timeout sorunları çözüldü: ACP prompt 60s sınırı kaldırıldı, HTTP timeout 30s, embedding router aktifleştirildi
+- Türkçe routing desteği: Tüm agent descriptor'lara `keywords_tr` eklendi
+- LLM fallback prompt'u Türkçe query eşleştirmesiyle zenginleştirildi
+- Tool call event handler'ları eklendi (`tool_call`, `tool_call_update`)
+- Agent spec YAML'dan `tools: []` kaldırıldı (extend: default ile çalışıyor)
+- `.env.production`'a `OPS_BOT_EMBEDDING_ROUTER=true` eklendi
+## [2026-05-03 03:12] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 2
+- Unknown tags: 1 (acp)
+- Raw existence: 0
+- Log size: 99 entries
+
+
+## 2026-05-03 13:45 — Ingest: ops-bot
+
+- **Trigger:** Auto-prompt (user "Evet, otomatik topla")
+- **Projects:** ops-bot (1 project)
+- **Commits:** b4f50d8, 2809ba3, 6ebd0f2 (3 commits since e36f158)
+- **Files changed:** 6 files
+  - `agents/descriptors/ops-security-agent.yaml` — keywords_tr updated (+hack, sızma, güvenlik açığı; -brute force)
+  - `bot/acp_client.py` — risky command permission rejection
+  - `bot/acp_executor.py` — tool call limit (15), timeout caps (90/120/180), reset_session/reset_all_sessions, always build agent spec
+  - `bot/memory.py` — rolling summary removed, only last 1 message in context
+  - `bot/router.py` — single-brain: explicit @agent only, else general/master
+  - `bot/telegram.py` — /iptal now clears all sessions + memory, tracks last_agent
+- **Wiki pages updated:** `projects/ops-bot.md`
+  - Stack: embedding router marked DEPRECATED
+  - Entry points: router.py, memory.py descriptions updated
+  - Agent selection: single-brain architecture documented
+  - ACP Executor: tool call guard, timeout table, single master agent note
+  - New section: Güvenlik Kontrolleri (risky command filter)
+  - New section: Komutlar (/iptal, /end)
+  - Recent Commits refreshed
+- **Checkpoints updated:** ops-bot → b4f50d80de6d17dfcec3b31c7ffe04b3bf50378b
+- **Lint:** Pending
+## [2026-05-03 13:49] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 2
+- Unknown tags: 1 (acp)
+- Raw existence: 0
+- Log size: 100 entries
+
+## [2026-05-03 14:03] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 1 (acp)
+- Raw existence: 3
+- Log size: 101 entries
+
+## [2026-05-03 14:04] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 1 (acp)
+- Raw existence: 0
+- Log size: 102 entries
+
+
+## 2026-05-03 13:50 — Ingest: kimi-cli docs
+
+- **Trigger:** User request (fetch + update)
+- **Source URLs:**
+  - https://www.kimi.com/code/docs/en/kimi-code-cli/configuration/overrides-and-precedence.html
+  - https://www.kimi.com/code/docs/en/kimi-code-cli/customization/skills.html
+  - https://www.kimi.com/code/docs/en/kimi-code-cli/customization/sub-agents.html
+- **Wiki pages updated:**
+  - `concepts/kimi-code-cli.md` — Güncellendi: CLI parameters, env vars, config priority, skill discovery/creation/flow skills, custom agents, system prompt variables, subagent types, agent tool parameters
+  - `concepts/kimi-code-cli-reference.md` — **Silindi** (kullanıcı slash commands/keyboard shortcuts bilgilerini wiki'den çıkarmak istedi)
+- **Wiki pages updated (follow-up):**
+  - `index.md` — `kimi-code-cli-reference` çıkarıldı
+  - `concepts/kimi-code-cli.md` — Raw URL sources kaldırıldı, "Kaynaklar" bölümü eklendi
+- **Lint:** 8/10 passing (2 warnings: page size, tag audit)
+
+## 2026-05-03 14:25 — Ingest: ops-bot tek evren dönüşümü
+
+- **Trigger:** User request (plan modu onaylı)
+- **Project:** ops-bot
+- **Commits:** 2c685d6 (tek evren dönüşümü)
+- **Files changed:** 47 files, +395 -2280 lines
+- **Actions:**
+  - Deleted: `agents/descriptors/` (11 YAML), `descriptor_loader.py`, `manager.py`, `process.py`, `state.py`, `migrate_v1_to_v2.py`, `router/hybrid.py`, `router/embedding.py`
+  - Created skills: `nginx-routing/SKILL.md`, `postgres-query/SKILL.md`, `security-reporting/SKILL.md` (YAML frontmatter)
+  - Updated skills: `docker-troubleshooting/SKILL.md` (frontmatter eklendi)
+  - Updated subagents: 9 YAML (`version: 1` integer, `tools` listesi, `system_prompt_args`)
+  - Updated prompts: 9 MD (`${ALLOWED_COMMANDS}`, `${FORBIDDEN_PATTERNS}`)
+  - Updated master: `agent.yaml` (`version: 1`, `system_prompt_args`), `system.md` (`${KIMI_NOW}`, `${KIMI_WORK_DIR}`, `${KIMI_SKILLS}`)
+  - Simplified bot: `config.py`, `router.py`, `acp_executor.py`, `memory.py`, `telegram.py`
+- **Wiki pages updated:** `projects/ops-bot.md` (19 edits)
+- **Checkpoints updated:** ops-bot → 2c685d6
+- **Lint:** Pending
+## [2026-05-03 14:36] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 1 (acp)
+- Raw existence: 0
+- Log size: 103 entries
+

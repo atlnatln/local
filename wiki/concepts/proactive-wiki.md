@@ -16,13 +16,13 @@ sources:
 
 # Proaktif Wiki Yöneticisi
 
-Git commit sonrası kimi-cli'nin bir sonraki açılışında otomatik olarak wiki güncellemesi öneren mekanizma.
+Git commit sonrası [[kimi-code-cli|kimi-cli]]'nin bir sonraki açılışında otomatik olarak wiki güncellemesi öneren mekanizma.
 
 ---
 
 ## Problem
 
-Kod yazarken wiki'yi güncellemeyi unutmak kolay. Commit atıp saatler sonra kimi-cli'yi açtığında, hangi dosyaların değiştiğini, neyin wiki'ye yansıtılması gerektiğini hatırlamak zor.
+Kod yazarken wiki'yi güncellemeyi unutmak kolay. Commit atıp saatler sonra [[kimi-code-cli|kimi-cli]]'yi açtığında, hangi dosyaların değiştiğini, neyin wiki'ye yansıtılması gerektiğini hatırlamak zor.
 
 ## Çözüm: Marker File + AGENTS.md Proactive Check
 
