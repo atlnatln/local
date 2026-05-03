@@ -1,8 +1,17 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+}
+
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        load(localFile.inputStream())
+    }
 }
 
 android {
@@ -13,16 +22,16 @@ android {
         applicationId = "com.akn.mathlock.play"
         minSdk = 26
         targetSdk = 35
-        versionCode = 67
-        versionName = "1.0.67"
+        versionCode = 70
+        versionName = "1.0.70"
     }
 
     signingConfigs {
         create("release") {
             storeFile = file("../keystore.jks")
-            storePassword = "2001293"
+            storePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD") ?: ""
             keyAlias = "mathlock-play"
-            keyPassword = "2001293"
+            keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD") ?: ""
         }
     }
 
@@ -49,6 +58,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -70,6 +80,9 @@ dependencies {
 
     // Firebase Crashlytics (Kotlin 1.9 uyumlu explicit version)
     implementation("com.google.firebase:firebase-crashlytics:18.6.4")
+
+    // Encrypted SharedPreferences
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")
