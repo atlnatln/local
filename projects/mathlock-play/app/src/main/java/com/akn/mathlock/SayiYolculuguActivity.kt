@@ -28,6 +28,7 @@ class SayiYolculuguActivity : BaseActivity() {
         private const val PREFS_NAME = "sayi_yolculugu"
         private const val KEY_CACHED_LEVELS = "cached_levels"
         private const val KEY_COMPLETED_IDS = "completed_level_ids"
+        private const val KEY_CURRENT_SET_ID = "current_set_id"
     }
 
     private lateinit var webView: WebView
@@ -77,14 +78,20 @@ class SayiYolculuguActivity : BaseActivity() {
 
         webView.loadUrl("file:///android_asset/sayi-yolculugu/game.html")
 
+        val accountManager = AccountManager(this)
+        apiClient.setAuthToken(accountManager.getAccessToken())
+
         loadCompletedLevels()
+        loadCurrentSetId()
     }
 
     private fun loadLevelsIntoGame() {
         Thread {
             val oldSetId = currentSetId
             val levels = fetchLevels()
-            val isNewSet = currentSetId != null && currentSetId != oldSetId
+            // isNewSet: sadece önceden bir setId vardı VE şimdi farklı bir set geldiğinde true
+            // İlk açılışta (oldSetId==null) forceClear=true göndermek WebView progress'ini siler!
+            val isNewSet = oldSetId != null && currentSetId != null && currentSetId != oldSetId
             runOnUiThread {
                 if (levels != null) {
                     val locale = PreferenceManager(this).appLocale
@@ -108,9 +115,11 @@ class SayiYolculuguActivity : BaseActivity() {
                             assets.open("sayi-yolculugu/fallback-levels/tr.json")
                                 .bufferedReader().readText()
                         }
-                        val payload = JSONObject(json).apply {
+                        // Fallback levels: completed_level_ids inject et ve forceClear=false
+                        // (forceClear=true local progress'i siler — bu bir bug'dı)
+                        val payload = JSONObject(injectCompletedIds(json)).apply {
                             put("locale", locale)
-                            put("forceClear", true)
+                            put("forceClear", false)
                         }
                         val escaped = payload.toString()
                             .replace("\\", "\\\\")
@@ -134,6 +143,21 @@ class SayiYolculuguActivity : BaseActivity() {
         completedLevelIds.clear()
         raw.split(",").mapNotNull { it.trim().toIntOrNull() }.forEach { completedLevelIds.add(it) }
         Log.d(TAG, "Local completedLevelIds yüklendi: ${completedLevelIds.size}")
+    }
+
+    private fun loadCurrentSetId() {
+        val stored = SecurePrefs.get(this, PREFS_NAME)
+            .getInt(KEY_CURRENT_SET_ID, 0)
+        currentSetId = if (stored > 0) stored else null
+        Log.d(TAG, "Local currentSetId yüklendi: $currentSetId")
+    }
+
+    private fun saveCurrentSetId() {
+        currentSetId?.let {
+            SecurePrefs.get(this, PREFS_NAME)
+                .edit().putInt(KEY_CURRENT_SET_ID, it).apply()
+        } ?: SecurePrefs.get(this, PREFS_NAME)
+            .edit().remove(KEY_CURRENT_SET_ID).apply()
     }
 
     private fun saveCompletedLevels() {
@@ -162,56 +186,68 @@ class SayiYolculuguActivity : BaseActivity() {
         if (token.isNullOrBlank()) {
             token = accountManager.getOrRegister()
         }
+        apiClient.setAuthToken(token)
         val childId = prefManager.activeChildId
         System.out.println("[SY-FETCH] token=${token?.take(8)} childId=$childId")
 
         if (!token.isNullOrBlank()) {
             try {
                 val locale = PreferenceManager(this).appLocale
-                var path = "/levels/?device_token=${token.trim()}"
-                if (childId > 0) path += "&child_id=$childId"
-                path += "&locale=$locale"
-                System.out.println("[SY-FETCH] GET $path")
-                val response = apiClient.get(path)
-                System.out.println("[SY-FETCH] response code=${response.statusCode} body=${response.body.toString().take(120)}")
-                if (response.statusCode == 200) {
-                    val json = response.body.toString()
-                    try {
-                        val root = JSONObject(json)
-                        val serverSetId = root.optInt("set_id", 0).takeIf { it > 0 }
-                        val isNewSet = (serverSetId != null && serverSetId != currentSetId)
-                        val idsArr = root.optJSONArray("completed_level_ids")
-                        // Server'dan gelen verileri al
-                        completedLevelIds.clear()
-                        if (idsArr != null) {
-                            for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
+                fun tryFetch(withChildId: Boolean): String? {
+                    var path = "/levels/?device_token=${token!!.trim()}"
+                    if (withChildId && childId > 0) path += "&child_id=$childId"
+                    path += "&locale=$locale"
+                    System.out.println("[SY-FETCH] GET $path")
+                    val response = apiClient.get(path)
+                    System.out.println("[SY-FETCH] response code=${response.statusCode} body=${response.body.toString().take(120)}")
+                    if (response.statusCode == 200) {
+                        val json = response.body.toString()
+                        try {
+                            val root = JSONObject(json)
+                            val serverSetId = root.optInt("set_id", 0).takeIf { it > 0 }
+                            val isNewSet = currentSetId != null && serverSetId != null && serverSetId != currentSetId
+                            val idsArr = root.optJSONArray("completed_level_ids")
+                            completedLevelIds.clear()
+                            if (idsArr != null) {
+                                for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
+                            }
+                            if (!isNewSet) {
+                                val localRaw = SecurePrefs.get(this, PREFS_NAME)
+                                    .getString(KEY_COMPLETED_IDS, "") ?: ""
+                                localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
+                                    .forEach { completedLevelIds.add(it) }
+                            } else {
+                                SecurePrefs.get(this, PREFS_NAME)
+                                    .edit().remove(KEY_COMPLETED_IDS).apply()
+                            }
+                            saveCompletedLevels()
+                            currentSetId = serverSetId
+                            saveCurrentSetId()
+                            System.out.println("[SY-FETCH] API OK set_id=$currentSetId isNewSet=$isNewSet completed=${completedLevelIds.size}")
+                        } catch (e: Exception) {
+                            System.out.println("[SY-FETCH] API parse exception: ${e.message}")
                         }
-                        if (!isNewSet) {
-                            // Aynı set: local cache'teki tamamlanan ID'leri de ekle (merge)
-                            // (Kullanıcı uygulamayı kapatırsa upload thread kesilebilir)
-                            val localRaw = SecurePrefs.get(this, PREFS_NAME)
-                                .getString(KEY_COMPLETED_IDS, "") ?: ""
-                            localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
-                                .forEach { completedLevelIds.add(it) }
-                        } else {
-                            // Yeni set: eski local tamamlanmış seviyeleri temizle
-                            SecurePrefs.get(this, PREFS_NAME)
-                                .edit().remove(KEY_COMPLETED_IDS).apply()
-                        }
-                        saveCompletedLevels()
-                        currentSetId = serverSetId
-                        System.out.println("[SY-FETCH] API OK set_id=$currentSetId isNewSet=$isNewSet completed=${completedLevelIds.size}")
-                    } catch (e: Exception) {
-                        System.out.println("[SY-FETCH] API parse exception: ${e.message}")
+                        val injected = injectCompletedIds(json)
+                        SecurePrefs.get(this, PREFS_NAME)
+                            .edit().putString(KEY_CACHED_LEVELS, injected).apply()
+                        System.out.println("[SY-FETCH] cached and returning injected")
+                        return injected
                     }
-                    val injected = injectCompletedIds(json)
-                    SecurePrefs.get(this, PREFS_NAME)
-                        .edit().putString(KEY_CACHED_LEVELS, injected).apply()
-                    System.out.println("[SY-FETCH] cached and returning injected")
-                    return injected
-                } else {
-                    System.out.println("[SY-FETCH] API non-200 status=${response.statusCode}")
+                    return null
                 }
+
+                // Önce child_id ile dene; 404 alırsa child_id olmadan dene (backend active child döner)
+                var result = tryFetch(true)
+                if (result == null && childId > 0) {
+                    System.out.println("[SY-FETCH] child_id=$childId not found, retrying without child_id")
+                    result = tryFetch(false)
+                    if (result != null) {
+                        // Backend farklı child döndürdü; local childId'yi sıfırla
+                        System.out.println("[SY-FETCH] Resetting local childId from $childId")
+                        prefManager.activeChildId = 0
+                    }
+                }
+                if (result != null) return result
             } catch (e: Exception) {
                 System.out.println("[SY-FETCH] API exception: ${e.javaClass.simpleName} ${e.message}")
             }
@@ -225,14 +261,15 @@ class SayiYolculuguActivity : BaseActivity() {
             try {
                 val root = JSONObject(cached)
                 val cachedSetId = root.optInt("set_id", 0).takeIf { it > 0 }
-                val isNewSet = (cachedSetId != null && cachedSetId != currentSetId)
+                // isNewSet: currentSetId null ise ilk açılış → merge et (silme)
+                val isNewSet = currentSetId != null && cachedSetId != null && cachedSetId != currentSetId
                 val idsArr = root.optJSONArray("completed_level_ids")
                 completedLevelIds.clear()
                 if (idsArr != null) {
                     for (i in 0 until idsArr.length()) completedLevelIds.add(idsArr.getInt(i))
                 }
                 if (!isNewSet) {
-                    // Aynı set: local cache'tekileri merge et
+                    // Aynı set veya ilk açılış: local cache'tekileri merge et
                     val localRaw = SecurePrefs.get(this, PREFS_NAME)
                         .getString(KEY_COMPLETED_IDS, "") ?: ""
                     localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
@@ -244,6 +281,7 @@ class SayiYolculuguActivity : BaseActivity() {
                 }
                 saveCompletedLevels()
                 currentSetId = cachedSetId
+                saveCurrentSetId()
             } catch (_: Exception) {}
             val injected = injectCompletedIds(cached)
             SecurePrefs.get(this, PREFS_NAME)
@@ -351,6 +389,13 @@ class SayiYolculuguActivity : BaseActivity() {
 
     private fun uploadLevelProgress(newlyCompletedIds: List<Int>, onResult: ((JSONObject) -> Unit)? = null) {
         Thread {
+            var callbackInvoked = false
+            fun invokeResult(resp: JSONObject) {
+                if (!callbackInvoked) {
+                    callbackInvoked = true
+                    onResult?.let { runOnUiThread { it(resp) } }
+                }
+            }
             try {
                 val accountManager = AccountManager(this)
                 val prefManager = PreferenceManager(this)
@@ -360,33 +405,66 @@ class SayiYolculuguActivity : BaseActivity() {
                 }
                 if (token.isNullOrBlank()) {
                     System.out.println("[SY-UPLOAD] no token")
+                    invokeResult(JSONObject().put("error", "no_token"))
                     return@Thread
                 }
+                apiClient.setAuthToken(token)
                 val childId = prefManager.activeChildId
                 System.out.println("[SY-UPLOAD] set_id=$currentSetId childId=$childId completed=${completedLevelIds.sorted()}")
 
-                val body = JSONObject().apply {
-                    put("device_token", token)
-                    if (childId > 0) put("child_id", childId)
-                    currentSetId?.let { put("set_id", it) }
-                    val arr = JSONArray()
-                    completedLevelIds.forEach { arr.put(it) }
-                    put("completed_level_ids", arr)
-                    put("locale", PreferenceManager(this@SayiYolculuguActivity).appLocale)
-                }
-                val response = apiClient.post("/levels/progress/", body)
-                val code = response.statusCode
-                val responseText = response.body.toString()
-                System.out.println("[SY-UPLOAD] response code=$code body=${responseText.take(120)}")
+                fun tryUpload(withChildId: Boolean): Boolean {
+                    val body = JSONObject().apply {
+                        put("device_token", token)
+                        if (withChildId && childId > 0) put("child_id", childId)
+                        currentSetId?.let { put("set_id", it) }
+                        val arr = JSONArray()
+                        completedLevelIds.forEach { arr.put(it) }
+                        put("completed_level_ids", arr)
+                        put("locale", PreferenceManager(this@SayiYolculuguActivity).appLocale)
+                    }
+                    val response = apiClient.post("/levels/progress/", body)
+                    val code = response.statusCode
+                    val responseText = response.body.toString()
+                    System.out.println("[SY-UPLOAD] response code=$code body=${responseText.take(120)}")
 
-                if (code in 200..299 && responseText.isNotBlank()) {
-                    try {
-                        val resp = JSONObject(responseText)
-                        onResult?.let { runOnUiThread { it(resp) } }
-                    } catch (_: Exception) {}
+                    if (code in 200..299 && responseText.isNotBlank()) {
+                        try {
+                            val resp = JSONObject(responseText)
+                            invokeResult(resp)
+                            return true
+                        } catch (_: Exception) {}
+                    } else if (code == 404 && withChildId && childId > 0) {
+                        // child_id bulunamadı; child_id olmadan tekrar dene
+                        return false
+                    } else {
+                        // Diğer hatalarda da callback'i çağır (showRenewalError vs. tetiklensin)
+                        try {
+                            val resp = JSONObject().apply {
+                                put("error", "http_$code")
+                                put("auto_renewal_started", false)
+                            }
+                            invokeResult(resp)
+                        } catch (_: Exception) {}
+                    }
+                    return true
+                }
+
+                val ok = tryUpload(true)
+                if (!ok) {
+                    System.out.println("[SY-UPLOAD] child_id=$childId not found, retrying without child_id")
+                    tryUpload(false)
+                    if (!callbackInvoked) {
+                        System.out.println("[SY-UPLOAD] Resetting local childId from $childId")
+                        prefManager.activeChildId = 0
+                    }
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Level progress gönderme hatası: ${e.message}")
+                if (!callbackInvoked) {
+                    try {
+                        invokeResult(JSONObject().put("error", "exception").put("auto_renewal_started", false))
+                    } catch (_: Exception) {}
+                }
             }
         }.start()
     }
@@ -430,10 +508,10 @@ class SayiYolculuguActivity : BaseActivity() {
         webView.removeAllViews()
         webView.destroy()
 
-        SecurePrefs.get(this, PREFS_NAME).edit()
-            .remove(KEY_CACHED_LEVELS)
-            .remove(KEY_COMPLETED_IDS)
-            .apply()
+        // NOT: completedLevelIds ve cachedLevels ASLA silinmemeli!
+        // Bu veriler kullanıcının seviye ilerlemesidir ve activity lifecycle'ına
+        // bağlı değildir. onDestroy() silmek = kilit açma sonrası baştan başlamak.
+        // Yeni set geldiğinde zaten fetchLevels() içinde güncellenir.
 
         super.onDestroy()
     }
