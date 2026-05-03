@@ -1195,3 +1195,56 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 103 entries
 
+
+## 2026-05-03 14:45 — Wiki + AGENTS.md güncellemesi
+
+- **Trigger:** User request (fetch 6 URLs + wiki update + AGENTS.md)
+- **Source URLs:**
+  - https://agents.md
+  - https://github.com/MoonshotAI/kimi-cli/blob/main/docs/AGENTS.md
+  - https://github.com/MoonshotAI/kimi-cli/blob/main/docs/en/customization/agents.md
+  - https://github.com/MoonshotAI/kimi-cli/blob/main/src/kimi_cli/agents/default/system.md
+  - https://github.com/MoonshotAI/kimi-cli/blob/main/docs/en/customization/skills.md
+- **Wiki pages created:**
+  - `concepts/agents-md.md` — AGENTS.md formatı, konum, hiyerarşi, kimi-cli entegrasyonu, best practices
+- **Wiki pages updated:**
+  - `index.md` — agents-md eklendi
+  - `concepts/kimi-code-cli.md` — `${KIMI_AGENTS_MD}` açıklaması zenginleştirildi
+  - `projects/ops-bot.md` — AGENTS.md kaynak referansı eklendi
+- **Ops-Bot files created:**
+  - `ops-bot/AGENTS.md` — Proje context'i: stack, mimari, kod stili, güvenlik, deploy checklist
+  - `ops-bot/.gitignore` — AGENTS.md ignore kaldırıldı
+- **Commits:**
+  - ops-bot: `7219f80` feat(ops-bot): add AGENTS.md
+  - local: `644ef93` docs(wiki): add agents-md concept page
+- **Lint:** 8/10 passing (2 warnings: page size, tag audit)
+## [2026-05-03 15:08] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
+- Raw existence: 4
+- Log size: 104 entries
+
+## [2026-05-03 15:26] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
+- Raw existence: 4
+- Log size: 105 entries
+
+
+## [2026-05-03 15:45] ingest | ops-bot | 47a2a6d | 8
+- Files: A:1 M:6 D:1 (README, .env.example, AGENTS.md, CHANGELOG.md, requirements.txt, agent-transformation-plan, bot.py, orchestrator)
+- Pages updated: [[ops-bot]]
+- Diff summary: Industry-standard documentation overhaul. README rewritten with architecture/setup/usage. .env.example synced to V2 ACP reality. AGENTS.md fixed /end command and added test step. CHANGELOG.md created (Keep a Changelog format). agent-transformation-plan.md marked as historical archive.
+- Lint: 7/10 passing, 3 warnings (page size, tag audit, raw existence — pre-existing)

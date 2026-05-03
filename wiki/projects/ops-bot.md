@@ -53,8 +53,8 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
 | `ops-bot/bot/acp_executor.py` | ACP session yönetimi, tool call streaming, sadece `agents/master/agent.yaml` kullanır |
 | `ops-bot/bot/acp_client.py` | JSON-RPC 2.0 ACP client (initialize 30s, session/new 30s, default 60s) |
 | `ops-bot/bot/memory.py` | Legacy SQLite conversation memory; context persistence kimi-cli `~/.kimi/sessions/` tarafından sağlanır |
-| `ops-bot/bot/config.py` | Env-based config (V2_ENABLED, EMBEDDING_ROUTER, timeout'lar 180-600s) |
-| `ops-bot/bot/orchestrator.py` | V2 agent lifecycle orchestrator |
+| `ops-bot/bot/config.py` | Env-based config (TELEGRAM_TOKEN, ALLOWED_USER_ID, timeout'lar 180-600s) |
+| `ops-bot/CHANGELOG.md` | Değişiklik kaydı (Keep a Changelog formatı) |
 | ~~`ops-bot/router/hybrid.py`~~ | ~~HybridRouter~~ — [REMOVED] |
 | ~~`ops-bot/router/embedding.py`~~ | ~~TF-based cosine similarity~~ — [REMOVED] |
 | ~~`ops-bot/agents/descriptor_loader.py`~~ | ~~YAML descriptor okuma~~ — [REMOVED] |
@@ -196,7 +196,7 @@ Detaylı mimari ve operasyon bilgisi: bkz. [[sec-agent]].
 | Komut | Açıklama |
 |-------|----------|
 | `/iptal` | Tüm ACP session'larını discard eder, hafızayı temizler (legacy + V2), yeni sohbet başlatır |
-| `/end` | (Placeholder) |
+| `/end` | Legacy hafızayı temizler; ACP session'ı korunur |
 
 ## Troubleshooting
 
@@ -239,17 +239,24 @@ sudo systemctl restart ops-bot
 - [[deployment]] — VPS deploy prosedürleri
 - [[telegram-kimi]] — ACP client implementasyon referansı
 
+## Dokümantasyon
+
+| Dosya | Amaç |
+|-------|------|
+| `README.md` | Proje tanımı, kurulum, mimari, komutlar, troubleshooting |
+| `AGENTS.md` | AI agent'lar için stack, kod stili, güvenlik, deploy checklist |
+| `CHANGELOG.md` | V2 rewrite ve sonraki değişiklikler (Keep a Changelog) |
+| `docs/CURRENT_SYSTEM.md` | Üretimde çalışan mevcut durum, servis/timer akışı |
+| `docs/agent-transformation-plan.md` | Tarihsel: V2 öncesi 12 haftalık plan (arşiv) |
+
 ## Recent Commits
 
-- `b4f50d8` deploy: ops-bot update 20260503_034308 — tek beyin, güvenlik filtreleri, tool limit, memory trim (2026-05-03)
-- `2809ba3` deploy: ops-bot update 20260503_032155 (2026-05-03)
-- `6ebd0f2` deploy: ops-bot update 20260503_031534 (2026-05-03)
+- `47a2a6d` docs(ops-bot): industry-standard documentation overhaul — README, .env.example, AGENTS.md, CHANGELOG.md (2026-05-03)
+- `f0884ee` feat(ops-bot): add AGENTS.md for kimi-cli native context injection (2026-05-03)
+- `153d6e6` feat(ops-bot): hide raw shell output, show only summarized results (2026-05-03)
+- `7219f80` feat(ops-bot): add AGENTS.md for kimi-cli native context injection (2026-05-03)
 - `2c685d6` feat(ops-bot): unify into single kimi-cli native universe — descriptor/zombie silme, skill frontmatter, subagent tools, master system.md değişkenleri (2026-05-03)
 - `7afcff0` chore(ops-bot): pre-unification checkpoint (2026-05-03)
-- `e36f158` feat(ops-bot): Türkçe routing, keywords_tr, timeout fixes, embedding router aktif (2026-05-03)
 - `d443eab` deploy: ops-bot V2 rewrite deploy (2026-05-03)
-- `dacaee9` fix(routing): embedding router env timing + syntax error (2026-05-03)
 - `b915049` fix(security): use OPS_BOT_REPO_ROOT for ai_analyzer path (2026-05-02)
 - `ab28161` chore: sync all local changes before deploy (2025-04-30)
-- `ad62f2a` ops-bot: resolve_model_name() bilinmeyen model ID'lerini DEFAULT_MODEL'e düşürür
-- `5b8b80c` ops-bot: fallback unknown model IDs to DEFAULT_MODEL in get_user_model()
