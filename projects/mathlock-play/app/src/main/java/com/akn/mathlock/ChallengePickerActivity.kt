@@ -91,9 +91,8 @@ class ChallengePickerActivity : BaseActivity() {
             binding.cardPuzzle.visibility = View.GONE
         }
 
-        // Kilit açma ekranında diğer oyunlar görünmez
+        // Kilit açma ekranında sayı tahmin görünmez
         binding.cardGuess.visibility = View.GONE
-        binding.cardRobotopia.visibility = View.GONE
 
         binding.cardParent.setOnClickListener {
             showParentBiometricAuth()

@@ -57,7 +57,7 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun loadProfiles() {
-        val token = accountManager.getDeviceToken() ?: return
+        val token = accountManager.getAccessToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/?device_token=$token")
@@ -200,7 +200,7 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun createChild(name: String, period: String) {
-        val token = accountManager.getDeviceToken() ?: return
+        val token = accountManager.getAccessToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/")
@@ -246,10 +246,10 @@ class ChildProfilesActivity : BaseActivity() {
         updateChild(childId, null, null, setActive = true)
         // Çocuk değişince soruları arka planda yeniden indir
         Thread {
-            val token = accountManager.getDeviceToken()
-            if (token != null) {
+            val authToken = accountManager.getAccessToken()
+            if (authToken != null) {
                 val qm = QuestionManager(this)
-                qm.sync(token)
+                qm.sync(authToken)
                 Log.d(TAG, "Aktif çocuk değişti (id=$childId), sorular yeniden indirildi: ${qm.totalCount()}")
             }
         }.start()
@@ -257,7 +257,7 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun updateChild(childId: Int, name: String? = null, period: String? = null, setActive: Boolean = false) {
-        val token = accountManager.getDeviceToken() ?: return
+        val token = accountManager.getAccessToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/detail/?device_token=$token&child_id=$childId")
@@ -292,7 +292,7 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun deleteChild(childId: Int) {
-        val token = accountManager.getDeviceToken() ?: return
+        val token = accountManager.getAccessToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/detail/?device_token=$token&child_id=$childId")

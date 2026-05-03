@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Play sürümü: Tüm trafik HTTPS zorunlu.
-    mathlock.com.tr üzerinden TLS ile veri aktarımı yapılır.
+    MathLock Play — Network Security Configuration
+    - Cleartext traffic is globally disabled (all API calls use HTTPS).
+    - Certificate pinning for mathlock.com.tr with backup pins for
+      Let's Encrypt root CAs (ISRG Root X1 and X2) to survive
+      leaf/intermediate certificate rotations.
 -->
 <network-security-config>
     <base-config cleartextTrafficPermitted="false" />
+
+    <domain-config>
+        <domain includeSubdomains="true">mathlock.com.tr</domain>
+        <pin-set expiration="2027-05-01">
+            <!-- Current leaf certificate (mathlock.com.tr) -->
+            <pin digest="SHA-256">USM+Gu9QqBpezOCE+kkT6dUOA4uisPeuDKckfjK4yls=</pin>
+            <!-- Backup: ISRG Root X1 (RSA, Let's Encrypt) -->
+            <pin digest="SHA-256">C5+lpZ7tcVwmwQIMcRpt83TPwIJy8nELZZQG8Z6SB5Y=</pin>
+            <!-- Backup: ISRG Root X2 (ECDSA, Let's Encrypt) -->
+            <pin digest="SHA-256">x9SZw6TwIqfmvrLZ/kz1o0Ossjmn728BnBKpUFqGNVM=</pin>
+        </pin-set>
+    </domain-config>
 </network-security-config>

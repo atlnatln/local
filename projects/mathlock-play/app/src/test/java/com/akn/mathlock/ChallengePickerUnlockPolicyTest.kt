@@ -7,20 +7,19 @@ import org.junit.Test
  * Kilit açma politikası testleri.
  *
  * Kural: Sadece MathChallengeActivity kilitli uygulamayı açabilir.
- * Sayı Yolculuğu, Robotopia ve Sayı Tahmin kilit açma amaçlı kullanılamaz.
+ * Sayı Yolculuğu ve Sayı Tahmin kilit açma amaçlı kullanılamaz.
  * Bu oyunlar ana ekrandaki pratik modda erişilebilir.
  */
 class ChallengePickerUnlockPolicyTest {
 
     // Hangi oyun türlerinin kilit açma yetkisine sahip olduğu
-    private enum class GameType { MATH, NUMBER_GUESS, SAYI_YOLCULUGU, ROBOTOPIA }
+    private enum class GameType { MATH, NUMBER_GUESS, SAYI_YOLCULUGU }
 
     private fun canUnlockApp(gameType: GameType): Boolean {
         return when (gameType) {
             GameType.MATH -> true
             GameType.NUMBER_GUESS,
-            GameType.SAYI_YOLCULUGU,
-            GameType.ROBOTOPIA -> false
+            GameType.SAYI_YOLCULUGU -> false
         }
     }
 
@@ -28,8 +27,7 @@ class ChallengePickerUnlockPolicyTest {
         return when (gameType) {
             GameType.MATH -> true
             GameType.NUMBER_GUESS,
-            GameType.SAYI_YOLCULUGU,
-            GameType.ROBOTOPIA -> false
+            GameType.SAYI_YOLCULUGU -> false
         }
     }
 
@@ -49,11 +47,6 @@ class ChallengePickerUnlockPolicyTest {
     }
 
     @Test
-    fun `robotopia kilit acamaz`() {
-        assertFalse("Robotopia kilidi açamaz", canUnlockApp(GameType.ROBOTOPIA))
-    }
-
-    @Test
     fun `challenge pickerda sadece matematik gorunur`() {
         assertTrue("Matematik kartı görünür", isVisibleInChallengePicker(GameType.MATH))
     }
@@ -66,11 +59,6 @@ class ChallengePickerUnlockPolicyTest {
     @Test
     fun `challenge pickerda sayi yolculugu GORUNMEZ`() {
         assertFalse("Sayı Yolculuğu kartı görünmemeli", isVisibleInChallengePicker(GameType.SAYI_YOLCULUGU))
-    }
-
-    @Test
-    fun `challenge pickerda robotopia GORUNMEZ`() {
-        assertFalse("Robotopia kartı görünmemeli", isVisibleInChallengePicker(GameType.ROBOTOPIA))
     }
 
     @Test
@@ -101,7 +89,7 @@ class ChallengePickerUnlockPolicyTest {
 
     @Test
     fun `diger oyunlarda seviye tur tamamlansa bile kilit acilmaz`() {
-        // Bu test regresyon koruması: eğer Sayı Yolculuğu/Robotopia/NumberGuess
+        // Bu test regresyon koruması: eğer Sayı Yolculuğu/NumberGuess
         // kodunda yanlışlıkla unlock çağrılırsa bu test hatayı yakalar.
         val levelsCompleted = 10
         val passScore = 3

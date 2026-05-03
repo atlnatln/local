@@ -50,12 +50,12 @@ related: []
 All tags are flat strings. Namespaces below are organizational conventions only.
 
 ### Projects
-`ops-bot` `webimar` `anka` `mathlock-play` `telegram-kimi` `sayi-yolculugu` `infrastructure` `sec-agent`
+`ops-bot` `webimar` `anka` `mathlock-play` `robotopia-android` `telegram-kimi` `sayi-yolculugu` `infrastructure` `sec-agent`
 
 Project tags bind a note to a specific codebase or service.
 
 ### Stack
-`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript` `kimi-cli` `tool`
+`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript` `webview` `kimi-cli` `tool`
 
 Technology tags describe the toolchain a note touches.
 

@@ -34,7 +34,7 @@ class CreditApiClient {
      * IO thread'den çağır.
      */
     fun useCredit(
-        deviceToken: String,
+        authToken: String,
         childName: String,
         statsJson: String? = null
     ): UseCreditResult {
@@ -43,12 +43,12 @@ class CreditApiClient {
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+            conn.setRequestProperty("Authorization", "Device $authToken")
             conn.doOutput = true
             conn.connectTimeout = CONNECT_TIMEOUT
             conn.readTimeout = READ_TIMEOUT
 
             val body = JSONObject().apply {
-                put("device_token", deviceToken)
                 put("child_name", childName)
                 if (!statsJson.isNullOrBlank()) {
                     put("stats", JSONObject(statsJson))

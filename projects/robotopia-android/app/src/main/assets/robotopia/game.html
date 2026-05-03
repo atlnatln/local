@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Robotopia</title>
+    <link href="css/main.css" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%; overflow: hidden;
+            background: #1a1a2e; font-family: 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        /* ── Loading Screen ── */
+        #loading-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #fff; transition: opacity 0.4s ease-out;
+        }
+        #loading-screen.hide { opacity: 0; pointer-events: none; }
+        #loading-screen h1 { font-size: 1.8em; margin-bottom: 0.2em; }
+        #loading-screen p  { font-size: 0.95em; color: #94a3b8; }
+        .spinner {
+            width: 36px; height: 36px; margin-top: 1em;
+            border: 3px solid #334155; border-top-color: #3b82f6;
+            border-radius: 50%; animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Tutorial Menü ── */
+        #tutorial-menu {
+            position: fixed; inset: 0; z-index: 8000;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
+            padding: 16px 16px 60px; display: none;
+        }
+        #tutorial-menu.active { display: block; }
+        #tutorial-menu h1 { color: #fff; text-align: center; font-size: 1.5em; margin: 8px 0 4px; }
+        .subtitle { color: #94a3b8; text-align: center; font-size: 0.85em; margin-bottom: 16px; }
+        .category-section { margin-bottom: 18px; }
+        .category-title {
+            color: #3b82f6; font-size: 1em; font-weight: 700;
+            padding: 6px 0; border-bottom: 1px solid #334155; margin-bottom: 8px;
+        }
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+        }
+        .level-card {
+            background: #16213e; border-radius: 10px; padding: 10px;
+            border: 2px solid transparent; transition: border-color 0.15s, transform 0.15s;
+            text-align: center; cursor: pointer;
+            -webkit-user-select: none; user-select: none;
+        }
+        .level-card:active { border-color: #3b82f6; transform: scale(0.97); }
+        .level-card.completed { border-color: #22c55e; }
+        .level-card .lv-icon { font-size: 2.2em; margin-bottom: 6px; }
+        .level-card .lv-name { color: #fff; font-size: 0.78em; font-weight: 600; }
+        .level-card .lv-status { font-size: 0.68em; color: #94a3b8; margin-top: 3px; }
+        .level-card.completed .lv-status { color: #22c55e; }
+        .progress-summary {
+            text-align: center; color: #94a3b8; margin-top: 16px;
+            font-size: 0.9em; padding-bottom: 24px;
+        }
+
+        /* ── In-Game Overlay Controls ── */
+        #back-btn {
+            position: fixed; top: 6px; right: 6px; z-index: 7000;
+            background: rgba(0,0,0,0.65); color: #fff; border: none; border-radius: 8px;
+            padding: 7px 12px; font-size: 13px; cursor: pointer; display: none;
+            -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+        }
+        #back-btn:active { background: rgba(59,130,246,0.7); }
+        #progress-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 7001;
+            height: 3px; background: #1e293b; display: none;
+        }
+        #progress-fill { height: 100%; background: #3b82f6; transition: width 0.3s; width: 0; }
+
+        /* ── Choo App Mobile Overrides ── */
+        main#root { width: 100%; height: 100%; overflow: hidden; }
+
+        /* Page layout: full viewport */
+        ._1482c51e { width: 100% !important; overflow: hidden !important; }
+
+        /* Tutorial story dialog: remove fixed min-width (700px in bundle) */
+        ._ff7f8d40 {
+            min-width: unset !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            word-break: break-word !important;
+        }
+        ._ff7f8d40 > .story-text {
+            margin: 8px 0 !important;
+            background: #1e293b !important;
+            color: #e2e8f0 !important;
+            border-radius: 12px !important;
+            border: 1px solid #334155 !important;
+            font-size: 0.9em !important;
+        }
+        ._ff7f8d40 > h1 { font-size: 1.1em !important; color: #38bdf8 !important; }
+        ._ff7f8d40 > .levelButtons {
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+            justify-content: center !important;
+        }
+
+        /* Overlay (modal): modern dark theme */
+        ._80aeacb2 {
+            padding: 3vw !important;
+            background: rgba(0,0,0,0.6) !important;
+        }
+        ._80aeacb2 > .inner {
+            max-width: 92vw !important;
+            max-height: 85vh !important;
+            overflow-y: auto !important;
+            background: #1e293b !important;
+            color: #e2e8f0 !important;
+            border: 2px solid #334155 !important;
+            border-radius: 16px !important;
+            padding: 16px !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+            overflow-wrap: break-word !important;
+            word-break: break-word !important;
+        }
+        ._80aeacb2 > .inner h1 { color: #38bdf8 !important; font-size: 1.15em !important; }
+        ._80aeacb2 > .inner > .content { overflow-wrap: break-word !important; }
+
+        /* Panel layout: 2 panels (game + blockly), vertical on mobile */
+        ._98e65704 {
+            flex-direction: column !important;
+            height: 100% !important;
+            overflow: hidden !important;
+        }
+        ._98e65704 > .divider {
+            display: none !important;
+        }
+        ._98e65704 > .panel {
+            width: 100% !important;
+            flex: none !important;
+            overflow: hidden !important;
+        }
+        /* 1st panel = game runner (50%) */
+        ._98e65704 > .panel:first-child {
+            height: 50% !important;
+        }
+        /* 2nd panel = blockly editor (50%) */
+        ._98e65704 > .panel:last-child {
+            height: 50% !important;
+        }
+
+        /* Blockly: wider toolbox + touch-friendly */
+        .blocklyToolboxDiv {
+            min-width: 80px !important;
+            touch-action: pan-y !important;
+        }
+        .blocklyTreeRow {
+            height: 32px !important;
+            line-height: 32px !important;
+        }
+        .blocklyMainBackground { touch-action: none !important; }
+        .blocklySvg { touch-action: none !important; }
+
+        /* Header bar — slimmer on mobile */
+        ._c0e98046 { height: 36px !important; padding: 0 8px !important; font-size: 0.85em !important; }
+        ._c0e98046 .logo img { height: 28px !important; }
+
+        /* Tutorial story/win modal: modern styled buttons */
+        ._80aeacb2 button, ._80aeacb2 a {
+            min-height: 44px !important; min-width: 44px !important;
+            font-size: 15px !important; padding: 10px 18px !important;
+            background: #3b82f6 !important; color: #fff !important;
+            border: none !important; border-radius: 10px !important;
+            font-weight: 600 !important;
+        }
+        ._80aeacb2 button:active, ._80aeacb2 a:active {
+            background: #2563eb !important;
+        }
+
+        /* Choo page layout — mobile-responsive adjustments */
+        @media (max-width: 768px) {
+            /* Overview sayfası: tek kolon */
+            .level { width: 120px !important; margin: 10px !important; }
+            .levelImage { width: 120px !important; height: 120px !important; }
+
+            /* Game runner controls: slimmer */
+            ._5a8deb15 > .controls { height: 36px !important; }
+            ._5a8deb15 > .controls button { min-width: 36px !important; }
+
+            /* Goal list text */
+            ._ed8591e2 > .goal { font-size: 13px !important; }
+        }
+
+        /* Canvas: container'a sığdır, taşmayı engelle */
+        canvas { max-width: 100% !important; max-height: 100% !important; touch-action: none; object-fit: contain; }
+        ._997216c4 { overflow: hidden !important; }
+
+        /* Game stats (Resources kutusu): mobilde küçük ve yarı saydam */
+        ._1ece1d4c {
+            padding: 3px 6px !important;
+            margin: 3px !important;
+            font-size: 0.7em !important;
+            opacity: 0.7 !important;
+            pointer-events: none !important;
+        }
+        ._1ece1d4c > table { margin-top: 1px !important; border-spacing: 6px 1px !important; }
+
+        /* Choo overview level images removed — suppress 404s completely */
+        /* inline style'ı override etmek için !important + spesifiklik arttırma */
+        div.levelImage,
+        a.level > div.levelImage,
+        .levelImage {
+            background-image: none !important;
+            background-color: #16213e !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        div.levelImage::after,
+        a.level > div.levelImage::after {
+            content: '🤖';
+            font-size: 48px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loading-screen">
+    <h1>🤖 Robotopia</h1>
+    <p>Kodlama Macerası Yükleniyor…</p>
+    <div class="spinner"></div>
+</div>
+
+<div id="tutorial-menu">
+    <h1>🤖 Robotopia</h1>
+    <p class="subtitle">Robotları programlayarak kodlamayı öğren!</p>
+    <div id="categories-container"></div>
+</div>
+
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<button id="back-btn" onclick="RobotopiaMenu.show()">← Geri</button>
+
+<main id="root"></main>
+
+<script src="blockly/blockly_compressed.js"></script>
+<script src="blockly/blocks_compressed.js"></script>
+<script src="blockly/msg/js/tr.js"></script>
+<script src="blockly/javascript_compressed.js"></script>
+<script src="bundle.js"></script>
+
+<!-- Mobile CSS overrides — MUST load AFTER bundle.js (sheetify injects its own <style> tags) -->
+<script>
+(function() {
+    var s = document.createElement('style');
+    s.id = 'mobile-overrides';
+    s.textContent =
+        /* ── Story dialog (._ff7f8d40) ── */
+        '._ff7f8d40 { min-width: 0 !important; max-width: 88vw !important; width: 88vw !important; box-sizing: border-box !important; overflow-wrap: break-word !important; word-break: break-word !important; padding: 12px !important; }' +
+        '._ff7f8d40 > .story-text { margin: 8px 0 !important; background: #1e293b !important; color: #e2e8f0 !important; border-radius: 12px !important; padding: 12px !important; border: 1px solid #334155 !important; font-size: 0.9em !important; }' +
+        '._ff7f8d40 > h1 { font-size: 1.1em !important; word-break: break-word !important; color: #38bdf8 !important; margin: 0 0 6px !important; }' +
+        '._ff7f8d40 > .levelButtons { flex-wrap: wrap !important; gap: 6px !important; justify-content: center !important; }' +
+
+        /* ── Overlay modal (._80aeacb2) — modern dark theme ── */
+        '._80aeacb2 { padding: 3vw !important; background: rgba(0,0,0,0.6) !important; }' +
+        '._80aeacb2 > .inner { max-width: 92vw !important; max-height: 85vh !important; overflow-y: auto !important; box-sizing: border-box !important;' +
+        '  background: #1e293b !important; color: #e2e8f0 !important; border: 2px solid #334155 !important; border-radius: 16px !important; padding: 16px !important; box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important; }' +
+        '._80aeacb2 > .inner h1 { color: #38bdf8 !important; font-size: 1.15em !important; }' +
+        '._80aeacb2 > .inner .img { border-radius: 12px !important; max-width: 40px !important; }' +
+        '._80aeacb2 > .inner > .content { padding: 0 !important; overflow-wrap: break-word !important; word-break: break-word !important; }' +
+
+        /* ── Buttons (._276b82c3) — modern styled ── */
+        '._276b82c3 { background: #3b82f6 !important; color: #fff !important; border: none !important; border-radius: 10px !important; padding: 10px 18px !important; font-weight: 600 !important; font-size: 0.9em !important; margin: 5px !important; }' +
+        '._276b82c3:hover, ._276b82c3:active { background: #2563eb !important; color: #fff !important; }' +
+        '._276b82c3[disabled] { background: #475569 !important; color: #94a3b8 !important; opacity: 0.7 !important; }' +
+
+        /* ── Goal progress box (._b02997e0) — dark theme ── */
+        '._b02997e0 { background: rgba(30,41,59,0.92) !important; color: #e2e8f0 !important; border-radius: 12px !important; border: 1px solid #334155 !important; margin: 8px !important; padding: 10px !important; }' +
+        '._b02997e0 > h2 { color: #38bdf8 !important; font-size: 1em !important; }' +
+
+        /* ── Header bar (._c0e98046) — slimmer on mobile ── */
+        '._c0e98046 { height: 36px !important; padding: 0 8px !important; font-size: 0.85em !important; }' +
+        '._c0e98046 .logo img { height: 28px !important; }' +
+
+        /* ── Page layout ── */
+        '._1482c51e { width: 100% !important; height: 100vh !important; overflow: hidden !important; display: flex !important; flex-direction: column !important; }' +
+        '._1482c51e > .content { flex: 1 !important; height: 0 !important; min-height: 0 !important; overflow: hidden !important; }' +
+
+        /* ── Panel layout: 2 panels (game + blockly) on mobile ── */
+        '._98e65704 { flex-direction: column !important; height: 100% !important; overflow: hidden !important; }' +
+        '._98e65704 > .divider { display: none !important; }' +
+        '._98e65704 > .panel { width: 100% !important; flex: none !important; overflow: hidden !important; }' +
+        '._98e65704 > .panel:first-child { height: 50% !important; }' +
+        '._98e65704 > .panel:last-child { height: 50% !important; }' +
+
+        /* ── Game runner ── */
+        '._5a8deb15 { height: 100% !important; overflow: hidden !important; }' +
+        '._5a8deb15 > .controls { height: 36px !important; padding: 0 4px !important; flex-shrink: 0 !important; }' +
+        '._5a8deb15 > .controls button { min-width: 36px !important; }' +
+        '._5a8deb15 > .game { height: calc(100% - 36px) !important; overflow: hidden !important; }' +
+
+        /* ── Blockly: touch-friendly ── */
+        '.blocklyToolboxDiv { min-width: 80px !important; touch-action: pan-y !important; }' +
+        '.blocklyTreeRow { height: 32px !important; line-height: 32px !important; }' +
+        '.blocklyTreeLabel { font-size: 12px !important; }' +
+        '.blocklyMainBackground, .blocklySvg { touch-action: none !important; }' +
+        '._997216c4 { background: #4a6ca4 !important; overflow: hidden !important; }' +
+        'canvas { max-width: 100% !important; max-height: 100% !important; touch-action: none; object-fit: contain; }' +
+
+        /* ── Overlay buttons touch-friendly ── */
+        '._80aeacb2 button, ._80aeacb2 a { min-height: 44px !important; min-width: 44px !important; font-size: 15px !important; padding: 10px 18px !important; }' +
+
+        /* ── Goal emoji icons ── */
+        '._ed8591e2 > .goal:before { background-image: none !important; content: "🎯" !important; font-size: 16px !important; width: auto !important; height: auto !important; line-height: 1 !important; }' +
+        '._ed8591e2 > .goal.completed:before { content: "✅" !important; background-image: none !important; }' +
+        '._ed8591e2 > .goal { color: #e2e8f0 !important; font-size: 0.85em !important; }' +
+        '._ed8591e2 { margin: 5px 8px !important; padding: 8px !important; }';
+    document.head.appendChild(s);
+
+    // Force Blockly resize after level loads (toolbox rendering fix)
+    var resizeInterval = setInterval(function() {
+        if (typeof Blockly !== 'undefined' && Blockly.mainWorkspace) {
+            Blockly.svgResize(Blockly.mainWorkspace);
+            clearInterval(resizeInterval);
+        }
+    }, 500);
+
+    // Also resize on hash change (new level loaded)
+    window.addEventListener('hashchange', function() {
+        setTimeout(function() {
+            if (typeof Blockly !== 'undefined' && Blockly.mainWorkspace) {
+                Blockly.svgResize(Blockly.mainWorkspace);
+            }
+            window.dispatchEvent(new Event('resize'));
+        }, 300);
+    });
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   MathLock × Robotopia — Optimized WebView Bridge
+   ═══════════════════════════════════════════════════════ */
+window.RobotopiaMenu = (function() {
+    'use strict';
+
+    // ── Config ──
+    var CATEGORIES = [
+        { key: 'Blockly',     name: 'Temel Bloklar',  emoji: '🧩', levels: 2 },
+        { key: 'Rotate',      name: 'Döndür',         emoji: '🔄', levels: 2 },
+        { key: 'Loops',       name: 'Döngüler',       emoji: '🔁', levels: 4 },
+        { key: 'Conditions',  name: 'Koşullar',       emoji: '❓', levels: 2 },
+        { key: 'Resources',   name: 'Kaynaklar',      emoji: '💎', levels: 2 },
+        { key: 'Marker',      name: 'İşaretçiler',    emoji: '📍', levels: 2 },
+        { key: 'Scout',       name: 'Keşif',          emoji: '🔭', levels: 1 }
+    ];
+    var TOTAL_LEVELS = 15; // sum of all category levels
+    var completed = {};
+    var curCat = null, curIdx = null, active = false;
+
+    // ── Persistence ──
+    function load() {
+        try { var s = localStorage.getItem('robotopia_progress'); if (s) completed = JSON.parse(s); } catch(e) {}
+    }
+    function save() {
+        try { localStorage.setItem('robotopia_progress', JSON.stringify(completed)); } catch(e) {}
+    }
+    function count() { return Object.keys(completed).length; }
+
+    // ── Android Bridge ──
+    function notify(evt, data) {
+        try { if (window.Android && window.Android.onGameEvent) window.Android.onGameEvent(evt, JSON.stringify(data)); }
+        catch(e) { console.warn('[Robotopia]', e); }
+    }
+
+    // ── Menu Render ──
+    function buildMenu() {
+        var c = document.getElementById('categories-container');
+        c.innerHTML = '';
+        CATEGORIES.forEach(function(cat) {
+            var sec = document.createElement('div');
+            sec.className = 'category-section';
+            sec.innerHTML = '<div class="category-title">' + cat.emoji + ' ' + cat.name + '</div>';
+            var grid = document.createElement('div');
+            grid.className = 'level-grid';
+
+            for (var i = 1; i <= cat.levels; i++) {
+                var k = cat.key + '/' + i;
+                var done = !!completed[k];
+                var card = document.createElement('div');
+                card.className = 'level-card' + (done ? ' completed' : '');
+                card.innerHTML =
+                    '<div class="lv-icon">' + cat.emoji + '</div>' +
+                    '<div class="lv-name">' + cat.name + ' ' + i + '</div>' +
+                    '<div class="lv-status">' + (done ? '✅ Tamamlandı' : '▶ Başla') + '</div>';
+                card.setAttribute('data-cat', cat.key);
+                card.setAttribute('data-idx', i);
+                card.addEventListener('click', onCardClick);
+                grid.appendChild(card);
+            }
+            sec.appendChild(grid);
+            c.appendChild(sec);
+        });
+        // Summary
+        var sum = document.createElement('div');
+        sum.className = 'progress-summary';
+        sum.textContent = '🏆 ' + count() + ' / ' + TOTAL_LEVELS + ' seviye tamamlandı';
+        c.appendChild(sum);
+    }
+
+    function onCardClick(e) {
+        var card = e.currentTarget;
+        startLevel(card.getAttribute('data-cat'), parseInt(card.getAttribute('data-idx')));
+    }
+
+    // ── Level Navigation ──
+    function startLevel(cat, idx) {
+        curCat = cat; curIdx = idx; active = true;
+        document.getElementById('tutorial-menu').classList.remove('active');
+        document.getElementById('back-btn').style.display = 'block';
+        document.getElementById('progress-bar').style.display = 'block';
+        updateBar();
+        window.location.hash = '#tutorial/' + cat + '/' + idx;
+    }
+
+    function show() {
+        active = false; curCat = null; curIdx = null;
+        document.getElementById('back-btn').style.display = 'none';
+        document.getElementById('progress-bar').style.display = 'none';
+        window.location.hash = '#';
+        buildMenu();
+        document.getElementById('tutorial-menu').classList.add('active');
+    }
+
+    function updateBar() {
+        document.getElementById('progress-fill').style.width = Math.round((count() / TOTAL_LEVELS) * 100) + '%';
+    }
+
+    // ── Level Completion Detection ──
+    // Strategy: DOM observer + click capture for reliable detection
+    function markComplete() {
+        if (!curCat || !curIdx) return;
+        var k = curCat + '/' + curIdx;
+        if (completed[k]) return;
+        completed[k] = true;
+        save();
+        updateBar();
+        notify('levelComplete', {
+            category: curCat, levelIndex: curIdx,
+            totalCompleted: count(), totalLevels: TOTAL_LEVELS
+        });
+        if (count() >= TOTAL_LEVELS) {
+            notify('allComplete', { totalCompleted: count(), totalLevels: TOTAL_LEVELS });
+        }
+    }
+
+    // MutationObserver: watch for win/overlay modals appearing
+    var observer = new MutationObserver(function(mutations) {
+        if (!active) return;
+        mutations.forEach(function(m) {
+            m.addedNodes.forEach(function(node) {
+                if (node.nodeType !== 1) return;
+                // Robotopia shows an overlay with "Next Level" button on completion
+                var text = node.textContent || '';
+                if (text.indexOf('Sonraki') > -1 || text.indexOf('Next Level') > -1 || text.indexOf('next level') > -1) {
+                    markComplete();
+                }
+            });
+        });
+    });
+
+    // Click capture: backup detection for "Next Level" / "Run" buttons
+    document.addEventListener('click', function(e) {
+        if (!active) return;
+        var t = (e.target && e.target.textContent) || '';
+        if (t.trim() === 'Sonraki' || t.trim() === 'Next Level' || t.trim() === 'next level') {
+            markComplete();
+        }
+    }, true);
+
+    // Hash change: track level navigation
+    window.addEventListener('hashchange', function() {
+        var m = window.location.hash.match(/#tutorial\/(\w+)\/(\d+)/);
+        if (m) {
+            curCat = m[1]; curIdx = parseInt(m[2]);
+            active = true;
+            document.getElementById('tutorial-menu').classList.remove('active');
+            document.getElementById('back-btn').style.display = 'block';
+            document.getElementById('progress-bar').style.display = 'block';
+        }
+    });
+
+    // ── Init ──
+    function init() {
+        load();
+
+        // levelImage inline style'larını temizle (bundle bunları inline set ediyor, 404 önleme için)
+        // interval ile sürekli temizle — Choo her render'da yeniden set ediyor
+        function cleanLevelImages() {
+            document.querySelectorAll('.levelImage').forEach(function(el) {
+                if (el.style.backgroundImage) {
+                    el.style.backgroundImage = '';
+                    el.style.backgroundColor = '#16213e';
+                }
+            });
+        }
+        setInterval(cleanLevelImages, 300);
+
+        // Wait for Choo app to mount
+        var tries = 0, maxTries = 50; // 10 seconds
+        var poll = setInterval(function() {
+            tries++;
+            var root = document.getElementById('root');
+            if ((root && root.children.length > 0) || tries >= maxTries) {
+                clearInterval(poll);
+                // Hide loading
+                var ls = document.getElementById('loading-screen');
+                ls.classList.add('hide');
+                setTimeout(function() { ls.style.display = 'none'; }, 400);
+
+                // Start observing DOM for level completions
+                observer.observe(document.body, { childList: true, subtree: true });
+
+                // Show tutorial menu
+                buildMenu();
+                document.getElementById('tutorial-menu').classList.add('active');
+
+                notify('ready', { totalLevels: TOTAL_LEVELS, completedLevels: count() });
+            }
+        }, 200);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    // Public API
+    return { show: show, startLevel: startLevel, markComplete: markComplete };
+})();
+</script>
+
+</body>
+</html>

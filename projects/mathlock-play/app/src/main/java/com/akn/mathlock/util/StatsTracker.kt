@@ -41,7 +41,7 @@ class StatsTracker(private val context: Context) {
         val sawTopic: Boolean
     )
 
-    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val prefs = SecurePrefs.get(context, PREFS_NAME)
     private val results = mutableListOf<QuestionResult>()
 
     init {
@@ -89,12 +89,10 @@ class StatsTracker(private val context: Context) {
      * Backend API'ye stats yükle. IO thread'den çağır.
      * @return true: yükleme başarılı ve local state temizlendi
      */
-    fun uploadStats(questionVersion: Int): Boolean {
+    fun uploadStats(questionVersion: Int, authToken: String?): Boolean {
         val statsJson = buildStatsJson(questionVersion)
-        val accountPrefs = context.getSharedPreferences("mathlock_account", Context.MODE_PRIVATE)
-        val deviceToken = accountPrefs.getString("device_token", null)
-        if (deviceToken == null) {
-            Log.w(TAG, "device_token yok — stats yüklenemedi")
+        if (authToken.isNullOrBlank()) {
+            Log.w(TAG, "access_token yok — stats yüklenemedi")
             return false
         }
         val childName = prefManager.activeChildName ?: "Çocuk"
@@ -104,7 +102,6 @@ class StatsTracker(private val context: Context) {
 
         // API endpoint'ine POST
         val apiBody = JSONObject().apply {
-            put("device_token", deviceToken)
             put("child_name", childName)
             put("question_version", questionVersion)
             put("session_time_seconds", sessionTimeDelta)
@@ -115,6 +112,7 @@ class StatsTracker(private val context: Context) {
             val conn = URL(API_STATS_URL).openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+            conn.setRequestProperty("Authorization", "Device $authToken")
             conn.doOutput = true
             conn.connectTimeout = 5000
             conn.readTimeout = 10000

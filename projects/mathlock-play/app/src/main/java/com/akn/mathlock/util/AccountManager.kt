@@ -23,16 +23,25 @@ class AccountManager(
         private const val TAG = "AccountManager"
         private const val PREFS_NAME = "mathlock_account"
         private const val KEY_DEVICE_TOKEN = "device_token"
+        private const val KEY_ACCESS_TOKEN = "access_token"
         private const val KEY_INSTALLATION_ID = "installation_id"
         private const val KEY_EMAIL = "registered_email"
         private const val KEY_CREDITS = "cached_credits"
         private const val KEY_FREE_USED = "free_set_used"
     }
 
-    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val prefs = SecurePrefs.get(context, PREFS_NAME)
+
+    init {
+        // Ensure API client always has the latest auth token on instantiation
+        apiClient.setAuthToken(getAccessToken())
+    }
 
     /** Kayıtlı device_token (null = henüz kayıt yok). */
     fun getDeviceToken(): String? = prefs.getString(KEY_DEVICE_TOKEN, null)
+
+    /** Kayıtlı access_token (imzalı, Authorization header için). */
+    fun getAccessToken(): String? = prefs.getString(KEY_ACCESS_TOKEN, null)
 
     /** Kayıtlı email (null = kayıt yok). */
     fun getEmail(): String? = prefs.getString(KEY_EMAIL, null)
@@ -53,7 +62,7 @@ class AccountManager(
      * @return device_token veya null (ağ hatası)
      */
     fun getOrRegister(): String? {
-        val existing = getDeviceToken()
+        val existing = getAccessToken()
         if (!existing.isNullOrBlank()) return existing
 
         val installationId = getOrCreateInstallationId()
@@ -64,13 +73,16 @@ class AccountManager(
             })
             if (response.statusCode in 200..299) {
                 val token = response.body.getString("device_token")
+                val accessToken = response.body.optString("access_token", token)
                 val credits = response.body.optInt("credits", 0)
                 val freeUsed = response.body.optBoolean("free_set_used", false)
                 prefs.edit()
                     .putString(KEY_DEVICE_TOKEN, token)
+                    .putString(KEY_ACCESS_TOKEN, accessToken)
                     .putInt(KEY_CREDITS, credits)
                     .putBoolean(KEY_FREE_USED, freeUsed)
                     .apply()
+                apiClient.setAuthToken(accessToken)
                 // Çocuk profil bilgisini kaydet
                 val children = response.body.optJSONArray("children")
                 if (children != null && children.length() > 0) {
@@ -104,12 +116,11 @@ class AccountManager(
      * @throws IllegalArgumentException geçersiz email
      */
     fun registerEmail(email: String): RegisterEmailResult {
-        val token = getDeviceToken()
+        val token = getAccessToken()
             ?: return RegisterEmailResult.Error("Önce cihaz kaydı yapılmalı")
 
         return try {
             val response = apiClient.post("/auth/register-email/", JSONObject().apply {
-                put("device_token", token)
                 put("email", email.trim().lowercase())
             })
             val responseText = response.body.toString()
@@ -149,9 +160,8 @@ class AccountManager(
      * IO thread'den çağır.
      */
     fun refreshCredits(): Int {
-        val token = getDeviceToken() ?: return getCachedCredits()
         return try {
-            val response = apiClient.get("/credits/?device_token=$token")
+            val response = apiClient.get("/credits/")
             if (response.statusCode in 200..299) {
                 val credits = response.body.optInt("credits", 0)
                 val freeUsed = response.body.optBoolean("free_set_used", false)

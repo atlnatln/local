@@ -1321,3 +1321,58 @@ tags: [meta, log]
 - Raw existence: 4 (pre-existing: agents-md raw URLs + ops-bot/AGENTS.md path mapping)
 - Log size: 112 entries
 
+
+## [2026-05-03 18:52] refactor | robotopia-extraction | mathlock-play → robotopia-android
+
+- **MathLock Play'den çıkarılanlar:**
+  - `RobotopiaActivity.kt` silindi
+  - `assets/robotopia/` (2.9 MB) silindi
+  - `activity_robotopia.xml` silindi
+  - `AndroidManifest.xml`'den declaration kaldırıldı
+  - `MainActivity.kt`, `ChallengePickerActivity.kt`, `SettingsActivity.kt`, `PreferenceManager.kt`'den Robotopia referansları temizlendi
+  - `proguard-rules.pro`'dan Robotopia keep kuralı kaldırıldı
+  - `colors.xml`'den `card_robotopia` rengi kaldırıldı
+  - `ChallengePickerUnlockPolicyTest.kt`'den ROBOTOPIA testleri kaldırıldı
+  - Layout'lar: `activity_main.xml`, `activity_settings.xml`, `activity_challenge_picker.xml`'den kartlar kaldırıldı
+- **Yeni proje:** `projects/robotopia-android/`
+  - Package: `com.akn.robotopia`
+  - App name: `Robotopia Kodlama`
+  - 4 Kotlin dosyası: `MainActivity.kt`, `BaseActivity.kt`, `LocaleHelper.kt`, `LocalePrefs.kt`
+  - Assets: `robotopia/` (2.9 MB) kopyalandı
+  - Dependencies: core-ktx, appcompat, material, constraintlayout (4 adet)
+  - No Firebase, no Billing, no Internet permission
+  - Dead code temizliği: `AppLockService`, `LockStateManager`, kilit modu değişkenleri kaldırıldı
+- **Build sonuçları:**
+  - mathlock-play: `BUILD SUCCESSFUL` (debug + release)
+  - robotopia-android: `BUILD SUCCESSFUL` (debug + release)
+  - Release APK: mathlock-play 3.0M, robotopia-android 2.9M
+- **Wiki güncellemeleri:**
+  - `projects/mathlock-play.md` güncellendi (Robotopia notu eklendi)
+  - `projects/robotopia-android.md` oluşturuldu
+  - `decisions/adr-003-robotopia-extraction.md` oluşturuldu
+  - `index.md` güncellendi (yeni proje + ADR + recently updated)
+- Log size: 113 entries
+## [2026-05-03 18:54] lint | 6/10
+- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 6 (acp, agents, coding-conventions, configuration, robotopia-android, webview)
+- Raw existence: 5
+- Log size: 115 entries
+
+## [2026-05-03 18:54] lint | 6/10
+- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
+- Raw existence: 4
+- Log size: 116 entries
+

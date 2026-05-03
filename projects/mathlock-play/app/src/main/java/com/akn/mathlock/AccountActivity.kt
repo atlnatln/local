@@ -57,7 +57,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         val hasEmail = !email.isNullOrBlank()
         val credits = accountManager.getCachedCredits()
         val freeUsed = accountManager.isFreeSetUsed()
-        val token = accountManager.getDeviceToken()
+        val token = accountManager.getAccessToken()
 
         if (hasEmail) {
             // Kayıtlı kullanıcı
@@ -319,7 +319,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
     }
 
     private fun verifyAndConsumePurchase(purchase: Purchase) {
-        val token = accountManager.getDeviceToken() ?: return
+        val token = accountManager.getAccessToken() ?: return
 
         // İlk satın alınan ürünün product_id'sini al
         val productId = purchase.products.firstOrNull() ?: return
@@ -384,7 +384,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
     }
 
     private fun purchaseDebugCredits(amount: Int, productId: String) {
-        val token = accountManager.getDeviceToken() ?: return
+        val token = accountManager.getAccessToken() ?: return
         Snackbar.make(binding.root, "Kredi ekleniyor…", Snackbar.LENGTH_SHORT).show()
 
         Thread {

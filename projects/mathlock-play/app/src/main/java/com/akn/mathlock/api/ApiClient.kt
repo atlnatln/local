@@ -13,6 +13,9 @@ interface ApiClient {
         val body: JSONObject
     )
 
+    /** Auth token'ı ayarla (Authorization: Device <token> header'ı için) */
+    fun setAuthToken(token: String?)
+
     /** POST isteği gönder */
     fun post(path: String, body: JSONObject): Response
 

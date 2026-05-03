@@ -56,7 +56,7 @@ class QuestionManager(private val context: Context) {
         val solved: Boolean = false,
     )
 
-    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val prefs = SecurePrefs.get(context, PREFS_NAME)
 
     /** Mevcut rotasyon listesi (önce çözülmemiş/yeni, sonra hepsi döner). */
     private var rotationQueue: MutableList<JsonQuestion> = mutableListOf()
@@ -71,20 +71,21 @@ class QuestionManager(private val context: Context) {
      * IO thread'den çağır.
      * @return true ise JSON mode kullanılabilir
      */
-    fun sync(deviceToken: String?): Boolean {
-        if (deviceToken.isNullOrBlank()) {
+    fun sync(authToken: String?): Boolean {
+        if (authToken.isNullOrBlank()) {
             return loadFromCache()
         }
 
         return try {
             val childId = prefManager.activeChildId
-            var apiUrl = "$API_BASE/questions/?device_token=${deviceToken.trim()}"
-            if (childId > 0) apiUrl += "&child_id=$childId"
+            var apiUrl = "$API_BASE/questions/"
+            if (childId > 0) apiUrl += "?child_id=$childId"
             val url = URL(apiUrl)
             val conn = url.openConnection() as HttpURLConnection
             conn.connectTimeout = CONNECT_TIMEOUT
             conn.readTimeout = READ_TIMEOUT
             conn.requestMethod = "GET"
+            conn.setRequestProperty("Authorization", "Device ${authToken.trim()}")
 
             if (conn.responseCode == 200) {
                 val json = conn.inputStream.bufferedReader().readText()
@@ -263,7 +264,7 @@ class QuestionManager(private val context: Context) {
      * Bekleyen çözüm ID'lerini sunucuya gönder.
      * IO thread'den çağır.
      */
-    fun uploadProgress(deviceToken: String): Boolean {
+    fun uploadProgress(authToken: String): Boolean {
         val pendingIds = getPendingSolvedIds()
         if (pendingIds.isEmpty()) return true
 
@@ -272,12 +273,12 @@ class QuestionManager(private val context: Context) {
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+            conn.setRequestProperty("Authorization", "Device $authToken")
             conn.doOutput = true
             conn.connectTimeout = CONNECT_TIMEOUT
             conn.readTimeout = READ_TIMEOUT
 
             val body = JSONObject().apply {
-                put("device_token", deviceToken)
                 val childId = prefManager.activeChildId
                 if (childId > 0) put("child_id", childId)
                 val arr = JSONArray()

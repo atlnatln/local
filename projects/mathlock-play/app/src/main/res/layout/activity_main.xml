@@ -270,64 +270,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Robotopia (Kodlama) Pratik -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardPracticeRobotopia"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="6dp"
-            app:cardBackgroundColor="@color/card_robotopia"
-            android:layout_marginBottom="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:rippleColor="#66000000">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="18dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🤖"
-                    android:textSize="36sp"
-                    android:layout_marginEnd="16dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Robotopia"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/on_surface" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Robotları programla"
-                        android:textSize="11sp"
-                        android:textColor="@color/on_surface_secondary"
-                        android:layout_marginTop="2dp" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="→"
-                    android:textSize="20sp"
-                    android:textColor="@color/on_surface_secondary" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
         <!-- Ebeveyn erişim butonu -->
         <TextView

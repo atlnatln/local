@@ -17,6 +17,7 @@ import com.akn.mathlock.api.RealApiClient
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.AccountManager
 import com.akn.mathlock.util.PreferenceManager
+import com.akn.mathlock.util.SecurePrefs
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -128,7 +129,7 @@ class SayiYolculuguActivity : BaseActivity() {
     }
 
     private fun loadCompletedLevels() {
-        val raw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val raw = SecurePrefs.get(this, PREFS_NAME)
             .getString(KEY_COMPLETED_IDS, "") ?: ""
         completedLevelIds.clear()
         raw.split(",").mapNotNull { it.trim().toIntOrNull() }.forEach { completedLevelIds.add(it) }
@@ -137,7 +138,7 @@ class SayiYolculuguActivity : BaseActivity() {
 
     private fun saveCompletedLevels() {
         val raw = completedLevelIds.sorted().joinToString(",")
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        SecurePrefs.get(this, PREFS_NAME)
             .edit().putString(KEY_COMPLETED_IDS, raw).apply()
     }
 
@@ -157,7 +158,7 @@ class SayiYolculuguActivity : BaseActivity() {
     private fun fetchLevels(): String? {
         val accountManager = AccountManager(this)
         val prefManager = PreferenceManager(this)
-        var token = accountManager.getDeviceToken()
+        var token = accountManager.getAccessToken()
         if (token.isNullOrBlank()) {
             token = accountManager.getOrRegister()
         }
@@ -188,13 +189,13 @@ class SayiYolculuguActivity : BaseActivity() {
                         if (!isNewSet) {
                             // Aynı set: local cache'teki tamamlanan ID'leri de ekle (merge)
                             // (Kullanıcı uygulamayı kapatırsa upload thread kesilebilir)
-                            val localRaw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            val localRaw = SecurePrefs.get(this, PREFS_NAME)
                                 .getString(KEY_COMPLETED_IDS, "") ?: ""
                             localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
                                 .forEach { completedLevelIds.add(it) }
                         } else {
                             // Yeni set: eski local tamamlanmış seviyeleri temizle
-                            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            SecurePrefs.get(this, PREFS_NAME)
                                 .edit().remove(KEY_COMPLETED_IDS).apply()
                         }
                         saveCompletedLevels()
@@ -204,7 +205,7 @@ class SayiYolculuguActivity : BaseActivity() {
                         System.out.println("[SY-FETCH] API parse exception: ${e.message}")
                     }
                     val injected = injectCompletedIds(json)
-                    getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    SecurePrefs.get(this, PREFS_NAME)
                         .edit().putString(KEY_CACHED_LEVELS, injected).apply()
                     System.out.println("[SY-FETCH] cached and returning injected")
                     return injected
@@ -218,7 +219,7 @@ class SayiYolculuguActivity : BaseActivity() {
             System.out.println("[SY-FETCH] token blank/null")
         }
 
-        val cached = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val cached = SecurePrefs.get(this, PREFS_NAME)
             .getString(KEY_CACHED_LEVELS, null)
         if (cached != null) {
             try {
@@ -232,20 +233,20 @@ class SayiYolculuguActivity : BaseActivity() {
                 }
                 if (!isNewSet) {
                     // Aynı set: local cache'tekileri merge et
-                    val localRaw = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    val localRaw = SecurePrefs.get(this, PREFS_NAME)
                         .getString(KEY_COMPLETED_IDS, "") ?: ""
                     localRaw.split(",").mapNotNull { it.trim().toIntOrNull() }
                         .forEach { completedLevelIds.add(it) }
                 } else {
                     // Yeni set: eski local tamamlanmış seviyeleri temizle
-                    getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    SecurePrefs.get(this, PREFS_NAME)
                         .edit().remove(KEY_COMPLETED_IDS).apply()
                 }
                 saveCompletedLevels()
                 currentSetId = cachedSetId
             } catch (_: Exception) {}
             val injected = injectCompletedIds(cached)
-            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            SecurePrefs.get(this, PREFS_NAME)
                 .edit().putString(KEY_CACHED_LEVELS, injected).apply()
             System.out.println("[SY-FETCH] cache loaded set=$currentSetId completed=${completedLevelIds.size}")
             return injected
@@ -353,7 +354,7 @@ class SayiYolculuguActivity : BaseActivity() {
             try {
                 val accountManager = AccountManager(this)
                 val prefManager = PreferenceManager(this)
-                var token = accountManager.getDeviceToken()
+                var token = accountManager.getAccessToken()
                 if (token.isNullOrBlank()) {
                     token = accountManager.getOrRegister()
                 }
@@ -393,7 +394,7 @@ class SayiYolculuguActivity : BaseActivity() {
     private fun clearLevelCacheAndReload() {
         completedLevelIds.clear()
         saveCompletedLevels()
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        SecurePrefs.get(this, PREFS_NAME)
             .edit().remove(KEY_CACHED_LEVELS).apply()
         Log.i(TAG, "Level cache temizlendi, yeni seviyeler çekiliyor...")
         loadLevelsIntoGame()
@@ -429,7 +430,7 @@ class SayiYolculuguActivity : BaseActivity() {
         webView.removeAllViews()
         webView.destroy()
 
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit()
+        SecurePrefs.get(this, PREFS_NAME).edit()
             .remove(KEY_CACHED_LEVELS)
             .remove(KEY_COMPLETED_IDS)
             .apply()

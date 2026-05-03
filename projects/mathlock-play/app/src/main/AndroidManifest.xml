@@ -149,14 +149,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MathLock" />
 
-        <!-- Robotopia (Kodlama Macerası) -->
-        <activity
-            android:name=".RobotopiaActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:excludeFromRecents="true"
-            android:finishOnTaskLaunch="true"
-            android:theme="@style/Theme.MathLock" />
 
         <!-- Desen Kilidi -->
         <activity

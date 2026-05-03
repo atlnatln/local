@@ -14,6 +14,12 @@ class RealApiClient : ApiClient {
         const val TIMEOUT = 8000
     }
 
+    private var authToken: String? = null
+
+    override fun setAuthToken(token: String?) {
+        authToken = token
+    }
+
     override fun post(path: String, body: JSONObject): ApiClient.Response {
         return execute("POST", path) { conn ->
             conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
@@ -52,6 +58,9 @@ class RealApiClient : ApiClient {
         conn.requestMethod = method
         conn.connectTimeout = TIMEOUT
         conn.readTimeout = TIMEOUT
+        authToken?.let {
+            conn.setRequestProperty("Authorization", "Device $it")
+        }
         configure(conn)
 
         val code = conn.responseCode

@@ -92,11 +92,11 @@ class MathChallengeActivity : BaseActivity() {
         // JSON modunu arka planda sync et, sonra soruları göster
         Thread {
             // Cihaz kaydı + bekleyen ilerleme gönderimi
-            val token = accountManager.getOrRegister()
-            if (token != null) {
-                questionManager.uploadProgress(token)
+            val authToken = accountManager.getOrRegister()
+            if (authToken != null) {
+                questionManager.uploadProgress(authToken)
             }
-            val jsonAvailable = questionManager.sync(token)
+            val jsonAvailable = questionManager.sync(authToken)
             topicHelper.sync()
             runOnUiThread {
                 // JSON soru varsa ve set tamamlanmadıysa JSON mode, yoksa fallback
@@ -439,10 +439,10 @@ class MathChallengeActivity : BaseActivity() {
         Log.d(TAG, "Pratik mod: set tamamlandı, stats yükleniyor...")
         // Stats yükle ve progress sıfırla
         Thread {
-            val token = accountManager.getDeviceToken()
-            val uploaded = statsTracker.uploadStats(questionManager.getVersion())
-            if (token != null) {
-                questionManager.uploadProgress(token)
+            val authToken = accountManager.getAccessToken()
+            val uploaded = statsTracker.uploadStats(questionManager.getVersion(), authToken)
+            if (authToken != null) {
+                questionManager.uploadProgress(authToken)
             }
             questionManager.resetProgress()
             if (uploaded) {
@@ -467,8 +467,8 @@ class MathChallengeActivity : BaseActivity() {
                 binding.tvResult.visibility = View.GONE
                 // Yeni seti sync et ve devam et
                 Thread {
-                    val token = accountManager.getDeviceToken()
-                    questionManager.sync(token)
+                    val authToken = accountManager.getAccessToken()
+                    questionManager.sync(authToken)
                     runOnUiThread {
                         if (!isFinishing && !isDestroyed) showNextJsonQuestion()
                     }
@@ -493,11 +493,11 @@ class MathChallengeActivity : BaseActivity() {
 
         // Stats yükle + kredi kullan + sıradaki set için soruları arka planda hazırla
         Thread {
-            val token = accountManager.getDeviceToken()
+            val authToken = accountManager.getAccessToken()
             val childName = prefManager.activeChildName ?: "Çocuk"
-            val uploaded = statsTracker.uploadStats(questionManager.getVersion())
-            if (token != null) {
-                questionManager.uploadProgress(token)
+            val uploaded = statsTracker.uploadStats(questionManager.getVersion(), authToken)
+            if (authToken != null) {
+                questionManager.uploadProgress(authToken)
             }
             if (uploaded) {
                 questionManager.resetProgress()
@@ -506,9 +506,9 @@ class MathChallengeActivity : BaseActivity() {
                 Log.w(TAG, "Stats yükleme başarısız, sonra tekrar denenecek")
             }
             // Yeni set üretmek için kredi kullan (ilk set ücretsiz)
-            if (token != null) {
+            if (authToken != null) {
                 val statsJson = statsTracker.buildStatsJson(questionManager.getVersion())
-                val creditResult = creditClient.useCredit(token, childName, statsJson)
+                val creditResult = creditClient.useCredit(authToken, childName, statsJson)
                 if (creditResult.success) {
                     Log.d(TAG, "Kredi kullanıldı: kalan=${creditResult.creditsRemaining}, ücretsiz=${creditResult.isFree}, set_version=${creditResult.setVersion}")
                 } else {
@@ -523,7 +523,7 @@ class MathChallengeActivity : BaseActivity() {
                 }
             }
             // Soruları şimdi sync et — VPS'te yeni set hazır olunca sessizce çeker
-            questionManager.sync(token)
+            questionManager.sync(authToken)
             Log.d(TAG, "Sonraki set için sorular sync edildi")
         }.start()
 
@@ -687,8 +687,8 @@ class MathChallengeActivity : BaseActivity() {
 
         // Pending solved soruları sunucuya gönder (kaybolmasın)
         Thread {
-            val token = accountManager.getDeviceToken()
-            if (token != null) questionManager.uploadProgress(token)
+            val authToken = accountManager.getAccessToken()
+            if (authToken != null) questionManager.uploadProgress(authToken)
         }.start()
 
         lockedPackage?.let { pkg ->
@@ -770,10 +770,10 @@ class MathChallengeActivity : BaseActivity() {
         statsTracker.endSession()
         // Activity yok olmadan önce pending progress'i son kez göndermeye çalış
         // (unlockAndLaunchApp() içindeki Thread async çalıştığı için finish() öncesinde kaybolabilir)
-        val token = accountManager.getDeviceToken()
-        if (token != null) {
+        val authToken = accountManager.getAccessToken()
+        if (authToken != null) {
             try {
-                questionManager.uploadProgress(token)
+                questionManager.uploadProgress(authToken)
             } catch (e: Exception) {
                 Log.w(TAG, "onDestroy progress upload hatası: ${e.message}")
             }

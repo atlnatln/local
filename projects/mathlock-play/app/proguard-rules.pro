@@ -14,10 +14,6 @@
 -keepclassmembers class com.akn.mathlock.SayiYolculuguActivity$GameBridge {
     @android.webkit.JavascriptInterface <methods>;
 }
--keepclassmembers class com.akn.mathlock.RobotopiaActivity$GameBridge {
-    @android.webkit.JavascriptInterface <methods>;
-}
-
 # ── MPAndroidChart ──
 -keep class com.github.mikephil.charting.** { *; }
 

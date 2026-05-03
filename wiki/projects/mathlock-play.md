@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play"
 created: 2026-05-01
-updated: 2026-05-02
+updated: 2026-05-03
 type: project
 tags: [mathlock-play, android, django, kotlin, systemd]
 related:
@@ -18,6 +18,8 @@ sources:
 ## Purpose
 
 Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar matematik soruları çözerek veya sayı tahmin oyunu oynayarak uygulamaları açabilir. AI destekli adaptif öğrenme sistemi.
+
+> **Not (2026-05-03):** Robotopia (Blockly kodlama oyunu) artık bu projede değil. Bkz. [[robotopia-android]].
 
 ## Stack
 
@@ -45,7 +47,7 @@ Telefon yeni seti indirir
 
 | Dosya/Dizin | Görev |
 |-------------|-------|
-| `projects/mathlock-play/app/src/main/...` | Android Kotlin kaynak kodu |
+| `projects/mathlock-play/app/src/main/...` | Android Kotlin kaynak kodu (Robotopia hariç) |
 | `projects/mathlock-play/backend/` | Django backend |
 | `projects/mathlock-play/website/` | Privacy policy, support sayfaları |
 | `projects/mathlock-play/deploy.sh` | Build + data sync |
@@ -78,7 +80,7 @@ sudo systemctl restart mathlock-backend mathlock-celery
 
 v1.0.67 sürümünde stabilite düzeltmeleri:
 - **ProGuard:** Billing, Biometric, JS Bridge, MPAndroidChart için `keep` kuralları eklendi — release build R8 kırılmaları önlendi
-- **WebView Memory Leak:** `SayiYolculuguActivity` ve `RobotopiaActivity`'de `onDestroy()`'da `webView.destroy()` + `removeAllViews()` eklendi
+- **WebView Memory Leak:** `SayiYolculuguActivity`'de `onDestroy()`'da `webView.destroy()` + `removeAllViews()` eklendi
 - **Handler Leak:** `pollForNewSet()` recursive polling'i activity-level `Handler`'a taşındı; `onDestroy()`'da `removeCallbacksAndMessages(null)` ile temizleniyor
 - **BootReceiver:** Android 14 `ForegroundServiceStartNotAllowedException` riski `try/catch` ile kapatıldı
 - **Firebase Crashlytics:** `com.google.firebase:firebase-crashlytics:18.6.4` + Google Services plugin 4.4.4 entegre edildi

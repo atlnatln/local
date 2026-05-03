@@ -67,8 +67,8 @@ class SettingsActivity : BaseActivity() {
     private fun updateAiModeInfo() {
         val qm = QuestionManager(this)
         Thread {
-            val token = accountManager.getOrRegister()
-            val hasJson = qm.sync(token)
+            val authToken = accountManager.getOrRegister()
+            val hasJson = qm.sync(authToken)
             val email = accountManager.getEmail()
             val credits = accountManager.getCachedCredits()
             val childName = prefManager.activeChildName ?: "Çocuk"
@@ -286,10 +286,6 @@ class SettingsActivity : BaseActivity() {
             prefManager.isPuzzleEnabled = isChecked
         }
 
-        binding.switchRobotopia.isChecked = prefManager.isRobotopiaEnabled
-        binding.switchRobotopia.setOnCheckedChangeListener { _, isChecked ->
-            prefManager.isRobotopiaEnabled = isChecked
-        }
     }
 
     private fun checkAndRequestPermissions() {

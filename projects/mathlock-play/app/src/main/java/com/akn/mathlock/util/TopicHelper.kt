@@ -27,7 +27,7 @@ class TopicHelper(private val context: Context) {
         val tips: List<String>
     )
 
-    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val prefs = SecurePrefs.get(context, PREFS_NAME)
     private val topics = mutableMapOf<String, TopicExplanation>()
 
     /**

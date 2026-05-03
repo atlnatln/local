@@ -54,6 +54,7 @@ Aktif mimari karar kayıtları (ADR).
 |-------|-------|-------|----------|
 | [[adr-001-monorepo-hybrid-structure]] | Active | 2026-05-02 | Monorepo + ayrı repo karışık yapısı kararı |
 | [[adr-002-sec-agent-daily-report-agent-router]] | Active | 2026-05-02 | sec-agent raporlarının ops-bot agent router ile yorumlanması |
+| [[adr-003-robotopia-extraction]] | Active | 2026-05-03 | Robotopia'nın MathLock Play'den bağımsız projeye ayrılması |
 
 ## Archived Decisions
 
@@ -72,12 +73,16 @@ Geçersiz kılınmış veya değişmiş kararlar.
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-02 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-01 |
 | [[anka]] | project | B2B veri servisi — Django + Next.js | 2026-05-01 |
-| [[mathlock-play]] | project | Android math game + Django backend | 2026-05-01 |
+| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) | 2026-05-03 |
+| [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
 | [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu | 2026-05-01 |
 
 ## Recently Updated
 
+- [[robotopia-android]] — Yeni proje oluşturuldu, MathLock Play'den ayrıldı (2026-05-03)
+- [[mathlock-play]] — Robotopia temizlendi, ~2.9 MB asset kaldırıldı (2026-05-03)
+- [[adr-003-robotopia-extraction]] — Yeni ADR oluşturuldu (2026-05-03)
 - [[ops-bot]] — ACP protocol fix (kimi-cli 1.40), word-boundary risky matching, /iptal footer, 7 yeni test (2026-05-03)
 - [[telegram-kimi]] — SSH komut refactor, context usage ACP üzerinden (kimi-cli 1.40) (2026-05-03)
 - [[ops-bot]] — Test suite genişletildi (57 test), executor output temizliği, router caching (2026-05-03)

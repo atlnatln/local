@@ -1,4 +1,4 @@
-package com.akn.mathlock
+package com.akn.robotopia
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -6,37 +6,26 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
-import com.akn.mathlock.service.AppLockService
 import org.json.JSONObject
 
-class RobotopiaActivity : BaseActivity() {
+class MainActivity : BaseActivity() {
 
     companion object {
         private const val TAG = "Robotopia"
     }
 
     private lateinit var webView: WebView
-    private var lockedPackage: String? = null
-    private var isPracticeMode = false
-    private var isTestMode = false
-    private var timerExpired = false
     private var levelsCompleted = 0
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_robotopia)
+        setContentView(R.layout.activity_main)
 
-        // Debug modda Chrome DevTools ile canlı CSS/JS düzenleme
-        WebView.setWebContentsDebuggingEnabled(true)
+        // Debug modda Chrome DevTools ile canlı CSS/JS düzenleme (sadece debug)
+        WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG)
 
         window.statusBarColor = android.graphics.Color.parseColor("#1a1a2e")
-
-        lockedPackage = intent.getStringExtra("locked_package")
-        isPracticeMode = intent.getBooleanExtra("practice_mode", false)
-        isTestMode = intent.getBooleanExtra("test_mode", false)
-        timerExpired = intent.getBooleanExtra("timer_expired", false)
 
         webView = findViewById(R.id.webView)
         webView.settings.javaScriptEnabled = true
@@ -57,28 +46,6 @@ class RobotopiaActivity : BaseActivity() {
         webView.loadUrl("file:///android_asset/robotopia/game.html")
     }
 
-    private fun unlockAndFinish() {
-        if (isTestMode) {
-            Toast.makeText(this, "Test başarılı!", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-        if (isPracticeMode) {
-            finish()
-            return
-        }
-
-        lockedPackage?.let { pkg ->
-            LockStateManager.notifyUnlocked(pkg)
-            AppLockService.removeBlockingOverlay()
-            val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
-            if (launchIntent != null) {
-                startActivity(launchIntent)
-            }
-        }
-        finish()
-    }
-
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         // Oyun içindeyse (hash #tutorial/... ise) → menüye dön (app'in kendi geri butonu gibi)
@@ -92,18 +59,8 @@ class RobotopiaActivity : BaseActivity() {
             }
             // Menüdeyiz veya hash boş — Activity'den çık
             runOnUiThread {
-                if (isPracticeMode || isTestMode) {
-                    @Suppress("DEPRECATION")
-                    super.onBackPressed()
-                } else {
-                    // Kilit modunda geri tuşu ana ekrana gönderir
-                    val homeIntent = android.content.Intent(android.content.Intent.ACTION_MAIN).apply {
-                        addCategory(android.content.Intent.CATEGORY_HOME)
-                        flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-                    startActivity(homeIntent)
-                    finish()
-                }
+                @Suppress("DEPRECATION")
+                super.onBackPressed()
             }
         }
     }
@@ -132,15 +89,11 @@ class RobotopiaActivity : BaseActivity() {
                             levelsCompleted++
                             Log.d(TAG, "Seviye tamamlandı: ${data.optString("category")}/${data.optInt("levelIndex")}, " +
                                     "toplam: ${data.optInt("totalCompleted")}/${data.optInt("totalLevels")}")
-
-                            // NOT: Robotopia artık kilit açma amaçlı kullanılmıyor.
-                            // Kilit açma sadece MathChallengeActivity üzerinden yapılır.
                         }
                         "allComplete" -> {
                             Log.d(TAG, "Tüm seviyeler tamamlandı!")
                         }
                         "finish" -> {
-                            // Pratik/test modunda veya kilit modunda activity'i kapat
                             finish()
                         }
                     }

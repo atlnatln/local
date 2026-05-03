@@ -77,7 +77,7 @@ class PerformanceReportActivity : BaseActivity() {
     }
 
     private fun loadReport() {
-        val token = AccountManager(this).getDeviceToken() ?: return
+        val token = AccountManager(this).getAccessToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/report/?device_token=$token&child_name=${java.net.URLEncoder.encode(childName, "UTF-8")}")
