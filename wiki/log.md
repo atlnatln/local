@@ -1252,7 +1252,7 @@ tags: [meta, log]
 - Files: A:5 M:3 R:2 (.env.test, pytest.ini, tests/*, bot/config.py, deploy.sh, agents/prompts/ops-security-agent.md, ops-security-explain.md → _archive, ops-security-observe.md → _archive)
 - Pages updated: [[ops-bot]]
 - Diff summary: Security prompt unified (explain+observe → single ops-security-agent.md, ~40KB data recovery). Deploy script fixed to include bot/, agents/, tests/, docs/. Test suite added (30 tests, pytest-asyncio). Raw archive updated with 8 new source snapshots.
-- Lint: pending
+- Lint: 7/10 passing, 3 warnings (pre-existing: page size ×3, unknown tags ×4, raw existence ×4)
 - Revert: git checkout 644ef939 -- wiki/
 ## [2026-05-03 16:11] lint | 7/10
 - Orphan pages: 0
@@ -1265,4 +1265,59 @@ tags: [meta, log]
 - Unknown tags: 4 (acp, agents, coding-conventions, configuration)
 - Raw existence: 4
 - Log size: 108 entries
+
+
+## [2026-05-03 17:04] ingest | ops-bot | d23644e | 6
+- Files: A:2 M:4 D:0
+- Pages created: —
+- Pages updated: [[ops-bot]]
+- Pages archived: —
+- Diff summary: ops-bot test suite expanded to 57 tests. New files: `tests/test_acp_executor.py` (17 tests), `tests/test_telegram_messages.py` (10 tests). Fixes: `_clean_output` applied to all executor return paths; router caching and logging improved; mock/patch issues resolved in test imports.
+- Lint: pending
+## [2026-05-03 17:13] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
+- Raw existence: 4
+- Log size: 110 entries
+
+
+## [2026-05-03 18:20] ingest | ops-bot + telegram-kimi | 3304d40 | 8
+- Files (ops-bot): A:1 M:6 D:0
+- Files (local): A:0 M:1 D:0 (`projects/telegram-kimi/bot.py`)
+- Files (webimar): A:0 M:0 D:0
+- Pages updated: [[ops-bot]], [[telegram-kimi]]
+- Pages archived: —
+- Diff summary:
+  - ops-bot: ACP protocol fix for kimi-cli 1.40 (`ApprovalRequest`/`ToolCallRequest`), word-boundary risky command matching, `/iptal` footer, context usage deferred, deploy script `*.md` include fix, 7 new `test_acp_client.py` tests
+  - telegram-kimi: SSH command refactored (`script -q -c` → direct `ssh`), `_context_footer` switched to ACP `usage_update` values (also broken in 1.40)
+- Lint: pending
+## [2026-05-03 18:22] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
+- Raw existence: 4
+- Log size: 112 entries
+
+## [2026-05-03 18:22] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3 (pre-existing: kimi-code-cli.md, ops-bot.md, sec-agent.md)
+- Unknown tags: 4 (pre-existing: acp, agents, coding-conventions, configuration)
+- Raw existence: 4 (pre-existing: agents-md raw URLs + ops-bot/AGENTS.md path mapping)
+- Log size: 112 entries
 

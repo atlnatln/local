@@ -68,23 +68,24 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 | Proje | Tip | Açıklama | Son Güncelleme |
 |-------|-----|----------|----------------|
-| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (30 test) | 2026-05-03 |
+| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (57 test) | 2026-05-03 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-02 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-01 |
 | [[anka]] | project | B2B veri servisi — Django + Next.js | 2026-05-01 |
 | [[mathlock-play]] | project | Android math game + Django backend | 2026-05-01 |
-| [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-01 |
+| [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
 | [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu | 2026-05-01 |
 
 ## Recently Updated
 
+- [[ops-bot]] — ACP protocol fix (kimi-cli 1.40), word-boundary risky matching, /iptal footer, 7 yeni test (2026-05-03)
+- [[telegram-kimi]] — SSH komut refactor, context usage ACP üzerinden (kimi-cli 1.40) (2026-05-03)
+- [[ops-bot]] — Test suite genişletildi (57 test), executor output temizliği, router caching (2026-05-03)
 - [[ops-bot]] — Security prompt merge (explain+observe), deploy fix, 30 test suite (2026-05-03)
 - [[ops-bot]] — Tek beyin mimarisi, güvenlik filtreleri, tool limit, memory trim (2026-05-03)
 - [[ops-bot]] — V2 routing, timeout fixes, keywords_tr, embedding router aktifleştirildi (2026-05-03)
 - [[adr-002-sec-agent-daily-report-agent-router]] — Yeni ADR oluşturuldu (2026-05-02)
 - [[sec-agent]] — Yeni proje sayfası oluşturuldu (2026-05-02)
-- [[ops-bot]] — VPS Dizin Yapısı ve Troubleshooting eklendi (2026-05-02)
-- [[adr-001-monorepo-hybrid-structure]] — İlk ADR oluşturuldu (2026-05-02)
 
 ## Log
 

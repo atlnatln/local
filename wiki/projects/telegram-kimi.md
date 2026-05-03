@@ -1,7 +1,7 @@
 ---
 title: "Telegram Kimi"
 created: "2026-05-01"
-updated: "2026-05-02"
+updated: "2026-05-03"
 type: project
 tags: [telegram-kimi, python, telegram-bot, systemd, security]
 related:
@@ -26,7 +26,7 @@ Telegram botu aracılığıyla [[kimi-code-cli|Kimi CLI]]'ye uzaktan erişim sa�
 | Bileşen | Teknoloji |
 |---------|-----------|
 | Runtime | Python 3, `python-telegram-bot` 20.7 |
-| Protocol | ACP (Agent Client Protocol) — JSON-RPC 2.0 over stdio |
+| Protocol | ACP (Agent Client Protocol) — JSON-RPC 2.0 over stdio (kimi-cli 1.40.0) |
 | Client | `acp_client.py` — async NDJSON stdio client |
 | Auth | Telegram user ID whitelist |
 | Deploy | `systemd` servisi (VPS) |
@@ -53,7 +53,8 @@ session/request_permission: InlineKeyboard (✅ Onayla / ❌ Reddet)
 
 - Session persistence: Birden fazla mesajda session yaşar
 - `session/cancel` desteği
-- Permission schema: `{"outcome": {"outcome": "selected", "optionId": "approve"}}`
+- Permission schema: `{"request_id": "...", "response": "approve"}` (kimi-cli 1.40 format)
+- Yeni handler: `method: "request"` + `type: "ApprovalRequest"` (legacy `session/request_permission` backward compatible)
 
 ## Bot Komutları
 
@@ -75,9 +76,9 @@ session/request_permission: InlineKeyboard (✅ Onayla / ❌ Reddet)
 
 ## Context & Token Takibi
 
-- `context.jsonl` → son `_usage` satırı okunur
-- `config.toml` → `max_context_size` okunur
-- Her yanıt sonunda footer: `📊 Context: 12.3k / 262.1k (4.7%)`
+- **kimi-cli 1.40.0 öncesi:** `context.jsonl` → son `_usage` satırı okunur, `config.toml` → `max_context_size`
+- **kimi-cli 1.40.0:** ACP `usage_update` notification'ı artık context bilgisi iletmiyor — token takibi deferred (teknik borç)
+- Her yanıt sonunda footer: `📊 Context: 12.3k / 262.1k (4.7%)` (şu an boş gösteriyor)
 
 ## Reverse SSH Tunnel
 

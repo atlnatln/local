@@ -47,7 +47,7 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
 | Models | `models/registry.py` — model name resolution |
 | Skills | `skills/*/SKILL.md` — 4 skill (docker-troubleshooting, nginx-routing, postgres-query, security-reporting) |
 | Security | `sec-agent/` — collector/engine/actions/config |
-| Test | `tests/` — pytest + pytest-asyncio, 30 test (22 unit + 8 integration/E2E) |
+| Test | `tests/` — pytest + pytest-asyncio, 57 test (49 unit + 8 integration/E2E) |
 | Deploy | `./deploy.sh` → VPS `systemd` servisi |
 
 ## Entry Points
@@ -69,6 +69,9 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
 | ~~`ops-bot/agents/descriptor_loader.py`~~ | ~~YAML descriptor okuma~~ — [REMOVED] |
 | `ops-bot/tests/conftest.py` | pytest fixtures: mocked Telegram Application + Update factories |
 | `ops-bot/tests/test_router.py` | 22 unit test: `extract_explicit_agent()` regex parser + `BotRouter.select()` |
+| `ops-bot/tests/test_acp_client.py` | 7 unit test: ACP protocol (`ApprovalRequest`/`ToolCallRequest`), permission auto-approve/reject, word-boundary risky matching |
+| `ops-bot/tests/test_acp_executor.py` | 17 unit test: ACP executor `_clean_output`, session lifecycle, cancel/reset, tool call buffering |
+| `ops-bot/tests/test_telegram_messages.py` | 10 unit test: Telegram message handler formatting, error replies, notification parsing |
 | `ops-bot/tests/test_integration.py` | 8 integration/E2E test: smoke + real kimi-cli ACP subprocess |
 | `ops-bot/deploy.sh` | VPS deploy script'i (package/git modları) |
 | `ops-bot/systemd/ops-bot.service` | systemd unit dosyası |
@@ -147,10 +150,12 @@ Agent seçimi: `bot/router.py` sadece explicit `@agent-adı` parse eder. Kimi-cl
 Güvenlik iki katmandır:
 
 1. **Birinci katman — Kimi-CLI Agent Spec:** Her subagent'ın `tools` listesiyle sadece gerekli tool'lar aktiftir. `ops-security-agent`'ta `WriteFile` yoksa hiçbir dosya yazılamaz.
-2. **İkinci katman — ACP Client:** `bot/acp_client.py` `session/request_permission` handler'ında riskli komut filtrelemesi:
+2. **İkinci katman — ACP Client:** `bot/acp_client.py` `request` method handler'ında riskli komut filtrelemesi:
    - **Reject edilen kalıplar:** `git`, `rm`, `mv`, `cp`, `chmod`, `chown`, `sudo`, `mkfs`, `dd`, `wget`, `curl`, `nc`, `netcat`, `nmap`
    - **Approve edilenler:** Güvenli read-only ve yönetim komutları
    - Tool call başlığı ilk 200 karaktere bakılarak karar verilir
+   - **Word-boundary matching:** `re.findall(r"\b\w+\b", ...)` ile tam kelime eşleşmesi — `"perform"` gibi substring'ler yanlış reject yapmaz (2026-05-03)
+   - **Kimi-cli 1.40 uyumluluğu:** Hem yeni `method: "request"` + `type: "ApprovalRequest"` hem eski `session/request_permission` desteklenir
 
 ### Context Persistence
 
@@ -158,6 +163,7 @@ Güvenlik iki katmandır:
 - Session ID'ler `self._sessions` dict'te tutulur
 - kimi-cli `~/.kimi/sessions/<md5>/<session_id>/context.jsonl`'da context saklar
 - Kimi-cli native context persistence — bot restart sonrası devam eder
+- **Context/token kullanım takibi:** `usage_update` ACP notification handler'ı mevcut ancak kimi-cli 1.40.0'da bu bilgi ACP üzerinden iletilmiyor — gösterim deferred (teknik borç)
 
 ## Servisler
 
@@ -263,12 +269,16 @@ sudo systemctl restart ops-bot
 
 ## Recent Commits
 
-- `d28a8db` merge(security): unify explain+observe into ops-security-agent.md — 40KB data recovery, archive old prompts (2026-05-03)
-- `c7d2563` fix(deploy): include missing directories in package mode — bot/, agents/, tests/, docs/ vb. (2026-05-03)
-- `7b15b75` test(ops-bot): add e2e and unit test suite — 30 test, pytest-asyncio, mocked Telegram (2026-05-03)
-- `47a2a6d` docs(ops-bot): industry-standard documentation overhaul — README, .env.example, AGENTS.md, CHANGELOG.md (2026-05-03)
-- `f0884ee` feat(ops-bot): add AGENTS.md for kimi-cli native context injection (2026-05-03)
-- `2c685d6` feat(ops-bot): unify into single kimi-cli native universe — descriptor/zombie silme, skill frontmatter, subagent tools, master system.md değişkenleri (2026-05-03)
-- `d443eab` deploy: ops-bot V2 rewrite deploy (2026-05-03)
-- `b915049` fix(security): use OPS_BOT_REPO_ROOT for ai_analyzer path (2026-05-02)
-- `ab28161` chore: sync all local changes before deploy (2025-04-30)
+- `3304d40` revert(debug): remove prompt result key logging — context usage deferred (2026-05-03)
+- `f74b7dd` fix(logging): setup logging before module imports to capture INFO logs (2026-05-03)
+- `a72537c` feat(ops-bot): add context usage to Telegram footer (deferred — kimi-cli 1.40 ACP protocol) (2026-05-03)
+- `6c43a44` feat(telegram): add /iptal footer to every bot reply (2026-05-03)
+- `4493d02` fix(deploy): include *.md files in deployment package (2026-05-03)
+- `1f7ea09` fix(ops-bot): use word-boundary matching for risky command filter (2026-05-03)
+- `be6be2c` fix(ops-bot): correct ACP ApprovalRequest protocol for kimi-cli 1.40 (2026-05-03)
+- `d23644e` test(ops-bot): fix remaining mock issues — 57 test passing (2026-05-03)
+- `0741b91` test(ops-bot): fix top-level import breaking env_patch in tests (2026-05-03)
+- `63f1f69` fix(ops-bot): apply `_clean_output` to all return paths in executor (2026-05-03)
+- `dbdb356` fix(ops-bot): improve logging, error messages, and router caching (2026-05-03)
+- `d28a8db` merge(security): unify explain+observe into ops-security-agent.md (2026-05-03)
+- `c7d2563` fix(deploy): include missing directories in package mode (2026-05-03)
