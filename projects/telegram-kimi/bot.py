@@ -3,14 +3,11 @@
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import html
-import json
 import logging
 import re
 import shlex
 import threading
-from pathlib import Path
 from typing import List, Optional
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -149,8 +146,10 @@ class BridgeState:
     # ------------------------------------------------------------------
 
     def _context_footer(self) -> str:
-        """Return a short context usage footer by reading context.jsonl."""
-        used, size = _get_context_usage(self.session_id)
+        """Return a short context usage footer from ACP usage_update values."""
+        with self._context_lock:
+            used = self._context_used
+            size = self._context_size
         if used == 0 or size == 0:
             return ""
         pct = (used / size) * 100
@@ -261,20 +260,22 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     # Build ACP client based on mode
     if mode == "local":
         inner_cmd = f"exec {config.KIMI_CMD} {' '.join(shlex.quote(a) for a in config.KIMI_ARGS)}"
-        ssh_cmd = (
-            f"ssh -p {shlex.quote(str(config.LOCAL_SSH_PORT))} "
-            f"-i {shlex.quote(config.LOCAL_SSH_KEY)} "
-            f"-o ConnectTimeout=2 "
-            f"-o StrictHostKeyChecking=accept-new "
-            f"-tt "
-            f"{shlex.quote(f'{config.LOCAL_SSH_USER}@{config.LOCAL_SSH_HOST}')} "
-            f"bash -lc {shlex.quote(inner_cmd)}"
-        )
+        remote_cmd = f"bash -lc {shlex.quote(inner_cmd)}"
+        ssh_args = [
+            "-p", str(config.LOCAL_SSH_PORT),
+            "-i", config.LOCAL_SSH_KEY,
+            "-o", "ConnectTimeout=2",
+            "-o", "StrictHostKeyChecking=accept-new",
+            "-tt",
+            f"{config.LOCAL_SSH_USER}@{config.LOCAL_SSH_HOST}",
+            remote_cmd,
+        ]
         _state.acp = AcpClient(
-            cmd="script",
-            args=["-q", "-c", ssh_cmd, "/dev/null"],
+            cmd="ssh",
+            args=ssh_args,
             cwd=config.LOCAL_SSH_WORK_DIR,
             notification_handler=_state._on_acp_notification,
+            use_pty=True,
         )
     elif mode == "vps":
         _state.acp = AcpClient(
@@ -286,20 +287,22 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     else:  # auto
         # Try local first (via reverse SSH tunnel)
         inner_cmd = f"exec {config.KIMI_CMD} {' '.join(shlex.quote(a) for a in config.KIMI_ARGS)}"
-        ssh_cmd = (
-            f"ssh -p {shlex.quote(str(config.LOCAL_SSH_PORT))} "
-            f"-i {shlex.quote(config.LOCAL_SSH_KEY)} "
-            f"-o ConnectTimeout=2 "
-            f"-o StrictHostKeyChecking=accept-new "
-            f"-tt "
-            f"{shlex.quote(f'{config.LOCAL_SSH_USER}@{config.LOCAL_SSH_HOST}')} "
-            f"bash -lc {shlex.quote(inner_cmd)}"
-        )
+        remote_cmd = f"bash -lc {shlex.quote(inner_cmd)}"
+        ssh_args = [
+            "-p", str(config.LOCAL_SSH_PORT),
+            "-i", config.LOCAL_SSH_KEY,
+            "-o", "ConnectTimeout=2",
+            "-o", "StrictHostKeyChecking=accept-new",
+            "-tt",
+            f"{config.LOCAL_SSH_USER}@{config.LOCAL_SSH_HOST}",
+            remote_cmd,
+        ]
         local_acp = AcpClient(
-            cmd="script",
-            args=["-q", "-c", ssh_cmd, "/dev/null"],
+            cmd="ssh",
+            args=ssh_args,
             cwd=config.LOCAL_SSH_WORK_DIR,
             notification_handler=_state._on_acp_notification,
+            use_pty=True,
         )
         await update.message.reply_text("🔄 Local bilgisayar kontrol ediliyor...")
         started = local_acp.start()
@@ -457,66 +460,6 @@ def _extract_vba_blocks(text: str) -> List[str]:
     matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
     return [m.strip() for m in matches if m.strip()]
 
-
-def _get_context_usage(session_id: Optional[str]) -> tuple[int, int]:
-    """Read context usage from Kimi's context.jsonl and config.toml.
-    Returns (used_tokens, max_context_size).
-    """
-    if not session_id:
-        return 0, 0
-
-    # 1. Find context.jsonl
-    work_dir = config.WORK_DIR or "/home/akn/local"
-    path_md5 = hashlib.md5(work_dir.encode("utf-8")).hexdigest()
-    sessions_dir = Path.home() / ".kimi" / "sessions" / path_md5
-    context_file = sessions_dir / session_id / "context.jsonl"
-
-    used = 0
-    if context_file.exists():
-        try:
-            with open(context_file, "r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        obj = json.loads(line)
-                        if obj.get("role") == "_usage":
-                            tc = obj.get("token_count")
-                            if isinstance(tc, int):
-                                used = tc
-                    except json.JSONDecodeError:
-                        continue
-        except Exception as exc:
-            logger.debug("Failed to read context.jsonl: %s", exc)
-
-    # 2. Find max_context_size from config.toml
-    size = 0
-    config_file = Path.home() / ".kimi" / "config.toml"
-    if config_file.exists():
-        try:
-            import tomllib
-            with open(config_file, "rb") as f:
-                cfg = tomllib.load(f)
-            default_model = cfg.get("default_model", "")
-            models = cfg.get("models", {})
-            model_key = default_model
-            if model_key in models:
-                size = models[model_key].get("max_context_size", 0)
-            # Try without quotes if needed (tomllib may parse quoted keys)
-            if size == 0:
-                for k, v in models.items():
-                    if k.strip('"') == model_key or k == model_key:
-                        size = v.get("max_context_size", 0)
-                        break
-        except Exception as exc:
-            logger.debug("Failed to read config.toml: %s", exc)
-
-    # Fallback for kimi-for-coding (Kimi-k2.6)
-    if size == 0:
-        size = 262144
-
-    return used, size
 
 
 def _read_excel_bytes(content_bytes: bytes, filename: str) -> str:
