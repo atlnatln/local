@@ -1616,7 +1616,14 @@ tags: [meta, log]
 - Lint: see next entry
 - Revert: git checkout cb0d8be -- wiki/
 
-## [2026-05-05 21:42] lint | 6/10
+## [2026-05-05 22:17] ingest | webimar | fc83c03 | 1 sayfa
+- Files: M:1
+- Pages updated: [[webimar]]
+- Diff summary: middleware_token_abuse.py set() → list() cache fix eklendi. Her API isteğinde 500 atan JSON serialization hatası giderildi.
+- Lint: see next entry
+- Revert: git checkout b74b3ac -- wiki/
+
+## [2026-05-05 22:18] lint | 6/10
 - Orphan pages: 0
 - Broken links: 1
 - Missing from index: 0
@@ -1626,7 +1633,7 @@ tags: [meta, log]
 - Oversized pages: 4
 - Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
 - Raw existence: 4
-- Log size: 140 entries
+- Log size: 141 entries
 
 ## [2026-05-05 21:46] lint | 6/10
 - Orphan pages: 0
@@ -1639,4 +1646,16 @@ tags: [meta, log]
 - Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
 - Raw existence: 4
 - Log size: 141 entries
+
+## [2026-05-05 22:16] lint | 6/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
+- Raw existence: 4
+- Log size: 143 entries
 

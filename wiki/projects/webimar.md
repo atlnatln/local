@@ -115,6 +115,7 @@ Günlük güvenlik raporunda tespit edilen token sızıntısı ve `/api/accounts
 - **Profile guard:** `UserDetailSerializer` artık eksik `UserProfile`'ı `None` olarak döndürüyor (500 yerine graceful degrade).
 - **Token abuse middleware:** Yeni `middleware_token_abuse.py` eklendi.
 - **Admin blacklist:** `admin_token_blacklist.py` ile admin panelden token revoke desteği eklendi.
+- **Token abuse cache fix (2026-05-05):** `middleware_token_abuse.py`'de saatlik IP counter cache'e `set()` yazılıyordu; JSON serializer bunu serialize edemiyordu ve her API isteğinde 500 hatası fırlatıyordu. `set()` → `list()` çevrildi, eski cache verisi `isinstance` kontrolü ile migrate ediliyor.
 
 ## Recent Commits
 
