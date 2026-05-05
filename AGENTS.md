@@ -306,6 +306,69 @@ cd /home/akn/local/projects/webimar && git rev-parse HEAD > /home/akn/local/wiki
 
 ---
 
+## GitHub Sync ve Cross-Machine Development
+
+Bu proje `github.com/atlnatln/local.git` reposu üzerinden yönetilir. GitHub = source of truth. Local ve VPS birbirine `git push` / `git pull` üzerinden senkronize olur.
+
+### Dizin Yapısı (İki Makine)
+
+| Makine | Dizin | Amaç |
+|---|---|---|
+| **Local** | `/home/akn/local/` | Geliştirme + git repo |
+| **VPS** | `/home/akn/local/` | Git clone (geliştirme alanı) |
+| **VPS** | `/home/akn/vps/` | Deploy alanı (tar.gz çıkarma, production) |
+
+- Her iki makinede de `/home/akn/local/` aynı yapıya sahip git repodur.
+- VPS'teki `/home/akn/vps/` deploy script'lerinin hedefi olarak kalır (GitHub'dan bağımsız).
+- AGENTS.md'lerdeki `/home/akn/local/` yolları her iki makinede de çalışır.
+
+### Session Başı Git Kontrolü
+
+Her session başında wiki kontrolüne paralel:
+
+```
+1. rm -f ~/.wiki-skip-session
+2. timeout 5 git fetch origin 2>/dev/null || true
+   → Behind ise: "GitHub'da yeni değişiklik var (N commit). Pull yapalım mı?"
+   → Ahead ise: "Local'de push bekleyen değişiklik var."
+   → Sync veya offline: sessizce devam et
+3. Wiki kontrolü (.pending)
+```
+
+**Not:** Otomatik pull YAPMA. Conflict riski var. Kullanıcı onay verirse `git pull` çalıştır.
+
+### Push Komutu Protokolü
+
+Kullanıcı "push yap" dediğinde:
+
+```
+1. git status --short → değişiklik özetini göster
+2. Eğer wiki değişikliği varsa: "Wiki ingest yapalım mı?"
+3. Commit mesajı iste (type(scope): description formatında öner)
+4. git add -A && git commit -m "..." && git push origin main
+5. Eğer ops-bot/ veya webimar/ dirty ise: "Nested repo'ları da unutma!" uyarısı
+```
+
+### Nested Repo Hatırlatması
+
+- `ops-bot/` ve `projects/webimar/` root repo'da `.gitignore`'dadır.
+- Bunlar ayrı GitHub repo'larıdır (`github.com/atlnatln/ops-bot`, `github.com/atlnatln/webimar`).
+- Root repo push'u bunları içermez. Kendi dizinlerinde ayrı commit + push yapılmalı.
+
+### Wiki Cross-Machine Sync
+
+- Wiki hem local'de hem VPS'de aktif.
+- Push öncesi wiki ingest iste (opsiyonel ama önerilir).
+- `.checkpoints/*.sha` GitHub'da kalmalı (ortak referans).
+- `.pending` her makinede ayrı oluşur (`wiki/.pending` gitignore'dadır).
+
+### Git Auth (VPS)
+
+- **SSH tercih edilir:** `git remote set-url origin git@github.com:atlnatln/local.git`
+- **SSH key yoksa:** `git config credential.helper store` (bir kez token girilir, hatırlanır)
+
+---
+
 ## Güvenlik Notları
 
 - **sudo şifresi:** Kullanıcıya sor (sadece yerel makinede, VPS'te sudoers yapılandırması var)
@@ -319,6 +382,13 @@ cd /home/akn/local/projects/webimar && git rev-parse HEAD > /home/akn/local/wiki
 ## Sık Kullanılan Komutlar
 
 ```bash
+# Git
+ git status --short              # Değişiklik özeti
+git add -A && git commit -m "type(scope): ..."  # Commit
+git push origin main            # Push
+git pull origin main            # Pull
+timeout 5 git fetch origin      # GitHub'daki son değişiklikleri kontrol et
+
 # Tüm servislerin durumu
 systemctl status mathlock-backend mathlock-celery
 ssh akn@89.252.152.222 "systemctl status ops-bot telegram-kimi"
@@ -336,6 +406,7 @@ ssh akn@89.252.152.222 "journalctl -u ops-bot -n 50 --no-pager"
 
 ---
 
-> **Son güncelleme:** 2026-05-01  
+> **Son güncelleme:** 2026-05-05  
 > **Wiki durumu:** 7 proje ingest edildi, 10/10 lint passing  
 > **VPS durumu:** ops-bot ✅, sec-agent ✅, telegram-kimi ✅, webimar ✅, anka ✅, mathlock-play ✅
+> **GitHub:** `github.com/atlnatln/local.git`

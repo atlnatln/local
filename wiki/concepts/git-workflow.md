@@ -9,7 +9,6 @@ related:
   - deployment
   - README
 sources:
-  - raw/articles/AGENTS.md
 ---
 
 # Git Workflow

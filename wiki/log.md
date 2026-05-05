@@ -1659,3 +1659,6 @@ tags: [meta, log]
 - Raw existence: 4
 - Log size: 143 entries
 
+2026-05-05 23:37 | adr | adr-006 | github-sync-cross-machine-dev | karar alındı
+2026-05-05 23:37 | cleanup | stale-raw-agents | security-leak-removed | sudo-password-jst-temizlendi
+2026-05-05 23:37 | cleanup | checkpoint | eksik-checkpointler-eklendi | sec-agent, infrastructure

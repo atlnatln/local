@@ -58,6 +58,7 @@ Aktif mimari karar kayıtları (ADR).
 | [[adr-003-robotopia-extraction]] | Active | 2026-05-03 | Robotopia'nın MathLock Play'den bağımsız projeye ayrılması |
 | [[adr-004-memory-game-integration]] | Active | 2026-05-03 | Sayı Hafızası oyununun MathLock Play'e entegrasyonu |
 | [[adr-005-ops-bot-acp-sdk-migration]] | Active | 2026-05-04 | Ops-bot ACP client'ının resmi SDK'ya geçiş kararı |
+| [[adr-006-github-sync-cross-machine-dev]] | Active | 2026-05-05 | GitHub Sync + Cross-Machine Development |
 
 ## Archived Decisions
 
