@@ -22,6 +22,11 @@
     <color name="card_parent">#E3F2FD</color>
     <color name="card_puzzle">#EDE7F6</color>
     <color name="card_settings">#F3E5F5</color>
+    <color name="card_memory">#FFF8E1</color>
+
+    <color name="memory_card_back">#5C6BC0</color>
+    <color name="memory_card_front">#FFFFFF</color>
+    <color name="memory_card_matched">#66BB6A</color>
 
     <color name="notification_color">#4CAF50</color>
 

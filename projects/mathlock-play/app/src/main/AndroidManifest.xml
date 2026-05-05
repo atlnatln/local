@@ -149,6 +149,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MathLock" />
 
+        <!-- Sayı Hafızası Oyunu -->
+        <activity
+            android:name=".MemoryGameActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MathLock" />
 
         <!-- Desen Kilidi -->
         <activity

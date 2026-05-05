@@ -94,6 +94,20 @@ class ChallengePickerActivity : BaseActivity() {
         // Kilit açma ekranında sayı tahmin görünmez
         binding.cardGuess.visibility = View.GONE
 
+        // Sayı Hafızası
+        if (prefManager.isMemoryGameEnabled) {
+            binding.cardMemory.visibility = View.VISIBLE
+            binding.cardMemory.setOnClickListener {
+                val intent = Intent(this, MemoryGameActivity::class.java).apply {
+                    putExtra("locked_package", lockedPackage)
+                    putExtra("timer_expired", timerExpired)
+                }
+                startActivity(intent)
+            }
+        } else {
+            binding.cardMemory.visibility = View.GONE
+        }
+
         binding.cardParent.setOnClickListener {
             showParentBiometricAuth()
         }

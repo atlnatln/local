@@ -391,6 +391,45 @@
                     android:background="#E0E0E0"
                     android:layout_marginBottom="8dp" />
 
+                <!-- Sayı Hafızası Kart Çifti Sayısı -->
+                <TextView
+                    android:id="@+id/tvMemoryPairs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderMemoryPairs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="4"
+                    android:valueTo="20"
+                    android:stepSize="2" />
+
+                <!-- Sayı Hafızası Tur Sayısı -->
+                <TextView
+                    android:id="@+id/tvMemoryRounds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderMemoryRounds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="1"
+                    android:valueTo="10"
+                    android:stepSize="1" />
+
+                <!-- Ayırıcı -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"
+                    android:layout_marginBottom="8dp" />
+
                 <!-- Sayı Tahmin üst sınır -->
                 <TextView
                     android:id="@+id/tvGuessMax"
@@ -557,6 +596,17 @@
                         style="@style/Widget.Material3.Button.OutlinedButton"
                         app:cornerRadius="10dp"
                         android:layout_marginStart="4dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTestMemory"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:text="🧠 Test"
+                        android:textSize="12sp"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        app:cornerRadius="10dp"
+                        android:layout_marginStart="4dp" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -651,6 +701,26 @@
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchPuzzle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🧠 Sayı Hafızası"
+                        android:textSize="14sp"
+                        android:textColor="@color/on_surface" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchMemory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>

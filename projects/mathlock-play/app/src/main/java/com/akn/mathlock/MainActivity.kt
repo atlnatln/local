@@ -99,6 +99,14 @@ class MainActivity : BaseActivity() {
             startActivity(intent)
         }
 
+        // Pratik modu: çocuk hafıza oynar
+        binding.cardPracticeMemory.setOnClickListener {
+            val intent = Intent(this, MemoryGameActivity::class.java).apply {
+                putExtra("practice_mode", true)
+            }
+            startActivity(intent)
+        }
+
         // Gizli ebeveyn girişi: logoya 5 kez hızlı tıklama (yedek)
         binding.tvLogo.setOnClickListener {
             val now = SystemClock.elapsedRealtime()

@@ -143,6 +143,15 @@ class SettingsActivity : BaseActivity() {
         binding.sliderLevelsToUnlock.value = levelsToUnlock.coerceAtMost(12f)
         binding.tvLevelsToUnlock.text = getString(R.string.settings_levels_to_unlock, levelsToUnlock.toInt())
 
+        // Sayı Hafızası ayarları
+        val memoryPairs = prefManager.memoryGamePairCount.toFloat()
+        binding.sliderMemoryPairs.value = memoryPairs.coerceIn(4f, 20f)
+        binding.tvMemoryPairs.text = getString(R.string.settings_memory_pairs, memoryPairs.toInt())
+
+        val memoryRounds = prefManager.memoryGameRequiredRounds.toFloat()
+        binding.sliderMemoryRounds.value = memoryRounds.coerceIn(1f, 10f)
+        binding.tvMemoryRounds.text = getString(R.string.settings_memory_rounds, memoryRounds.toInt())
+
         // Sayı tahmin ayarları
         val guessMax = prefManager.guessMaxNumber.toFloat()
         binding.sliderGuessMax.value = guessMax.coerceIn(10f, 500f)
@@ -270,6 +279,13 @@ class SettingsActivity : BaseActivity() {
             startActivity(intent)
         }
 
+        binding.btnTestMemory.setOnClickListener {
+            val intent = Intent(this, MemoryGameActivity::class.java).apply {
+                putExtra("test_mode", true)
+            }
+            startActivity(intent)
+        }
+
         // Oyun görünürlük toggleları
         binding.switchMath.isChecked = prefManager.isMathEnabled
         binding.switchMath.setOnCheckedChangeListener { _, isChecked ->
@@ -284,6 +300,24 @@ class SettingsActivity : BaseActivity() {
         binding.switchPuzzle.isChecked = prefManager.isPuzzleEnabled
         binding.switchPuzzle.setOnCheckedChangeListener { _, isChecked ->
             prefManager.isPuzzleEnabled = isChecked
+        }
+
+        binding.switchMemory.isChecked = prefManager.isMemoryGameEnabled
+        binding.switchMemory.setOnCheckedChangeListener { _, isChecked ->
+            prefManager.isMemoryGameEnabled = isChecked
+        }
+
+        // Sayı Hafızası slider'ları
+        binding.sliderMemoryPairs.addOnChangeListener { _, value, _ ->
+            val count = value.toInt()
+            prefManager.memoryGamePairCount = count
+            binding.tvMemoryPairs.text = getString(R.string.settings_memory_pairs, count)
+        }
+
+        binding.sliderMemoryRounds.addOnChangeListener { _, value, _ ->
+            val rounds = value.toInt()
+            prefManager.memoryGameRequiredRounds = rounds
+            binding.tvMemoryRounds.text = getString(R.string.settings_memory_rounds, rounds)
         }
 
     }

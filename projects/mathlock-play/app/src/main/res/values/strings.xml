@@ -76,6 +76,8 @@
     <string name="settings_math_section">Matematik Ayarları</string>
     <string name="settings_guess_max">Sayı Oyunu Üst Sınırı: %1$d</string>
     <string name="settings_guess_rounds">Sayı Bul: Kaç tur çözülmeli: %1$d tur</string>
+    <string name="settings_memory_pairs">Sayı Hafızası Kart Çifti: %1$d çift</string>
+    <string name="settings_memory_rounds">Sayı Hafızası Açma: %1$d tur</string>
     <string name="settings_unlock_duration_title">⏱️ Kilit Açma Süresi</string>
     <string name="settings_unlock_duration_unlimited">Sınırsız (süre yok)</string>
     <string name="settings_unlock_duration_minutes">%1$d dakika</string>
