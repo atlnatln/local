@@ -49,16 +49,35 @@ Tarımsal arazilerde yapılaşma süreçlerinde güncel mevzuata ve bilimsel esa
 
 ## Deploy
 
+### Komut
+
 ```bash
-cd projects/webimar/
-./deploy.sh --skip-github   # Docker image build + VPS upload
+cd /home/akn/local/projects/webimar
+./deploy.sh --skip-github   # Yerel build + VPS upload, GitHub push atlanır
 ```
 
-Deploy akışı:
-1. `webimar-api`, `webimar-nextjs`, `webimar-react`, `nginx` image'larını build et
-2. `webimar-deploy.tar.gz` oluştur
-3. VPS'e scp ile upload et
-4. VPS'te `setup.sh` çalıştır (DB backup, SSL, container down/up)
+### Adımlar
+
+| # | Adım | Süre |
+|---|------|------|
+| 1 | Docker build (api, nextjs, react, nginx) | ~5-8 dk |
+| 2 | `webimar-deploy.tar.gz` oluştur | ~1 dk |
+| 3 | VPS'e `scp` ile upload | ~1 dk |
+| 4 | VPS'te `setup.sh` (DB backup, container down/up, migration) | ~1-2 dk |
+
+### Ön Koşullar
+
+- Yerel makinede **Docker daemon çalışıyor olmalı** (`systemctl is-active docker`). Çalışmıyorsa: `sudo systemctl start docker`
+- `.env.production` dosyası root'ta olmalı. Deploy script otomatik symlink yapar.
+- `buildx isn't installed` uyarısı korkutucu değil, build devam eder.
+
+### Sık Sorunlar
+
+| Hata | Çözüm |
+|------|-------|
+| `Cannot connect to the Docker daemon` | `sudo systemctl start docker` |
+| `[eslint] import/first` | React SPA'da import'lar dosya en üstünde olmalı. Fonksiyon/const tanımlamaları import'lardan sonra gelmeli. |
+| `Missing .env.production.local` | Opsiyonel, root `.env` yeterlidir. |
 
 ## Mevzuat Desteği
 
