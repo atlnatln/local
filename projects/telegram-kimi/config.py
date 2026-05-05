@@ -16,7 +16,7 @@ for uid in os.getenv("AUTHORIZED_USERS", "").split(","):
         except ValueError:
             pass
 
-WORK_DIR = os.getenv("WORK_DIR", "/home/akn/local")
+WORK_DIR = os.getenv("WORK_DIR", "/home/akn/vps")
 KIMI_CMD = os.getenv("KIMI_CMD", "kimi")
 KIMI_ARGS = os.getenv("KIMI_ARGS", "acp").split()
 
