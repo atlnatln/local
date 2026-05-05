@@ -11,7 +11,6 @@ related:
   - README
 sources:
   - raw/articles/wiki-post-commit.sh
-  - raw/articles/AGENTS.md
 ---
 
 # Proaktif Wiki Yöneticisi

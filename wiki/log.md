@@ -1662,3 +1662,39 @@ tags: [meta, log]
 2026-05-05 23:37 | adr | adr-006 | github-sync-cross-machine-dev | karar alındı
 2026-05-05 23:37 | cleanup | stale-raw-agents | security-leak-removed | sudo-password-jst-temizlendi
 2026-05-05 23:37 | cleanup | checkpoint | eksik-checkpointler-eklendi | sec-agent, infrastructure
+## [2026-05-05 23:40] lint | 5/10
+- Orphan pages: 1 ([[adr-006-github-sync-cross-machine-dev]])
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 6
+- Log size: 144 entries
+
+## [2026-05-05 23:41] lint | 5/10
+- Orphan pages: 1 ([[adr-006-github-sync-cross-machine-dev]])
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 4
+- Log size: 145 entries
+
+## [2026-05-05 23:41] lint | 5/10
+- Orphan pages: 1 ([[adr-006-github-sync-cross-machine-dev]])
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 4
+- Log size: 146 entries
+

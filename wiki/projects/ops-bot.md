@@ -23,7 +23,6 @@ sources:
   - raw/articles/ops-bot-scripts-acp-sdk-probe-py
   - raw/articles/ops-bot-tests-sdk-test-acp-sdk-executor-py
   - raw/articles/ops-bot-tests-test-telegram-messages-py
-  - ops-bot/AGENTS.md
 ---
 
 # [[Ops-Bot]]
