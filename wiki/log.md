@@ -1609,7 +1609,14 @@ tags: [meta, log]
 - Raw existence: 4
 - Log size: 138 entries
 
-## [2026-05-05 21:29] lint | 6/10
+## [2026-05-05 21:40] ingest | webimar | 29c2c8a | 1 sayfa
+- Files: A:4 M:20
+- Pages updated: [[webimar]]
+- Diff summary: OAuth hash fragment redirect, /me/ error handling, token abuse middleware, admin token blacklist eklendi. Google OAuth token log leakage fix.
+- Lint: see next entry
+- Revert: git checkout cb0d8be -- wiki/
+
+## [2026-05-05 21:42] lint | 6/10
 - Orphan pages: 0
 - Broken links: 1
 - Missing from index: 0
@@ -1619,5 +1626,17 @@ tags: [meta, log]
 - Oversized pages: 4
 - Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
 - Raw existence: 4
-- Log size: 139 entries
+- Log size: 140 entries
+
+## [2026-05-05 21:46] lint | 6/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
+- Raw existence: 4
+- Log size: 141 entries
 

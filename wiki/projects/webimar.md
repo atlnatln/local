@@ -1,7 +1,7 @@
 ---
 title: "Webimar"
 created: 2026-05-01
-updated: 2026-05-02
+updated: 2026-05-05
 type: project
 tags: [webimar, django, nextjs, react, docker, nginx]
 related:
@@ -40,6 +40,12 @@ Tarımsal arazilerde yapılaşma süreçlerinde güncel mevzuata ve bilimsel esa
 | `projects/webimar/webimar-react/` | React SPA (hesaplama motoru) |
 | `projects/webimar/deploy.sh` | VPS deploy script'i |
 | `projects/webimar/docker-compose.prod.yml` | Production container'ları |
+| `projects/webimar/webimar-api/accounts/middleware_token_abuse.py` | Token abuse detection middleware |
+| `projects/webimar/webimar-api/accounts/admin_token_blacklist.py` | Admin token blacklist helpers |
+| `projects/webimar/webimar-api/accounts/validators.py` | Custom validators |
+| `projects/webimar/webimar-api/accounts/views/google_auth_views.py` | Google OAuth + JWT views |
+| `projects/webimar/webimar-api/accounts/views/main_views.py` | User profile /me/ endpoint |
+| `projects/webimar/webimar-api/accounts/serializers.py` | User serializers |
 
 ## Deploy
 
@@ -79,7 +85,20 @@ Production API güvenlik sıkılaştırması:
 - **Permission flip:** `DEFAULT_PERMISSION_CLASSES` `AllowAny` → `IsAuthenticated`. Tüm public endpoint'lere (hesaplama, health, flowering, maps vb.) explicit `@permission_classes([AllowAny])` eklendi
 - **.env cleanup:** Git'te takip edilen `.env` dosyaları (`webimar-react/.env`, `webimar-nextjs/.env.production`, `.env.local.backup`) silindi. Sadece `.env.production.example` şablonu bırakıldı
 
+## OAuth & Token Security (2026-05-05)
+
+Günlük güvenlik raporunda tespit edilen token sızıntısı ve `/api/accounts/me/` 500 hataları giderildi:
+
+- **Hash fragment redirect:** `google_auth_views.py` artık JWT token'ları URL fragment/hash (`#access=xxx&refresh=yyy`) içinde gönderiyor. Fragment sunucuya iletilmez, nginx access loglarına düşmez.
+- **State bypass kaldırıldı:** `settings.DEBUG` ile OAuth state kontrolünü bypass eden kod kaldırıldı.
+- **Print leak temizliği:** Tüm `print()` ifadeleri `logger.debug()` ile değiştirildi.
+- **`/me/` robustness:** `main_views.py` GET handler'ına try/except eklendi; `update_user_session` ve profil hataları 500 yerine loglanıp devam ediyor.
+- **Profile guard:** `UserDetailSerializer` artık eksik `UserProfile`'ı `None` olarak döndürüyor (500 yerine graceful degrade).
+- **Token abuse middleware:** Yeni `middleware_token_abuse.py` eklendi.
+- **Admin blacklist:** `admin_token_blacklist.py` ile admin panelden token revoke desteği eklendi.
+
 ## Recent Commits
 
+- `29c2c8a8` fix(accounts): secure OAuth redirect with hash fragment, harden /me/ error handling, token abuse middleware (2026-05-05)
 - `e22b7782` security(phase-1): harden defaults, CORS, tracking, add AllowAny to public endpoints (2026-05-02)
 - `416474ac` security(phase-2): flip DEFAULT_PERMISSION_CLASSES to IsAuthenticated + cleanup .env files (2026-05-02)
