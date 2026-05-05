@@ -343,8 +343,8 @@ private fun fetchLevels(): String? {
 
 ## Recent Commits
 
+- `31c9a1db` chore(mathlock): bump version to 1.0.74 (74) (2026-05-03)
 - `7153815b` fix(mathlock): retry levels/progress without child_id on 404, always invoke callback (2026-05-03)
 - `d943f405` fix(mathlock): backward-compat auth for old app versions (query param + body token fallback) (2026-05-03)
 - `fc45d056` feat(robotopia-android): create standalone project extracted from mathlock-play (2026-05-03)
 - `9587a67a` chore(mathlock): bump version to 1.0.67 (67) (2026-05-02)
-- `11df330e` fix(mathlock): crash prevention + Firebase Crashlytics (2026-05-02)

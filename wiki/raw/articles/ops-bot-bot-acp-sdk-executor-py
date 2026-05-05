@@ -1,0 +1,388 @@
+"""SDK-based ACP executor — replaces bot/acp_executor.py."""
+from __future__ import annotations
+
+import asyncio
+import logging
+import os
+import shutil
+import time
+from typing import Dict, Optional
+
+from bot.config import Config
+
+logger = logging.getLogger(__name__)
+
+
+def _get_user_model(user_id: Optional[int]) -> str:
+    if user_id is None:
+        return "kimi-code/kimi-for-coding"
+    try:
+        from user_preferences import get_user_model
+        return get_user_model(user_id)
+    except Exception:
+        return "kimi-code/kimi-for-coding"
+
+
+def _get_skills_args() -> list[str]:
+    skills_dir = os.path.join(Config.REPO_ROOT, ".kimi", "skills")
+    return ["--skills-dir", skills_dir]
+
+
+def _get_agent_file_args(agent_name: Optional[str] = None) -> list[str]:
+    subagents_dir = os.path.join(Config.REPO_ROOT, "agents", "master", "subagents")
+    mapping = {
+        "security": "security.yaml",
+        "ops-security-agent": "security.yaml",
+        "docker": "docker.yaml",
+        "ops-docker-agent": "docker.yaml",
+        "monitor": "monitor.yaml",
+        "ops-monitor-agent": "monitor.yaml",
+        "database": "database.yaml",
+        "ops-database-agent": "database.yaml",
+        "incident": "incident.yaml",
+        "ops-incident-agent": "incident.yaml",
+        "fix": "fix.yaml",
+        "ops-fix-agent": "fix.yaml",
+        "ip-query": "ip-query.yaml",
+        "ops-ip-query-agent": "ip-query.yaml",
+        "forensic": "forensic.yaml",
+        "ops-forensic-agent": "forensic.yaml",
+        "seo": "seo.yaml",
+        "ops-seo-agent": "seo.yaml",
+    }
+    filename = mapping.get(agent_name)
+    if filename:
+        agent_file = os.path.join(subagents_dir, filename)
+    else:
+        agent_file = os.path.join(Config.REPO_ROOT, "agents", "master", "agent.yaml")
+    return ["--agent-file", agent_file]
+
+
+def _get_kimi_command() -> str:
+    """Resolve the kimi CLI executable path."""
+    kimi = shutil.which("kimi")
+    if kimi:
+        return kimi
+    # Fallback for uv-installed kimi-cli
+    fallback = os.path.expanduser("~/.local/share/uv/tools/kimi-cli/bin/kimi")
+    if os.path.isfile(fallback):
+        return fallback
+    return "kimi"  # Let it fail naturally if not found
+
+
+class SdkAcpExecutor:
+    """Async ACP executor using the official SDK."""
+
+    def __init__(self):
+        self._client = None  # lazy-loaded OpsBotAcpClient
+        self._gen = None  # async generator from spawn_agent_process
+        self._conn = None  # ClientSideConnection
+        self._process = None  # asyncio.subprocess.Process
+        self._sessions: Dict[str, str] = {}  # key -> session_id
+        self._initialized = False
+        self._current_agent_name: Optional[str] = None
+
+    def _get_client(self):
+        """Lazy-load OpsBotAcpClient to avoid heavy imports at class-load time."""
+        if self._client is None:
+            from bot.acp_sdk_client import OpsBotAcpClient
+            self._client = OpsBotAcpClient()
+        return self._client
+
+    async def _ensure_connection(self, agent_name: Optional[str] = None) -> bool:
+        """Ensure persistent ACP connection is alive for the requested agent."""
+        if self._conn is not None and self._process is not None:
+            if self._process.returncode is None:
+                if self._current_agent_name == agent_name:
+                    return True
+                # Agent changed — recycle connection
+                logger.info("Agent changed from %s to %s, recycling ACP process", self._current_agent_name, agent_name)
+                await self._close_connection()
+            else:
+                # Process died
+                logger.warning("ACP process died (returncode=%s), reconnecting", self._process.returncode)
+                await self._close_connection()
+
+        logger.info("Starting new ACP process for agent=%s", agent_name)
+        try:
+            from acp import spawn_agent_process
+            import acp.schema as schema
+
+            args = [_get_kimi_command()] + _get_skills_args() + _get_agent_file_args(agent_name) + ["acp"]
+            self._gen = spawn_agent_process(
+                self._get_client(),
+                *args,
+                cwd=Config.REPO_ROOT,
+            )
+            self._conn, self._process = await self._gen.__aenter__()
+
+            init_resp = await self._conn.initialize(
+                protocol_version=1,
+                client_info=schema.Implementation(name="ops-bot-sdk", version="2.0.0"),
+            )
+            logger.info("ACP initialized: %s", init_resp.agent_info)
+            self._initialized = True
+            self._current_agent_name = agent_name
+            return True
+        except Exception as exc:
+            logger.exception("Failed to start ACP process: %s", exc)
+            await self._close_connection()
+            return False
+
+    async def _close_connection(self) -> None:
+        """Close ACP connection and cleanup."""
+        if self._gen:
+            try:
+                await self._gen.__aexit__(None, None, None)
+            except Exception:
+                pass
+            self._gen = None
+        self._conn = None
+        self._process = None
+        self._initialized = False
+
+    async def _get_or_create_session(self, user_id: int, agent_name: str, model: str) -> Optional[str]:
+        key = f"{user_id}:{agent_name}"
+        if key in self._sessions:
+            sid = self._sessions[key]
+            logger.info("Reusing session user=%s agent=%s sid=%s", user_id, agent_name, sid)
+            return sid
+
+        logger.info("Creating new session for user=%s agent=%s", user_id, agent_name)
+        if not await self._ensure_connection(effective_agent):
+            logger.error("ACP ensure failed for user=%s agent=%s", user_id, agent_name)
+            return None
+
+        try:
+            session_resp = await self._conn.new_session(cwd=Config.REPO_ROOT)
+            sid = session_resp.session_id
+            logger.info("New session created user=%s agent=%s sid=%s", user_id, agent_name, sid)
+            self._sessions[key] = sid
+            return sid
+        except Exception as exc:
+            logger.exception("new_session failed: %s", exc)
+            return None
+
+    async def run(
+        self,
+        query: str,
+        agent_name: Optional[str],
+        model: Optional[str] = None,
+        user_id: Optional[int] = None,
+    ) -> str:
+        import acp
+
+        selected_model = model or _get_user_model(user_id)
+        effective_agent = agent_name or "general"
+        uid = user_id or 0
+
+        logger.info("Run start user=%s agent=%s query_len=%s", uid, effective_agent, len(query))
+        sid = await self._get_or_create_session(uid, effective_agent, selected_model)
+        if sid is None:
+            return (
+                "❌ Oturum başlatılamadı.\n\n"
+                "Bir teknik sorun oluştu. Lütfen bir dakika bekleyip tekrar deneyin. "
+                "Sorun devam ederse /iptal yazıp yeni sohbet başlatın."
+            )
+
+        # Reset state for this run
+        client = self._get_client()
+        client.accumulator.reset()
+        client.tool_call_count = 0
+
+        timeout = min(Config.KIMI_TIMEOUT_DEFAULT, 90)
+        if effective_agent == "ops-fix-agent":
+            timeout = min(Config.KIMI_TIMEOUT_FIX, 180)
+        elif effective_agent == "ops-database-agent":
+            timeout = min(Config.KIMI_TIMEOUT_DATABASE, 90)
+        elif effective_agent in {
+            "ops-incident-agent", "ops-docker-agent", "ops-monitor-agent",
+            "ops-security-agent", "ops-ip-query-agent", "ops-forensic-agent",
+            "ops-security-explain", "ops-security-observe", "ops-seo-agent",
+        }:
+            timeout = min(Config.KIMI_TIMEOUT_OPS, 120)
+
+        try:
+            import audit
+            audit.log_kimi_call(
+                query=query[:120],
+                user_id=user_id,
+                agent=agent_name,
+                model=selected_model,
+                full_command=f"acp prompt session={sid}",
+                event="kimi_cli_start",
+            )
+        except Exception:
+            pass
+
+        logger.info("Prompt start sid=%s timeout=%s", sid, timeout)
+        start_ms = int(time.time() * 1000)
+        try:
+            prompt_resp = await asyncio.wait_for(
+                self._conn.prompt(
+                    prompt=[acp.text_block(query)],
+                    session_id=sid,
+                ),
+                timeout=timeout,
+            )
+        except asyncio.TimeoutError:
+            logger.warning("Prompt timed out sid=%s", sid)
+            return (
+                "⏱️ İşlem zaman aşımına uğradı.\n\n"
+                "Bu, karmaşık bir görev olabilir. Lütfen /iptal yazıp kısa ve net bir şekilde tekrar sorun."
+            )
+        except Exception as exc:
+            logger.exception("Prompt failed: %s", exc)
+            return (
+                "⚠️ Bir sorun oluştu.\n\n"
+                "Sorun devam ederse /iptal yazıp yeniden başlayabilirsiniz."
+            )
+
+        duration_ms = int(time.time() * 1000) - start_ms
+        logger.info("Prompt done sid=%s duration_ms=%s stop_reason=%s", sid, duration_ms, prompt_resp.stop_reason if prompt_resp else None)
+
+        try:
+            import audit
+            audit.log_kimi_call(
+                query=query[:120],
+                user_id=user_id,
+                agent=agent_name,
+                model=selected_model,
+                duration_ms=duration_ms,
+                success=True,
+                full_command=f"acp prompt session={sid}",
+            )
+        except Exception:
+            pass
+
+        # Tool call limit check
+        if client.tool_call_count > 15:
+            logger.warning("Too many tool calls (%s), cancelling session", client.tool_call_count)
+            try:
+                await self._conn.cancel(sid)
+            except Exception:
+                pass
+
+        # Allow trailing session_update callbacks to arrive before snapshotting
+        await asyncio.sleep(1.0)
+
+        # Gather result from accumulator
+        try:
+            snapshot = client.accumulator.snapshot()
+            logger.info(
+                "Accumulator snapshot user=%s agent=%s messages=%s thoughts=%s",
+                user_id, agent_name, len(snapshot.agent_messages), len(snapshot.agent_thoughts),
+            )
+            if snapshot.agent_messages:
+                last_msgs = [m.content.text if hasattr(m, "content") else str(m) for m in snapshot.agent_messages[-5:]]
+                logger.info("Last 5 agent_messages: %r", last_msgs)
+            texts = []
+            for msg in snapshot.agent_messages:
+                if hasattr(msg, "content") and hasattr(msg.content, "text"):
+                    texts.append(msg.content.text)
+                elif hasattr(msg, "text") and msg.text:
+                    texts.append(msg.text)
+            result = "".join(texts)
+            logger.info(
+                "Result length user=%s agent=%s len=%s tail=%r",
+                user_id, agent_name, len(result), result[-200:] if len(result) > 200 else result,
+            )
+        except Exception:
+            logger.exception("Failed to gather result from accumulator")
+            result = ""
+
+        if not result.strip():
+            logger.warning("Empty response from ACP for user=%s agent=%s", user_id, agent_name)
+            return (
+                "⚠️ Bot boş yanıt üretti.\n\n"
+                "Bu, arka plandaki oturumun kilitlenmesine işaret edebilir. "
+                "Lütfen /iptal yazıp tekrar deneyin."
+            )
+
+        return result
+
+    async def cancel(self, user_id: int, agent_name: str) -> None:
+        key = f"{user_id}:{agent_name}"
+        sid = self._sessions.get(key)
+        logger.info("Cancel user=%s agent=%s sid=%s", user_id, agent_name, sid)
+        if sid and self._conn:
+            try:
+                await self._conn.cancel(sid)
+            except Exception:
+                pass
+
+    async def reset_session(self, user_id: int, agent_name: str) -> None:
+        key = f"{user_id}:{agent_name}"
+        sid = self._sessions.get(key)
+        logger.info("Reset session user=%s agent=%s sid=%s", user_id, agent_name, sid)
+        if sid and self._conn:
+            try:
+                await self._conn.cancel(sid)
+            except Exception:
+                pass
+        self._sessions.pop(key, None)
+
+    async def reset_all_sessions(self, user_id: int) -> None:
+        """Kill all sessions and ACP process."""
+        prefix = f"{user_id}:"
+        logger.info("Reset all sessions user=%s", user_id)
+        keys_to_remove = [k for k in list(self._sessions.keys()) if k.startswith(prefix)]
+        for key in keys_to_remove:
+            sid = self._sessions.get(key)
+            if sid and self._conn:
+                try:
+                    await self._conn.cancel(sid)
+                except Exception:
+                    pass
+            self._sessions.pop(key, None)
+        # Kill process
+        if self._process:
+            logger.info("Killing ACP process (reset_all_sessions) pid=%s", self._process.pid)
+            try:
+                self._process.kill()
+            except Exception:
+                pass
+        await self._close_connection()
+
+    def get_context_usage(self) -> tuple[int, int]:
+        if self._client is None:
+            return 0, 0
+        return self._client.context_used, self._client.context_size
+
+    def get_diagnostics(self) -> dict:
+        acp_ready = self._initialized and self._process is not None and self._process.returncode is None
+        acp_pid = self._process.pid if self._process else None
+        return {
+            "acp_ready": acp_ready,
+            "acp_pid": acp_pid,
+            "session_count": len(self._sessions),
+            "sessions": dict(self._sessions),
+            "tool_call_count": self._client.tool_call_count if self._client else 0,
+            "context_used": self._client.context_used if self._client else 0,
+            "context_size": self._client.context_size if self._client else 0,
+        }
+
+    async def health_check(self) -> bool:
+        try:
+            if not await self._ensure_connection():
+                return False
+            list_resp = await self._conn.list_sessions()
+            logger.info("Health check OK: %s sessions listed", len(list_resp.sessions))
+            return True
+        except Exception as exc:
+            logger.warning("Health check failed: %s", exc)
+            return False
+
+    def close(self) -> None:
+        """Synchronous close — kills process and cleans up."""
+        if self._process:
+            logger.info("Killing ACP process (close) pid=%s", self._process.pid)
+            try:
+                self._process.kill()
+            except Exception:
+                pass
+        self._sessions.clear()
+        self._gen = None
+        self._conn = None
+        self._process = None
+        self._initialized = False

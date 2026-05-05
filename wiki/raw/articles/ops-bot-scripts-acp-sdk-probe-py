@@ -1,0 +1,183 @@
+"""ACP SDK probe — test official agent-client-protocol SDK with kimi-cli."""
+from __future__ import annotations
+
+import asyncio
+import logging
+import re
+import sys
+import time
+from typing import Any
+
+import acp
+import acp.schema as schema
+from acp import spawn_agent_process
+from acp.contrib import PermissionBroker, SessionAccumulator, ToolCallTracker
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+logger = logging.getLogger("acp_probe")
+
+
+# Risky command filter (same as ops-bot)
+RISKY_COMMANDS = {
+    "git", "rm", "mv", "cp", "chmod", "chown", "sudo",
+    "mkfs", "dd", "wget", "curl", "nc", "netcat", "nmap",
+}
+
+
+class OpsBotAcpClient:
+    """Minimal ACP client implementing the Protocol for SDK testing."""
+
+    def __init__(self) -> None:
+        self.accumulator = SessionAccumulator()
+        self.tool_tracker = ToolCallTracker()
+        self.tool_call_count = 0
+
+    async def request_permission(
+        self,
+        options: list[Any],
+        session_id: str,
+        tool_call: Any,
+        **kwargs: Any,
+    ) -> Any:
+        """Auto-approve/reject based on risky command filter."""
+        description = ""
+        if tool_call and hasattr(tool_call, "title"):
+            description = str(tool_call.title) or ""
+        elif tool_call and hasattr(tool_call, "content"):
+            description = str(tool_call.content) or ""
+
+        tool_words = set(re.findall(r"\b\w+\b", description.lower()))
+        is_risky = not RISKY_COMMANDS.isdisjoint(tool_words)
+
+        if is_risky:
+            logger.warning("REJECT risky: %s", description[:200])
+            return schema.RequestPermissionResponse(
+                outcome=schema.PermissionOutcomeSelected(option_id="reject")
+            )
+        logger.info("APPROVE: %s", description[:200])
+        return acp.RequestPermissionResponse(
+            outcome=acp.PermissionOutcomeSelected(option_id="approve")
+        )
+
+    async def session_update(
+        self,
+        session_id: str,
+        update: Any,
+        **kwargs: Any,
+    ) -> None:
+        """Accumulate session updates."""
+        notification = acp.SessionNotification(session_id=session_id, update=update)
+        snapshot = self.accumulator.apply(notification)
+
+        # Track tool calls
+        if hasattr(update, "tool_call") and update.tool_call:
+            self.tool_call_count += 1
+            logger.info("Tool call #%s", self.tool_call_count)
+
+        # Log streaming text chunks
+        if hasattr(update, "text") and update.text:
+            logger.debug("Chunk: %s...", update.text[:60].replace("\n", " "))
+
+    async def write_text_file(self, content: str, path: str, session_id: str, **kwargs: Any) -> Any:
+        logger.info("write_text_file: %s", path)
+        return None
+
+    async def read_text_file(self, path: str, session_id: str, **kwargs: Any) -> Any:
+        logger.info("read_text_file: %s", path)
+        return schema.ReadTextFileResponse(content="")
+
+    async def create_terminal(self, command: str, session_id: str, **kwargs: Any) -> Any:
+        logger.info("create_terminal: %s", command)
+        return schema.CreateTerminalResponse(terminal_id="dummy")
+
+    async def terminal_output(self, session_id: str, terminal_id: str, **kwargs: Any) -> Any:
+        return schema.TerminalOutputResponse(output="")
+
+    async def release_terminal(self, session_id: str, terminal_id: str, **kwargs: Any) -> Any:
+        return None
+
+    async def wait_for_terminal_exit(self, session_id: str, terminal_id: str, **kwargs: Any) -> Any:
+        return schema.WaitForTerminalExitResponse(exit_code=0)
+
+    async def kill_terminal(self, session_id: str, terminal_id: str, **kwargs: Any) -> Any:
+        return None
+
+    async def ext_method(self, method: str, params: dict[str, Any]) -> dict[str, Any]:
+        logger.warning("ext_method: %s %s", method, params)
+        return {}
+
+    async def ext_notification(self, method: str, params: dict[str, Any]) -> None:
+        logger.warning("ext_notification: %s %s", method, params)
+
+    def on_connect(self, conn: Any) -> None:
+        logger.info("on_connect called")
+
+
+async def main() -> None:
+    client = OpsBotAcpClient()
+    query = sys.argv[1] if len(sys.argv) > 1 else "Merhaba, bu bir ACP SDK test mesajı."
+
+    logger.info("=" * 50)
+    logger.info("ACP SDK Probe starting")
+    logger.info("Query: %s", query)
+    logger.info("=" * 50)
+
+    t0 = time.time()
+    async with spawn_agent_process(
+        client,
+        "kimi",
+        "--skills-dir", "/home/akn/local/ops-bot/.kimi/skills",
+        "acp",
+        cwd="/home/akn/local/ops-bot",
+    ) as (conn, process):
+        logger.info("Process started pid=%s", process.pid)
+
+        # 1. Initialize
+        init_resp = await conn.initialize(
+            protocol_version=1,
+            client_info=schema.Implementation(name="ops-bot-sdk-probe", version="2.0.0"),
+        )
+        logger.info("Initialize: %s", init_resp)
+
+        # 2. New session
+        session_resp = await conn.new_session(cwd="/home/akn/local/ops-bot")
+        sid = session_resp.session_id
+        logger.info("New session: %s", sid)
+
+        # 3. List sessions (health check)
+        list_resp = await conn.list_sessions()
+        logger.info("List sessions: count=%s", len(list_resp.sessions))
+
+        # 4. Prompt
+        logger.info("Sending prompt...")
+        prompt_resp = await conn.prompt(
+            prompt=[acp.text_block(query)],
+            session_id=sid,
+        )
+        logger.info("Prompt response: stop_reason=%s", prompt_resp.stop_reason if prompt_resp else None)
+
+        # 5. Gather accumulated result
+        snapshot = client.accumulator.snapshot()
+        text_parts = []
+        for msg in snapshot.agent_messages:
+            if hasattr(msg, "text") and msg.text:
+                text_parts.append(msg.text)
+        result_text = "".join(text_parts)
+
+        duration = time.time() - t0
+        logger.info("=" * 50)
+        logger.info("Duration: %.2fs", duration)
+        logger.info("Tool calls: %s", client.tool_call_count)
+        logger.info("Result length: %s", len(result_text))
+        logger.info("Result preview:\n%s", result_text[:800])
+        logger.info("=" * 50)
+
+        # 6. Cancel & close
+        await conn.cancel(sid)
+        logger.info("Session cancelled")
+
+    logger.info("Process exited? returncode=%s", process.returncode)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

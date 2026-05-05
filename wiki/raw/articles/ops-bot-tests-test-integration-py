@@ -9,6 +9,8 @@ Mark slow tests with ``pytest.mark.slow`` so they can be skipped via::
 """
 from __future__ import annotations
 
+from unittest.mock import AsyncMock
+
 import pytest
 
 
@@ -60,7 +62,8 @@ async def test_unauthorized_user_ignored(telegram_app, mock_update_text):
 @pytest.mark.asyncio
 async def test_explicit_agent_routing(telegram_app, mock_update_text, test_user_id):
     """An explicit @agent tag should trigger the ACP executor path."""
-    _, app = telegram_app
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="docker containers listed")
     update = mock_update_text("@docker hello", user_id=test_user_id)
 
     await app.process_update(update)

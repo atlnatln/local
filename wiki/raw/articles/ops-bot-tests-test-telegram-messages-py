@@ -1,0 +1,230 @@
+"""Tests for Telegram message delivery: content, length, chunking, UX.
+
+These tests mock AcpExecutor.run so they are fast and do NOT spawn
+kimi-cli. They verify what the user actually sees in Telegram.
+"""
+from __future__ import annotations
+
+from unittest.mock import AsyncMock
+
+import pytest
+
+
+# ---------------------------------------------------------------------------
+# Message content & formatting
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_short_message_delivered(telegram_app, mock_update_text, test_user_id):
+    """A short answer (< 4000 chars) should be sent as a single message."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="📊 CPU: %45  |  RAM: %60")
+
+    update = mock_update_text("sistem yükü", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    # First call = ACK, last call = final answer
+    assert len(calls) >= 2
+    final_text = calls[-1].kwargs.get("text", "")
+    assert "CPU: %45" in final_text
+
+
+
+@pytest.mark.asyncio
+async def test_ack_shows_agent_name(telegram_app, mock_update_text, test_user_id):
+    """ACK message should tell the user which agent is handling the request."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="done")
+
+    update = mock_update_text("@docker ps", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    ack_text = calls[0].kwargs.get("text", "")
+    assert "docker" in ack_text.lower()
+    assert "işliyor" in ack_text.lower()
+
+
+@pytest.mark.asyncio
+async def test_ack_shows_master_for_generic(telegram_app, mock_update_text, test_user_id):
+    """ACK for a generic query should show 'master' agent name."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="Merhaba!")
+
+    update = mock_update_text("selam", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    ack_text = calls[0].kwargs.get("text", "")
+    assert "master" in ack_text.lower()
+
+
+# ---------------------------------------------------------------------------
+# Message length & chunking
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_long_message_split_into_chunks(telegram_app, mock_update_text, test_user_id):
+    """A 9000-char answer + footer must be split correctly (<=4000 each)."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="A" * 9000)
+
+    update = mock_update_text("uzun rapor", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    # ACK + chunks + optional footer = at least 4 calls
+    assert len(calls) >= 4
+
+    # Verify chunk sizes (each chunk <= 4000)
+    for call in calls[1:]:
+        text = call.kwargs.get("text", "")
+        assert len(text) <= 4000
+
+    # Verify total content is preserved (output + footer)
+    total = "".join(call.kwargs.get("text", "") for call in calls[1:])
+    assert total == "A" * 9000 + "\n\n—\n🔄 /iptal"
+
+
+@pytest.mark.asyncio
+async def test_exactly_4000_char_boundary(telegram_app, mock_update_text, test_user_id):
+    """A 4000-char answer + footer must be split into 2 messages."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="B" * 4000)
+
+    update = mock_update_text("boundary test", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    # ACK + 2 replies (main chunk + footer as separate message)
+    assert len(calls) == 3
+    # First chunk is exactly 4000 chars
+    assert len(calls[1].kwargs.get("text", "")) == 4000
+    # Last chunk is the footer
+    assert "/iptal" in calls[-1].kwargs.get("text", "")
+
+
+@pytest.mark.asyncio
+async def test_4001_char_splits_into_two(telegram_app, mock_update_text, test_user_id):
+    """A 4001-char answer must be split into 2 messages."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="C" * 4001)
+
+    update = mock_update_text("boundary+1 test", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    # ACK + 2 replies
+    assert len(calls) == 3
+
+
+# ---------------------------------------------------------------------------
+# Error handling UX
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_error_message_is_user_friendly(telegram_app, mock_update_text, test_user_id):
+    """When executor raises, the user should see a friendly error, not a traceback."""
+    tb, app = telegram_app
+    async def _raise(*a, **k):
+        raise RuntimeError("boom")
+    tb.executor.run = _raise
+
+    update = mock_update_text("trigger error", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    final_text = calls[-1].kwargs.get("text", "")
+    assert "Bir şeyler ters gitti" in final_text
+    assert "/iptal" in final_text
+    # Technical detail should be minimal (just exception class name)
+    assert "RuntimeError" in final_text
+    assert "boom" not in final_text  # raw message hidden from user
+
+
+@pytest.mark.asyncio
+async def test_acp_timeout_message_is_user_friendly(telegram_app, mock_update_text, test_user_id):
+    """When ACP times out, the user should see actionable guidance."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value=(
+        "⏱️ İşlem zaman aşımına uğradı.\n\n"
+        "Bu, karmaşık bir görev olabilir. Lütfen /iptal yazıp kısa ve net bir şekilde tekrar sorun."
+    ))
+
+    update = mock_update_text("slow query", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    final_text = calls[-1].kwargs.get("text", "")
+    assert "zaman aşımına uğradı" in final_text.lower()
+    assert "/iptal" in final_text
+
+
+
+# ---------------------------------------------------------------------------
+# Edge cases
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_empty_answer_shows_timeout_or_error(telegram_app, mock_update_text, test_user_id):
+    """An empty string from executor should still result in a message to the user."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="")
+
+    update = mock_update_text("empty test", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    # ACK + footer-only reply
+    assert len(calls) >= 2
+    # Footer contains /iptal
+    assert "/iptal" in calls[-1].kwargs.get("text", "")
+
+
+@pytest.mark.asyncio
+async def test_footer_contains_iptal(telegram_app, mock_update_text, test_user_id):
+    """Every reply must end with the /iptal footer."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="Hello world")
+
+    update = mock_update_text("hello", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    final_text = calls[-1].kwargs.get("text", "")
+    assert "/iptal" in final_text
+    assert "—" in final_text
+
+
+@pytest.mark.asyncio
+async def test_footer_shows_context_when_available(telegram_app, mock_update_text, test_user_id):
+    """When ACP usage_update provides context data, footer shows it."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="Result here")
+    tb.executor.get_context_usage = lambda: (19200, 262144)
+
+    update = mock_update_text("query", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    final_text = calls[-1].kwargs.get("text", "")
+    assert "/iptal" in final_text
+    assert "19.2k" in final_text
+    assert "262.1k" in final_text
+    assert "7.3%" in final_text
+
+
+
+
+@pytest.mark.asyncio
+async def test_whitespace_only_answer(telegram_app, mock_update_text, test_user_id):
+    """Whitespace-only output should be handled gracefully."""
+    tb, app = telegram_app
+    tb.executor.run = AsyncMock(return_value="   \n\n  ")
+
+    update = mock_update_text("whitespace test", user_id=test_user_id)
+    await app.process_update(update)
+
+    calls = app.bot.send_message.call_args_list
+    assert len(calls) >= 1

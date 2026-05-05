@@ -1,0 +1,211 @@
+"""Unit tests for SdkAcpExecutor."""
+from __future__ import annotations
+
+import asyncio
+import sys
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+# Prevent the real acp module from being imported during these tests,
+# because it interacts badly with pytest-asyncio v1.3 event loop management.
+sys.modules["acp"] = MagicMock()
+
+from bot.acp_sdk_executor import SdkAcpExecutor
+
+
+@pytest.fixture
+def sdk_exec():
+    executor = SdkAcpExecutor()
+    try:
+        yield executor
+    finally:
+        executor.close()
+
+
+class MockPromptResponse:
+    stop_reason = "completed"
+
+
+class MockSessionResponse:
+    session_id = "sid-abc"
+
+
+class MockListResponse:
+    sessions = []
+
+
+class MockConn:
+    async def new_session(self, **kwargs):
+        return MockSessionResponse()
+
+    async def prompt(self, **kwargs):
+        return MockPromptResponse()
+
+    async def cancel(self, sid, **kwargs):
+        pass
+
+    async def list_sessions(self, **kwargs):
+        return MockListResponse()
+
+
+class MockConnTimeout(MockConn):
+    async def prompt(self, **kwargs):
+        raise asyncio.TimeoutError
+
+
+class MockConnError(MockConn):
+    async def prompt(self, **kwargs):
+        raise RuntimeError("connection lost")
+
+
+class TestSdkAcpExecutorInit:
+    def test_init_state(self, sdk_exec):
+        assert sdk_exec._conn is None
+        assert sdk_exec._process is None
+        assert sdk_exec._sessions == {}
+        assert sdk_exec._initialized is False
+
+
+class TestSdkAcpExecutorDiagnostics:
+    def test_get_diagnostics_empty(self, sdk_exec):
+        diag = sdk_exec.get_diagnostics()
+        assert diag["acp_ready"] is False
+        assert diag["acp_pid"] is None
+        assert diag["session_count"] == 0
+        assert diag["tool_call_count"] == 0
+
+
+def _run_async(coro):
+    """Run a coroutine in a fresh event loop without touching pytest-asyncio state."""
+    loop = asyncio.new_event_loop()
+    try:
+        return loop.run_until_complete(coro)
+    finally:
+        loop.close()
+
+
+class TestSdkAcpExecutorHealthCheck:
+    def test_health_check_without_connection(self, sdk_exec):
+        result = _run_async(sdk_exec.health_check())
+        assert result is False
+
+    def test_health_check_with_mock_connection(self, sdk_exec):
+        mock_conn = MockConn()
+
+        mock_process = MagicMock()
+        mock_process.pid = 12345
+        mock_process.returncode = None
+
+        sdk_exec._conn = mock_conn
+        sdk_exec._process = mock_process
+        sdk_exec._initialized = True
+
+        result = _run_async(sdk_exec.health_check())
+        assert result is True
+
+
+class TestSdkAcpExecutorClose:
+    def test_close_clears_state(self, sdk_exec):
+        sdk_exec._sessions["1:test"] = "sid-123"
+        sdk_exec._initialized = True
+        sdk_exec.close()
+        assert sdk_exec._sessions == {}
+        assert sdk_exec._initialized is False
+
+    def test_close_kills_process(self, sdk_exec):
+        mock_process = MagicMock()
+        mock_process.pid = 9999
+        sdk_exec._process = mock_process
+        sdk_exec.close()
+        mock_process.kill.assert_called_once()
+
+
+class TestSdkAcpExecutorRun:
+    def test_run_returns_error_when_connection_fails(self, sdk_exec):
+        with patch.object(sdk_exec, "_ensure_connection", return_value=False):
+            result = _run_async(sdk_exec.run("test query", None, None, 0))
+            assert "❌ Oturum başlatılamadı" in result
+
+    def test_run_timeout(self, sdk_exec):
+        mock_conn = MockConnTimeout()
+
+        mock_process = MagicMock()
+        mock_process.pid = 12345
+        mock_process.returncode = None
+
+        sdk_exec._conn = mock_conn
+        sdk_exec._process = mock_process
+        sdk_exec._initialized = True
+        sdk_exec._client = MagicMock()
+        sdk_exec._client.accumulator = MagicMock()
+        sdk_exec._client.tool_call_count = 0
+
+        result = _run_async(sdk_exec.run("hello", None, None, 0))
+        assert "⏱️ İşlem zaman aşımına uğradı" in result
+
+    def test_run_empty_response(self, sdk_exec):
+        mock_conn = MockConn()
+
+        mock_process = MagicMock()
+        mock_process.pid = 12345
+        mock_process.returncode = None
+
+        sdk_exec._conn = mock_conn
+        sdk_exec._process = mock_process
+        sdk_exec._initialized = True
+        sdk_exec._client = MagicMock()
+        sdk_exec._client.accumulator = MagicMock()
+        sdk_exec._client.tool_call_count = 0
+
+        result = _run_async(sdk_exec.run("hello", None, None, 0))
+        assert "⚠️ Bot boş yanıt üretti" in result
+
+    def test_run_prompt_failure(self, sdk_exec):
+        mock_conn = MockConnError()
+
+        mock_process = MagicMock()
+        mock_process.pid = 12345
+        mock_process.returncode = None
+
+        sdk_exec._conn = mock_conn
+        sdk_exec._process = mock_process
+        sdk_exec._initialized = True
+        sdk_exec._client = MagicMock()
+        sdk_exec._client.accumulator = MagicMock()
+        sdk_exec._client.tool_call_count = 0
+
+        result = _run_async(sdk_exec.run("hello", None, None, 0))
+        assert "⚠️ Bir sorun oluştu" in result
+
+
+class TestSdkAcpExecutorReset:
+    def test_reset_all_sessions_kills_process(self, sdk_exec):
+        mock_conn = MockConn()
+        mock_process = MagicMock()
+        mock_process.pid = 9999
+
+        sdk_exec._conn = mock_conn
+        sdk_exec._process = mock_process
+        sdk_exec._sessions["1:test"] = "sid-123"
+
+        _run_async(sdk_exec.reset_all_sessions(1))
+
+        mock_process.kill.assert_called_once()
+        assert sdk_exec._sessions == {}
+        assert sdk_exec._process is None
+
+    def test_cancel_existing_session(self, sdk_exec):
+        mock_conn = MockConn()
+        sdk_exec._conn = mock_conn
+        sdk_exec._sessions["1:test"] = "sid-123"
+
+        _run_async(sdk_exec.cancel(1, "test"))
+
+    def test_reset_session(self, sdk_exec):
+        mock_conn = MockConn()
+        sdk_exec._conn = mock_conn
+        sdk_exec._sessions["1:test"] = "sid-123"
+
+        _run_async(sdk_exec.reset_session(1, "test"))
+        assert "1:test" not in sdk_exec._sessions

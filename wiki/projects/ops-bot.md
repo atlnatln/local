@@ -1,7 +1,7 @@
 ---
 title: "Ops-Bot"
 created: 2026-05-01
-updated: 2026-05-03
+updated: 2026-05-05
 type: project
 tags: [ops-bot, python, telegram-bot, systemd, security, acp, kimi-cli]
 related:
@@ -18,6 +18,11 @@ sources:
   - raw/articles/ops-bot-tests-conftest-py
   - raw/articles/ops-bot-tests-test-router-py
   - raw/articles/ops-bot-tests-test-integration-py
+  - raw/articles/ops-bot-bot-acp-sdk-client-py
+  - raw/articles/ops-bot-bot-acp-sdk-executor-py
+  - raw/articles/ops-bot-scripts-acp-sdk-probe-py
+  - raw/articles/ops-bot-tests-sdk-test-acp-sdk-executor-py
+  - raw/articles/ops-bot-tests-test-telegram-messages-py
   - ops-bot/AGENTS.md
 ---
 
@@ -35,9 +40,9 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
 |---------|-----------|
 | Runtime | Python 3.12, `python-telegram-bot` |
 | Entry Point | `bot.py` — V2 entry point (eski `agent.py` yerine) |
-| Agent Executor | `bot/acp_executor.py` — kimi-cli ACP modu ile session persistence |
-| ACP Client | `bot/acp_client.py` — JSON-RPC 2.0 over stdio |
-| Telegram Handler | `bot/telegram.py` — message routing + reply formatting |
+| ACP Executor | `bot/acp_sdk_executor.py` — resmi ACP SDK (`agent-client-protocol`) ile session persistence |
+| ACP Client | `bot/acp_sdk_client.py` — SDK-native `OpsBotAcpClient` protocol implementasyonu |
+| Telegram Handler | `bot/telegram.py` — message routing + reply formatting + markdown sanitize |
 | Router | `bot/router.py` — 3-layer: explicit @agent → embedding → LLM fallback |
 | Embedding Router | ~~`router/hybrid.py` + `router/embedding.py`~~ — [REMOVED] Tek beyin, kimi-cli native routing (2026-05-03) |
 | Agent Registry | ~~`agents/descriptor_loader.py`~~ — [REMOVED] Kimi-CLI native agent spec kullanılıyor |
@@ -47,7 +52,7 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
 | Models | `models/registry.py` — model name resolution |
 | Skills | `skills/*/SKILL.md` — 4 skill (docker-troubleshooting, nginx-routing, postgres-query, security-reporting) |
 | Security | `sec-agent/` — collector/engine/actions/config |
-| Test | `tests/` — pytest + pytest-asyncio, 57 test (49 unit + 8 integration/E2E) |
+| Test | `tests/` — pytest + pytest-asyncio, 67 test (49 unit + 8 integration/E2E + 10 SDK unit) |
 | Deploy | `./deploy.sh` → VPS `systemd` servisi |
 
 ## Entry Points
@@ -55,24 +60,26 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
 | Dosya | Görev |
 |-------|-------|
 | `ops-bot/bot.py` | Ana Telegram bot uygulaması (19 satır entry point) |
-| `ops-bot/bot/telegram.py` | Telegram message handler, HTTP timeout (30s), ACK, context footer |
+| `ops-bot/bot/telegram.py` | Telegram message handler, HTTP timeout (30s), ACK, context footer, markdown code-block sanitize |
 | `ops-bot/bot/router.py` | Tek beyin: sadece explicit `@agent-adı` → yoksa her zaman `general/master` |
-| `ops-bot/bot/acp_executor.py` | ACP session yönetimi, tool call streaming, sadece `agents/master/agent.yaml` kullanır |
-| `ops-bot/bot/acp_client.py` | JSON-RPC 2.0 ACP client (initialize 30s, session/new 30s, default 60s) |
+| `ops-bot/bot/acp_sdk_executor.py` | SDK-based ACP session yönetimi, accumulator snapshot, tool call limit, context usage |
+| `ops-bot/bot/acp_sdk_client.py` | `OpsBotAcpClient` — permission broker, file I/O sandboxing, terminal execution, accumulator/tracker |
 | `ops-bot/bot/memory.py` | Legacy SQLite conversation memory; context persistence kimi-cli `~/.kimi/sessions/` tarafından sağlanır |
 | `ops-bot/bot/config.py` | Env-based config (TELEGRAM_TOKEN, ALLOWED_USER_ID, timeout'lar 180-600s, TEST_MODE) |
 | `ops-bot/.env.test` | Test ortamı çevre değişkenleri (`TEST_MODE=true`, `ALLOWED_USER_ID=123456789`) |
-| `ops-bot/pytest.ini` | pytest yapılandırması (asyncio_mode=auto, slow marker) |
+| `ops-bot/pytest.ini` | pytest yapılandırması (asyncio_mode=auto, slow marker, `--ignore=tests/sdk`) |
 | `ops-bot/CHANGELOG.md` | Değişiklik kaydı (Keep a Changelog formatı) |
 | ~~`ops-bot/router/hybrid.py`~~ | ~~HybridRouter~~ — [REMOVED] |
 | ~~`ops-bot/router/embedding.py`~~ | ~~TF-based cosine similarity~~ — [REMOVED] |
 | ~~`ops-bot/agents/descriptor_loader.py`~~ | ~~YAML descriptor okuma~~ — [REMOVED] |
-| `ops-bot/tests/conftest.py` | pytest fixtures: mocked Telegram Application + Update factories |
+| `ops-bot/tests/conftest.py` | pytest fixtures: mocked Telegram Application + Update factories + `sdk_executor` fixture |
 | `ops-bot/tests/test_router.py` | 22 unit test: `extract_explicit_agent()` regex parser + `BotRouter.select()` |
-| `ops-bot/tests/test_acp_client.py` | 7 unit test: ACP protocol (`ApprovalRequest`/`ToolCallRequest`), permission auto-approve/reject, word-boundary risky matching |
-| `ops-bot/tests/test_acp_executor.py` | 17 unit test: ACP executor `_clean_output`, session lifecycle, cancel/reset, tool call buffering |
-| `ops-bot/tests/test_telegram_messages.py` | 10 unit test: Telegram message handler formatting, error replies, notification parsing |
+| ~~`ops-bot/tests/test_acp_client.py`~~ | ~~7 unit test: ACP protocol~~ — [ARCHIVED → `archive/tests/`] |
+| ~~`ops-bot/tests/test_acp_executor.py`~~ | ~~17 unit test: ACP executor~~ — [ARCHIVED → `archive/tests/`] |
+| `ops-bot/tests/sdk/test_acp_sdk_executor.py` | 10 unit test: SDK-based executor init, diagnostics, health check, close, run (timeout/empty/error), reset |
+| `ops-bot/tests/test_telegram_messages.py` | 10 unit test: Telegram message handler formatting, error replies, notification parsing, chunking, footer, context usage |
 | `ops-bot/tests/test_integration.py` | 8 integration/E2E test: smoke + real kimi-cli ACP subprocess |
+| `ops-bot/scripts/acp_sdk_probe.py` | Standalone ACP SDK probe script — initialize, session, prompt, accumulator snapshot |
 | `ops-bot/deploy.sh` | VPS deploy script'i (package/git modları) |
 | `ops-bot/systemd/ops-bot.service` | systemd unit dosyası |
 
@@ -86,7 +93,7 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
                            ┌──────────────────────────┘
                            ▼
                    ┌─────────────────┐
-                   │ bot/acp_executor│
+                   │bot/acp_sdk_executor│
                    └─────────────────┘
                            │
                            ▼
@@ -120,19 +127,26 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
 
 Agent seçimi: `bot/router.py` sadece explicit `@agent-adı` parse eder. Kimi-cli master agent (`agents/master/agent.yaml`) kullanıcının sorusunu analiz eder ve doğru subagent'ı `Agent` tool'u ile çağırır. Tüm routing kararları kimi-cli tarafından verilir. Python katmanı sadece Telegram entegrasyonu ve ACP session yönetimi yapar.
 
-### ACP Executor
+### ACP Executor (SDK-Based)
 
-`bot/acp_executor.py` her kullanıcı için uzun ömürlü ACP session yönetir. Artık tek master agent spec (`agents/master/agent.yaml`) kullanır:
+`bot/acp_sdk_executor.py` her kullanıcı için uzun ömürlü ACP session yönetir. Artık resmi `agent-client-protocol` SDK kullanır:
 
-- `_get_or_create_session()` — yeni session oluşturur, `agents/master/agent.yaml`'ı kimi-cli'ye geçirir
-- `run()` → `acp_client.prompt()` → streamed text toplar
-- `cancel()` — session cancel
-- `reset_session()` — Mevcut session'ı iptal edip discard eder
-- `reset_all_sessions()` — Kullanıcının tüm session'larını iptal edip discard eder
+- `_ensure_connection(agent_name)` — `acp.spawn_agent_process()` ile persistent ACP process başlatır, agent değişiminde connection recycle eder
+- `_get_or_create_session()` — `conn.new_session()` ile session oluşturur, `user_id:agent_name` key ile reuse eder
+- `run()` → `conn.prompt()` → `SessionAccumulator.snapshot()` sonucunu toplar; her `run()` başlangıcında accumulator reset + tool_call_count = 0
+- `cancel()` / `reset_session()` — session cancel + dictionary cleanup
+- `reset_all_sessions()` — Tüm session'ları iptal eder, ACP process'i kill eder, connection cleanup (zombie process önlemi)
+- `get_diagnostics()` — ACP ready state, PID, session count, tool call count, context usage döndürür (troubleshooting)
+- `health_check()` — `conn.list_sessions()` ile hızlı canlılık kontrolü
+- `close()` — Synchronous cleanup, process kill + state reset
 
-**Önemli not:** ACP modu `--yolo`/`--afk` flag desteklemez. Tool kullanımı ACP server tarafında `toolCall`/`toolResult` loop'u ile yönetilir. Bot `_on_notification`'da `tool_call` ve `tool_call_update` event'lerini buffer'a yansıtır (🔧 başlık, ✅/❌ durum).
+**Önemli not:** ACP modu `--yolo`/`--afk` flag desteklemez. Tool kullanımı ACP server tarafında `toolCall`/`toolResult` loop'u ile yönetilir.
 
-**Tool call koruması:** 15'ten fazla ardışık tool call otomatik session cancel eder.
+**Accumulator pattern (2026-05-05):** `acp.contrib.SessionAccumulator` ACP session update'lerini toplar. `run()` sonunda `snapshot()` ile `agent_messages` listesinden metin parçaları birleştirilir. Prompt sonrası 1 saniyelik `asyncio.sleep(1.0)` trailing session_update chunk'larının gelmesi için bekler.
+
+**Tool call koruması:** 15'ten fazla ardışık tool call otomatik session cancel eder. `run()` başlangıcında sayaç sıfırlanır, log'a `Tool call count=N` yazılır.
+
+**Boş yanıt guard'ı (2026-05-04):** Accumulator snapshot sonucu boş kalırsa kullanıcıya `⚠️ Bot boş yanıt üretti... /iptal yazıp tekrar deneyin` mesajı gösterilir.
 
 **Timeout yapılandırması:**
 
@@ -145,17 +159,20 @@ Agent seçimi: `bot/router.py` sadece explicit `@agent-adı` parse eder. Kimi-cl
 
 **Tek master agent (2026-05-03):** `agents/master/agent.yaml` tek kaynak. Subagent'lar `subagents/` dizininde, kimi-cli `Agent` tool'u ile çağrılır. Her subagent kendi `tools` listesiyle yetkilendirilmiştir (güvenlik katmanı 1).
 
-### Güvenlik Kontrolleri (2026-05-03)
+### Güvenlik Kontrolleri (2026-05-05)
 
 Güvenlik iki katmandır:
 
 1. **Birinci katman — Kimi-CLI Agent Spec:** Her subagent'ın `tools` listesiyle sadece gerekli tool'lar aktiftir. `ops-security-agent`'ta `WriteFile` yoksa hiçbir dosya yazılamaz.
-2. **İkinci katman — ACP Client:** `bot/acp_client.py` `request` method handler'ında riskli komut filtrelemesi:
+2. **İkinci katman — OpsBotAcpClient:** `bot/acp_sdk_client.py` `request_permission` method'unda riskli komut filtrelemesi:
    - **Reject edilen kalıplar:** `git`, `rm`, `mv`, `cp`, `chmod`, `chown`, `sudo`, `mkfs`, `dd`, `wget`, `curl`, `nc`, `netcat`, `nmap`
    - **Approve edilenler:** Güvenli read-only ve yönetim komutları
    - Tool call başlığı ilk 200 karaktere bakılarak karar verilir
-   - **Word-boundary matching:** `re.findall(r"\b\w+\b", ...)` ile tam kelime eşleşmesi — `"perform"` gibi substring'ler yanlış reject yapmaz (2026-05-03)
-   - **Kimi-cli 1.40 uyumluluğu:** Hem yeni `method: "request"` + `type: "ApprovalRequest"` hem eski `session/request_permission` desteklenir
+   - **Word-boundary matching:** `re.findall(r"\b\w+\b", ...)` ile tam kelime eşleşmesi — `"perform"` gibi substring'ler yanlış reject yapmaz
+3. **Üçüncü katman — File I/O Sandboxing:** `write_text_file` ve `read_text_file`:
+   - **Path sandboxing:** `os.path.realpath()` ile repo root (`Config.REPO_ROOT`) dışına çıkış engellenir
+   - **Sensitive file block:** `.env`, `.env.production`, `.env.local`, `id_rsa`, `id_ed25519`, `authorized_keys` dosyalarına erişim engellenir
+4. **Terminal execution:** `create_terminal` `subprocess.run()` ile gerçek komut çalıştırır, `cwd=Config.REPO_ROOT`, `timeout=30s`
 
 ### Context Persistence
 
@@ -163,7 +180,7 @@ Güvenlik iki katmandır:
 - Session ID'ler `self._sessions` dict'te tutulur
 - kimi-cli `~/.kimi/sessions/<md5>/<session_id>/context.jsonl`'da context saklar
 - Kimi-cli native context persistence — bot restart sonrası devam eder
-- **Context/token kullanım takibi:** `usage_update` ACP notification handler'ı mevcut ancak kimi-cli 1.40.0'da bu bilgi ACP üzerinden iletilmiyor — gösterim deferred (teknik borç)
+- **Context/token kullanım takibi:** `session_update` handler'ı `usage_update` type'ını yakalar; `get_context_usage()` ve footer'da gösterilir
 
 ## Servisler
 
@@ -213,20 +230,41 @@ Detaylı mimari ve operasyon bilgisi: bkz. [[sec-agent]].
 
 | Komut | Açıklama |
 |-------|----------|
-| `/iptal` | Tüm ACP session'larını discard eder, hafızayı temizler (legacy + V2), yeni sohbet başlatır |
+| `/iptal` | Tüm ACP session'larını discard eder, ACP process'ini öldürür, hafızayı temizler, yeni sohbet başlatır |
 | `/end` | Legacy hafızayı temizler; ACP session'ı korunur |
+| `/durum` | Bot ve ACP durumunu gösterir: ACP ready/PID, session sayısı, tool call sayacı, context usage |
+| `/model` | Aktif modeli göster veya değiştir |
+| `/start` | Bot tanıtımı ve komut listesi (agent listesi kaldırıldı, 2026-05-05) |
 
 ## Troubleshooting
+
+### Boş Yanıt (Bot Cevap Vermiyor)
+
+**Belirti:** Bot ACK gönderiyor ama yanıt gelmiyor veya `⚠️ Bot boş yanıt üretti.`
+
+**Neden:**
+1. **ACP process kilitlenmesi:** Process returncode non-None olabilir, `_ensure_connection` yeni process başlatır
+2. **Zombie subprocess:** Önceki `/iptal` process'i kapanmamış olabilir
+
+**Çözüm:**
+```bash
+# Session'ları ve process'leri temizle
+rm -rf ~/.kimi/sessions/*
+pkill -f "kimi-cli.*acp"
+
+# Bot'u restart
+sudo systemctl restart ops-bot
+```
 
 ### ACP Prompt Timeout
 
 **Belirti:** `⏱️ Zaman aşımı: ACP yanıt vermedi.`
 
 **Neden ve Çözüm:**
-1. **ACP prompt timeout:** `bot/acp_executor.py`'de `min(Config.KIMI_TIMEOUT_DEFAULT, 90)` kullanılıyor.
+1. **ACP prompt timeout:** `bot/acp_sdk_executor.py`'de `min(Config.KIMI_TIMEOUT_DEFAULT, 90)` kullanılıyor.
    - *Çözüm:* `.env`'deki değerleri kontrol et: `OPS_BOT_KIMI_TIMEOUT_*_SECONDS`
 2. **python-telegram-bot HTTP timeout:** `telegram.py`'de `.read_timeout(30).write_timeout(30).connect_timeout(10)`
-3. **ACP client timeout:** initialize 30s, session/new 30s, default request 60s
+3. **ACP client/SDK timeout:** initialize 30s, session/new 30s, default request 60s
 
 **Kalıcı çözüm:**
 ```bash
@@ -255,7 +293,12 @@ sudo systemctl restart ops-bot
 
 - infrastructure — nginx ters proxy, SSL
 - [[deployment]] — VPS deploy prosedürleri
+- [[acp-protocol]] — Ops-bot'un kullandığı Agent Client Protocol
 - [[telegram-kimi]] — ACP client implementasyon referansı
+
+## Decisions
+
+- [[adr-005-ops-bot-acp-sdk-migration]] — ACP client'ının resmi SDK'ya geçiş kararı
 
 ## Dokümantasyon
 
@@ -265,20 +308,14 @@ sudo systemctl restart ops-bot
 | `AGENTS.md` | AI agent'lar için stack, kod stili, güvenlik, deploy checklist |
 | `CHANGELOG.md` | V2 rewrite ve sonraki değişiklikler (Keep a Changelog) |
 | `docs/CURRENT_SYSTEM.md` | Üretimde çalışan mevcut durum, servis/timer akışı |
+| `docs/SESSION_CONTEXT_2026_05_04.md` | ACP SDK geçiş session context'i (teknik detaylar) |
 | `docs/agent-transformation-plan.md` | Tarihsel: V2 öncesi 12 haftalık plan (arşiv) |
 
+<!-- AUTO-REFRESHED -->
 ## Recent Commits
 
-- `3304d40` revert(debug): remove prompt result key logging — context usage deferred (2026-05-03)
-- `f74b7dd` fix(logging): setup logging before module imports to capture INFO logs (2026-05-03)
-- `a72537c` feat(ops-bot): add context usage to Telegram footer (deferred — kimi-cli 1.40 ACP protocol) (2026-05-03)
-- `6c43a44` feat(telegram): add /iptal footer to every bot reply (2026-05-03)
-- `4493d02` fix(deploy): include *.md files in deployment package (2026-05-03)
-- `1f7ea09` fix(ops-bot): use word-boundary matching for risky command filter (2026-05-03)
-- `be6be2c` fix(ops-bot): correct ACP ApprovalRequest protocol for kimi-cli 1.40 (2026-05-03)
-- `d23644e` test(ops-bot): fix remaining mock issues — 57 test passing (2026-05-03)
-- `0741b91` test(ops-bot): fix top-level import breaking env_patch in tests (2026-05-03)
-- `63f1f69` fix(ops-bot): apply `_clean_output` to all return paths in executor (2026-05-03)
-- `dbdb356` fix(ops-bot): improve logging, error messages, and router caching (2026-05-03)
-- `d28a8db` merge(security): unify explain+observe into ops-security-agent.md (2026-05-03)
-- `c7d2563` fix(deploy): include missing directories in package mode (2026-05-03)
+- `c836b86` fix(acp-sdk): wait 1s after prompt for trailing session_update chunks (2026-05-05)
+- `5294c78` feat(telegram): remove agent list from /start, add accumulator debug logs (2026-05-05)
+- `b389f5d` fix(telegram): sanitize markdown code blocks and add accumulator debug logs (2026-05-05)
+- `ff1740c` fix(acp-sdk): implement real read/write_text_file with path sandboxing (2026-05-05)
+- `8bd6b06` fix(acp-sdk): execute terminal commands and return real output (2026-05-05)

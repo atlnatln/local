@@ -1376,3 +1376,217 @@ tags: [meta, log]
 - Raw existence: 4
 - Log size: 116 entries
 
+
+## [2026-05-03 19:15] update | sayi-yolculugu | wiki-genisleme | detayli-dokumantasyon
+
+- **Wiki sayfası genişletildi:** `wiki/projects/sayi-yolculugu.md`
+  - Önceki: Sadece standalone HTML5 oyunu (~41 KB, statik hosting)
+  - Yeni: MathLock Play entegrasyonu da eklendi
+    - `SayiYolculuguActivity.kt` (490 satır) — WebView + JS Bridge
+    - Backend endpoint'leri: `GET /levels/`, `POST /levels/progress/`
+    - AI seviye üretim pipeline'ı: `ai-generate-levels.sh` → kimi-cli → validate → DB
+    - Kredi sistemi entegrasyonu: `auto_renewal_started`, `credits_remaining`
+    - Cache & offline davranış: `SecurePrefs`, `fallback-levels/{tr,en}.json`
+    - Polling mekanizması: `pollForNewSet()` (5sn, max 120 deneme)
+    - WebView memory leak fix detayları
+  - Veri akışı diyagramı eklendi
+  - Senaryo tablosu eklendi (ilk açılış, tekrar açılış, offline, vs.)
+- **mathlock-play.md güncellendi:**
+  - "İçindeki Oyunlar" bölümü eklendi
+  - `ai-generate-levels.sh` entry point'i listeye eklendi
+  - `related` alanına `sayi-yolculugu` eklendi
+- Log size: 114 entries
+## [2026-05-03 19:02] lint | 6/10
+- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
+- Raw existence: 4
+- Log size: 118 entries
+
+
+## [2026-05-03 20:00] ingest | local | mathlock-play | yeni-oyun + bug-fix
+- **Sayı Hafızası (Memory Game) eklendi:**
+  - ADR: `wiki/decisions/adr-004-memory-game-integration.md`
+  - Yeni dosyalar: `MemoryGameActivity.kt`, `MemoryGameEngine.kt`, 2 layout, 2 drawable
+  - Native Kotlin + `ObjectAnimator` 3D flip animasyonu
+  - Offline, kilit açma destekli (tur bazlı)
+  - Ebeveyn ayarları: `memoryGamePairCount` (4-20), `memoryGameRequiredRounds` (1-10)
+  - 27/27 unit test geçti, cihaz testi başarılı
+- **Sayı Yolculuğu progress bug fix (3 kök neden):**
+  - `onDestroy()`'da `completedLevelIds` + `cachedLevels` siliniyordu → kaldırıldı
+  - `currentSetId` persist edilmediği için her açılışta "yeni set" algılanıyordu → `SecurePrefs`'e kaydediliyor
+  - `loadLevelsIntoGame()`'de `isNewSet` mantığı `oldSetId=null` iken `true` dönüyordu → `forceClear=true` WebView progress siliyordu → düzeltildi
+  - Fallback levels'te `completed_level_ids` inject edilmiyordu → `injectCompletedIds()` eklendi
+- **Güncellenen wiki sayfaları:** `wiki/projects/mathlock-play.md`
+- Log size: 119 entries
+## [2026-05-03 20:13] lint | 5/10
+- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 3
+- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
+- Raw existence: 4
+- Log size: 120 entries
+
+## [2026-05-03 21:33] ingest | mathlock-play | fc45d056 | 1 sayfa
+- Files: A:0 M:0 D:0 (checkpoint = HEAD, manual update from session context)
+- Pages created: —
+- Pages updated: [[mathlock-play]]
+- Pages archived: —
+- Diff summary: Auth mekanizması (DeviceTokenAuthentication + DeviceTokenSigner), backend test suite yapısı (169 test / 10 modül, AuthMixin/ThrottleMixin), Sayı Yolculuğu Activity auth fix (403 → setAuthToken) eklendi.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+
+## [2026-05-03 21:31] lint | 4/10
+- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
+- Broken links: 1
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
+- Raw existence: 4
+- Log size: 122 entries
+
+## [2026-05-03 21:32] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
+- Raw existence: 4
+- Log size: 123 entries
+
+## [2026-05-03 22:34] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
+- Raw existence: 4
+- Log size: 124 entries
+
+## [2026-05-03 22:49] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
+- Raw existence: 4
+- Log size: 125 entries
+
+## [2026-05-03 23:18] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
+- Raw existence: 4
+- Log size: 126 entries
+
+
+## [2026-05-03 23:17] ingest | 7/10
+- mathlock-play: version bump 1.0.73→1.0.74 (build.gradle.kts)
+- sec-agent: AGENTS.md v2.1 revizyonu (SOURCE OF TRUTH, BENIGN CEILING, sembolik kurallar)
+- ops-bot: AGENTS.md deploy edildi (VPS /opt/sec-agent güncellendi)
+- webimar: no changes
+
+## [2026-05-04 22:50] wiki-pages | acp-protocol + adr-005
+- Pages created: [[acp-protocol]], [[adr-005-ops-bot-acp-sdk-migration]]
+- Pages updated: [[index]], [[ops-bot]] (cross-links)
+- Diff summary: ACP protokolü konsept sayfası ve SDK geçiş ADR'si eklendi.
+
+## [2026-05-04 22:30] ops-bot | acp-hotfixes | 0d6008b
+- Files changed: bot/acp_client.py, bot/acp_executor.py, bot/telegram.py, tests/test_acp_executor.py
+- Fixes: _tool_call_count reset, /iptal kills ACP process, empty response guard, reader loop EOF cleanup
+- Features: structured logging, /durum diagnostic command
+- Tests: 66/66 passing
+- Diff summary: ACP session poisoning ve zombie process sorunları giderildi. Telegram handler'a msg_in/msg_out/duration logları eklendi.
+
+## [2026-05-04 22:15] research | acp-sdk-exploration | feature/acp-sdk-exploration
+- Package installed: agent-client-protocol==0.9.0
+- Tested: spawn_agent_process, initialize, new_session, prompt, cancel with kimi-cli 1.40.0
+- Key finding: --agent-file flag works in ACP mode, agent spec loads correctly
+- SDK modules reviewed: acp.schema, acp.client, acp.contrib (SessionAccumulator, ToolCallTracker, PermissionBroker)
+- Diff summary: ACP SDK feasibility proven. agentFile blocker resolved via --agent-file CLI flag.
+## [2026-05-04 23:02] lint | 5/10
+- Orphan pages: 1 ([[adr-005-ops-bot-acp-sdk-migration]])
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
+- Raw existence: 5
+- Log size: 131 entries
+
+## [2026-05-04 23:13] lint | 6/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
+- Raw existence: 5
+- Log size: 132 entries
+
+
+## [2026-05-04 23:11] ingest | ops-bot | 0d6008b | 1 sayfa
+- Files: M:4 (bot/acp_client.py, bot/acp_executor.py, bot/telegram.py, tests/test_acp_executor.py)
+- Pages updated: [[ops-bot]]
+- Diff summary: ACP fix'leri — tool_call_count reset on run(), empty response guard, reset_all_sessions kills ACP process, reader loop EOF cleanup, structured logging (msg_in/msg_out/duration), /durum command, get_diagnostics().
+- Lint: 6/10 passing (0 failures, 4 pre-existing warnings: broken mcp-routing link, 4 oversized pages, 10 unknown tags, 5 missing raw files)
+
+## [2026-05-05 21:11] ingest | ops-bot | c836b86 | 1 sayfa
+- Files: R:4 A:4 M:5
+- Pages updated: [[ops-bot]]
+- Diff summary: ACP SDK migration tamamlandi — bot/acp_sdk_client.py + bot/acp_sdk_executor.py eklendi, eski ACP client/executor arsivlendi, OpsBotAcpClient file I/O sandboxing + terminal execution eklendi, telegram.py markdown sanitize + context footer guncellendi, tests/sdk/ eklendi (10 unit test), pytest.ini --ignore=tests/sdk.
+- Lint: see next entry
+- Revert: git checkout 31c9a1db -- wiki/
+## [2026-05-05 21:16] lint | 6/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
+- Raw existence: 5
+- Log size: 135 entries
+
+## [2026-05-05 21:16] lint | 6/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
+- Raw existence: 4
+- Log size: 136 entries
+
