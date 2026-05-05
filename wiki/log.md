@@ -1609,3 +1609,15 @@ tags: [meta, log]
 - Raw existence: 4
 - Log size: 138 entries
 
+## [2026-05-05 21:29] lint | 6/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
+- Raw existence: 4
+- Log size: 139 entries
+
