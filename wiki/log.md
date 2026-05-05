@@ -1590,3 +1590,22 @@ tags: [meta, log]
 - Raw existence: 4
 - Log size: 136 entries
 
+
+## [2026-05-05 21:22] ingest | ops-bot | d6ddb0f | 1 sayfa
+- Files: R:4 A:19 M:5 D:1
+- Pages updated: [[ops-bot]]
+- Diff summary: VPS senkronizasyonu — bot/router.py silindi, bot/orchestrator.py + agents/ dizini eklendi, eski ACP client/executor archive/legacy'den bot/'a geri tasindi, telegram.py routing kaldirdi, mimari guncellendi.
+- Lint: see next entry
+- Revert: git checkout c836b86 -- wiki/
+## [2026-05-05 21:25] lint | 6/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
+- Raw existence: 4
+- Log size: 138 entries
+

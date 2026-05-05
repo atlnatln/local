@@ -72,7 +72,7 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 | Proje | Tip | Açıklama | Son Güncelleme |
 |-------|-----|----------|----------------|
-| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67 test) | 2026-05-05 |
+| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67+ test) | 2026-05-05 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-03 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-01 |
 | [[anka]] | project | B2B veri servisi — Django + Next.js | 2026-05-01 |
@@ -83,6 +83,7 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 ## Recently Updated
 
+- [[ops-bot]] — VPS senkronizasyonu: router.py silindi, orchestrator.py + agents/ dizini eklendi, eski ACP client/executor bot/'a geri taşındı, routing master'a bırakıldı (2026-05-05)
 - [[ops-bot]] — ACP SDK migration tamamlandı: bot/acp_sdk_client.py + bot/acp_sdk_executor.py eklendi, eski ACP client/executor arşivlendi, file I/O sandboxing, terminal execution, markdown sanitize, tests/sdk/ (10 unit test) (2026-05-05)
 - [[ops-bot]] — ACP fix'leri: tool_call_count reset, /iptal process kill, boş yanıt guard, /durum komutu, structured logging, get_diagnostics, reader loop EOF cleanup (2026-05-04)
 - [[acp-protocol]] — Yeni konsept sayfası: ACP protokolü, SDK karşılaştırması, kimi-cli entegrasyonu (2026-05-04)
