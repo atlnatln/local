@@ -46,7 +46,10 @@
 **/.venv-*/
 
 # Kimi CLI (machine-specific sessions, logs, telemetry)
-/.kimi/
+/.kimi/*
+!/.kimi/skills
+!/.kimi/skills/local-wiki
+!/.kimi/skills/local-wiki/**
 
 # Nested repositories (own GitHub remotes)
 /ops-bot/

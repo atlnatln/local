@@ -337,17 +337,25 @@ Her session başında wiki kontrolüne paralel:
 
 **Not:** Otomatik pull YAPMA. Conflict riski var. Kullanıcı onay verirse `git pull` çalıştır.
 
-### Push Komutu Protokolü
+### Push Komutu Protokolü (Zorunlu Wiki Ingest)
 
 Kullanıcı "push yap" dediğinde:
 
 ```
 1. git status --short → değişiklik özetini göster
-2. Eğer wiki değişikliği varsa: "Wiki ingest yapalım mı?"
+2. ZORUNLU: Wiki kontrolü
+   a. git status --short | grep -E "wiki/|\\.checkpoints" → wiki değişikliği var mı?
+   b. Eğer wiki değişikliği varsa:
+      - "Wiki değişiklikleri toplanmamış. Önce wiki ingest çalıştırılıyor."
+      - wiki ingest çalıştır (veya wiki topla)
+      - git add wiki/ && git commit -m "docs(wiki): ingest <proje>"
+   c. Eğer wiki değişikliği yoksa: devam et
 3. Commit mesajı iste (type(scope): description formatında öner)
 4. git add -A && git commit -m "..." && git push origin main
 5. Eğer ops-bot/ veya webimar/ dirty ise: "Nested repo'ları da unutma!" uyarısı
 ```
+
+**Kural:** Wiki dosyalarında (`wiki/`, `.checkpoints/`) değişiklik varsa, wiki ingest yapılmadan ve commit edilmeden **push yapılmaz**.
 
 ### Nested Repo Hatırlatması
 
