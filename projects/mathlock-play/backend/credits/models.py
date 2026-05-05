@@ -13,6 +13,11 @@ class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_seen = models.DateTimeField(auto_now=True)
 
+    # Compatibility with DRF IsAuthenticated permission
+    @property
+    def is_authenticated(self):
+        return True
+
     def __str__(self):
         return f"Device {self.installation_id[:12]}..."
 

@@ -3,10 +3,23 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-change-in-production')
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+# Security headers (only when HTTPS is active and DEBUG=False)
+SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SSL_REDIRECT', 'False').lower() == 'true'
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+
+# CORS — restrict to known origins (empty = no CORS for API endpoints)
+CORS_ALLOWED_ORIGINS = []
+CORS_ALLOW_ALL_ORIGINS = False
 
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1')
 
@@ -19,12 +32,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'credits',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -93,9 +108,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'credits.authentication.DeviceTokenAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -141,10 +158,7 @@ LOGGING = {
 
 # Google Play Developer API
 GOOGLE_PLAY_PACKAGE_NAME = 'com.akn.mathlock.play'
-GOOGLE_PLAY_SERVICE_ACCOUNT_JSON = os.environ.get(
-    'GOOGLE_PLAY_SERVICE_ACCOUNT_JSON',
-    str(BASE_DIR / 'google-service-account.json')
-)
+GOOGLE_PLAY_SERVICE_ACCOUNT_JSON = os.environ.get('GOOGLE_PLAY_SERVICE_ACCOUNT_JSON')
 
 # Celery / Redis
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
@@ -161,7 +175,6 @@ CREDITS_PER_PURCHASE = {
     'kredi_5': 5,      # 5 kredi — ₺40
     'kredi_10': 10,    # 10 kredi (ileride)
 }
-FREE_QUESTION_COUNT = 50
 QUESTIONS_PER_CREDIT = 50
 
 
