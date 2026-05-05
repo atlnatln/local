@@ -14,6 +14,8 @@
 **/.deploy-tmp/**
 **/*deploy*.tar.gz
 **/deploy-*.log
+**/deploy-staging/
+**/deploy-artifacts/
 
 # Logs
 **/*.log
@@ -41,4 +43,39 @@
 # Python virtualenvs
 **/venv/**
 **/.venv/**
+**/.venv-*/
+
+# Kimi CLI (machine-specific sessions, logs, telemetry)
+/.kimi/
+
+# Nested repositories (own GitHub remotes)
+/ops-bot/
+/projects/webimar/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local environment overrides
+.env.local
+.env.vps
+
+# Android build outputs
+**/*.apk
+**/*.aab
+**/*.apks
+**/build/outputs/
+**/build/intermediates/
+
+# Docker image exports
+**/*.tar
+**/docker-images/
+
+# Gradle cache
+**/.gradle/
+
+# Wiki machine-specific marker
 wiki/.pending
