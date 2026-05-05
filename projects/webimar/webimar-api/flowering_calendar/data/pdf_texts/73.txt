@@ -1,16 +1,0 @@
-                                  ŞIRNAK
-Merkez -İlçe                               Çiçekleme        Çiçekleme
-               Majör (yaygın) Bitki Adı
-Adı                                        Başlangıç Tarihi Bitiş Tarihi
-Merkez         Beyaz Üçgül                  Nisan            Eylül
-               Kekik, Geven, Sarı Taşyonca,
-                                            Haziran          Ağustos
-               Sarı Diken
-Beytüşşebap    Sığır Dili                   Mayıs            Ağustos
-               Boğa Dikeni                  Haziran          Eylül
-               Sütleğen                     Haziran          Temmuz
-               Beyaz Balıbaba, Peygamber
-                                            Haziran          Ağustos
-Uludere        Çiçeği, Yonca
-               Uyuz Otu                     Haziran          Eylül
-

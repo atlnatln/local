@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://tarimimar.com.tr/sitemap.xml
-
-# Block access to sensitive files
-Disallow: /api
-Disallow: /api/
-Disallow: /admin
-Disallow: /admin/

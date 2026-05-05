@@ -1,12 +1,0 @@
-                           TEKİRDAĞ
-Merkez-                              Çiçeklenme         Çiçeklenme
-           Majör(yaygın) Bitki Adı
-İlçe Adı                             Başlangıç Tarihi   Bitiş Tarihi
-           Ayçiçeği                  1 Nisan            30 Haziran
-           Kanola                    30 Mart            10 Mayıs
-           Ihlamur                   1 Haziran          1 Temmuz
-Tekirdağ
-           Kekik                     1 Haziran          30 haziran
-           Karaçalı                  25 Mayıs           10 Haziran
-           Püren                     25 Ağustos         30 Eylül
-

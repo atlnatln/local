@@ -1,16 +1,0 @@
-                                 BURDUR
-Merkez- İlçe                             Çiçeklenme         Çiçeklenme
-               Majör(yaygın) Bitki Adı
-Adı                                      Başlangıç Tarihi   Bitiş Tarihi
-Ağlasun        Geven                     1 Mayıs            1 Temmuz
-Altınyayla     Geven                     15 Mayıs           15 Temmuz
-Bucak          Çörekotu                  1 Haziran          30 Haziran
-Çavdır         Anason, Rezene            15 Haziran         15 Temmuz
-Çeltikçi       Kekik,Geven               1 Mayıs            1 Temmuz
-
-Karamanlı      Anason                    15 Haziran         15 Temmuz
-Kemer          Geven                     1 Mayıs            1 Temmuz
-Merkez         Kırçiçekleri              1 Mayıs            1 Haziran
-Tefenni        Anason, Rezene            15 Haziran         15 Temmuz
-Yeşilova       Kırçiçekleri              1 Mayıs            1 Haziran
-
