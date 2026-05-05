@@ -1,8 +1,0 @@
-name,formatted_address,maps_website_initial,search_status,search_found_website,prompt_tokens,output_tokens,total_tokens,model,timestamp
-Kaya Planlama | Ekrem Kaya | Şehir Plancısı,"Yılmaz Tetik Apt, Emirbeyazıt, Avcılar Sk. No: 18/1, 48000 Menteşe/Muğla, Türkiye",https://kayaplanlama.com.tr/,no-log,,0,0,0,,
-Nokta Planlama & Harita,"Üntaş Residence, Emirbeyazıt, Şht. Yrb. Alim Yılmaz Blv. No:16/6, 48000 Menteşe/Muğla, Türkiye",YOK,success,,123,0,183,gemini-2.5-flash,2026-02-21T10:15:48.678452+00:00
-Odak Planlama,"Emirbeyazıt, Hasan Ercan Cd. No:11/2, 48000 Menteşe/Muğla, Türkiye",YOK,success,,108,0,167,gemini-2.5-flash,2026-02-21T10:15:49.878104+00:00
-TMMOB Şehir Plancıları Odası Muğla Şubesi,"Emirbeyazıt, Ethem Serim Sk. TAN APT NO:16/7, 48000 Menteşe/Muğla, Türkiye",https://www.spo.org.tr/,no-log,,0,0,0,,
-GÜÇTEKİN MÜHENDİSLİK ŞEHİR PLANLAMA İNŞAAT,"Emirbeyazıt Mah. Recai Güreli Cad. Osman Ercan İşh. Kat:1 D.No:101, Emirbeyazıt, 48000 Menteşe/Muğla, Türkiye",YOK,success,,145,0,204,gemini-2.5-flash,2026-02-21T10:15:50.697312+00:00
-Metropol Şehircilik Planlama Mühendislik Danışmanlık İnşaat Turizm Tic. ve San. Ltd. Şti.,"Cumhuriyet, 503. Sk. NO:6 / 7, 48300 Fethiye/Muğla, Türkiye",http://www.metropolplanlama.com/,no-log,,0,0,0,,
-Planevi Şehircilik Planlama Org.Taah.Tic.İth. ve İhr.Ltd.Şti.,"Emirbeyazıt Mahallesi Stadyum Sokak Şener Apt. No: 15/A, Emirbeyazıt, 48000 Menteşe/Muğla, Türkiye",YOK,success,,141,2,459,gemini-2.5-flash,2026-02-21T10:15:51.907237+00:00

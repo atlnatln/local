@@ -1698,3 +1698,24 @@ tags: [meta, log]
 - Raw existence: 4
 - Log size: 146 entries
 
+## [2026-05-06 00:19] lint | 5/10
+- Orphan pages: 1 ([[adr-006-github-sync-cross-machine-dev]])
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 4
+- Log size: 147 entries
+
+
+## [2026-05-06 00:42] archive | anka | pasife-alindi
+- Anka projesi hem local'de hem VPS'de pasife alındı
+- Sebep: Aktif kullanılmıyor, RAM/disk kaynağı serbest bırakıldı
+- Local arşiv: backups/anka-archive-20260506.tar.gz (178MB)
+- VPS arşiv: /home/akn/vps/backups/anka-archive/ (175MB: proje + 8 Docker volume)
+- VPS işlemler: 8 container durduruldu, 8 volume silindi, nginx anka.conf kaldırıldı, reload edildi
+- AGENTS.md güncellendi: anka referansları kaldırıldı
+- Wiki güncellendi: anka.md archived, index.md güncellendi

@@ -12,7 +12,7 @@
 | **Dizin** | `/home/akn/local` | `/home/akn/vps` |
 | **SSH** | — | `ssh akn@89.252.152.222` |
 | **Amaç** | Kod yazma, test, build, wiki yönetimi | Production çalıştırma |
-| **Servisler** | mathlock-backend (systemd), mathlock-celery (systemd) | ops-bot (systemd), sec-agent (systemd), telegram-kimi (systemd), webimar (Docker), anka (Docker), mathlock-play (systemd + Docker) |
+| **Servisler** | mathlock-backend (systemd), mathlock-celery (systemd) | ops-bot (systemd), sec-agent (systemd), telegram-kimi (systemd), webimar (Docker), mathlock-play (systemd + Docker) |
 | **Nginx** | Yok (VPS nginx container'a yönlendirir) | `vps_nginx_main` container'ı (80/443) |
 
 **Kural:** Burada yazılan kod, build edilen image'lar ve hazırlanan paketler `deploy.sh` ile VPS'e gönderilir. Canlı ortamdaki dosyaları doğrudan düzenleme.
@@ -27,7 +27,6 @@
 ├── ops-bot/                 # Telegram bot (Python, systemd, ayrı repo)
 ├── projects/
 │   ├── webimar/             # Django + Next.js + React (ayrı repo)
-│   ├── anka/                # B2B veri servisi
 │   ├── mathlock-play/       # Android + Django
 │   └── telegram-kimi/       # Telegram Kimi bot
 ├── scripts/                 # Yardımcı script'ler
@@ -59,13 +58,7 @@ cd /home/akn/local/projects/webimar
 ./deploy.sh --skip-github   # Docker build + VPS upload (~10 dk)
 ```
 
-### 3. Anka
-```bash
-cd /home/akn/local/projects/anka
-./deploy.sh
-```
-
-### 4. MathLock Play
+### 3. MathLock Play
 ```bash
 # Backend (host-based systemd on VPS)
 cd /home/akn/local/projects/mathlock-play/backend
@@ -100,7 +93,6 @@ ssh akn@89.252.152.222 "docker exec vps_nginx_main nginx -t"
 **VPS'teki kritik dizinler:**
 - `/home/akn/vps/ops-bot/` — Ops-Bot (systemd)
 - `/home/akn/vps/projects/webimar/` — Webimar (Docker)
-- `/home/akn/vps/projects/anka/` — Anka (Docker)
 - `/home/akn/vps/projects/mathlock-play/` — MathLock (systemd + Docker)
 - `/home/akn/vps/infrastructure/` — nginx, SSL
 
@@ -139,15 +131,6 @@ pytest
 cd ../webimar-nextjs
 npm run lint
 npm run build
-```
-
-### Anka
-```bash
-cd projects/anka/services/backend
-pytest
-
-cd ../frontend
-npm run lint
 ```
 
 ### MathLock Play
@@ -416,7 +399,7 @@ ssh akn@89.252.152.222 "journalctl -u ops-bot -n 50 --no-pager"
 
 > **Son güncelleme:** 2026-05-05  
 > **Wiki durumu:** 7 proje ingest edildi, 10/10 lint passing  
-> **VPS durumu:** ops-bot ✅, sec-agent ✅, telegram-kimi ✅, webimar ✅, anka ✅, mathlock-play ✅
+> **VPS durumu:** ops-bot ✅, sec-agent ✅, telegram-kimi ✅, webimar ✅, mathlock-play ✅
 > **GitHub:** `github.com/atlnatln/local.git`
 
 > **GitHub push:** 2026-05-05 tarihinde test edildi ✅

@@ -76,7 +76,7 @@ Geçersiz kılınmış veya değişmiş kararlar.
 | [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67+ test) | 2026-05-05 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-03 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-05 |
-| [[anka]] | project | B2B veri servisi — Django + Next.js | 2026-05-01 |
+| [[anka]] | project | ~~B2B veri servisi — Django + Next.js~~ *(Arşivlendi, 2026-05-06)* | 2026-05-06 |
 | [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) | 2026-05-03 |
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |

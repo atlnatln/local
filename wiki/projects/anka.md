@@ -1,9 +1,9 @@
 ---
 title: "Anka"
 created: 2026-05-01
-updated: 2026-05-01
+updated: 2026-05-06
 type: project
-tags: [anka, django, nextjs, python, docker]
+tags: [anka, django, nextjs, python, docker, archived]
 related:
   - infrastructure
   - deployment
@@ -11,7 +11,11 @@ sources:
   - raw/articles/anka-readme.md
 ---
 
-# [[Anka]]
+# [[Anka]] (Arşivlendi)
+
+> **Durum:** Pasife alındı — 2026-05-06
+> **Neden:** Aktif kullanılmıyor, RAM/disk kaynağı serbest bırakıldı
+> **Arşiv:** `backups/anka-archive-20260506.tar.gz` (local), `/home/akn/vps/backups/anka-archive/` (VPS)
 
 B2B veri servisi: istediğiniz şehir ve sektörde doğrulanmış firma iletişim bilgilerini tek seferde alın.
 
@@ -38,6 +42,8 @@ Google Maps + Gemini enrichment hattı kullanarak, internetteki firma verilerini
 
 ## Entry Points
 
+> **Not:** Proje dizini arşivlendi. Tekrar aktifleştirmek için arşivi çıkarın.
+
 | Dosya/Dizin | Görev |
 |-------------|-------|
 | `projects/anka/services/backend/` | Django backend |
@@ -48,8 +54,14 @@ Google Maps + Gemini enrichment hattı kullanarak, internetteki firma verilerini
 ## Deploy
 
 ```bash
-cd projects/anka/
-./deploy.sh
+# Tekrar aktifleştirmek için:
+cd /home/akn/local
+tar xzf backups/anka-archive-20260506.tar.gz -C projects/anka/
+
+# VPS'te:
+cd /home/akn/vps
+tar xzf backups/anka-archive/anka-project.tar.gz -C projects/anka/
+# Volume'ları geri yükle (gerekirse)
 ```
 
 ## Güvenlik ve Limitler
