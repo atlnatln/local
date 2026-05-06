@@ -1,0 +1,20 @@
+📊 Wiki Haftalık Bakım Raporu
+Tarih: 2026-05-06 22:35
+Makine: VPS
+
+--- Lint ---
+Sonuç: 0/10
+Warning: 0
+Failure: 0
+Durum: ⚠️ Kontrol gerekli
+
+--- Log ---
+Giriş sayısı: 166
+Rotasyon: ✅ Normal (<500)
+
+--- Git ---
+Wiki senkronize: ✅
+
+--- Sonraki Adımlar ---
+• Lint sorunlarını düzelt
+
