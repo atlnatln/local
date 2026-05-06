@@ -1941,3 +1941,34 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 167 entries
 
+## [2026-05-06 22:38] ingest | AGENTS.md + weekly maintenance
+- **AGENTS.md:** Ortam tespiti uyarısı eklendi (VPS/Local ayrımı için is_vps() talimatı)
+- **concepts/agents-md.md:** "Ortam Tespiti (Çoklu Makine)" bölümü eklendi
+- **concepts/deployment.md:** "Haftalık Wiki Bakımı" bölümü eklendi (scripts/wiki-weekly-maintenance.sh)
+- **Pages updated:** concepts/agents-md.md, concepts/deployment.md
+- **Note:** Deploy öncesi wiki ingest kuralına uygun olarak toplandı
+
+## [2026-05-06 22:47] lint | 9/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 169 entries
+
+## [2026-05-06 22:48] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 170 entries
+

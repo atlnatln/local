@@ -76,6 +76,27 @@ docker compose -f docker-compose.prod.yml up -d
 
 ---
 
+## Haftalık Wiki Bakımı
+
+Wiki'nin sağlıklı kalması için haftalık bakım script'i:
+
+```bash
+cd /home/akn/local
+./scripts/wiki-weekly-maintenance.sh [--notify]
+```
+
+Yaptığı işlemler:
+1. GitHub'dan en son wiki'yi çek (`git fetch + reset`)
+2. Lint çalıştır (10/10 hedefi)
+3. Log rotasyonu kontrolü (`log.md` >500 giriş uyarısı)
+4. Rapor üret (`wiki/.weekly-report`)
+5. `--notify` verildiyse Telegram'dan rapor gönder
+6. Değişiklik varsa `git commit + push`
+
+**Çalışma ortamı:** VPS (wiki, lint, telegram token hepsi VPS'te)
+
+---
+
 ## Related Systems
 
 - [[system-overview]] — VPS genel mimarisi

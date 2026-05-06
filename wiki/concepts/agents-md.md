@@ -29,6 +29,20 @@ Ayrı dosya olmasının nedeni:
 - README'leri insanlar için sade tutar
 - Mevcut dokümantasyonu tamamlar, yerini almaz
 
+## Ortam Tespiti (Çoklu Makine)
+
+AGENTS.md dosyası **hem yerel geliştirme makinede hem VPS'te aynı** olabilir. Agent'ın hangi ortamda çalıştığını anlaması için:
+
+```bash
+# VPS tespiti: /home/akn/vps dizini sadece VPS'te vardır
+is_vps() { test -d "/home/akn/vps"; }
+```
+
+**Neden önemli:**
+- Aynı `AGENTS.md` hem local hem VPS'te okunursa, agent kendini yanlış ortamda sanabilir
+- "Geliştirme (Burada)" ifadesi dosyanın yazıldığı yeri belirtir, çalıştığı yeri değil
+- Her session başında `is_vps()` çalıştırılmalı ve buna göre davranılmalı
+
 ## Format
 
 Standart Markdown. Zorunlu alan yok. Önerilen bölümler:
