@@ -333,7 +333,7 @@ Her session başında wiki kontrolüne paralel:
 
 ```
 1. rm -f ~/.wiki-skip-session
-2. timeout 5 git fetch origin 2>/dev/null || true
+2. (command -v git >/dev/null 2>&1 && timeout 5 git fetch origin 2>/dev/null) || true
    → Behind ise: "GitHub'da yeni değişiklik var (N commit). Pull yapalım mı?"
    → Ahead ise: "Local'de push bekleyen değişiklik var."
    → Sync veya offline: sessizce devam et
@@ -401,7 +401,7 @@ git status --short              # Değişiklik özeti
 git add -A && git commit -m "type(scope): ..."  # Commit
 git push origin main            # Push
 git pull origin main            # Pull
-timeout 5 git fetch origin      # GitHub'daki son değişiklikleri kontrol et
+(command -v git >/dev/null 2>&1 && timeout 5 git fetch origin) || true  # GitHub'daki son değişiklikleri kontrol et
 
 # Wiki lint
 cd ~/.kimi/skills/local-wiki && python3 scripts/wiki_lint.py /home/akn/local/wiki
