@@ -4,6 +4,7 @@ created: 2026-05-01
 updated: 2026-05-06
 type: project
 tags: [anka, django, nextjs, python, docker, archived]
+status: archived
 related:
   - infrastructure
   - deployment

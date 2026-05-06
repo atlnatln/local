@@ -7,10 +7,7 @@ tags: [kimi-cli, agents, configuration, coding-conventions]
 related:
   - kimi-code-cli
   - git-workflow
-sources:
-  - https://agents.md
-  - https://github.com/MoonshotAI/kimi-cli/blob/main/docs/AGENTS.md
-  - https://github.com/MoonshotAI/kimi-cli/blob/main/src/kimi_cli/agents/default/system.md
+sources: []
 ---
 
 # [[AGENTS.md]]

@@ -19,7 +19,7 @@ related:
 |-------|----------|
 | [[ops-bot]] | Telegram operations bot — Python, systemd, sec-agent |
 | [[webimar]] | Tarım İmar — Django + Next.js + React |
-| [[_archive/anka|Anka]] | ~~Anka Data — B2B veri servisi~~ *(Arşivlendi, 2026-05-06)* |
+| [[anka|Anka]] | ~~Anka Data — B2B veri servisi~~ *(Arşivlendi, 2026-05-06)* |
 | [[mathlock-play]] | MathLock Play — Android math game + Django backend |
 | [[telegram-kimi]] | Telegram Kimi Bridge — Python, systemd, ACP |
 | [[sayi-yolculugu]] | HTML5 matematik eğitim oyunu |

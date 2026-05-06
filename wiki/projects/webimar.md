@@ -39,7 +39,7 @@ Tarımsal arazilerde yapılaşma süreçlerinde güncel mevzuata ve bilimsel esa
 | `projects/webimar/webimar-nextjs/` | Next.js frontend (marketing + hesaplama sayfaları) |
 | `projects/webimar/webimar-react/` | React SPA (hesaplama motoru) |
 | `projects/webimar/deploy.sh` | VPS deploy script'i |
-| `projects/webimar/docker-compose.prod.yml` | Production container'ları |
+| `projects/webimar/docker-compose.prod.yml` | Production container'ları (her servise `image:` tag'i atanmış) |
 | `projects/webimar/webimar-api/accounts/middleware_token_abuse.py` | Token abuse detection middleware |
 | `projects/webimar/webimar-api/accounts/admin_token_blacklist.py` | Admin token blacklist helpers |
 | `projects/webimar/webimar-api/accounts/validators.py` | Custom validators |
@@ -56,14 +56,18 @@ cd /home/akn/local/projects/webimar
 ./deploy.sh --skip-github   # Yerel build + VPS upload, GitHub push atlanır
 ```
 
+Deploy script'i **ortam tespiti** yapar (`is_vps` — `/home/akn/vps` dizini varsa VPS'tedir):
+- **Local'den:** Docker build → `docker save` → `tar.gz` → `scp` ile VPS'ye upload
+- **VPS'ten:** Docker build yapar ancak `docker save`/`tar.gz` export adımını atlar (aynı makinede çalıştığı için); `ssh`/`scp` yerel `bash`/`cp` ile override edilir
+
 ### Adımlar
 
-| # | Adım | Süre |
-|---|------|------|
-| 1 | Docker build (api, nextjs, react, nginx) | ~5-8 dk |
-| 2 | `webimar-deploy.tar.gz` oluştur | ~1 dk |
-| 3 | VPS'e `scp` ile upload | ~1 dk |
-| 4 | VPS'te `setup.sh` (DB backup, container down/up, migration) | ~1-2 dk |
+| # | Adım | Süre | VPS'te |
+|---|------|------|--------|
+| 1 | Docker build (api, nextjs, react, nginx) | ~5-8 dk | ✅ |
+| 2 | `docker save` + `tar.gz` oluştur | ~1 dk | ⏭️ Atlanır |
+| 3 | VPS'e `scp` ile upload | ~1 dk | ⏭️ Atlanır |
+| 4 | VPS'te `setup.sh` (DB backup, container down/up, migration) | ~1-2 dk | ✅ |
 
 ### Ön Koşullar
 
@@ -119,6 +123,8 @@ Günlük güvenlik raporunda tespit edilen token sızıntısı ve `/api/accounts
 
 ## Recent Commits
 
-- `29c2c8a8` fix(accounts): secure OAuth redirect with hash fragment, harden /me/ error handling, token abuse middleware (2026-05-05)
+- `cdb21b895` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
+- `cb8eef36b` feat(deploy): add VPS environment detection and fix image tags (2026-05-06)
+- `fc83c038a` fix(accounts): replace set() with list() in token abuse middleware cache (2026-05-05)
+- `29c2c8a8e` fix(accounts): secure OAuth redirect with hash fragment, harden /me/ error handling (2026-05-05)
 - `e22b7782` security(phase-1): harden defaults, CORS, tracking, add AllowAny to public endpoints (2026-05-02)
-- `416474ac` security(phase-2): flip DEFAULT_PERMISSION_CLASSES to IsAuthenticated + cleanup .env files (2026-05-02)

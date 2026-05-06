@@ -85,7 +85,6 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 - [[mathlock-play]] — `.env.example` güncellendi: DB config ayrıldı, Celery/Redis eklendi, Google Play path güncellendi (2026-05-06)
 - [[git-workflow]] — GitHub Sync + Cross-Machine Development bölümü eklendi, anka referansları kaldırıldı (2026-05-06)
-- [[_archive/anka|Anka]] — Proje arşivlendi, `_archive/` altına taşındı (2026-05-06)
 - [[ops-bot]] — VPS senkronizasyonu: router.py silindi, orchestrator.py + agents/ dizini eklendi, eski ACP client/executor bot/'a geri taşındı, routing master'a bırakıldı (2026-05-05)
 - [[ops-bot]] — ACP SDK migration tamamlandı: bot/acp_sdk_client.py + bot/acp_sdk_executor.py eklendi, eski ACP client/executor arşivlendi, file I/O sandboxing, terminal execution, markdown sanitize, tests/sdk/ (10 unit test) (2026-05-05)
 - [[ops-bot]] — ACP fix'leri: tool_call_count reset, /iptal process kill, boş yanıt guard, /durum komutu, structured logging, get_diagnostics, reader loop EOF cleanup (2026-05-04)
@@ -111,4 +110,4 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 ## Archived Pages
 
-- [[_archive/anka|Anka]] (archived 2026-05-06) — B2B veri servisi, pasife alındı
+- [[anka|Anka]] (archived 2026-05-06) — B2B veri servisi, pasife alındı

@@ -216,8 +216,12 @@ cd ops-bot/
 ./deploy.sh --mode git   # git modu: VPS'te git pull + restart
 ```
 
+Deploy script'i **ortam tespiti** yapar (`is_vps` — `/home/akn/vps` dizini varsa VPS'tedir):
+- **Local'den:** SSH multiplexing ile tek TCP bağlantı üzerinden `scp`/`ssh` kullanır (UFW rate-limit koruması)
+- **VPS'ten:** `ssh`/`scp` fonksiyonları yerel `bash`/`cp` ile override edilir; doğrudan `/home/akn/vps/ops-bot/` altına yazar
+
 Deploy akışı:
-1. SSH multiplexing ile rate-limit'ten kaçınma
+1. Ortam tespiti (`is_vps`) → local SSH veya VPS direct mode seçimi
 2. `tar.gz` paketi oluşturma (package modu) veya `git push` (git modu)
 3. VPS'te `setup.sh` çalıştırma
 4. `systemctl restart ops-bot`
@@ -329,8 +333,8 @@ sudo systemctl restart ops-bot
 <!-- AUTO-REFRESHED -->
 ## Recent Commits
 
+- `d093d94` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
+- `2414268` feat(deploy): add VPS environment detection (2026-05-06)
 - `d6ddb0f` sync(vps): senkronize VPS'ten local'e — router.py silindi, orchestrator.py eklendi, agents/ dizini eklendi, eski ACP client/executor bot/'a geri taşındı (2026-05-05)
 - `c836b86` fix(acp-sdk): wait 1s after prompt for trailing session_update chunks (2026-05-05)
 - `5294c78` feat(telegram): remove agent list from /start, add accumulator debug logs (2026-05-05)
-- `b389f5d` fix(telegram): sanitize markdown code blocks and add accumulator debug logs (2026-05-05)
-- `ff1740c` fix(acp-sdk): implement real read/write_text_file with path sandboxing (2026-05-05)

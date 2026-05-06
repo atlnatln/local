@@ -15,7 +15,7 @@ related:
   - kimi-code-cli
   - deployment
 sources:
-  - raw/articles/acp-sdk-probe.py
+  - raw/articles/ops-bot-scripts-acp-sdk-probe-py
 ---
 
 # [[acp-protocol]]
@@ -138,7 +138,7 @@ pip install agent-client-protocol
 
 - [[ops-bot]] — ACP client'ı kullanan Telegram bot
 - [[kimi-code-cli]] — ACP server olarak çalışan AI kodlama asistanı
-- [[mcp-routing]] — MCP (Model Context Protocol) = agent ↔ tool/resource. ACP = client ↔ agent. İkisi farklı protokoller.
+- MCP (Model Context Protocol) — agent ↔ tool/resource protokolü. ACP = client ↔ agent. İkisi farklı protokoller.
 
 ## Kaynaklar
 

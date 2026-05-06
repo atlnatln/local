@@ -1777,3 +1777,131 @@ tags: [meta, log]
 - Raw existence: 4
 - Log size: 153 entries
 
+## [2026-05-06 21:11] ingest | 3 projects
+- **local:** `AGENTS.md` (ortam tespiti bölümü eklendi), `projects/mathlock-play/deploy.sh` (VPS uyumluluğu)
+- **ops-bot:** `deploy.sh` (VPS uyumluluğu, SSH multiplexing / local cp ayrımı)
+- **webimar:** `deploy.sh` (VPS uyumluluğu, docker save atlaması), `docker-compose.prod.yml` (`image:` tag'leri)
+- **Pages updated:** `projects/mathlock-play.md`, `projects/ops-bot.md`, `projects/webimar.md`
+- **Note:** `is_vps()` fonksiyonu tüm deploy script'lerine eklendi. Aynı komutlar hem local'den hem VPS'ten çalışabilir.
+
+## [2026-05-06 22:05] lint | 5/10
+- Orphan pages: 0
+- Broken links: 4
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 4
+- Log size: 155 entries
+
+## [2026-05-06 22:08] lint | 7/10
+- Orphan pages: 0
+- Broken links: 3
+- Missing from index: 2
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 156 entries
+
+## [2026-05-06 22:08] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 157 entries
+
+## [2026-05-06 22:09] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 158 entries
+
+## [2026-05-06 22:09] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 159 entries
+
+## [2026-05-06 22:10] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 160 entries
+
+## [2026-05-06 22:14] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 161 entries
+
+## [2026-05-06 22:15] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 162 entries
+
+## [2026-05-06 22:10] lint-fix | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: entries
+- **Note:** Lint script upgraded: `status: archived` support in index completeness, type-aware page size limits (`project`: 400, `concept`: 350, `reference` exempt), SCHEMA.md updated with Page Size Policy
+
+## [2026-05-06 22:17] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 164 entries
+

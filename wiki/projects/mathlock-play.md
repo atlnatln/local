@@ -130,12 +130,23 @@ Telefon yeni seti indirir
 
 ## Deploy
 
-Backend host-based (systemd), DB/Redis Docker'da:
+Backend host-based (systemd), DB/Redis Docker'da.
+
+Deploy script'i **ortam tespiti** yapar (`is_vps` — `/home/akn/vps` dizini varsa VPS'tedir):
+- **Local'den:** `ssh`/`rsync` ile VPS'ye gönderir, Android derleme + ADB kurulumu yapar
+- **VPS'ten:** Doğrudan `cp` ile yerel dizinlere yazar; Android derleme ve ADB adımları atlanır
+
 ```bash
-cd projects/mathlock-play/backend
-pip install -r requirements.txt
-sudo systemctl restart mathlock-backend mathlock-celery
+cd projects/mathlock-play
+./deploy.sh [debug|release] [--skip-adb] [--deploy-backend] [--skip-backend]
 ```
+
+| Adım | Local | VPS |
+|------|-------|-----|
+| Android derleme (AAB/APK) | ✅ Gradle çalıştırır | ⏭️ Atlanır (SDK yok) |
+| ADB kurulum | ✅ Telefona yükler | ⏭️ Atlanır (USB yok) |
+| Backend sync | `rsync` ile uzak sunucuya | `cp` ile yerel hedefe |
+| Systemd restart | `ssh` ile uzaktan | Doğrudan `systemctl` |
 
 ## Backend Tests
 
@@ -364,8 +375,8 @@ private fun fetchLevels(): String? {
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `78015644` fix(deploy): increase celery wait time from 3s to 5s (2026-05-06)
+- `5d6f569b` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
+- `a95abf9c` feat(deploy): add VPS environment detection to all deploy scripts (2026-05-05)
 - `c77c85e8` chore(cleanup): remove stale files, fix .gitignore, update env example (2026-05-05)
 - `b59bef3b` feat(mathlock-play): backend model updates, split test suite (2026-05-03)
-- `edd518f1` feat(mathlock-play): integrate memory game into app flow and ui (2026-05-03)
-- `e3ddc35a` feat(mathlock-play): add memory game engine, activity, and tests (adr-004) (2026-05-03)
-- `4c8deea8` refactor(mathlock-play): remove robotopia assets per adr-003 (2026-05-03)

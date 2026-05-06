@@ -55,17 +55,17 @@ All tags are flat strings. Namespaces below are organizational conventions only.
 Project tags bind a note to a specific codebase or service.
 
 ### Stack
-`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript` `webview` `kimi-cli` `tool`
+`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript` `webview` `kimi-cli` `tool` `cli` `json-rpc` `sdk`
 
 Technology tags describe the toolchain a note touches.
 
 ### Concepts
-`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging` `agent` `ai`
+`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging` `agent` `ai` `acp` `agents` `memory-game` `protocol`
 
 Domain tags classify the subject matter independent of any project.
 
 ### Meta
-`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot` `reference`
+`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot` `reference` `coding-conventions` `configuration` `github` `refactor` `sync` `vps`
 
 Lifecycle tags track note maturity and provenance.
 
@@ -73,6 +73,24 @@ Lifecycle tags track note maturity and provenance.
 - Every note must carry at least one project or concept tag.
 - Meta tags are optional and may be added or removed as a note evolves.
 - Tags are written in frontmatter arrays; never use `#hashtag` syntax in body text.
+
+## Page Size Policy
+
+Lint (`wiki_lint.py`) enforces type-aware line limits. Reference pages are exempt.
+
+| `type` | Max Lines | Rationale |
+|--------|-----------|-----------|
+| `project` | 400 | Project pages accumulate many subsystems over time |
+| `concept` | 350 | Concept pages should be focused; split into sub-concepts if exceeded |
+| `decision` | 200 | ADRs must be concise and decision-focused |
+| `index` / `log` | 500 | Catalog and chronological pages are inherently long |
+| `reference` (via `status`) | exempt | Canonical reference material (e.g., CLI docs, API guides) |
+
+**When a page approaches its limit:**
+1. Add a **Table of Contents** (TOC) after the main heading — use anchor links to every `##` section
+2. Add a **TL;DR** block right after the page title (2-3 sentences summarizing the entire page)
+3. Prefer **wikilink cross-references** over inline repetition — link to sub-pages instead of expanding
+4. If a single section grows >100 lines, extract it to a dedicated sub-page and link back
 
 ## Update Policy
 
@@ -123,6 +141,6 @@ status: "active"       # active | stale | archived | needs-review
 | `related` | Yes | Array of `\[\[PageName\]\]` wikilinks to related pages |
 | `sources` | No | Paths to raw archived source files |
 | `contested` | No | Set `true` when conflicting info exists |
-| `status` | No | Page state: `active`, `stale`, `archived`, `needs-review`. For `type: decision`: `Active`, `Superseded`, `Deprecated` |
+| `status` | No | Page state: `active`, `stale`, `archived`, `needs-review`, `reference`. For `type: decision`: `Active`, `Superseded`, `Deprecated` |
 | `supersedes` | No | For ADR only. Wikilink to the decision this replaces. Example: `adr-XXX-old-title` |
 | `superseded_by` | No | For ADR only. Wikilink to the decision that replaces this. Example: `adr-YYY-new-title` |

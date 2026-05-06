@@ -10,11 +10,29 @@ related:
   - git-workflow
 sources:
   - raw/articles/kimi-code-cli-docs.md
+status: reference
 ---
 
 # [[Kimi Code CLI]]
 
 Terminal tabanlı AI kodlama asistanı. Projelerde kod yazma, wiki yönetimi, deploy otomasyonu ve agent bazlı görev yönlendirme için kullanılır.
+
+> **TL;DR:** Kimi CLI = terminalden çalışan AI asistanı. Kod yazar, wiki günceller, deploy eder, agent spawn eder. Config: `~/.kimi/config.yaml`. Context: `[[proactive-wiki]]` ile birlikte çalışır.
+
+## İçindekiler
+
+| Bölüm | Açıklama |
+|-------|----------|
+| [Purpose](#purpose) | Kimi CLI'nin monorepo'daki rolü |
+| [Installation](#installation) | Kurulum ve güncelleme |
+| [Configuration](#configuration) | `config.yaml`, model, provider, timeout ayarları |
+| [Core Operations](#core-operations) | Kod yazma, test, wiki, deploy |
+| [Skills](#skills) | `SKILL.md` sistemi ve kullanımı |
+| [Code Style](#code-style) | Agent davranış kalıpları |
+| [Sub-agents and Agent System](#sub-agents-and-agent-system) | `Agent` tool'u, `agent.yaml`, subagent lifecycle |
+| [Customization](#customization) | `.kimi/` dizini, custom skills |
+| [Usage in Projects](#usage-in-projects) | Proje bazlı kullanım |
+| [Data Locations](#data-locations) | Cache, sessions, logs |
 
 ## Purpose
 
