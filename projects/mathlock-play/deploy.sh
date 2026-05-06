@@ -30,6 +30,26 @@ VPS_DATA_PATH="/var/www/mathlock/data"
 HEALTH_URL="https://mathlock.com.tr/mathlock/data/questions.json"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Ortam tespiti: VPS'te /home/akn/vps dizini vardır, local'de yok
+is_vps() {
+    [[ -d "/home/akn/vps" ]]
+}
+
+if is_vps; then
+    # VPS'te: ssh/scp doğrudan local komut olarak çalışır
+    ssh() {
+        shift  # host argümanını atla
+        eval "$*"
+    }
+    scp() {
+        local dest="${!#}"
+        local path="${dest#*:}"
+        local srcs=("${@:1:$#-1}")
+        mkdir -p "$(dirname "$path")"
+        cp -r "${srcs[@]}" "$path"
+    }
+fi
+
 log_info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
 log_success() { echo -e "${GREEN}[OK]${NC} $1"; }
 log_warning() { echo -e "${YELLOW}[WARN]${NC} $1"; }
@@ -134,52 +154,60 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
 fi
 
 # ─── 1. Derleme ─────────────────────────────────────────────────────────────
-if [[ "$BUILD_TYPE" == "release" ]]; then
-    echo -e "\n${YELLOW}[1/3] 🔨 AAB derleniyor (release — Play Store)...${NC}"
-    GRADLE_TASK="bundleRelease"
-else
-    echo -e "\n${YELLOW}[1/3] 🔨 APK derleniyor (debug — test)...${NC}"
-    GRADLE_TASK="assembleDebug"
-fi
-
-./gradlew "$GRADLE_TASK" --no-daemon 2>&1 | grep -E "(BUILD|ERROR|error:|warning:|WARN|Task :)" || true
-
-# Çıktı dosyasını bul
-if [[ "$BUILD_TYPE" == "release" ]]; then
-    AAB_PATH="app/build/outputs/bundle/release/app-release.aab"
-    if [ ! -f "$AAB_PATH" ]; then
-        log_error "AAB bulunamadı: $AAB_PATH"
-        exit 1
-    fi
-    OUTPUT_SIZE=$(du -sh "$AAB_PATH" | cut -f1)
-    log_success "AAB hazır: $AAB_PATH ($OUTPUT_SIZE)"
-else
-    APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
-    if [ ! -f "$APK_PATH" ]; then
-        log_error "APK bulunamadı: $APK_PATH"
-        exit 1
-    fi
-    OUTPUT_SIZE=$(du -sh "$APK_PATH" | cut -f1)
-    log_success "APK hazır: $APK_PATH ($OUTPUT_SIZE)"
-fi
-
-# output-metadata.json'dan bilgi oku
-if [[ "$BUILD_TYPE" == "release" ]]; then
+if is_vps; then
+    echo -e "\n${YELLOW}[1/3] ⏭️  Android derleme atlandı (VPS'te Android SDK/ADB yok)${NC}"
     VERSION_CODE=$NEW_CODE
     VERSION_NAME=$NEW_NAME
 else
-    METADATA_FILE="app/build/outputs/apk/debug/output-metadata.json"
-    if [ -f "$METADATA_FILE" ]; then
-        VERSION_CODE=$(python3 -c "import json; d=json.load(open('$METADATA_FILE')); print(d['elements'][0]['versionCode'])" 2>/dev/null || echo "$NEW_CODE")
-        VERSION_NAME=$(python3 -c "import json; d=json.load(open('$METADATA_FILE')); print(d['elements'][0]['versionName'])" 2>/dev/null || echo "$NEW_NAME")
+    if [[ "$BUILD_TYPE" == "release" ]]; then
+        echo -e "\n${YELLOW}[1/3] 🔨 AAB derleniyor (release — Play Store)...${NC}"
+        GRADLE_TASK="bundleRelease"
     else
+        echo -e "\n${YELLOW}[1/3] 🔨 APK derleniyor (debug — test)...${NC}"
+        GRADLE_TASK="assembleDebug"
+    fi
+
+    ./gradlew "$GRADLE_TASK" --no-daemon 2>&1 | grep -E "(BUILD|ERROR|error:|warning:|WARN|Task :)" || true
+
+    # Çıktı dosyasını bul
+    if [[ "$BUILD_TYPE" == "release" ]]; then
+        AAB_PATH="app/build/outputs/bundle/release/app-release.aab"
+        if [ ! -f "$AAB_PATH" ]; then
+            log_error "AAB bulunamadı: $AAB_PATH"
+            exit 1
+        fi
+        OUTPUT_SIZE=$(du -sh "$AAB_PATH" | cut -f1)
+        log_success "AAB hazır: $AAB_PATH ($OUTPUT_SIZE)"
+    else
+        APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+        if [ ! -f "$APK_PATH" ]; then
+            log_error "APK bulunamadı: $APK_PATH"
+            exit 1
+        fi
+        OUTPUT_SIZE=$(du -sh "$APK_PATH" | cut -f1)
+        log_success "APK hazır: $APK_PATH ($OUTPUT_SIZE)"
+    fi
+
+    # output-metadata.json'dan bilgi oku
+    if [[ "$BUILD_TYPE" == "release" ]]; then
         VERSION_CODE=$NEW_CODE
         VERSION_NAME=$NEW_NAME
+    else
+        METADATA_FILE="app/build/outputs/apk/debug/output-metadata.json"
+        if [ -f "$METADATA_FILE" ]; then
+            VERSION_CODE=$(python3 -c "import json; d=json.load(open('$METADATA_FILE')); print(d['elements'][0]['versionCode'])" 2>/dev/null || echo "$NEW_CODE")
+            VERSION_NAME=$(python3 -c "import json; d=json.load(open('$METADATA_FILE')); print(d['elements'][0]['versionName'])" 2>/dev/null || echo "$NEW_NAME")
+        else
+            VERSION_CODE=$NEW_CODE
+            VERSION_NAME=$NEW_NAME
+        fi
     fi
 fi
 
 # ─── 2. Telefona ADB kurulumu (sadece debug) ────────────────────────────────
-if [ "$SKIP_ADB" = false ] && [[ "$BUILD_TYPE" == "debug" ]]; then
+if is_vps; then
+    echo -e "\n${YELLOW}[2/3] ⏭️  ADB kurulum atlandı (VPS'te USB/telefon yok)${NC}"
+elif [ "$SKIP_ADB" = false ] && [[ "$BUILD_TYPE" == "debug" ]]; then
     echo -e "\n${YELLOW}[2/3] 📱 Telefona kuruluyor (ADB)...${NC}"
 
     if ! command -v adb &>/dev/null; then
@@ -274,9 +302,24 @@ if [ "$DEPLOY_BACKEND" = true ]; then
     # Django backend
     # -I: ignore-times (sunucudaki daha yeni dosyaları da üzerine yaz)
     # agents/ ve data/ hariç: bunlar root'a ait, timestamp hatası verir; zaten ayrı sync ediliyor
-    rsync -avz -I --exclude='.venv' --exclude='__pycache__' --exclude='*.pyc' --exclude='agents' --exclude='data' --exclude='.env' \
-        "$PROJECT_DIR/backend/" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/backend/" 2>/dev/null || \
-        log_warning "rsync backend başarısız"
+    if is_vps; then
+        # VPS'te: rsync exclude'larını manuel uygula (.venv, __pycache__ vs. kopyalanmasın)
+        for item in "$PROJECT_DIR/backend/"*; do
+            basename=$(basename "$item")
+            [[ "$basename" == ".venv" ]] && continue
+            [[ "$basename" == "__pycache__" ]] && continue
+            [[ "$basename" == *.pyc ]] && continue
+            [[ "$basename" == "agents" ]] && continue
+            [[ "$basename" == "data" ]] && continue
+            [[ "$basename" == ".env" ]] && continue
+            cp -r "$item" "/home/akn/vps/projects/mathlock-play/backend/" 2>/dev/null || \
+                log_warning "$basename kopyalanamadı"
+        done
+    else
+        rsync -avz -I --exclude='.venv' --exclude='__pycache__' --exclude='*.pyc' --exclude='agents' --exclude='data' --exclude='.env' \
+            "$PROJECT_DIR/backend/" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/backend/" 2>/dev/null || \
+            log_warning "rsync backend başarısız"
+    fi
     
     # AI pipeline dosyaları (kök dizinden)
     for f in ai-generate.sh ai-generate-levels.sh validate-questions.py validate-levels.py AGENTS.md docker-compose.yml; do
@@ -296,8 +339,13 @@ if [ "$DEPLOY_BACKEND" = true ]; then
     
     # agents dizini
     if [ -d "$PROJECT_DIR/agents" ]; then
-        rsync -avz "$PROJECT_DIR/agents/" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/agents/" 2>/dev/null || \
-            log_warning "agents/ sync başarısız"
+        if is_vps; then
+            cp -r "$PROJECT_DIR/agents/"* "/home/akn/vps/projects/mathlock-play/agents/" 2>/dev/null || \
+                log_warning "agents/ kopyalama başarısız"
+        else
+            rsync -avz "$PROJECT_DIR/agents/" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/agents/" 2>/dev/null || \
+                log_warning "agents/ sync başarısız"
+        fi
     fi
     
     # Systemd servis şablonlarını güncelle (docs/systemd/ → /etc/systemd/system/)

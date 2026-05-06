@@ -19,6 +19,26 @@
 
 ---
 
+### Ortam Tespiti (Environment Detection)
+
+Agent'ın ve script'lerin hangi makinede çalıştığını anlaması için basit bir kural:
+
+```bash
+# VPS tespiti: /home/akn/vps dizini sadece VPS'te vardır
+is_vps() { [[ -d "/home/akn/vps" ]]; }
+
+# Kullanım
+if is_vps; then
+    echo "VPS ortamı — doğrudan deploy edilecek"
+else
+    echo "Local geliştirme ortamı — uzak VPS'ye gönderilecek"
+fi
+```
+
+**Not:** Tüm `deploy.sh` script'leri bu tespiti içerir. VPS'te (`/home/akn/local` altında) çalıştırıldığında `scp`/`ssh` olmadan doğrudan deploy eder. Local'den çalıştırıldığında eski davranışı korur (uzak bağlantı).
+
+---
+
 ## Proje Yapısı (Monorepo)
 
 ```
@@ -44,6 +64,8 @@ Detaylı proje bilgileri, stack'ler ve entry point'ler için bkz. `wiki/system-o
 ---
 
 ## Deploy Komutları
+
+Deploy script'leri **ortam tespiti** yapar. Aynı komutları hem local'den hem VPS'ten çalıştırabilirsin — script'ler otomatik olarak doğru davranışı seçer.
 
 ### 1. Ops-Bot
 ```bash
@@ -372,27 +394,41 @@ Kullanıcı "push yap" dediğinde:
 
 ## Sık Kullanılan Komutlar
 
+### Her Ortamda Çalışan Komutlar
 ```bash
 # Git
- git status --short              # Değişiklik özeti
+git status --short              # Değişiklik özeti
 git add -A && git commit -m "type(scope): ..."  # Commit
 git push origin main            # Push
 git pull origin main            # Pull
 timeout 5 git fetch origin      # GitHub'daki son değişiklikleri kontrol et
 
-# Tüm servislerin durumu
-systemctl status mathlock-backend mathlock-celery
-ssh akn@89.252.152.222 "systemctl status ops-bot telegram-kimi"
-ssh akn@89.252.152.222 "docker ps --format 'table {{.Names}}\t{{.Status}}'"
-
-# Nginx config test (VPS)
-ssh akn@89.252.152.222 "docker exec vps_nginx_main nginx -t"
-
 # Wiki lint
 cd ~/.kimi/skills/local-wiki && python3 scripts/wiki_lint.py /home/akn/local/wiki
+```
 
-# Log takibi
+### Local Geliştirme Ortamı Komutları
+```bash
+# Local servisler
+systemctl status mathlock-backend mathlock-celery
+
+# VPS'ye uzaktan bakış (local'den çalıştır)
+ssh akn@89.252.152.222 "systemctl status ops-bot telegram-kimi"
+ssh akn@89.252.152.222 "docker ps --format 'table {{.Names}}\t{{.Status}}'"
+ssh akn@89.252.152.222 "docker exec vps_nginx_main nginx -t"
 ssh akn@89.252.152.222 "journalctl -u ops-bot -n 50 --no-pager"
+```
+
+### VPS Geliştirme Ortamı Komutları
+```bash
+# VPS'te çalışan servisler (doğrudan çalıştır)
+systemctl status ops-bot telegram-kimi
+docker ps --format 'table {{.Names}}\t{{.Status}}'
+docker exec vps_nginx_main nginx -t
+journalctl -u ops-bot -n 50 --no-pager
+
+# Docker container'ları
+ docker compose -f docker-compose.prod.yml ps
 ```
 
 ---
