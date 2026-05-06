@@ -29,6 +29,28 @@ Ayrı dosya olmasının nedeni:
 - README'leri insanlar için sade tutar
 - Mevcut dokümantasyonu tamamlar, yerini almaz
 
+## Çoklu Makine Desteği (VPS / Local)
+
+AGENTS.md dosyası **hem yerel makinede hem VPS'te aynı** olabilir. Agent'ın kendini doğru ortamda konumlandırması için:
+
+```bash
+if test -d "/home/akn/vps"; then
+    echo "VPS"
+elif test "$HOSTNAME" = "akn-ub" -o -d "/home/akn/local/projects"; then
+    echo "LOCAL"
+else
+    echo "BILINMIYOR"
+fi
+```
+
+| Çıktı | Anlamı |
+|-------|--------|
+| **VPS** | Canlı sunucu — production servisleri yönet, deploy etme |
+| **LOCAL** | Geliştirme makinesi — kod yaz, test et, wiki güncelle, push et |
+| **BILINMIYOR** | `is_vps()` ile manuel tespit gerekli |
+
+Detaylı ortam karşılaştırması ve talimatlar: bkz. `AGENTS.md` "Ortam Ayrımı" bölümü.
+
 ## Ortam Tespiti (Çoklu Makine)
 
 AGENTS.md dosyası **hem yerel geliştirme makinede hem VPS'te aynı** olabilir. Agent'ın hangi ortamda çalıştığını anlaması için:

@@ -1991,3 +1991,34 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 172 entries
 
+## [2026-05-06 23:05] ingest | AGENTS.md dynamic environment detection
+- **AGENTS.md:** "SEN NEREDESIN?" bölümü eklendi — agent kendisi ortam tespiti yapar
+- **AGENTS.md:** Ortam ayrımı tablosu "LOCAL'deysem / VPS'teysem" olarak yeniden yazıldı
+- **concepts/agents-md.md:** "Coklu Makine Destegi (VPS / Local)" bölümü eklendi
+- **Pages updated:** concepts/agents-md.md, AGENTS.md
+- **Note:** Agent'in AGENTS.md'yi okudugunda once komutu calistirip ciktiya gore davranmasi saglandi
+
+## [2026-05-06 23:11] lint | 9/10
+- Orphan pages: 0
+- Broken links: 2
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 174 entries
+
+## [2026-05-06 23:12] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 175 entries
+

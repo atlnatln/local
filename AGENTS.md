@@ -4,24 +4,42 @@
 
 ---
 
+## 🖥️ SEN NEREDESİN? (Her Açılışta ZORUNLU)
+
+Bu `AGENTS.md` dosyası **HEM local HEM VPS'te aynıdır**. Aşağıdaki komutu **çalıştır** ve çıktıya göre doğru bölümü oku.
+
+```bash
+if test -d "/home/akn/vps"; then
+    echo "VPS"
+elif test "$HOSTNAME" = "akn-ub" -o -d "/home/akn/local/projects"; then
+    echo "LOCAL"
+else
+    echo "BILINMIYOR"
+fi
+```
+
+**👉 YUKARIDAKİ KOMUTU ÇALIŞTIR. ÇIKTISINI BURAYA YAZ: ____________**
+
+| Çıktı | Ne Demek? | Ne Yapmalısın? |
+|-------|-----------|----------------|
+| **VPS** | Canlı sunucudasın | Production servislerini yönet, deploy etme, log izle |
+| **LOCAL** | Geliştirme makinesindesin | Kod yaz, test et, wiki güncelle, GitHub'a push et |
+| **BILINMIYOR** | Ortam belirsiz | `is_vps()` komutunu çalıştır, manuel tespit et |
+
+---
+
 ## Ortam Ayrımı (Kritik)
 
-> **ÖNEMLİ:** Bu `AGENTS.md` dosyası hem yerel makinede hem VPS'te aynıdır. Hangi ortamda çalıştığınızı anlamak için **her zaman** şu komutu çalıştırın:
-> ```bash
-> is_vps() { [[ -d "/home/akn/vps" ]]; } && is_vps && echo "VPS" || echo "LOCAL"
-> ```
-> Aşağıdaki tablo sadece iki ortamın karşılaştırmasıdır. "Geliştirme (Burada)" ifadesi dosyanın yazıldığı yeri belirtir, çalıştığı yeri değil.
-
-| | **Geliştirme (Local)** | **Canlı (VPS)** |
+| | **LOCAL'deysem** | **VPS'teysem** |
 |---|---|---|
-| **Makine** | Yerel geliştirme istasyonu | VPS (Ubuntu) |
-| **Dizin** | `/home/akn/local` | `/home/akn/vps` |
-| **SSH** | — | `ssh akn@89.252.152.222` |
-| **Amaç** | Kod yazma, test, build, wiki yönetimi | Production çalıştırma |
-| **Servisler** | mathlock-backend (systemd), mathlock-celery (systemd) | ops-bot (systemd), sec-agent (systemd), telegram-kimi (systemd), webimar (Docker), mathlock-play (systemd + Docker) |
+| **Makine** | Yerel geliştirme istasyonu (`akn-ub`) | VPS (Ubuntu, `vps.aknatln.com`) |
+| **Çalışma Dizini** | `/home/akn/local` | `/home/akn/vps` (deploy edilmiş kod) |
+| **SSH** | VPS'ye bağlanmak için: `ssh akn@89.252.152.222` | — |
+| **Amaç** | Kod yazma, test, build, wiki yönetimi | Production çalıştırma, monitoring |
+| **Servisler** | `mathlock-backend`, `mathlock-celery` | `ops-bot`, `sec-agent`, `telegram-kimi`, `webimar` (Docker), `mathlock-play` |
 | **Nginx** | Yok (VPS nginx container'a yönlendirir) | `vps_nginx_main` container'ı (80/443) |
 
-**Kural:** Burada yazılan kod, build edilen image'lar ve hazırlanan paketler `deploy.sh` ile VPS'e gönderilir. Canlı ortamdaki dosyaları doğrudan düzenleme.
+**Kural (HER İKİ ORTAM İÇİN):** Kod burada yazılır, build edilir, `deploy.sh` ile VPS'e gönderilir. Canlı ortamdaki dosyaları doğrudan düzenleme.
 
 ---
 
