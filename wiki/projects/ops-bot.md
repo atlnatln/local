@@ -231,9 +231,9 @@ Deploy akışı:
 | Dizin | Amaç |
 |-------|------|
 | `/home/akn/vps/ops-bot/` | Deploy hedefi — kod, venv, config |
-| `/home/akn/local/ops-bot/` | systemd servisinin beklediği yol (symlink) |
+| `/home/akn/local/ops-bot/` | Geliştirme/git kaynağı |
 
-> **Not:** systemd servis dosyası `WorkingDirectory`, `ExecStart` ve çevre değişkenlerinde `/home/akn/local/ops-bot/` yolunu kullanır. Deploy script dosyaları `/home/akn/vps/ops-bot/` altına çıkarır. Bu iki yol arasında senkronizasyon `ln -s /home/akn/vps/ops-bot /home/akn/local/ops-bot` symlink'i ile sağlanır.
+> **Not:** systemd servis dosyası `WorkingDirectory`, `ExecStart` ve çevre değişkenlerinde `/home/akn/vps/ops-bot/` yolunu kullanır. Deploy script dosyaları da `/home/akn/vps/ops-bot/` altına çıkarır. `local` dizini yalnızca geliştirme ve git kaynağıdır; canlı servis `vps` dizininden çalışır.
 
 ## Security (sec-agent)
 

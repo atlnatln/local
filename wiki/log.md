@@ -2042,3 +2042,21 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 177 entries
 
+
+## [2026-05-07 00:06] ingest | ops-bot | deploy path fix
+
+- **ops-bot** (`d05f0b6` → `8618166`): `systemd/ops-bot.service` ve `.env.production` path'leri `local` → `vps` düzeltildi; deploy akışı tek dizin (vps) üzerinden çalışır hale getirildi
+- Pages updated: [[ops-bot]]
+- Checkpoints refreshed: ops-bot
+## [2026-05-07 00:21] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 179 entries
+
