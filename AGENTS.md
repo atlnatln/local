@@ -6,7 +6,13 @@
 
 ## Ortam Ayrımı (Kritik)
 
-| | **Geliştirme (Burada)** | **Canlı (Uzak Sunucu)** |
+> **ÖNEMLİ:** Bu `AGENTS.md` dosyası hem yerel makinede hem VPS'te aynıdır. Hangi ortamda çalıştığınızı anlamak için **her zaman** şu komutu çalıştırın:
+> ```bash
+> is_vps() { [[ -d "/home/akn/vps" ]]; } && is_vps && echo "VPS" || echo "LOCAL"
+> ```
+> Aşağıdaki tablo sadece iki ortamın karşılaştırmasıdır. "Geliştirme (Burada)" ifadesi dosyanın yazıldığı yeri belirtir, çalıştığı yeri değil.
+
+| | **Geliştirme (Local)** | **Canlı (VPS)** |
 |---|---|---|
 | **Makine** | Yerel geliştirme istasyonu | VPS (Ubuntu) |
 | **Dizin** | `/home/akn/local` | `/home/akn/vps` |
