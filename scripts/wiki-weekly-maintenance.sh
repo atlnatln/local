@@ -103,8 +103,8 @@ run_lint() {
     lint_out=$(python3 "$LINT_SCRIPT" "$WIKI_ROOT" 2>&1) || true
 
     local passed total warnings failures
-    passed=$(echo "$lint_out" | grep "SUMMARY:" | sed -E 's/.*([0-9]+)\/([0-9]+).*/\1/')
-    total=$(echo "$lint_out" | grep "SUMMARY:" | sed -E 's/.*([0-9]+)\/([0-9]+).*/\2/')
+    passed=$(echo "$lint_out" | grep "SUMMARY:" | sed -E 's/.*SUMMARY: ([0-9]+)\/([0-9]+).*/\1/')
+    total=$(echo "$lint_out" | grep "SUMMARY:" | sed -E 's/.*SUMMARY: ([0-9]+)\/([0-9]+).*/\2/')
     warnings=$(echo "$lint_out" | grep "SUMMARY:" | sed -E 's/.*([0-9]+) warning.*/\1/')
     failures=$(echo "$lint_out" | grep "SUMMARY:" | sed -E 's/.*([0-9]+) failure.*/\1/')
 
