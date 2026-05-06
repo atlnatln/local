@@ -121,10 +121,21 @@ Günlük güvenlik raporunda tespit edilen token sızıntısı ve `/api/accounts
 - **Admin blacklist:** `admin_token_blacklist.py` ile admin panelden token revoke desteği eklendi.
 - **Token abuse cache fix (2026-05-05):** `middleware_token_abuse.py`'de saatlik IP counter cache'e `set()` yazılıyordu; JSON serializer bunu serialize edemiyordu ve her API isteğinde 500 hatası fırlatıyordu. `set()` → `list()` çevrildi, eski cache verisi `isinstance` kontrolü ile migrate ediliyor.
 
+## Su Tahsis Belgesi Kontrolü (Geçici Durum)
+
+2026-05-06 itibariyle 11 tarımsal yapı türü için **YAS (Yeraltı Suyu Koruma Alanı) kapalı alanında su tahsis belgesi zorunluluğu geçici olarak kaldırıldı**:
+
+- **Kanatlı:** Yumurtacı, Etçi (Broiler), Gezen Tavuk, Hindi, Kaz/Ördek (`kanatli.py`)
+- **Büyükbaş:** Süt Sığırcılığı, Besi Sığırcılığı (`buyukbas.py`)
+- **Küçükbaş:** Ağıl (`kucukbas.py`)
+- **Diğer:** Hara (`hara.py`), Evcil Hayvan (`evcil_hayvan.py`), Tarımsal Ürün Yıkama Tesisi (`ana_modul.py`)
+
+Kod blokları `# GEÇİCİ: ... devre dışı (2026-05-06)` başlığıyla yorum satırına alındı; ileride tek hamlede geri açılabilir. Yıkama tesisi için YAS kontrolü (`yas_var_mi`) hâlâ aktif.
+
 ## Recent Commits
 
+- `33b6574ea` feat(api): temporarily disable su tahsis belgesi checks for 11 structures (2026-05-06)
 - `cdb21b895` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
 - `cb8eef36b` feat(deploy): add VPS environment detection and fix image tags (2026-05-06)
 - `fc83c038a` fix(accounts): replace set() with list() in token abuse middleware cache (2026-05-05)
 - `29c2c8a8e` fix(accounts): secure OAuth redirect with hash fragment, harden /me/ error handling (2026-05-05)
-- `e22b7782` security(phase-1): harden defaults, CORS, tracking, add AllowAny to public endpoints (2026-05-02)

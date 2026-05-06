@@ -2060,3 +2060,25 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 179 entries
 
+
+## [2026-05-06 23:45] ingest | webimar | disable su tahsis checks
+
+- **webimar** (`5b6a274` → `33b6574`): 11 tarımsal yapı türü için YAS kapalı alanında su tahsis belgesi zorunluluğu geçici olarak kaldırıldı
+  - `kanatli.py`: 5 kanatlı türü (yumurtacı, etçi, gezen, hindi, kaz/ördek)
+  - `buyukbas.py`: süt & besi sığırcılığı
+  - `kucukbas.py`: ağıl (küçükbaş)
+  - `evcil_hayvan.py`, `hara.py`, `ana_modul.py` (yıkama tesisi)
+- Pages updated: [[webimar]]
+- Checkpoints refreshed: webimar
+## [2026-05-07 00:42] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 181 entries
+
