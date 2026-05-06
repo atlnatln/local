@@ -39,7 +39,11 @@ if is_vps; then
     # VPS'te: ssh/scp doğrudan local komut olarak çalışır
     ssh() {
         shift  # host argümanını atla
-        eval "$*"
+        if [ "$1" = "bash" ] && [ "$2" = "-s" ]; then
+            bash -s
+        else
+            printf '%s\n' "$@" | bash
+        fi
     }
     scp() {
         local dest="${!#}"
