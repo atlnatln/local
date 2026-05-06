@@ -76,14 +76,16 @@ Geçersiz kılınmış veya değişmiş kararlar.
 | [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67+ test) | 2026-05-05 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-03 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-05 |
-| [[anka]] | project | ~~B2B veri servisi — Django + Next.js~~ *(Arşivlendi, 2026-05-06)* | 2026-05-06 |
-| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) | 2026-05-03 |
+| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) | 2026-05-06 |
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
 | [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-03 |
 
 ## Recently Updated
 
+- [[mathlock-play]] — `.env.example` güncellendi: DB config ayrıldı, Celery/Redis eklendi, Google Play path güncellendi (2026-05-06)
+- [[git-workflow]] — GitHub Sync + Cross-Machine Development bölümü eklendi, anka referansları kaldırıldı (2026-05-06)
+- [[_archive/anka|Anka]] — Proje arşivlendi, `_archive/` altına taşındı (2026-05-06)
 - [[ops-bot]] — VPS senkronizasyonu: router.py silindi, orchestrator.py + agents/ dizini eklendi, eski ACP client/executor bot/'a geri taşındı, routing master'a bırakıldı (2026-05-05)
 - [[ops-bot]] — ACP SDK migration tamamlandı: bot/acp_sdk_client.py + bot/acp_sdk_executor.py eklendi, eski ACP client/executor arşivlendi, file I/O sandboxing, terminal execution, markdown sanitize, tests/sdk/ (10 unit test) (2026-05-05)
 - [[ops-bot]] — ACP fix'leri: tool_call_count reset, /iptal process kill, boş yanıt guard, /durum komutu, structured logging, get_diagnostics, reader loop EOF cleanup (2026-05-04)
@@ -109,4 +111,4 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 ## Archived Pages
 
-(Henüz arşivlenmiş sayfa yok.)
+- [[_archive/anka|Anka]] (archived 2026-05-06) — B2B veri servisi, pasife alındı

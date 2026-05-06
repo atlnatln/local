@@ -43,7 +43,7 @@ Tüm projelerin (webimar, anka, mathlock) tek bir VPS'te çalışmasını sağla
 | Domain | Proje |
 |--------|-------|
 | `tarimimar.com.tr` | [[webimar]] |
-| `ankadata.com.tr` | [[anka]] |
+| `ankadata.com.tr` | ~~[[_archive/anka|Anka]]~~ *(Arşivlendi)* |
 | `mathlock.com.tr` | [[mathlock-play]] |
 
 ## SSL

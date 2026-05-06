@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play"
 created: 2026-05-01
-updated: 2026-05-03
+updated: 2026-05-06
 type: project
 tags: [mathlock-play, android, django, kotlin, python, systemd]
 related:
@@ -98,6 +98,26 @@ Telefon yeni seti indirir
 | `projects/mathlock-play/deploy.sh` | Build + data sync |
 | `projects/mathlock-play/ai-generate.sh` | AI soru üretim pipeline'ı |
 | `projects/mathlock-play/ai-generate-levels.sh` | AI bulmaca seviye üretim pipeline'ı (Sayı Yolculuğu) |
+
+## Environment Variables
+
+`.env.example` yapısı (2026-05-06 güncellemesi):
+
+| Değişken | Zorunlu | Açıklama |
+|----------|---------|----------|
+| `DJANGO_SECRET_KEY` | ✅ | 50+ karakter rastgele string |
+| `DJANGO_DEBUG` | ✅ | `False` (production) |
+| `DJANGO_ALLOWED_HOSTS` | ✅ | `localhost,127.0.0.1,mathlock.com.tr` |
+| `DB_NAME` | ✅ | PostgreSQL veritabanı adı (`mathlock`) |
+| `DB_USER` | ✅ | PostgreSQL kullanıcı adı |
+| `DB_PASSWORD` | ✅ | PostgreSQL şifresi |
+| `DB_HOST` | ✅ | `localhost` |
+| `DB_PORT` | ✅ | `5432` |
+| `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` | ❌ | IAP doğrulama için JSON dosya yolu |
+| `CELERY_BROKER_URL` | ❌ | `redis://localhost:6379/0` |
+| `CELERY_RESULT_BACKEND` | ❌ | `redis://localhost:6379/0` |
+
+> **Not:** Eski tek `MATHLOCK_DB_PASSWORD` değişkeni ayrı `DB_*` değişkenlerine bölündü. `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` path'i `/home/akn/secrets/mathlock-play/...` olarak güncellendi.
 
 ## Servisler (VPS)
 
@@ -343,8 +363,9 @@ private fun fetchLevels(): String? {
 
 ## Recent Commits
 
-- `31c9a1db` chore(mathlock): bump version to 1.0.74 (74) (2026-05-03)
-- `7153815b` fix(mathlock): retry levels/progress without child_id on 404, always invoke callback (2026-05-03)
-- `d943f405` fix(mathlock): backward-compat auth for old app versions (query param + body token fallback) (2026-05-03)
-- `fc45d056` feat(robotopia-android): create standalone project extracted from mathlock-play (2026-05-03)
-- `9587a67a` chore(mathlock): bump version to 1.0.67 (67) (2026-05-02)
+<!-- AUTO-REFRESHED -->
+- `c77c85e8` chore(cleanup): remove stale files, fix .gitignore, update env example (2026-05-05)
+- `b59bef3b` feat(mathlock-play): backend model updates, split test suite (2026-05-03)
+- `edd518f1` feat(mathlock-play): integrate memory game into app flow and ui (2026-05-03)
+- `e3ddc35a` feat(mathlock-play): add memory game engine, activity, and tests (adr-004) (2026-05-03)
+- `4c8deea8` refactor(mathlock-play): remove robotopia assets per adr-003 (2026-05-03)

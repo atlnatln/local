@@ -57,7 +57,7 @@ tags: [meta, log]
 
 ## [2026-05-01 19:31] ingest | anka | 4db9944 | 1
 - Files: A:0 M:0 D:0 (checkpoint = HEAD, full scan)
-- Pages created: [[anka]]
+- Pages created: Anka (arşiv sayfası)
 - Diff summary: Full ingest of anka project. B2B data service with 3-stage verification pipeline.
 
 ## [2026-05-01 19:32] ingest | mathlock-play | 4db9944 | 1
@@ -1719,3 +1719,61 @@ tags: [meta, log]
 - VPS işlemler: 8 container durduruldu, 8 volume silindi, nginx anka.conf kaldırıldı, reload edildi
 - AGENTS.md güncellendi: anka referansları kaldırıldı
 - Wiki güncellendi: anka.md archived, index.md güncellendi
+
+
+## [2026-05-06 19:42] ingest | local | fa7dc69 | 4 sayfa
+- Files: A:19 M:3 D:347 R:3
+- Pages created: [[_archive/anka|Anka (Arşiv)]], [[projects/anka|Anka (Yönlendirme)]]
+- Pages updated: [[mathlock-play]], [[git-workflow]], [[index]], [[system-overview]]
+- Pages archived: Anka → `_archive/anka.md`
+- Diff summary: Anka projesi tamamen arşivlendi (`projects/anka/` silindi). MathLock Play `.env.example` yapılandırması güncellendi (DB config ayrıldı, Celery/Redis eklendi). AGENTS.md'ye GitHub Sync + Cross-Machine Development bölümü eklendi. `.gitignore` genişletildi.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+- Revert: git checkout 0b893b02 -- wiki/
+## [2026-05-06 19:43] lint | 5/10
+- Orphan pages: 0
+- Broken links: 2
+- Missing from index: 2
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 4
+- Log size: 150 entries
+
+## [2026-05-06 19:44] lint | 5/10
+- Orphan pages: 0
+- Broken links: 4
+- Missing from index: 2
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 4
+- Log size: 151 entries
+
+## [2026-05-06 19:45] lint | 5/10
+- Orphan pages: 0
+- Broken links: 4
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 4
+- Log size: 152 entries
+
+## [2026-05-06 19:46] lint | 5/10
+- Orphan pages: 0
+- Broken links: 4
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
+- Raw existence: 4
+- Log size: 153 entries
+
