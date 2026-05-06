@@ -120,6 +120,21 @@ Kimi-cli aşağıdaki yerlerde AGENTS.md arar:
 - **Komutlar çalıştırılabilir olsun:** Agent test komutlarını otomatik çalıştırabilir
 - **Monorepo:** Her alt proje kendi AGENTS.md'sini taşıyabilir (örn: `ops-bot/AGENTS.md`)
 - **Güvenlik:** Hassas bilgileri (API key, şifre) asla ekle
+- **🔴 Wiki ingest (KRİTİK):** AGENTS.md veya proje docs'u değiştiğinde, commit/push ÖNCESİ wiki toplanmalıdır. Bkz. [[deployment]] Haftalık Wiki Bakımı ve AGENTS.md "KATI KURAL" bölümü.
+
+## Commit Öncesi Wiki Kuralı
+
+**Bu kural HEM local HEM VPS'te geçerlidir.**
+
+AGENTS.md değiştiğinde (veya herhangi bir proje dokümantasyonu):
+1. Değişen dosyaları analiz et (`git diff`)
+2. İlgili wiki sayfalarını güncelle (ingest)
+3. `wiki/log.md`'ye ingest girişi ekle
+4. `wiki lint` çalıştır → **10/10 hedefi**
+5. `git add -A && git commit -m "type(scope): ..."`
+6. `git push origin main`
+
+Git pre-commit/pre-push hook'lar bu kuralı otomatik olarak zorlar.
 
 ## Ekosistem Uyumluluğu
 

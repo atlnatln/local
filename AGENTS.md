@@ -25,6 +25,47 @@
 
 ---
 
+## 🔴 KATI KURAL: Commit/Push ÖNCESİ Wiki TOPLANMALIDIR 🔴
+
+**Bu kural HEM local HEM VPS'te geçerlidir. İhlali kritiktir.**
+
+### Neden?
+
+- Wiki = projenin **yaşayan belleği**
+- Kod değişir ama wiki güncel kalmazsa sonraki agent'lar eski/yanlış bilgiyle çalışır
+- Bilgi kaybı, tutarsızlık, tekrarlanan hatalar
+
+### Ne Zaman Uygulanır?
+
+Aşağıdaki dosyalardan **herhangi biri** değiştiğinde:
+- `AGENTS.md`, `README.md`, `SCHEMA.md`
+- `wiki/` dizinindeki herhangi bir dosya
+- Herhangi bir projenin `deploy.sh`, `README.md`, `AGENTS.md`
+- `infrastructure/` altındaki yapılandırma dosyaları
+- `scripts/wiki-*` dosyaları
+
+### Checklist (SIRASIYLA)
+
+```
+□ Değişen dosyaları analiz et (git diff)
+□ İlgili wiki sayfalarını güncelle (ingest)
+□ wiki log.md'ye ingest girişi ekle
+□ wiki lint çalıştır → 10/10 hedefi
+□ git add -A
+□ git commit -m "type(scope): ..."
+□ git push origin main
+```
+
+### Otomatik Koruma
+
+Git hook'lar kuruludur:
+- **pre-commit:** Dokümantasyon değişikliğinde commit'i engeller, talimat gösterir
+- **pre-push:** Wiki dosyaları commit edilmemişse push'u engeller
+
+Hook'ları atlamak için (ACİL durumlar): `git commit --no-verify`
+
+---
+
 ### Ortam Tespiti (Environment Detection)
 
 Agent'ın ve script'lerin hangi makinede çalıştığını anlaması için basit bir kural:

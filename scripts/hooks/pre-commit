@@ -1,0 +1,44 @@
+#!/bin/bash
+# ============================================================
+# Pre-Commit Hook: Wiki Ingest Guard
+# ============================================================
+# Bu hook, dokümantasyon/proje docs değişikliklerinde commit'i
+# engeller ve kullanıcıya wiki ingest talimatı gösterir.
+#
+# Kurulum: ln -s scripts/hooks/pre-commit .git/hooks/pre-commit
+# ============================================================
+
+STAGED=$(git diff --cached --name-only)
+
+# Dokümantasyon/proje docs değişti mi?
+if echo "$STAGED" | grep -qE "^(AGENTS\.md|README\.md|SCHEMA\.md|wiki/|projects/.*/README|projects/.*/AGENTS|projects/.*/deploy\.sh|infrastructure/|scripts/wiki-)"; then
+    echo ""
+    echo "╔══════════════════════════════════════════════════════════════════╗"
+    echo "║  ⚠️  D O K Ü M A N T A S Y O N   D E Ğ İ Ş İ K L İ Ğ İ          ║"
+    echo "╠══════════════════════════════════════════════════════════════════╣"
+    echo "║                                                                  ║"
+    echo "║  Aşağıdaki dosyalarda değişiklik tespit edildi:                  ║"
+    echo "$STAGED" | grep -E "^(AGENTS\.md|README\.md|SCHEMA\.md|wiki/|projects/.*/README|projects/.*/AGENTS|projects/.*/deploy\.sh|infrastructure/|scripts/wiki-)" | sed 's/^/║    • /'
+    echo "║                                                                  ║"
+    echo "║  🔴 K A T I   K U R A L 🔴                                       ║"
+    echo "║                                                                  ║"
+    echo "║  Commit/Push ÖNCESİ wiki TOPLANMALIDIR.                          ║"
+    echo "║                                                                  ║"
+    echo "║  Yapman gerekenler (SIRASIYLA):                                  ║"
+    echo "║    1. wiki lint çalıştır  →  python3 script 10/10 olsun         ║"
+    echo "║    2. Değişen dosyaları wiki sayfalarına yansıt (ingest)        ║"
+    echo "║    3. wiki log.md'ye ingest girişi ekle                         ║"
+    echo "║    4. Lint tekrar çalıştır (10/10 doğrula)                      ║"
+    echo "║    5. git add -A && git commit -m \"wiki(scope): ...\"          ║"
+    echo "║    6. git push origin main                                      ║"
+    echo "║                                                                  ║"
+    echo "║  ⚠️  Bu kural HEM local HEM VPS'te geçerlidir.                  ║"
+    echo "║  ⚠️  Bir daha ihlal edilmemesi kritiktir.                       ║"
+    echo "║                                                                  ║"
+    echo "║  ACİL durumda atlamak için: git commit --no-verify              ║"
+    echo "╚══════════════════════════════════════════════════════════════════╝"
+    echo ""
+    exit 1
+fi
+
+exit 0

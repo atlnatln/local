@@ -1972,3 +1972,22 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 170 entries
 
+## [2026-05-06 22:50] ingest | AGENTS.md wiki rule + hooks
+- **AGENTS.md:** "KATI KURAL: Commit/Push ÖNCESİ Wiki TOPLANMALIDIR" bölümü eklendi
+- **concepts/agents-md.md:** "Commit Öncesi Wiki Kuralı" ve best practices'e wiki ingest maddeesi eklendi
+- **scripts/hooks/:** pre-commit + pre-push hook'lar oluşturuldu (wiki ingest guard)
+- **Pages updated:** concepts/agents-md.md, AGENTS.md
+- **Note:** Bu ingest kural ihlali sonrası yapılan düzeltme ve koruma önlemidir
+
+## [2026-05-06 22:50] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 172 entries
+

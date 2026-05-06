@@ -1,0 +1,44 @@
+#!/bin/bash
+# ============================================================
+# Pre-Push Hook: Wiki Sync Guard
+# ============================================================
+# Push öncesi wiki dosyalarının commit edilip edilmediğini kontrol eder.
+# Eğer wiki dosyaları staged veya unstaged durumdaysa push'u engeller.
+# ============================================================
+
+STAGED=$(git diff --cached --name-only)
+UNSTAGED=$(git diff --name-only)
+
+if echo "$STAGED" | grep -q "^wiki/" || echo "$UNSTAGED" | grep -q "^wiki/"; then
+    echo ""
+    echo "╔══════════════════════════════════════════════════════════════════╗"
+    echo "║  🔴 W I K I   S E N K R O N İ Z A S Y O N   H A T A S I         ║"
+    echo "╠══════════════════════════════════════════════════════════════════╣"
+    echo "║                                                                  ║"
+    echo "║  Wiki dosyaları commit edilmemiş:                                ║"
+    echo "$STAGED$UNSTAGED" | grep "^wiki/" | sed 's/^/║    • /'
+    echo "║                                                                  ║"
+    echo "║  Wiki dosyalarını ÖNCE commit et, SONRA push yap.               ║"
+    echo "║                                                                  ║"
+    echo "║  Yapman gerekenler:                                              ║"
+    echo "║    1. git add wiki/                                             ║"
+    echo "║    2. git commit -m \"chore(wiki): ...\"                         ║"
+    echo "║    3. git push origin main                                      ║"
+    echo "║                                                                  ║"
+    echo "║  ACİL durumda atlamak için: git push --no-verify                ║"
+    echo "╚══════════════════════════════════════════════════════════════════╝"
+    echo ""
+    exit 1
+fi
+
+# Ayrıca origin/main ile HEAD arasındaki farkı kontrol et
+BEHIND=$(git rev-list HEAD..origin/main --count 2>/dev/null || echo "0")
+if [[ "$BEHIND" -gt 0 ]]; then
+    echo ""
+    echo "⚠️  GitHub'da $BEHIND commit var, sen geridesin."
+    echo "   Önce pull yap: git pull origin main"
+    echo ""
+    exit 1
+fi
+
+exit 0
