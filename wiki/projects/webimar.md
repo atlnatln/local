@@ -1,7 +1,7 @@
 ---
 title: "Webimar"
 created: 2026-05-01
-updated: 2026-05-05
+updated: 2026-05-06
 type: project
 tags: [webimar, django, nextjs, react, docker, nginx]
 related:

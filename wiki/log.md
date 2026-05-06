@@ -2022,3 +2022,23 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 175 entries
 
+
+## [2026-05-06 23:21] ingest | local + ops-bot + webimar | 3 proje
+
+- **local** (`ecdfb06` → `e2b7e8f`): AGENTS.md güncellendi — "SEN NEREDESİN?" bölümü eklendi, ortam tespiti her açılışta zorunlu hale getirildi, LOCAL/VPS tablosu detaylandırıldı
+- **ops-bot** (`d093d94` → `d05f0b6`): `.gitignore` güncellendi — `.venv/`, `venv/` ve `data/sec-agent-*.json` eklendi
+- **webimar** (`cdb21b89` → `5b6a274`): `.gitignore` güncellendi — `__pycache__` izleme durduruldu, `deploy.sh`'ta domain check VPS modunda `-k` flag'i ve `000` fallback eklendi
+- Pages updated: [[agents-md]], [[ops-bot]], [[webimar]], [[index]]
+- Checkpoints refreshed: local, ops-bot, webimar
+## [2026-05-06 23:25] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 177 entries
+

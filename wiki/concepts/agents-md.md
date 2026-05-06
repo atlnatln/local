@@ -1,7 +1,7 @@
 ---
 title: "AGENTS.md"
 created: 2026-05-03
-updated: 2026-05-03
+updated: 2026-05-06
 type: concept
 tags: [kimi-cli, agents, configuration, coding-conventions]
 related:
@@ -29,9 +29,9 @@ Ayrı dosya olmasının nedeni:
 - README'leri insanlar için sade tutar
 - Mevcut dokümantasyonu tamamlar, yerini almaz
 
-## Çoklu Makine Desteği (VPS / Local)
+## 🖥️ SEN NEREDESİN? (Her Açılışta ZORUNLU)
 
-AGENTS.md dosyası **hem yerel makinede hem VPS'te aynı** olabilir. Agent'ın kendini doğru ortamda konumlandırması için:
+AGENTS.md dosyası **hem yerel makinede hem VPS'te aynıdır**. Agent'ın kendini doğru ortamda konumlandırması için:
 
 ```bash
 if test -d "/home/akn/vps"; then
@@ -43,13 +43,13 @@ else
 fi
 ```
 
-| Çıktı | Anlamı |
-|-------|--------|
-| **VPS** | Canlı sunucu — production servisleri yönet, deploy etme |
-| **LOCAL** | Geliştirme makinesi — kod yaz, test et, wiki güncelle, push et |
-| **BILINMIYOR** | `is_vps()` ile manuel tespit gerekli |
+| Çıktı | Ne Demek? | Ne Yapmalısın? |
+|-------|-----------|----------------|
+| **VPS** | Canlı sunucudasın | Production servislerini yönet, deploy etme, log izle |
+| **LOCAL** | Geliştirme makinesindesin | Kod yaz, test et, wiki güncelle, GitHub'a push et |
+| **BILINMIYOR** | Ortam belirsiz | `is_vps()` komutunu çalıştır, manuel tespit et |
 
-Detaylı ortam karşılaştırması ve talimatlar: bkz. `AGENTS.md` "Ortam Ayrımı" bölümü.
+Detaylı ortam karşılaştırması: bkz. `AGENTS.md` "Ortam Ayrımı" bölümü.
 
 ## Ortam Tespiti (Çoklu Makine)
 

@@ -1,7 +1,7 @@
 ---
 title: "Ops-Bot"
 created: 2026-05-01
-updated: 2026-05-05
+updated: 2026-05-06
 type: project
 tags: [ops-bot, python, telegram-bot, systemd, security, acp, kimi-cli]
 related:
@@ -333,6 +333,7 @@ sudo systemctl restart ops-bot
 <!-- AUTO-REFRESHED -->
 ## Recent Commits
 
+- `d05f0b6` fix(gitignore): add .venv/ and sec-agent runtime state (2026-05-06)
 - `d093d94` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
 - `2414268` feat(deploy): add VPS environment detection (2026-05-06)
 - `d6ddb0f` sync(vps): senkronize VPS'ten local'e — router.py silindi, orchestrator.py eklendi, agents/ dizini eklendi, eski ACP client/executor bot/'a geri taşındı (2026-05-05)

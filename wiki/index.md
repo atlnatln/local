@@ -1,7 +1,7 @@
 ---
 title: "Wiki Index"
 created: 2026-05-01
-updated: 2026-05-04
+updated: 2026-05-06
 type: index
 tags: [meta, index]
 related: []
@@ -83,6 +83,9 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 ## Recently Updated
 
+- [[agents-md]] — "SEN NEREDESİN?" bölümü eklendi, ortam tespiti her açılışta zorunlu ve detaylandırıldı (2026-05-06)
+- [[ops-bot]] — `.gitignore` güncellendi: `.venv/`, `venv/`, `data/sec-agent-*.json` eklendi (2026-05-06)
+- [[webimar]] — `.gitignore` güncellendi, `deploy.sh`'ta VPS domain check `-k` flag'i eklendi (2026-05-06)
 - [[mathlock-play]] — `.env.example` güncellendi: DB config ayrıldı, Celery/Redis eklendi, Google Play path güncellendi (2026-05-06)
 - [[git-workflow]] — GitHub Sync + Cross-Machine Development bölümü eklendi, anka referansları kaldırıldı (2026-05-06)
 - [[ops-bot]] — VPS senkronizasyonu: router.py silindi, orchestrator.py + agents/ dizini eklendi, eski ACP client/executor bot/'a geri taşındı, routing master'a bırakıldı (2026-05-05)
