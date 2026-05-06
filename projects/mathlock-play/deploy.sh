@@ -378,7 +378,7 @@ if [ "$DEPLOY_BACKEND" = true ]; then
         sudo systemctl restart mathlock-backend
         sudo systemctl restart mathlock-celery
         
-        sleep 3
+        sleep 5
         
         # Health checks
         .venv/bin/celery -A mathlock_backend inspect ping || echo 'CELERY_PING_FAILED'
