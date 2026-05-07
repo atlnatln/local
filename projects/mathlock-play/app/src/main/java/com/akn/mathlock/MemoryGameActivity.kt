@@ -128,12 +128,16 @@ class MemoryGameActivity : BaseActivity() {
     private fun restartGame() {
         engine?.shuffle()
         isProcessing = false
-        cardViews.forEach { holder ->
+        cardViews.forEachIndexed { index, holder ->
             holder.back.visibility = View.INVISIBLE
             holder.front.visibility = View.VISIBLE
             holder.matchedOverlay.visibility = View.INVISIBLE
             holder.container.isClickable = true
             holder.container.rotationY = 0f
+            // Yeni turda kart değerlerini güncelle — önceki turun sayıları kalmasın
+            engine?.cards?.getOrNull(index)?.let { card ->
+                holder.valueText.text = card.value.toString()
+            }
         }
         updateScore()
         binding.winOverlay.visibility = View.GONE

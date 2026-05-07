@@ -273,13 +273,17 @@ class Question(models.Model):
     hint = models.CharField(max_length=500, blank=True)
     batch_number = models.IntegerField(default=0, db_index=True,
                                        help_text="0=ücretsiz set, 1+=kredi ile açılan set")
+    education_period = models.CharField(
+        max_length=20, blank=True, db_index=True,
+        help_text="okul_oncesi, sinif_1, sinif_2, sinif_3, sinif_4"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['batch_number', 'question_id']
 
     def __str__(self):
-        return f"Q{self.question_id} [{self.question_type}] batch={self.batch_number}"
+        return f"Q{self.question_id} [{self.question_type}] batch={self.batch_number} period={self.education_period}"
 
 
 class UserQuestionProgress(models.Model):

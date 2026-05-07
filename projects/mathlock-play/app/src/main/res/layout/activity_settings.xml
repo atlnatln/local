@@ -39,7 +39,7 @@
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
-        <!-- Koruma + Kilitli Uygulamalar (birleşik kart) -->
+        <!-- ⚙️ Genel Ayarlar -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,6 +52,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚙️ Genel Ayarlar"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface"
+                    android:layout_marginBottom="12dp" />
 
                 <!-- Koruma satırı -->
                 <LinearLayout
@@ -135,6 +144,172 @@
                         android:text="›"
                         android:textSize="22sp"
                         android:textColor="@color/on_surface_secondary" />
+                </LinearLayout>
+
+                <!-- Ayırıcı -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"
+                    android:layout_marginVertical="10dp" />
+
+                <!-- Kilit Açma Süresi -->
+                <TextView
+                    android:id="@+id/tvUnlockDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderUnlockDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="0"
+                    android:valueTo="60"
+                    android:stepSize="1"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_unlock_expired_title"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface"
+                    android:layout_marginBottom="4dp" />
+
+                <RadioGroup
+                    android:id="@+id/rgExpiredAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rbRelock"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🔒 Tekrar kilitle"
+                        android:textSize="13sp"
+                        android:paddingVertical="4dp" />
+
+                    <RadioButton
+                        android:id="@+id/rbCloseApp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="❌ Kapat"
+                        android:textSize="13sp"
+                        android:paddingVertical="4dp" />
+                </RadioGroup>
+
+                <!-- Ayırıcı -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"
+                    android:layout_marginVertical="10dp" />
+
+                <!-- Oyun Görünürlüğü -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎮 Oyun Görünürlüğü"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface"
+                    android:layout_marginBottom="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kilit ekranında hangi oyunlar görünsün"
+                    android:textSize="12sp"
+                    android:textColor="@color/on_surface_secondary"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🧮 Matematik Soruları"
+                        android:textSize="14sp"
+                        android:textColor="@color/on_surface" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchMath"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🎯 Sayı Tahmin Oyunu"
+                        android:textSize="14sp"
+                        android:textColor="@color/on_surface" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchGuess"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🔢 Sayı Yolculuğu"
+                        android:textSize="14sp"
+                        android:textColor="@color/on_surface" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchPuzzle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🧠 Sayı Hafızası"
+                        android:textSize="14sp"
+                        android:textColor="@color/on_surface" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchMemory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -329,12 +504,13 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Görev Ayarları (Matematik + Sayı Tahmin + Süre birleşik) -->
+        <!-- 🧮 Matematik Soruları -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/card_math"
             android:layout_marginBottom="12dp">
 
             <LinearLayout
@@ -346,13 +522,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🧮 Görev Ayarları"
+                    android:text="🧮 Matematik Soruları"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
                     android:layout_marginBottom="8dp" />
 
-                <!-- Geçiş Skoru -->
                 <TextView
                     android:id="@+id/tvPassScore"
                     android:layout_width="wrap_content"
@@ -368,7 +543,41 @@
                     android:valueTo="10"
                     android:stepSize="1" />
 
-                <!-- Sayı Yolculuğu Seviye Sayısı -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTestMath"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="🧮 Test Et"
+                    android:textSize="13sp"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    app:cornerRadius="10dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 🔢 Sayı Yolculuğu -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/card_puzzle"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔢 Sayı Yolculuğu"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface"
+                    android:layout_marginBottom="8dp" />
+
                 <TextView
                     android:id="@+id/tvLevelsToUnlock"
                     android:layout_width="wrap_content"
@@ -384,53 +593,41 @@
                     android:valueTo="12"
                     android:stepSize="1" />
 
-                <!-- Ayırıcı -->
-                <View
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTestPuzzle"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0E0E0"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_height="44dp"
+                    android:text="🔢 Test Et"
+                    android:textSize="13sp"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    app:cornerRadius="10dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-                <!-- Sayı Hafızası Kart Çifti Sayısı -->
+        <!-- 🎯 Sayı Tahmin -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/card_guess"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
                 <TextView
-                    android:id="@+id/tvMemoryPairs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/on_surface" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sliderMemoryPairs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:valueFrom="4"
-                    android:valueTo="20"
-                    android:stepSize="2" />
-
-                <!-- Sayı Hafızası Tur Sayısı -->
-                <TextView
-                    android:id="@+id/tvMemoryRounds"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/on_surface" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sliderMemoryRounds"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:valueFrom="1"
-                    android:valueTo="10"
-                    android:stepSize="1" />
-
-                <!-- Ayırıcı -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0E0E0"
+                    android:text="🎯 Sayı Tahmin"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface"
                     android:layout_marginBottom="8dp" />
 
-                <!-- Sayı Tahmin üst sınır -->
                 <TextView
                     android:id="@+id/tvGuessMax"
                     android:layout_width="wrap_content"
@@ -446,14 +643,6 @@
                     android:valueTo="500"
                     android:stepSize="10" />
 
-                <!-- Ayırıcı -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0E0E0"
-                    android:layout_marginBottom="8dp" />
-
-                <!-- Sayı Bul: Kaç tur -->
                 <TextView
                     android:id="@+id/tvGuessRounds"
                     android:layout_width="wrap_content"
@@ -469,262 +658,79 @@
                     android:valueTo="10"
                     android:stepSize="1" />
 
-                <!-- Ayırıcı -->
-                <View
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTestGuess"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0E0E0"
+                    android:layout_height="44dp"
+                    android:text="🎯 Test Et"
+                    android:textSize="13sp"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    app:cornerRadius="10dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 🧠 Sayı Hafızası -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/card_memory"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🧠 Sayı Hafızası"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface"
                     android:layout_marginBottom="8dp" />
 
-                <!-- Kilit Açma Süresi -->
                 <TextView
-                    android:id="@+id/tvUnlockDuration"
+                    android:id="@+id/tvMemoryPairs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface" />
 
                 <com.google.android.material.slider.Slider
-                    android:id="@+id/sliderUnlockDuration"
+                    android:id="@+id/sliderMemoryPairs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:valueFrom="0"
-                    android:valueTo="60"
-                    android:stepSize="1"
-                    android:layout_marginBottom="4dp" />
+                    android:valueFrom="4"
+                    android:valueTo="20"
+                    android:stepSize="2" />
 
                 <TextView
+                    android:id="@+id/tvMemoryRounds"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/settings_unlock_expired_title"
                     android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/on_surface"
-                    android:layout_marginBottom="4dp" />
+                    android:textColor="@color/on_surface" />
 
-                <RadioGroup
-                    android:id="@+id/rgExpiredAction"
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderMemoryRounds"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:valueFrom="1"
+                    android:valueTo="10"
+                    android:stepSize="1" />
 
-                    <RadioButton
-                        android:id="@+id/rbRelock"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="🔒 Tekrar kilitle"
-                        android:textSize="13sp"
-                        android:paddingVertical="4dp" />
-
-                    <RadioButton
-                        android:id="@+id/rbCloseApp"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="❌ Kapat"
-                        android:textSize="13sp"
-                        android:paddingVertical="4dp" />
-                </RadioGroup>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Giriş Yöntemleri + Test (birleşik) -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            android:layout_marginBottom="12dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🫆 Ebeveyn Girişi"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/on_surface"
-                    android:layout_marginBottom="8dp" />
-
-                <!-- Ayırıcı -->
-                <View
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTestMemory"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0E0E0"
-                    android:layout_marginVertical="8dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTestMath"
-                        android:layout_width="0dp"
-                        android:layout_height="36dp"
-                        android:layout_weight="1"
-                        android:text="🧮 Test"
-                        android:textSize="12sp"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:cornerRadius="10dp"
-                        android:layout_marginEnd="4dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTestGuess"
-                        android:layout_width="0dp"
-                        android:layout_height="36dp"
-                        android:layout_weight="1"
-                        android:text="🎯 Test"
-                        android:textSize="12sp"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:cornerRadius="10dp"
-                        android:layout_marginStart="4dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTestPuzzle"
-                        android:layout_width="0dp"
-                        android:layout_height="36dp"
-                        android:layout_weight="1"
-                        android:text="🔢 Test"
-                        android:textSize="12sp"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:cornerRadius="10dp"
-                        android:layout_marginStart="4dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTestMemory"
-                        android:layout_width="0dp"
-                        android:layout_height="36dp"
-                        android:layout_weight="1"
-                        android:text="🧠 Test"
-                        android:textSize="12sp"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        app:cornerRadius="10dp"
-                        android:layout_marginStart="4dp" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Oyun Görünürlüğü (kilit ekranında hangi oyunlar görünsün) -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            android:layout_marginBottom="12dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎮 Oyun Görünürlüğü"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/on_surface"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kilit ekranında hangi oyunlar görünsün"
-                    android:textSize="12sp"
-                    android:textColor="@color/on_surface_secondary"
-                    android:layout_marginBottom="8dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="🧮 Matematik Soruları"
-                        android:textSize="14sp"
-                        android:textColor="@color/on_surface" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchMath"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="🎯 Sayı Tahmin Oyunu"
-                        android:textSize="14sp"
-                        android:textColor="@color/on_surface" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchGuess"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="🔢 Sayı Yolculuğu"
-                        android:textSize="14sp"
-                        android:textColor="@color/on_surface" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchPuzzle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="🧠 Sayı Hafızası"
-                        android:textSize="14sp"
-                        android:textColor="@color/on_surface" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchMemory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
+                    android:layout_height="44dp"
+                    android:text="🧠 Test Et"
+                    android:textSize="13sp"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    app:cornerRadius="10dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

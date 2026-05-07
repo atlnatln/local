@@ -78,8 +78,12 @@ class QuestionManager(private val context: Context) {
 
         return try {
             val childId = prefManager.activeChildId
+            val period = prefManager.activeEducationPeriod
+            val params = mutableListOf<String>()
+            if (childId > 0) params.add("child_id=$childId")
+            if (period.isNotBlank()) params.add("education_period=$period")
             var apiUrl = "$API_BASE/questions/"
-            if (childId > 0) apiUrl += "?child_id=$childId"
+            if (params.isNotEmpty()) apiUrl += "?" + params.joinToString("&")
             val url = URL(apiUrl)
             val conn = url.openConnection() as HttpURLConnection
             conn.connectTimeout = CONNECT_TIMEOUT

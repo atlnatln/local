@@ -11,71 +11,124 @@ data class MathQuestion(
 object MathQuestionGenerator {
 
     /**
-     * 2. sınıf seviyesinde rastgele matematik sorusu üretir.
-     * Toplama, çıkarma, çarpma tablosu, bölme
+     * Çocuğun eğitim dönemine göre yaş uygun matematik sorusu üretir.
      */
-    fun generate(): MathQuestion {
-        return when (Random.nextInt(5)) {
-            0 -> generateAddition()
-            1 -> generateSubtraction()
-            2 -> generateMultiplication()
-            3 -> generateDivision()
-            else -> generateSquare()
+    fun generate(educationPeriod: String = "sinif_2"): MathQuestion {
+        return when (educationPeriod) {
+            "okul_oncesi" -> generatePreschool()
+            "sinif_1" -> generateGrade1()
+            "sinif_2" -> generateGrade2()
+            "sinif_3" -> generateGrade3()
+            "sinif_4" -> generateGrade4()
+            else -> generateGrade2()
         }
     }
 
-    /** Toplama: iki sayının toplamı (max 100) */
-    private fun generateAddition(): MathQuestion {
-        val a = Random.nextInt(1, 51)   // 1-50
-        val b = Random.nextInt(1, 51)   // 1-50
-        return MathQuestion(
-            text = "$a + $b = ?",
-            answer = a + b,
-            operationType = "toplama"
-        )
+    // ─── Okul Öncesi: sadece basit toplama / çıkarma (1-5 arası) ──────────
+
+    private fun generatePreschool(): MathQuestion {
+        return when (Random.nextInt(2)) {
+            0 -> {
+                val a = Random.nextInt(1, 6)   // 1-5
+                val b = Random.nextInt(1, 6)   // 1-5  → sonuç max 10
+                MathQuestion("$a + $b = ?", a + b, "toplama")
+            }
+            else -> {
+                val a = Random.nextInt(2, 6)   // 2-5
+                val b = Random.nextInt(1, a)   // sonuç pozitif ve küçük
+                MathQuestion("$a - $b = ?", a - b, "çıkarma")
+            }
+        }
     }
 
-    /** Çıkarma: sonuç her zaman pozitif (2. sınıf seviyesi) */
-    private fun generateSubtraction(): MathQuestion {
-        val a = Random.nextInt(10, 100)  // 10-99
-        val b = Random.nextInt(1, a)     // 1 ile a-1 arası (sonuç pozitif)
-        return MathQuestion(
-            text = "$a - $b = ?",
-            answer = a - b,
-            operationType = "çıkarma"
-        )
+    // ─── 1. Sınıf: toplama / çıkarma (1-10 arası), nadiren basit çarpma ────
+
+    private fun generateGrade1(): MathQuestion {
+        return when (Random.nextInt(5)) {
+            0, 1 -> {
+                val a = Random.nextInt(1, 11)  // 1-10
+                val b = Random.nextInt(1, 11)  // 1-10  → sonuç max 20
+                MathQuestion("$a + $b = ?", a + b, "toplama")
+            }
+            2, 3 -> {
+                val a = Random.nextInt(2, 11)  // 2-10
+                val b = Random.nextInt(1, a)   // sonuç pozitif
+                MathQuestion("$a - $b = ?", a - b, "çıkarma")
+            }
+            else -> {
+                // Çok nadir basit çarpma (1-3 tablosu)
+                val a = Random.nextInt(2, 4)   // 2-3
+                val b = Random.nextInt(1, 4)   // 1-3
+                MathQuestion("$a × $b = ?", a * b, "çarpma")
+            }
+        }
     }
 
-    /** Çarpma tablosu: 1-10 arası çarpma */
-    private fun generateMultiplication(): MathQuestion {
-        val a = Random.nextInt(2, 11)  // 2-10
-        val b = Random.nextInt(1, 11)  // 1-10
-        return MathQuestion(
-            text = "$a × $b = ?",
-            answer = a * b,
-            operationType = "çarpma"
-        )
+    // ─── 2. Sınıf: mevcut varsayılan seviye ───────────────────────────────
+
+    private fun generateGrade2(): MathQuestion {
+        return when (Random.nextInt(5)) {
+            0 -> generateAddition(maxA = 50, maxB = 50)
+            1 -> generateSubtraction(minA = 10, maxA = 99)
+            2 -> generateMultiplication(maxA = 10, maxB = 10)
+            3 -> generateDivision(maxDivisor = 10, maxResult = 10)
+            else -> generateSquare(max = 12)
+        }
     }
 
-    /** Bölme: tam bölünebilen sayılar (2. sınıf seviyesi) */
-    private fun generateDivision(): MathQuestion {
-        val b = Random.nextInt(2, 11)   // bölen: 2-10
-        val result = Random.nextInt(1, 11) // sonuç: 1-10
-        val a = b * result                // bölünen = bölen × sonuç (tam bölünür)
-        return MathQuestion(
-            text = "$a ÷ $b = ?",
-            answer = result,
-            operationType = "bölme"
-        )
+    // ─── 3. Sınıf: biraz daha zor ─────────────────────────────────────────
+
+    private fun generateGrade3(): MathQuestion {
+        return when (Random.nextInt(5)) {
+            0 -> generateAddition(maxA = 100, maxB = 100)
+            1 -> generateSubtraction(minA = 10, maxA = 200)
+            2 -> generateMultiplication(maxA = 12, maxB = 12)
+            3 -> generateDivision(maxDivisor = 12, maxResult = 12)
+            else -> generateSquare(max = 15)
+        }
     }
 
-    /** Kare alma: 1-12 arası bir sayının karesi (v1.1 ile eklendi) */
-    private fun generateSquare(): MathQuestion {
-        val a = Random.nextInt(1, 13)  // 1-12
-        return MathQuestion(
-            text = "$a² = ?  ($a × $a)",
-            answer = a * a,
-            operationType = "kare"
-        )
+    // ─── 4. Sınıf: en zor seviye ──────────────────────────────────────────
+
+    private fun generateGrade4(): MathQuestion {
+        return when (Random.nextInt(5)) {
+            0 -> generateAddition(maxA = 500, maxB = 500)
+            1 -> generateSubtraction(minA = 50, maxA = 500)
+            2 -> generateMultiplication(maxA = 15, maxB = 15)
+            3 -> generateDivision(maxDivisor = 15, maxResult = 15)
+            else -> generateSquare(max = 20)
+        }
+    }
+
+    // ─── Parametrik üretim yardımcıları ───────────────────────────────────
+
+    private fun generateAddition(maxA: Int, maxB: Int): MathQuestion {
+        val a = Random.nextInt(1, maxA + 1)
+        val b = Random.nextInt(1, maxB + 1)
+        return MathQuestion("$a + $b = ?", a + b, "toplama")
+    }
+
+    private fun generateSubtraction(minA: Int, maxA: Int): MathQuestion {
+        val a = Random.nextInt(minA, maxA + 1)
+        val b = Random.nextInt(1, a)     // sonuç her zaman pozitif
+        return MathQuestion("$a - $b = ?", a - b, "çıkarma")
+    }
+
+    private fun generateMultiplication(maxA: Int, maxB: Int): MathQuestion {
+        val a = Random.nextInt(2, maxA + 1)
+        val b = Random.nextInt(1, maxB + 1)
+        return MathQuestion("$a × $b = ?", a * b, "çarpma")
+    }
+
+    private fun generateDivision(maxDivisor: Int, maxResult: Int): MathQuestion {
+        val b = Random.nextInt(2, maxDivisor + 1)
+        val result = Random.nextInt(1, maxResult + 1)
+        val a = b * result
+        return MathQuestion("$a ÷ $b = ?", result, "bölme")
+    }
+
+    private fun generateSquare(max: Int): MathQuestion {
+        val a = Random.nextInt(1, max + 1)
+        return MathQuestion("$a² = ?  ($a × $a)", a * a, "kare")
     }
 }

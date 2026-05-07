@@ -1,0 +1,413 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-07T17:56:08.443122+00:00",
+  "generatedBy": "mathlock-generator",
+  "educationPeriod": "sinif_4",
+  "difficultyProfile": {
+    "overall": "intermediate",
+    "avgDifficulty": 3.0,
+    "adjustmentReason": "Yaş uygun ilk set — sinif_4"
+  },
+  "questions": [
+    {
+      "id": 5001,
+      "text": "3 × 10 = ?",
+      "answer": 30,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 5002,
+      "text": "15² = ?  (15 × 15)",
+      "answer": 225,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Karesi demek kendisiyle çarpmak"
+    },
+    {
+      "id": 5003,
+      "text": "84 ÷ 14 = ?",
+      "answer": 6,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 5004,
+      "text": "311 + 494 = ?",
+      "answer": 805,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 5005,
+      "text": "39 ÷ 3 = ?",
+      "answer": 13,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Çarpma tablosunu tersten düşün"
+    },
+    {
+      "id": 5006,
+      "text": "10² = ?  (10 × 10)",
+      "answer": 100,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 5007,
+      "text": "14 + 476 = ?",
+      "answer": 490,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 5008,
+      "text": "396 - 193 = ?",
+      "answer": 203,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 5009,
+      "text": "416 - 102 = ?",
+      "answer": 314,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 5010,
+      "text": "354 + 426 = ?",
+      "answer": 780,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 5011,
+      "text": "36 ÷ 3 = ?",
+      "answer": 12,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 5012,
+      "text": "165 ÷ 15 = ?",
+      "answer": 11,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Çarpma tablosunu tersten düşün"
+    },
+    {
+      "id": 5013,
+      "text": "39 ÷ 3 = ?",
+      "answer": 13,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 5014,
+      "text": "2² = ?  (2 × 2)",
+      "answer": 4,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Karesi demek kendisiyle çarpmak"
+    },
+    {
+      "id": 5015,
+      "text": "269 - 190 = ?",
+      "answer": 79,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 5016,
+      "text": "332 + 175 = ?",
+      "answer": 507,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    },
+    {
+      "id": 5017,
+      "text": "216 + 422 = ?",
+      "answer": 638,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 5018,
+      "text": "8 × 6 = ?",
+      "answer": 48,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Çarpım tablosunu hatırla"
+    },
+    {
+      "id": 5019,
+      "text": "120 ÷ 15 = ?",
+      "answer": 8,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 5020,
+      "text": "24 ÷ 8 = ?",
+      "answer": 3,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 5021,
+      "text": "60 ÷ 12 = ?",
+      "answer": 5,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 5022,
+      "text": "130 ÷ 10 = ?",
+      "answer": 13,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 5023,
+      "text": "8 × 14 = ?",
+      "answer": 112,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 5024,
+      "text": "36 ÷ 6 = ?",
+      "answer": 6,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 5025,
+      "text": "3² = ?  (3 × 3)",
+      "answer": 9,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Karesi demek kendisiyle çarpmak"
+    },
+    {
+      "id": 5026,
+      "text": "280 - 125 = ?",
+      "answer": 155,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 5027,
+      "text": "110 ÷ 11 = ?",
+      "answer": 10,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 5028,
+      "text": "7 ÷ 7 = ?",
+      "answer": 1,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 5029,
+      "text": "7 × 3 = ?",
+      "answer": 21,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Çarpım tablosunu hatırla"
+    },
+    {
+      "id": 5030,
+      "text": "7 × 13 = ?",
+      "answer": 91,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Çarpım tablosunu hatırla"
+    },
+    {
+      "id": 5031,
+      "text": "193 - 153 = ?",
+      "answer": 40,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 5032,
+      "text": "54 ÷ 6 = ?",
+      "answer": 9,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Çarpma tablosunu tersten düşün"
+    },
+    {
+      "id": 5033,
+      "text": "486 + 98 = ?",
+      "answer": 584,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 5034,
+      "text": "369 + 209 = ?",
+      "answer": 578,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 5035,
+      "text": "14 × 4 = ?",
+      "answer": 56,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 5036,
+      "text": "144 ÷ 12 = ?",
+      "answer": 12,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 5037,
+      "text": "14 × 1 = ?",
+      "answer": 14,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 5038,
+      "text": "114 + 208 = ?",
+      "answer": 322,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 5039,
+      "text": "66 ÷ 6 = ?",
+      "answer": 11,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 5040,
+      "text": "9 × 9 = ?",
+      "answer": 81,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 5041,
+      "text": "8 × 12 = ?",
+      "answer": 96,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 5042,
+      "text": "7 × 12 = ?",
+      "answer": 84,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 5043,
+      "text": "6 × 5 = ?",
+      "answer": 30,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "10 ile çarpınca sona 0 eklenir"
+    },
+    {
+      "id": 5044,
+      "text": "419 - 99 = ?",
+      "answer": 320,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 5045,
+      "text": "430 - 275 = ?",
+      "answer": 155,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 5046,
+      "text": "6² = ?  (6 × 6)",
+      "answer": 36,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 5047,
+      "text": "379 + 248 = ?",
+      "answer": 627,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 5048,
+      "text": "351 - 269 = ?",
+      "answer": 82,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 5049,
+      "text": "3 × 14 = ?",
+      "answer": 42,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Çarpım tablosunu hatırla"
+    },
+    {
+      "id": 5050,
+      "text": "117 + 185 = ?",
+      "answer": 302,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    }
+  ]
+}

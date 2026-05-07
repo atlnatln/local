@@ -552,8 +552,9 @@ class MathChallengeActivity : BaseActivity() {
 
     private fun generateFallbackQuestions() {
         fallbackQuestions.clear()
+        val period = prefManager.activeEducationPeriod
         repeat(totalQuestions) {
-            fallbackQuestions.add(MathQuestionGenerator.generate())
+            fallbackQuestions.add(MathQuestionGenerator.generate(period))
         }
     }
 

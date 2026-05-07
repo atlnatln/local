@@ -27,12 +27,17 @@ class Command(BaseCommand):
             help='Batch numarası (0=ücretsiz, 1+=kredi ile)'
         )
         parser.add_argument(
+            '--period', type=str, default='',
+            help='Eğitim dönemi: okul_oncesi, sinif_1, sinif_2, sinif_3, sinif_4'
+        )
+        parser.add_argument(
             '--clear', action='store_true',
             help='Yüklemeden önce mevcut soruları sil'
         )
 
     def handle(self, *args, **options):
         batch = options['batch']
+        period = options['period']
         clear = options['clear']
 
         # Dosya yolu
@@ -53,23 +58,33 @@ class Command(BaseCommand):
             self.stderr.write(self.style.ERROR('JSON dosyasında soru bulunamadı'))
             return
 
+        # JSON'dan period oku (eğer --period verilmediyse)
+        if not period:
+            period = data.get('educationPeriod', '')
+
         if clear:
-            deleted, _ = Question.objects.filter(batch_number=batch).delete()
-            self.stdout.write(f'Batch {batch}: {deleted} soru silindi')
+            filters = {'batch_number': batch}
+            if period:
+                filters['education_period'] = period
+            deleted, _ = Question.objects.filter(**filters).delete()
+            self.stdout.write(f'Batch {batch} (period={period or "-"}): {deleted} soru silindi')
 
         created = 0
         updated = 0
         for q in questions:
+            defaults = {
+                'text': q['text'],
+                'answer': q['answer'],
+                'question_type': q.get('type', ''),
+                'difficulty': q.get('difficulty', 1),
+                'hint': q.get('hint', ''),
+                'batch_number': batch,
+            }
+            if period:
+                defaults['education_period'] = period
             _, was_created = Question.objects.update_or_create(
                 question_id=q['id'],
-                defaults={
-                    'text': q['text'],
-                    'answer': q['answer'],
-                    'question_type': q.get('type', ''),
-                    'difficulty': q.get('difficulty', 1),
-                    'hint': q.get('hint', ''),
-                    'batch_number': batch,
-                }
+                defaults=defaults
             )
             if was_created:
                 created += 1
@@ -77,5 +92,5 @@ class Command(BaseCommand):
                 updated += 1
 
         self.stdout.write(self.style.SUCCESS(
-            f'Batch {batch}: {created} yeni, {updated} güncellendi (toplam {len(questions)} soru)'
+            f'Batch {batch} (period={period or "-"}): {created} yeni, {updated} güncellendi (toplam {len(questions)} soru)'
         ))

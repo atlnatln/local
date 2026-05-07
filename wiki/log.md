@@ -2236,3 +2236,23 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 197 entries
 
+## [2026-05-07 21:00] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 198 entries
+
+
+## [2026-05-07 21:00] ingest | mathlock-play | manual | 1 sayfa
+- Files: A:0 M:1 D:0
+- Pages updated: [[mathlock-play]]
+- Diff summary: Batch 0 (ücretsiz 50 soru) yapısı eklendi: 5 yaş grubuna özgü soru setleri (okul öncesi/1-4. sınıf), `generate_age_questions.py` üretim scripti, `ai-generate.sh` pipeline detayları, adaptif algoritma özeti.
+- Android: MemoryGameActivity restartGame() kart değeri fix, ChallengePickerActivity/MainActivity ebeveyn desen desteği, SettingsActivity kart yapısı yeniden düzenlendi, MathQuestionGenerator yaş uygun soru üretimi.
+- Backend: Question.education_period alanı, load_questions.py --period parametresi, get_questions endpoint filtrelemesi.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash

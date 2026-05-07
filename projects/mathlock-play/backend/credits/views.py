@@ -1237,7 +1237,13 @@ def get_questions(request):
         child = device.children.filter(is_active=True).first() or device.children.first()
 
     # ── 1. Ücretsiz batch 0 soruları (Question model) ────────────────────
-    free_questions = Question.objects.filter(batch_number=0).order_by('question_id')
+    period = child.education_period if child else 'sinif_2'
+    free_questions = Question.objects.filter(batch_number=0)
+    if period:
+        period_questions = free_questions.filter(education_period=period)
+        if period_questions.exists():
+            free_questions = period_questions
+    free_questions = free_questions.order_by('question_id')
 
     # Çocuğa özel çözülen soru ID'leri
     free_solved_ids = set(

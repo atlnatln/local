@@ -1,0 +1,413 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-07T17:56:08.442766+00:00",
+  "generatedBy": "mathlock-generator",
+  "educationPeriod": "sinif_3",
+  "difficultyProfile": {
+    "overall": "intermediate",
+    "avgDifficulty": 3.0,
+    "adjustmentReason": "Yaş uygun ilk set — sinif_3"
+  },
+  "questions": [
+    {
+      "id": 4001,
+      "text": "88 ÷ 8 = ?",
+      "answer": 11,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Çarpma tablosunu tersten düşün"
+    },
+    {
+      "id": 4002,
+      "text": "40 ÷ 4 = ?",
+      "answer": 10,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 4003,
+      "text": "8 × 9 = ?",
+      "answer": 72,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "10 ile çarpınca sona 0 eklenir"
+    },
+    {
+      "id": 4004,
+      "text": "5² = ?  (5 × 5)",
+      "answer": 25,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4005,
+      "text": "120 - 101 = ?",
+      "answer": 19,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 4006,
+      "text": "12 × 6 = ?",
+      "answer": 72,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 4007,
+      "text": "9 × 11 = ?",
+      "answer": 99,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "10 ile çarpınca sona 0 eklenir"
+    },
+    {
+      "id": 4008,
+      "text": "131 - 44 = ?",
+      "answer": 87,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 4009,
+      "text": "54 ÷ 6 = ?",
+      "answer": 9,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 4010,
+      "text": "66 ÷ 11 = ?",
+      "answer": 6,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 4011,
+      "text": "97 + 31 = ?",
+      "answer": 128,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 4012,
+      "text": "20 ÷ 5 = ?",
+      "answer": 4,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Çarpma tablosunu tersten düşün"
+    },
+    {
+      "id": 4013,
+      "text": "6 + 32 = ?",
+      "answer": 38,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 4014,
+      "text": "10² = ?  (10 × 10)",
+      "answer": 100,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4015,
+      "text": "2² = ?  (2 × 2)",
+      "answer": 4,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4016,
+      "text": "12 × 10 = ?",
+      "answer": 120,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "10 ile çarpınca sona 0 eklenir"
+    },
+    {
+      "id": 4017,
+      "text": "90 + 50 = ?",
+      "answer": 140,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 4018,
+      "text": "5 × 3 = ?",
+      "answer": 15,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 4019,
+      "text": "4 ÷ 2 = ?",
+      "answer": 2,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 4020,
+      "text": "15 ÷ 5 = ?",
+      "answer": 3,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 4021,
+      "text": "12² = ?  (12 × 12)",
+      "answer": 144,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4022,
+      "text": "2 × 9 = ?",
+      "answer": 18,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Çarpım tablosunu hatırla"
+    },
+    {
+      "id": 4023,
+      "text": "41 - 30 = ?",
+      "answer": 11,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 4024,
+      "text": "60 + 86 = ?",
+      "answer": 146,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 4025,
+      "text": "10 × 10 = ?",
+      "answer": 100,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 4026,
+      "text": "123 - 79 = ?",
+      "answer": 44,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 4027,
+      "text": "15² = ?  (15 × 15)",
+      "answer": 225,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Karesi demek kendisiyle çarpmak"
+    },
+    {
+      "id": 4028,
+      "text": "10 × 8 = ?",
+      "answer": 80,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Çarpım tablosunu hatırla"
+    },
+    {
+      "id": 4029,
+      "text": "12² = ?  (12 × 12)",
+      "answer": 144,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Karesi demek kendisiyle çarpmak"
+    },
+    {
+      "id": 4030,
+      "text": "8² = ?  (8 × 8)",
+      "answer": 64,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Karesi demek kendisiyle çarpmak"
+    },
+    {
+      "id": 4031,
+      "text": "73 - 36 = ?",
+      "answer": 37,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 4032,
+      "text": "80 ÷ 10 = ?",
+      "answer": 8,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?"
+    },
+    {
+      "id": 4033,
+      "text": "48 ÷ 6 = ?",
+      "answer": 8,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 4034,
+      "text": "37 + 31 = ?",
+      "answer": 68,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 4035,
+      "text": "91 - 70 = ?",
+      "answer": 21,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 4036,
+      "text": "20 + 30 = ?",
+      "answer": 50,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 4037,
+      "text": "49 - 46 = ?",
+      "answer": 3,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 4038,
+      "text": "116 - 53 = ?",
+      "answer": 63,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 4039,
+      "text": "129 - 107 = ?",
+      "answer": 22,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 4040,
+      "text": "54 + 50 = ?",
+      "answer": 104,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    },
+    {
+      "id": 4041,
+      "text": "10² = ?  (10 × 10)",
+      "answer": 100,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4042,
+      "text": "1² = ?  (1 × 1)",
+      "answer": 1,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4043,
+      "text": "13² = ?  (13 × 13)",
+      "answer": 169,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4044,
+      "text": "9 × 1 = ?",
+      "answer": 9,
+      "type": "çarpma",
+      "difficulty": 3,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 4045,
+      "text": "5² = ?  (5 × 5)",
+      "answer": 25,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4046,
+      "text": "72 ÷ 8 = ?",
+      "answer": 9,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?"
+    },
+    {
+      "id": 4047,
+      "text": "100 ÷ 10 = ?",
+      "answer": 10,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Çarpma tablosunu tersten düşün"
+    },
+    {
+      "id": 4048,
+      "text": "8² = ?  (8 × 8)",
+      "answer": 64,
+      "type": "kare",
+      "difficulty": 3,
+      "hint": "Aynı sayıyı iki kere çarp"
+    },
+    {
+      "id": 4049,
+      "text": "121 - 63 = ?",
+      "answer": 58,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 4050,
+      "text": "44 + 86 = ?",
+      "answer": 130,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    }
+  ]
+}

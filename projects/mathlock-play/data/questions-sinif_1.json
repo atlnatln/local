@@ -1,0 +1,333 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-07T17:56:08.442046+00:00",
+  "generatedBy": "mathlock-generator",
+  "educationPeriod": "sinif_1",
+  "difficultyProfile": {
+    "overall": "beginner",
+    "avgDifficulty": 1.0,
+    "adjustmentReason": "Yaş uygun ilk set — sinif_1"
+  },
+  "questions": [
+    {
+      "id": 2001,
+      "text": "10 - 5 = ?",
+      "answer": 5,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 2002,
+      "text": "7 - 1 = ?",
+      "answer": 6,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 2003,
+      "text": "3 + 8 = ?",
+      "answer": 11,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 2004,
+      "text": "5 + 9 = ?",
+      "answer": 14,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 2005,
+      "text": "10 - 2 = ?",
+      "answer": 8,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 2006,
+      "text": "3 × 3 = ?",
+      "answer": 9,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "Çarpım tablosunu hatırla"
+    },
+    {
+      "id": 2007,
+      "text": "5 - 2 = ?",
+      "answer": 3,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 2008,
+      "text": "3 + 9 = ?",
+      "answer": 12,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 2009,
+      "text": "2 × 3 = ?",
+      "answer": 6,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "10 ile çarpınca sona 0 eklenir"
+    },
+    {
+      "id": 2010,
+      "text": "1 + 2 = ?",
+      "answer": 3,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 2011,
+      "text": "3 × 1 = ?",
+      "answer": 3,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "10 ile çarpınca sona 0 eklenir"
+    },
+    {
+      "id": 2012,
+      "text": "10 + 2 = ?",
+      "answer": 12,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 2013,
+      "text": "8 + 2 = ?",
+      "answer": 10,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 2014,
+      "text": "2 × 1 = ?",
+      "answer": 2,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 2015,
+      "text": "10 - 3 = ?",
+      "answer": 7,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 2016,
+      "text": "10 + 7 = ?",
+      "answer": 17,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 2017,
+      "text": "2 × 3 = ?",
+      "answer": 6,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 2018,
+      "text": "6 + 8 = ?",
+      "answer": 14,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    },
+    {
+      "id": 2019,
+      "text": "3 × 1 = ?",
+      "answer": 3,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "10 ile çarpınca sona 0 eklenir"
+    },
+    {
+      "id": 2020,
+      "text": "2 + 6 = ?",
+      "answer": 8,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 2021,
+      "text": "9 + 4 = ?",
+      "answer": 13,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 2022,
+      "text": "2 - 1 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 2023,
+      "text": "2 - 1 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 2024,
+      "text": "1 + 6 = ?",
+      "answer": 7,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 2025,
+      "text": "4 + 5 = ?",
+      "answer": 9,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    },
+    {
+      "id": 2026,
+      "text": "5 - 2 = ?",
+      "answer": 3,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 2027,
+      "text": "9 - 4 = ?",
+      "answer": 5,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 2028,
+      "text": "8 - 2 = ?",
+      "answer": 6,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 2029,
+      "text": "7 + 6 = ?",
+      "answer": 13,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 2030,
+      "text": "9 - 1 = ?",
+      "answer": 8,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 2031,
+      "text": "3 - 1 = ?",
+      "answer": 2,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 2032,
+      "text": "7 - 1 = ?",
+      "answer": 6,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 2033,
+      "text": "4 + 9 = ?",
+      "answer": 13,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 2034,
+      "text": "8 - 2 = ?",
+      "answer": 6,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 2035,
+      "text": "4 + 2 = ?",
+      "answer": 6,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    },
+    {
+      "id": 2036,
+      "text": "10 - 2 = ?",
+      "answer": 8,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 2037,
+      "text": "9 + 1 = ?",
+      "answer": 10,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 2038,
+      "text": "2 × 1 = ?",
+      "answer": 2,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    },
+    {
+      "id": 2039,
+      "text": "9 - 4 = ?",
+      "answer": 5,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 2040,
+      "text": "2 × 1 = ?",
+      "answer": 2,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3"
+    }
+  ]
+}

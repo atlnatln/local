@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-07T17:56:08.441692+00:00",
+  "generatedBy": "mathlock-generator",
+  "educationPeriod": "okul_oncesi",
+  "difficultyProfile": {
+    "overall": "beginner",
+    "avgDifficulty": 1.0,
+    "adjustmentReason": "Yaş uygun ilk set — okul_oncesi"
+  },
+  "questions": [
+    {
+      "id": 1001,
+      "text": "2 - 1 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 1002,
+      "text": "2 + 1 = ?",
+      "answer": 3,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 1003,
+      "text": "2 - 1 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 1004,
+      "text": "1 + 2 = ?",
+      "answer": 3,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 1005,
+      "text": "5 + 1 = ?",
+      "answer": 6,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 1006,
+      "text": "5 - 2 = ?",
+      "answer": 3,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 1007,
+      "text": "3 + 1 = ?",
+      "answer": 4,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    },
+    {
+      "id": 1008,
+      "text": "3 - 2 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 1009,
+      "text": "2 + 2 = ?",
+      "answer": 4,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 1010,
+      "text": "4 - 1 = ?",
+      "answer": 3,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 1011,
+      "text": "1 + 3 = ?",
+      "answer": 4,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    },
+    {
+      "id": 1012,
+      "text": "4 - 1 = ?",
+      "answer": 3,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 1013,
+      "text": "2 - 1 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 1014,
+      "text": "3 + 5 = ?",
+      "answer": 8,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 1015,
+      "text": "4 - 3 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 1016,
+      "text": "1 + 1 = ?",
+      "answer": 2,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 1017,
+      "text": "4 - 1 = ?",
+      "answer": 3,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 1018,
+      "text": "2 - 1 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 1019,
+      "text": "3 + 2 = ?",
+      "answer": 5,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+    },
+    {
+      "id": 1020,
+      "text": "2 + 3 = ?",
+      "answer": 5,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 1021,
+      "text": "2 - 1 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+    },
+    {
+      "id": 1022,
+      "text": "3 - 1 = ?",
+      "answer": 2,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 1023,
+      "text": "3 + 5 = ?",
+      "answer": 8,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 1024,
+      "text": "3 + 1 = ?",
+      "answer": 4,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 1025,
+      "text": "1 + 3 = ?",
+      "answer": 4,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+    },
+    {
+      "id": 1026,
+      "text": "1 + 2 = ?",
+      "answer": 3,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 1027,
+      "text": "4 - 1 = ?",
+      "answer": 3,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    },
+    {
+      "id": 1028,
+      "text": "5 - 4 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git"
+    },
+    {
+      "id": 1029,
+      "text": "2 + 2 = ?",
+      "answer": 4,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla"
+    },
+    {
+      "id": 1030,
+      "text": "4 - 3 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan geriye doğru say"
+    }
+  ]
+}

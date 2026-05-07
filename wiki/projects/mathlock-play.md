@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play"
 created: 2026-05-01
-updated: 2026-05-06
+updated: 2026-05-07
 type: project
 tags: [mathlock-play, android, django, kotlin, python, systemd]
 related:
@@ -87,6 +87,59 @@ Telefon ← VPS: questions.json, levels.json, topics.json
 VPS: AI ([[kimi-code-cli|kimi-cli]]) yeni soru seti üretir → validate → DB
 Telefon yeni seti indirir
 ```
+
+### Batch 0 (Ücretsiz 50 Soru) vs Batch 1+ (Kredi ile)
+
+| Özellik | Batch 0 (Ücretsiz) | Batch 1+ (Kredi) |
+|---|---|---|
+| Kaynak | `data/questions-<dönem>.json` → DB | `ai-generate.sh` + `kimi-cli` ile anlık üretim |
+| Yaş uygunluğu | ✅ 5 ayrı set (okul öncesi / 1-4. sınıf) | ✅ `agents/questions-*.agents.md` ile adaptif |
+| Çarpma/bölme | Okul öncesi: yok, 1. sınıf: nadiren | Algoritmaya göre adaptif |
+| Zorluk | Statik (yaşa göre) | Dinamik (çocuğun performansına göre) |
+
+**Batch 0 dosyaları:**
+- `data/questions-okul_oncesi.json` — 30 soru, sadece toplama/çıkarma (1-5 arası)
+- `data/questions-sinif_1.json` — 40 soru, toplama/çıkarma + nadiren çarpma (1-3 tablosu)
+- `data/questions-sinif_2.json` — 50 soru, mevcut varsayılan seviye
+- `data/questions-sinif_3.json` — 50 soru, biraz daha zor
+- `data/questions-sinif_4.json` — 50 soru, en zor seviye
+
+**Üretim komutu:**
+```bash
+cd projects/mathlock-play
+python3 scripts/generate_age_questions.py
+```
+
+### AI Adaptif Soru Üretim Pipeline
+
+**Trigger:** `POST /api/mathlock/credits/use/` → `use_credit()` → `_generate_via_kimi()`
+
+**Pipeline:**
+1. `child.stats_json` → geçici `stats.json`
+2. `ai-generate.sh --vps-mode --skip-sync --period <dönem> --data-dir <tmp>`
+3. `agents/swap-helper.sh` ile doğru `agents/questions-<dönem>.agents.md` dosyası `AGENTS.md` olarak swap edilir
+4. `kimi-cli` çalıştırılır → `questions.json`, `topics.json`, `report.json` üretir
+5. `validate-questions.py` doğrulama → başarısızsa retry (max 2)
+6. `QuestionSet` olarak DB'ye kaydet
+
+**Agent dosyaları (`agents/`):**
+
+| Dosya | Amaç |
+|---|---|
+| `questions-okul-oncesi.agents.md` | 30 soru, çarpma/bölme YASAK |
+| `questions-sinif-1.agents.md` | 40 soru, basit çarpma nadiren |
+| `questions-sinif-2.agents.md` | 50 soru, 2. sınıf müfredatı |
+| `questions-sinif-3.agents.md` | 50 soru, orta seviye |
+| `questions-sinif-4.agents.md` | 50 soru, ileri seviye |
+| `levels-*.agents.md` | Sayı Yolculuğu bulmaca seviyeleri |
+| `swap-helper.sh` | AGENTS.md swap/temizlik |
+
+**Adaptif Algoritma Özeti (AGENTS.md §4):**
+- **Performans analizi:** `byType` verisinden başarı oranı + süre hesaplanır
+- **Kategoriler:** USTA (%85+), GÜVENLİ (%85+ ama yavaş), GELİŞEN (%60-84), ZORLU (%40-59), KRİTİK (%40 altı)
+- **Soru dağılımı:** %40 pekiştirme (zayıf alanlar), %35 gelişim, %25 meydan okuma
+- **Psikolojik sıralama:** İlk 3 soru kolay (güven), orta zorlukta devam, son 2 kolay (bitirme hissi)
+- **Zorluk ayarı:** Başarı ve süreye göre zorluk 1-5 arası dinamik ayarlanır
 
 ## Entry Points
 
