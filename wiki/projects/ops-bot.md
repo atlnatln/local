@@ -336,6 +336,7 @@ sudo systemctl restart ops-bot
 ## Recent Commits
 
 - `4a37ea0` fix(acp-client): git read-only komutlarına izin ver, yazma komutlarını reject et (2026-05-07)
+- Legacy cleanup: `logs/router_debug.jsonl` ve `data/agent_state.db` silindi (2026-05-07)
 - `2956c27` fix(sec-agent): AI analizi medium anomaly'de de tetiklensin, auth endpoint listesi genişletilsin, state path sabitlensin (2026-05-07)
 - `d05f0b6` fix(gitignore): add .venv/ and sec-agent runtime state (2026-05-06)
 - `d093d94` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)

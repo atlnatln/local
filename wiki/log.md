@@ -2133,3 +2133,20 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 187 entries
 
+
+## [2026-05-07 13:30] cleanup | ops-bot | 8ceee1c | 2 sayfa
+- Files: M:1 (local), D:2 (VPS)
+- Pages updated: [[ops-bot]]
+- Diff summary: `docs/CURRENT_SYSTEM.md` Mayıs 2026ya güncellendi, `agent_state.db` ve `router_debug.jsonl` legacy temizliği yapıldı.
+## [2026-05-07 13:31] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 189 entries
+
