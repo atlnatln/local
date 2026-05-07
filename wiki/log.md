@@ -2334,3 +2334,33 @@ tags: [meta, log]
 - Unknown tags: 0
 - Raw existence: 0
 - Log size: 204 entries
+## [2026-05-07 23:22] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 207 entries
+
+
+## 2026-05-07 — MathLock-Play MEB Müfredat Uyum Düzeltmeleri
+
+**Değişen kaynaklar:**
+- `projects/mathlock-play/scripts/generate_age_questions.py` — 1. sınıf onluktan bozmasız çıkarma kontrolü eklendi (`b <= a % 10`)
+- `projects/mathlock-play/app/src/main/java/com/akn/mathlock/util/MathQuestionGenerator.kt` — `generateGrade1()` onluktan bozma kontrolü eklendi
+- `projects/mathlock-play/backend/credits/models.py` — `question_type` help text Türkçe karakterli tiplerle güncellendi
+- `projects/mathlock-play/data/questions-*.json` — Batch 0 regenerate edildi (sinif_1 çarpma temizlendi, sinif_2 kare temizlendi)
+- `projects/mathlock-play/agents/questions-*.agents.md` — 5 yaş grubu agents.md'leri MEB müfredat uyumuna göre revize edilmişti
+
+**Wiki güncellemeleri:**
+- `wiki/projects/mathlock-play.md` — Tip standardizasyonu, MEB uyumu tablosu, batch 0 üretim algoritması güncellendi
+
+**Lint:** 9/10 passing (1 warning: mathlock-play.md 528 satır > 400 limit)
+
+**Kalan teknik borç:**
+- AI pipeline (Batch 1+) ID formatı yapılandırılmadı (`{Yıl}G{Sınıf}-B{Batch}-{SıraNo}` önerisi beklemede)
+- `generate_age_questions.py` zorluk skalası 1-3, agents.md 1-5 arası (bilinen uyumsuzluk, wiki'ye not düşüldü)

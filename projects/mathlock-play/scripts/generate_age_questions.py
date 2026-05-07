@@ -83,14 +83,26 @@ def generate_preschool(count: int = 30) -> list:
 
 
 def generate_grade1(count: int = 40) -> list:
-    """1. sınıf: toplama/çıkarma 1-10. Çarpma YOK (MEB 1. sınıf müfredatında çarpma yoktur)."""
+    """1. sınıf: toplama/çıkarma 1-10. Çarpma YOK (MEB 1. sınıf müfredatında çarpma yoktur).
+    Çıkarmada onluktan bozma YASAK: b <= (a mod 10)."""
     questions = []
     for _ in range(count):
         r = random.random()
         if r < 0.55:
             q = generate_addition(10, 10)
         else:
-            q = generate_subtraction(2, 10)
+            # Onluktan bozmasız çıkarma: b <= a'nın birler basamağı
+            a = random.randint(2, 10)
+            while a % 10 == 0:
+                a = random.randint(2, 10)
+            max_b = a % 10
+            b = random.randint(1, max_b)
+            q = {
+                "text": f"{a} - {b} = ?",
+                "answer": a - b,
+                "type": "çıkarma",
+                "difficulty": 1,
+            }
         questions.append(q)
     return questions
 

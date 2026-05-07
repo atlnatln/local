@@ -51,8 +51,13 @@ object MathQuestionGenerator {
                 MathQuestion("$a + $b = ?", a + b, "toplama")
             }
             else -> {
-                val a = Random.nextInt(2, 11)  // 2-10
-                val b = Random.nextInt(1, a)   // sonuç pozitif
+                // Onluktan bozmasız çıkarma: b <= a'nın birler basamağı
+                var a = Random.nextInt(2, 11)  // 2-10
+                while (a % 10 == 0) {
+                    a = Random.nextInt(2, 11)
+                }
+                val maxB = a % 10
+                val b = Random.nextInt(1, maxB + 1)
                 MathQuestion("$a - $b = ?", a - b, "çıkarma")
             }
         }

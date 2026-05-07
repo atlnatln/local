@@ -268,7 +268,7 @@ class Question(models.Model):
     question_id = models.IntegerField(unique=True, help_text="Global benzersiz soru ID'si")
     text = models.CharField(max_length=500)
     answer = models.IntegerField()
-    question_type = models.CharField(max_length=50, help_text="toplama, cikarma, carpma, bolme")
+    question_type = models.CharField(max_length=50, help_text="toplama, çıkarma, çarpma, bölme, sıralama, eksik_sayı, kesir, problem, sayma, karşılaştırma, örüntü, kare")
     difficulty = models.IntegerField(default=1)
     hint = models.CharField(max_length=500, blank=True)
     batch_number = models.IntegerField(default=0, db_index=True,
