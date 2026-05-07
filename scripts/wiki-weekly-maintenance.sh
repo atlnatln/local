@@ -80,9 +80,12 @@ sync_wiki() {
 
     if [[ "$behind" -gt 0 ]]; then
         log_info "Wiki $behind commit geride, senkronize ediliyor..."
-        git stash push -m "weekly-maintenance-auto" 2>/dev/null || true
-        git reset --hard origin/main
-        log_ok "Wiki senkronize edildi."
+        if git pull origin main --ff-only; then
+            log_ok "Wiki senkronize edildi."
+        else
+            log_error "Wiki senkronizasyonu başarısız (conflict veya diverged)."
+            return 1
+        fi
     else
         log_ok "Wiki zaten güncel."
     fi
