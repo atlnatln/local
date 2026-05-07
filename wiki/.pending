@@ -349,3 +349,6 @@
 2026-05-07 19:44|9152ebcd7db088050081bd7144a086581101448d|local|scripts/test-amend,wiki/.pending,
 2026-05-07 19:44|426636578879e8e6cc83cc7bc8f8cd01e83a47f1|local|scripts/test-amend,wiki/.pending,
 2026-05-07 19:44|6b53119621ccdb7a3a1492f00b75d3d0700d6534|local|scripts/test-amend,wiki/.pending,
+2026-05-07 19:44|5f558724bd3dfb3421d74bb51f190d78d12347d7|local|scripts/test-amend,wiki/.pending,
+2026-05-07 19:45|5f558724|scripts|/home/akn/local/scripts/wiki-post-commit.sh
+2026-05-07 19:45|aef37bf82b1b8d6ca0546969de6b2dd98f4e9fc5|local|scripts/test-final,
