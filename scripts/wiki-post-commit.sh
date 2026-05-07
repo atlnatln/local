@@ -6,7 +6,11 @@
 #
 # KURAL: Eğer commit mesajı "docs(wiki):" ile başlıyorsa, bu zaten bir
 # wiki ingest/cleanup commit'idir — tekrar marker'a yazma. Aksi halde
-# sonsuz döngü oluşur (ingest commit'i → marker → sonraki session ingest → ...)
+# sonsuz döngü oluşur.
+#
+# YENI: .pending otomatik olarak ayrı bir commit olarak atilir.
+# Böylece kullanıcı ekstra adım atmak zorunda kalmaz,
+# ve .pending GitHub'a otomatik gider (cross-machine sync).
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 REPO_NAME=$(basename "$REPO_ROOT")
@@ -27,3 +31,10 @@ MARKER="/home/akn/local/wiki/.pending"
 
 # Append one line per commit
 echo "${DATE}|${COMMIT_SHA}|${REPO_NAME}|${CHANGED_FILES}" >> "$MARKER"
+
+# Otomatik olarak ayrı bir commit at — .pending GitHub'a gitsin
+# Bu commit "docs(wiki):" ile başladığı için post-commit hook bunu atlar
+# (sonsuz döngü oluşmaz)
+cd "$REPO_ROOT" || exit 0
+git add "$MARKER" || true
+git commit -m "docs(wiki): auto-sync pending marker" --quiet || true
