@@ -2268,3 +2268,41 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 200 entries
 
+
+## [2026-05-07 23:10] ingest | mathlock-play | manual | 1 sayfa
+- Files: A:0 M:11 D:0
+- Pages updated: [[mathlock-play]]
+- Diff summary: MEB 2024 müfredat uyumu + tip isimlendirme standardizasyonu:
+  - `generate_age_questions.py`: 1. sınıf çarpma kaldırıldı (%20→0), 2. sınıf kare tipi kaldırıldı
+  - `MathQuestionGenerator.kt`: 1. sınıf çarpma kaldırıldı, 2. sınıf kare kaldırıldı
+  - `MathChallengeActivity.kt`: `siralama` → `sıralama` tip kontrolü düzeltildi
+  - 5 agents.md dosyası tip isimleri Türkçe karakterli olarak standartlaştırıldı (`çıkarma`, `çarpma`, `bölme`, `sıralama`, `eksik_sayı`, `karşılaştırma`, `örüntü`)
+  - 1. sınıf: çıkarmada onluktan bozma kontrolü eklendi (`b ≤ a mod 10`)
+  - 2. sınıf: zorluk 5 toplama üst limiti 100 yapıldı (MEB "100'e kadar eldeli toplama")
+  - 3. sınıf: kesir sadece üniter (pay=1), problem max 2 işlem
+  - 4. sınıf: rapor şablonları yaş grubuna özgü hale getirildi
+  - 5 curriculum JSON dosyası tip isimleriyle güncellendi
+  - Kopyala-yapıştır rapor şablonu hataları giderildi
+## [2026-05-07 23:15] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1 ([[anka]] — unrelated)
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4 (mathlock-play 464L — expected after content expansion)
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 202 entries
+## [2026-05-07 23:03] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 203 entries
+

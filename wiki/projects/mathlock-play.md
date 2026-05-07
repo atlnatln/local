@@ -94,12 +94,12 @@ Telefon yeni seti indirir
 |---|---|---|
 | Kaynak | `data/questions-<dönem>.json` → DB | `ai-generate.sh` + `kimi-cli` ile anlık üretim |
 | Yaş uygunluğu | ✅ 5 ayrı set (okul öncesi / 1-4. sınıf) | ✅ `agents/questions-*.agents.md` ile adaptif |
-| Çarpma/bölme | Okul öncesi: yok, 1. sınıf: nadiren | Algoritmaya göre adaptif |
+| Çarpma/bölme | Okul öncesi: yok, 1. sınıf: YOK (MEB uyumu) | Algoritmaya göre adaptif |
 | Zorluk | Statik (yaşa göre) | Dinamik (çocuğun performansına göre) |
 
 **Batch 0 dosyaları:**
 - `data/questions-okul_oncesi.json` — 30 soru, sadece toplama/çıkarma (1-5 arası)
-- `data/questions-sinif_1.json` — 40 soru, toplama/çıkarma + nadiren çarpma (1-3 tablosu)
+- `data/questions-sinif_1.json` — 40 soru, sadece toplama/çıkarma (MEB 1. sınıf müfredatında çarpma yoktur)
 - `data/questions-sinif_2.json` — 50 soru, mevcut varsayılan seviye
 - `data/questions-sinif_3.json` — 50 soru, biraz daha zor
 - `data/questions-sinif_4.json` — 50 soru, en zor seviye
@@ -127,10 +127,10 @@ python3 scripts/generate_age_questions.py
 | Dosya | Amaç |
 |---|---|
 | `questions-okul-oncesi.agents.md` | 30 soru, çarpma/bölme YASAK |
-| `questions-sinif-1.agents.md` | 40 soru, basit çarpma nadiren |
-| `questions-sinif-2.agents.md` | 50 soru, 2. sınıf müfredatı |
-| `questions-sinif-3.agents.md` | 50 soru, orta seviye |
-| `questions-sinif-4.agents.md` | 50 soru, ileri seviye |
+| `questions-sinif-1.agents.md` | 40 soru, çarpma/bölme YASAK (MEB uyumu) |
+| `questions-sinif-2.agents.md` | 50 soru, 2. sınıf müfredatı (çarpma giriş, kare YOK) |
+| `questions-sinif-3.agents.md` | 50 soru, üniter kesirler, max 2 işlemli problem |
+| `questions-sinif-4.agents.md` | 50 soru, gelişmiş kesirler, 3+ işlemli problem |
 | `levels-*.agents.md` | Sayı Yolculuğu bulmaca seviyeleri |
 | `swap-helper.sh` | AGENTS.md swap/temizlik |
 
@@ -140,6 +140,35 @@ python3 scripts/generate_age_questions.py
 - **Soru dağılımı:** %40 pekiştirme (zayıf alanlar), %35 gelişim, %25 meydan okuma
 - **Psikolojik sıralama:** İlk 3 soru kolay (güven), orta zorlukta devam, son 2 kolay (bitirme hissi)
 - **Zorluk ayarı:** Başarı ve süreye göre zorluk 1-5 arası dinamik ayarlanır
+
+### Tip İsimlendirme Standardizasyonu (2026-05-07)
+
+Tüm yaş gruplarında tip isimleri Türkçe karakterli olarak standartlaştırılmıştır:
+
+| Tip | Eski (karaktersiz) | Yeni (standart) |
+|-----|-------------------|-----------------|
+| Toplama | `toplama` | `toplama` (değişmedi) |
+| Çıkarma | `cikarma` | `çıkarma` |
+| Çarpma | `carpma` | `çarpma` |
+| Bölme | `bolme` | `bölme` |
+| Sıralama | `siralama` | `sıralama` |
+| Eksik Sayı | `eksik_sayi` | `eksik_sayı` |
+| Karşılaştırma | `karsilastirma` | `karşılaştırma` (okul öncesi) |
+| Örüntü | `oruntu` | `örüntü` (okul öncesi) |
+
+**Teknik etki:** `MathChallengeActivity.kt` içindeki `q.type == "siralama"` kontrolü `q.type == "sıralama"` olarak güncellendi. `generate_age_questions.py` ve `MathQuestionGenerator.kt` zaten Türkçe karakterli üretiyordu; agents.md dosyalarındaki tutarsızlık giderildi.
+
+### MEB Müfredat Uyumu (2026-05-07)
+
+| Sınıf | Değişiklik | Gerekçe |
+|-------|-----------|---------|
+| 1. Sınıf | Çarpma üretimi %0 (eski: %20) | MEB 1. sınıfta çarpma yoktur |
+| 1. Sınıf | Çıkarma: onluktan bozma kontrolü eklendi | `b ≤ (a mod 10)` kuralı ile onluktan bozma engellenir |
+| 2. Sınıf | Kare tipi kaldırıldı | MEB 2. sınıfta kare sayılar yoktur |
+| 2. Sınıf | Zorluk 5 toplama üst limiti 100 yapıldı | MEB "100'e kadar eldeli toplama" kazanımı |
+| 3. Sınıf | Kesir: sadece üniter kesirler (pay=1) | MEB 3. sınıfta non-üniter kesirler yoktur |
+| 3. Sınıf | Problem: maksimum 2 işlem | MEB 3. sınıf problem çözmede max 2 işlem |
+| Tümü | Rapor şablonları yaş grubuna özgü hale getirildi | Kopyala-yapıştır hataları giderildi |
 
 ## Entry Points
 
