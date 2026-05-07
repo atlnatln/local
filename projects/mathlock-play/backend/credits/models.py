@@ -265,10 +265,12 @@ class AiQueryRecord(models.Model):
 
 class Question(models.Model):
     """Master soru bankası — tüm sorular burada tutulur."""
-    question_id = models.IntegerField(unique=True, help_text="Global benzersiz soru ID'si")
+    question_id = models.IntegerField(unique=True, help_text="Global benzersiz soru ID'si (deprecated, geriye uyumluluk)")
+    question_code = models.CharField(max_length=20, blank=True, null=True, unique=True,
+                                     help_text="Yapılandırılmış ID: {Yıl}G{Sınıf}-B{Batch}-{SıraNo} (örn: 2025G2-B1-3001)")
     text = models.CharField(max_length=500)
     answer = models.IntegerField()
-    question_type = models.CharField(max_length=50, help_text="toplama, çıkarma, çarpma, bölme, sıralama, eksik_sayı, kesir, problem, sayma, karşılaştırma, örüntü, kare")
+    question_type = models.CharField(max_length=50, help_text="toplama, çıkarma, çarpma, bölme, sıralama, eksik_sayı, kesir, problem, sayma, karşılaştırma, örüntü")
     difficulty = models.IntegerField(default=1)
     hint = models.CharField(max_length=500, blank=True)
     batch_number = models.IntegerField(default=0, db_index=True,

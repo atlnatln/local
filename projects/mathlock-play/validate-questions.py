@@ -23,27 +23,47 @@ QUESTIONS_FILE = DATA_DIR / "questions.json"
 TOPICS_FILE = DATA_DIR / "topics.json"
 
 # Dönem bazlı geçerli tipler ve soru sayıları
+# NOT: Türkçe karakterli tip isimleri kullanılır (ç, ı, ö, ş, ğ, ü)
 PERIOD_CONFIG = {
     "okul_oncesi": {
-        "types": {"sayma", "toplama", "cikarma", "karsilastirma", "oruntu"},
+        "types": {"sayma", "toplama", "çıkarma", "karşılaştırma", "örüntü"},
         "count": 30,
     },
     "sinif_1": {
-        "types": {"toplama", "cikarma", "siralama", "eksik_sayi"},
+        "types": {"toplama", "çıkarma", "sıralama", "eksik_sayı"},
         "count": 40,
     },
     "sinif_2": {
-        "types": {"toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi"},
+        "types": {"toplama", "çıkarma", "çarpma", "bölme", "sıralama", "eksik_sayı"},
         "count": 50,
     },
     "sinif_3": {
-        "types": {"toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi", "kesir", "problem"},
+        "types": {"toplama", "çıkarma", "çarpma", "bölme", "sıralama", "eksik_sayı", "kesir", "problem"},
         "count": 50,
     },
     "sinif_4": {
-        "types": {"toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi", "kesir", "problem"},
+        "types": {"toplama", "çıkarma", "çarpma", "bölme", "sıralama", "eksik_sayı", "kesir", "problem"},
         "count": 50,
     },
+}
+
+EXPECTED_DISTRIBUTION = {
+    "okul_oncesi": {"sayma": 0.27, "toplama": 0.27, "çıkarma": 0.13, "karşılaştırma": 0.20, "örüntü": 0.13},
+    "sinif_1": {"toplama": 0.45, "çıkarma": 0.35, "sıralama": 0.13, "eksik_sayı": 0.07},
+    "sinif_2": {"toplama": 0.44, "çıkarma": 0.32, "çarpma": 0.10, "bölme": 0.08, "sıralama": 0.04, "eksik_sayı": 0.02},
+    "sinif_3": {"toplama": 0.24, "çıkarma": 0.20, "çarpma": 0.20, "bölme": 0.14, "sıralama": 0.06, "eksik_sayı": 0.04, "kesir": 0.06, "problem": 0.06},
+    "sinif_4": {"toplama": 0.16, "çıkarma": 0.16, "çarpma": 0.18, "bölme": 0.18, "sıralama": 0.06, "eksik_sayı": 0.04, "kesir": 0.12, "problem": 0.10},
+}
+
+VALID_INTERACTION_MODES = {"text-input", "tap-to-count", "pattern-select", "tap-to-choose"}
+CODE_RE = re.compile(r"^\d{4}G\d-B\d-\d{4}$")
+
+ID_RANGES = {
+    "okul_oncesi": 1000,
+    "sinif_1": 2000,
+    "sinif_2": 3000,
+    "sinif_3": 4000,
+    "sinif_4": 5000,
 }
 ALL_VALID_TYPES = set().union(*(c["types"] for c in PERIOD_CONFIG.values()))
 REQUIRED_Q_FIELDS = {"id", "text", "answer", "type", "difficulty", "hint"}
@@ -62,6 +82,11 @@ def err(msg):
 
 def warn(msg):
     warnings.append(f"  ⚠️  {msg}")
+
+
+def _extract_numbers(text: str) -> list:
+    """Metinden tüm tam sayıları çıkarır."""
+    return [int(m.group()) for m in re.finditer(r"\d+", text)]
 
 
 def validate_math(q):
@@ -85,7 +110,7 @@ def validate_math(q):
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {a+b+c}")
                 return
 
-    elif qtype == "cikarma":
+    elif qtype == "çıkarma":
         m = re.match(r"^(\d+)\s*-\s*(\d+)\s*=\s*\?$", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
@@ -106,18 +131,18 @@ def validate_math(q):
                 err(f"Soru {q['id']}: Çıkarma sonucu negatif: {a}-{b}-{c}={a-b-c}")
                 return
 
-    elif qtype == "carpma":
+    elif qtype == "çarpma":
         m = re.match(r"^(\d+)\s*[×xX]\s*(\d+)\s*=\s*\?$", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
             if a * b != answer:
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {a*b}")
                 return
-            if a * b > 100:
-                err(f"Soru {q['id']}: Çarpma sonucu 100'ü aşıyor: {a}x{b}={a*b}")
+            if a * b > 10000:
+                err(f"Soru {q['id']}: Çarpma sonucu 10000'i aşıyor: {a}×{b}={a*b}")
                 return
 
-    elif qtype == "bolme":
+    elif qtype == "bölme":
         m = re.match(r"^(\d+)\s*[÷/]\s*(\d+)\s*=\s*\?$", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
@@ -131,34 +156,34 @@ def validate_math(q):
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {a//b}")
                 return
 
-    elif qtype == "eksik_sayi":
-        # _ + a = b → answer = b - a
-        m = re.match(r"^_\s*\+\s*(\d+)\s*=\s*(\d+)", text)
+    elif qtype == "eksik_sayı":
+        # ? + a = b → answer = b - a
+        m = re.match(r"^\?\s*\+\s*(\d+)\s*=\s*(\d+)", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
             if b - a != answer:
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {b-a}")
                 return
-        # a + _ = b → answer = b - a
-        m = re.match(r"^(\d+)\s*\+\s*_\s*=\s*(\d+)", text)
+        # a + ? = b → answer = b - a
+        m = re.match(r"^(\d+)\s*\+\s*\?\s*=\s*(\d+)", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
             if b - a != answer:
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {b-a}")
                 return
-        # _ - a = b → answer = b + a
-        m = re.match(r"^_\s*-\s*(\d+)\s*=\s*(\d+)", text)
+        # ? - a = b → answer = b + a
+        m = re.match(r"^\?\s*-\s*(\d+)\s*=\s*(\d+)", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
             if b + a != answer:
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {b+a}")
                 return
-        # a x _ = b → answer = b / a  (d4)
-        m = re.match(r"^(\d+)\s*[×xX]\s*_\s*=\s*(\d+)", text)
+        # a × ? = b → answer = b / a  (d4)
+        m = re.match(r"^(\d+)\s*[×xX]\s*\?\s*=\s*(\d+)", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
             if a == 0:
-                err(f"Soru {q['id']}: Sıfıra bölme (a x _ = b, a=0)")
+                err(f"Soru {q['id']}: Sıfıra bölme (a × ? = b, a=0)")
                 return
             if b % a != 0:
                 err(f"Soru {q['id']}: {text} → tam bölünmüyor ({b}/{a})")
@@ -166,13 +191,61 @@ def validate_math(q):
             if b // a != answer:
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {b//a}")
                 return
-        # _ / a = b → answer = a * b  (d5)
-        m = re.match(r"^_\s*[÷/]\s*(\d+)\s*=\s*(\d+)", text)
+        # ? ÷ a = b → answer = a * b  (d5)
+        m = re.match(r"^\?\s*[÷/]\s*(\d+)\s*=\s*(\d+)", text)
         if m:
             a, b = int(m.group(1)), int(m.group(2))
             if a * b != answer:
                 err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {a*b}")
                 return
+
+    elif qtype == "sıralama":
+        numbers = _extract_numbers(text)
+        if len(numbers) >= 2:
+            if "büyük" in text or "büyüğü" in text:
+                expected = max(numbers)
+            elif "küçük" in text or "küçüğü" in text:
+                expected = min(numbers)
+            else:
+                expected = None
+            if expected is not None and answer != expected:
+                err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {expected}")
+                return
+
+    elif qtype == "karşılaştırma":
+        numbers = _extract_numbers(text)
+        if len(numbers) == 2:
+            if "büyük" in text:
+                expected = max(numbers)
+            else:
+                expected = min(numbers)
+            if answer != expected:
+                err(f"Soru {q['id']}: {text} → cevap {answer} olmamalı, doğru: {expected}")
+                return
+
+    elif qtype == "sayma":
+        # Emoji sayma sorularında cevap sayısal olmalı
+        if answer < 0:
+            err(f"Soru {q['id']}: Sayma sorusu cevabı negatif olamaz: {answer}")
+            return
+
+    elif qtype == "örüntü":
+        # Örüntü soruları manuel doğrulama gerektirir
+        if answer < 0:
+            err(f"Soru {q['id']}: Örüntü sorusu cevabı negatif olamaz: {answer}")
+            return
+
+    elif qtype == "kesir":
+        # Kesir soruları metin tabanlıdır; cevap sayısal olmalı
+        if answer < 0:
+            err(f"Soru {q['id']}: Kesir sorusu cevabı negatif olamaz: {answer}")
+            return
+
+    elif qtype == "problem":
+        # Problem soruları manuel doğrulama gerektirir
+        if answer < 0:
+            err(f"Soru {q['id']}: Problem sorusu cevabı negatif olamaz: {answer}")
+            return
 
 
 def validate_questions():
@@ -229,8 +302,12 @@ def validate_questions():
             err(f"Soru {qid}: Tekrar eden id")
         seen_ids.add(q["id"])
 
-        if q["id"] < 1 or q["id"] > expected_count:
-            err(f"Soru {qid}: id 1-{expected_count} arasında olmalı")
+        # ID kontrolü — offset'li ID'ler için normalize et
+        raw_id = q["id"]
+        period_offset = ID_RANGES.get(ACTIVE_PERIOD, 0)
+        normalized_id = raw_id - period_offset if raw_id > period_offset else raw_id
+        if normalized_id < 1 or normalized_id > expected_count:
+            err(f"Soru {qid}: id 1-{expected_count} arasında olmalı (raw={raw_id})")
 
         # Text tekrarı
         if q["text"] in seen_texts:
@@ -262,11 +339,21 @@ def validate_questions():
             elif hint_len > 60:
                 warn(f"Soru {qid}: Hint çok uzun ({hint_len} karakter)")
 
+        # code formatı (varsa)
+        if "code" in q:
+            if not CODE_RE.match(str(q["code"])):
+                err(f"Soru {qid}: Geçersiz code formatı: '{q['code']}' (beklenen: YYYYG{grade}-B{batch}-{seq:04d})")
+
+        # interactionMode (varsa)
+        if "interactionMode" in q:
+            if q["interactionMode"] not in VALID_INTERACTION_MODES:
+                err(f"Soru {qid}: Geçersiz interactionMode: '{q['interactionMode']}'")
+
         # Matematik doğrulaması
         validate_math(q)
 
     # Dağılım uyarıları — temel tipler dönem bazlı
-    core_types = {"toplama", "cikarma"} & valid_types
+    core_types = {"toplama", "çıkarma"} & valid_types
     for ct in core_types:
         if ct not in types_found:
             warn(f"{ct} sorusu yok — {ACTIVE_PERIOD} için temel tip")
@@ -284,6 +371,19 @@ def validate_questions():
 
     print(f"  📊 Tip dağılımı: {dict(sorted(type_counts.items()))}")
     print(f"  📊 Zorluk dağılımı: {dict(sorted(diff_counts.items()))}")
+
+    # Tip dağılımı tolerance kontrolü (%5)
+    if ACTIVE_PERIOD in EXPECTED_DISTRIBUTION:
+        expected = EXPECTED_DISTRIBUTION[ACTIVE_PERIOD]
+        total = len(questions)
+        tolerance = 0.05
+        for t, expected_ratio in expected.items():
+            actual_count = type_counts.get(t, 0)
+            actual_ratio = actual_count / total
+            diff = abs(actual_ratio - expected_ratio)
+            if diff > tolerance:
+                warn(f"Tip dağılımı sapması: {t} beklenen %{expected_ratio*100:.0f} ({int(expected_ratio*total)}), "
+                     f"gerçekleşen %{actual_ratio*100:.0f} ({actual_count}) — sapma %{diff*100:.1f} > %5")
 
     # Ardışık aynı tip kontrolü (max 3)
     if len(questions) >= 4:

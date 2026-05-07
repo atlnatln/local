@@ -1,253 +1,313 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-07T20:21:02.466675+00:00",
+  "generatedAt": "2026-05-07T21:48:59.160935+00:00",
   "generatedBy": "mathlock-generator",
   "educationPeriod": "okul_oncesi",
   "difficultyProfile": {
     "overall": "beginner",
-    "avgDifficulty": 1.0,
+    "avgDifficulty": 1.1,
     "adjustmentReason": "Yaş uygun ilk set — okul_oncesi"
   },
   "questions": [
     {
       "id": 1001,
+      "code": "2025G0-B1-1001",
       "text": "2 - 1 = ?",
       "answer": 1,
       "type": "çıkarma",
       "difficulty": 1,
-      "hint": "Sayı doğrusunda geriye git"
+      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
+      "interactionMode": "text-input"
     },
     {
       "id": 1002,
-      "text": "2 + 1 = ?",
-      "answer": 3,
-      "type": "toplama",
+      "code": "2025G0-B1-1002",
+      "text": "Kaç tane araba var: 🚗 = ?",
+      "answer": 1,
+      "type": "sayma",
       "difficulty": 1,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+      "hint": "Parmaklarınla tek tek say",
+      "interactionMode": "tap-to-count"
     },
     {
       "id": 1003,
-      "text": "2 - 1 = ?",
-      "answer": 1,
-      "type": "çıkarma",
+      "code": "2025G0-B1-1003",
+      "text": "5 + 3 = ?",
+      "answer": 8,
+      "type": "toplama",
       "difficulty": 1,
-      "hint": "Sayı doğrusunda geriye git"
+      "hint": "Önce onlukları topla, sonra birlikleri ekle",
+      "interactionMode": "text-input"
     },
     {
       "id": 1004,
-      "text": "1 + 2 = ?",
-      "answer": 3,
-      "type": "toplama",
+      "code": "2025G0-B1-1004",
+      "text": "Kaç tane çiçek var: 🌸🌸🌸🌸 = ?",
+      "answer": 4,
+      "type": "sayma",
       "difficulty": 1,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+      "hint": "Parmaklarınla tek tek say",
+      "interactionMode": "tap-to-count"
     },
     {
       "id": 1005,
-      "text": "5 + 1 = ?",
-      "answer": 6,
-      "type": "toplama",
+      "code": "2025G0-B1-1005",
+      "text": "Hangisi büyük: 1, 2 = ?",
+      "answer": 2,
+      "type": "karşılaştırma",
       "difficulty": 1,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+      "hint": "Büyük olan sayıyı bul",
+      "interactionMode": "tap-to-choose"
     },
     {
       "id": 1006,
-      "text": "5 - 2 = ?",
-      "answer": 3,
-      "type": "çıkarma",
+      "code": "2025G0-B1-1006",
+      "text": "Hangisi büyük: 2, 4 = ?",
+      "answer": 4,
+      "type": "karşılaştırma",
       "difficulty": 1,
-      "hint": "Büyük sayıdan geriye doğru say"
+      "hint": "Büyük olan sayıyı bul",
+      "interactionMode": "tap-to-choose"
     },
     {
       "id": 1007,
-      "text": "3 + 1 = ?",
-      "answer": 4,
-      "type": "toplama",
+      "code": "2025G0-B1-1007",
+      "text": "5, 4, 3, ? = ?",
+      "answer": 2,
+      "type": "örüntü",
       "difficulty": 1,
-      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
+      "hint": "Sıra neyle devam ediyor?",
+      "interactionMode": "pattern-select"
     },
     {
       "id": 1008,
+      "code": "2025G0-B1-1008",
+      "text": "Kaç tane araba var: 🚗🚗🚗 = ?",
+      "answer": 3,
+      "type": "sayma",
+      "difficulty": 1,
+      "hint": "Yavaş yavaş, hiç atlamadan say",
+      "interactionMode": "tap-to-count"
+    },
+    {
+      "id": 1009,
+      "code": "2025G0-B1-1009",
+      "text": "4 + 3 = ?",
+      "answer": 7,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
+      "interactionMode": "text-input"
+    },
+    {
+      "id": 1010,
+      "code": "2025G0-B1-1010",
+      "text": "Kaç tane kedi var: 🐱🐱🐱 = ?",
+      "answer": 3,
+      "type": "sayma",
+      "difficulty": 1,
+      "hint": "Yavaş yavaş, hiç atlamadan say",
+      "interactionMode": "tap-to-count"
+    },
+    {
+      "id": 1011,
+      "code": "2025G0-B1-1011",
+      "text": "Kaç tane muz var: 🍌🍌🍌 = ?",
+      "answer": 3,
+      "type": "sayma",
+      "difficulty": 1,
+      "hint": "Parmaklarınla tek tek say",
+      "interactionMode": "tap-to-count"
+    },
+    {
+      "id": 1012,
+      "code": "2025G0-B1-1012",
+      "text": "1 + 5 = ?",
+      "answer": 6,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla",
+      "interactionMode": "text-input"
+    },
+    {
+      "id": 1013,
+      "code": "2025G0-B1-1013",
+      "text": "Kaç tane çiçek var: 🌸🌸 = ?",
+      "answer": 2,
+      "type": "sayma",
+      "difficulty": 1,
+      "hint": "Bir bir göster ve say",
+      "interactionMode": "tap-to-count"
+    },
+    {
+      "id": 1014,
+      "code": "2025G0-B1-1014",
+      "text": "Kaç tane araba var: 🚗🚗🚗🚗 = ?",
+      "answer": 4,
+      "type": "sayma",
+      "difficulty": 1,
+      "hint": "Yavaş yavaş, hiç atlamadan say",
+      "interactionMode": "tap-to-count"
+    },
+    {
+      "id": 1015,
+      "code": "2025G0-B1-1015",
+      "text": "4 - 3 = ?",
+      "answer": 1,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Sayı doğrusunda geriye git",
+      "interactionMode": "text-input"
+    },
+    {
+      "id": 1016,
+      "code": "2025G0-B1-1016",
       "text": "3 - 2 = ?",
       "answer": 1,
       "type": "çıkarma",
       "difficulty": 1,
-      "hint": "Sayı doğrusunda geriye git"
-    },
-    {
-      "id": 1009,
-      "text": "2 + 2 = ?",
-      "answer": 4,
-      "type": "toplama",
-      "difficulty": 1,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle"
-    },
-    {
-      "id": 1010,
-      "text": "4 - 1 = ?",
-      "answer": 3,
-      "type": "çıkarma",
-      "difficulty": 1,
-      "hint": "Büyük sayıdan geriye doğru say"
-    },
-    {
-      "id": 1011,
-      "text": "1 + 3 = ?",
-      "answer": 4,
-      "type": "toplama",
-      "difficulty": 1,
-      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
-    },
-    {
-      "id": 1012,
-      "text": "4 - 1 = ?",
-      "answer": 3,
-      "type": "çıkarma",
-      "difficulty": 1,
-      "hint": "Büyük sayıdan geriye doğru say"
-    },
-    {
-      "id": 1013,
-      "text": "2 - 1 = ?",
-      "answer": 1,
-      "type": "çıkarma",
-      "difficulty": 1,
-      "hint": "Büyük sayıdan geriye doğru say"
-    },
-    {
-      "id": 1014,
-      "text": "3 + 5 = ?",
-      "answer": 8,
-      "type": "toplama",
-      "difficulty": 1,
-      "hint": "Sayıları kafanda sırala, topla"
-    },
-    {
-      "id": 1015,
-      "text": "4 - 3 = ?",
-      "answer": 1,
-      "type": "çıkarma",
-      "difficulty": 1,
-      "hint": "Büyük sayıdan geriye doğru say"
-    },
-    {
-      "id": 1016,
-      "text": "1 + 1 = ?",
-      "answer": 2,
-      "type": "toplama",
-      "difficulty": 1,
-      "hint": "Sayıları kafanda sırala, topla"
+      "hint": "Sayı doğrusunda geriye git",
+      "interactionMode": "text-input"
     },
     {
       "id": 1017,
-      "text": "4 - 1 = ?",
-      "answer": 3,
-      "type": "çıkarma",
+      "code": "2025G0-B1-1017",
+      "text": "Kaç tane yıldız var: ⭐ = ?",
+      "answer": 1,
+      "type": "sayma",
       "difficulty": 1,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
+      "hint": "Parmaklarınla tek tek say",
+      "interactionMode": "tap-to-count"
     },
     {
       "id": 1018,
-      "text": "2 - 1 = ?",
-      "answer": 1,
-      "type": "çıkarma",
-      "difficulty": 1,
-      "hint": "Sayı doğrusunda geriye git"
-    },
-    {
-      "id": 1019,
-      "text": "3 + 2 = ?",
-      "answer": 5,
-      "type": "toplama",
-      "difficulty": 1,
-      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say"
-    },
-    {
-      "id": 1020,
-      "text": "2 + 3 = ?",
-      "answer": 5,
-      "type": "toplama",
-      "difficulty": 1,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle"
-    },
-    {
-      "id": 1021,
-      "text": "2 - 1 = ?",
-      "answer": 1,
-      "type": "çıkarma",
-      "difficulty": 1,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar"
-    },
-    {
-      "id": 1022,
-      "text": "3 - 1 = ?",
+      "code": "2025G0-B1-1018",
+      "text": "4 - 2 = ?",
       "answer": 2,
       "type": "çıkarma",
       "difficulty": 1,
-      "hint": "Sayı doğrusunda geriye git"
+      "hint": "Büyük sayıdan geriye doğru say",
+      "interactionMode": "text-input"
+    },
+    {
+      "id": 1019,
+      "code": "2025G0-B1-1019",
+      "text": "Kaç tane yıldız var: ⭐⭐⭐⭐⭐⭐⭐⭐ = ?",
+      "answer": 8,
+      "type": "sayma",
+      "difficulty": 2,
+      "hint": "Bir bir göster ve say",
+      "interactionMode": "tap-to-count"
+    },
+    {
+      "id": 1020,
+      "code": "2025G0-B1-1020",
+      "text": "Hangisi büyük: 8, 3 = ?",
+      "answer": 8,
+      "type": "karşılaştırma",
+      "difficulty": 1,
+      "hint": "Hangi sayı daha çok?",
+      "interactionMode": "tap-to-choose"
+    },
+    {
+      "id": 1021,
+      "code": "2025G0-B1-1021",
+      "text": "Hangisi büyük: 3, 4 = ?",
+      "answer": 4,
+      "type": "karşılaştırma",
+      "difficulty": 1,
+      "hint": "Büyük olan sayıyı bul",
+      "interactionMode": "tap-to-choose"
+    },
+    {
+      "id": 1022,
+      "code": "2025G0-B1-1022",
+      "text": "5 + 5 = ?",
+      "answer": 10,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Sayıları kafanda sırala, topla",
+      "interactionMode": "text-input"
     },
     {
       "id": 1023,
-      "text": "3 + 5 = ?",
-      "answer": 8,
-      "type": "toplama",
-      "difficulty": 1,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+      "code": "2025G0-B1-1023",
+      "text": "Kaç tane muz var: 🍌🍌🍌🍌🍌🍌🍌🍌🍌🍌 = ?",
+      "answer": 10,
+      "type": "sayma",
+      "difficulty": 2,
+      "hint": "Parmaklarınla tek tek say",
+      "interactionMode": "tap-to-count"
     },
     {
       "id": 1024,
-      "text": "3 + 1 = ?",
-      "answer": 4,
-      "type": "toplama",
+      "code": "2025G0-B1-1024",
+      "text": "2, 4, 6, ? = ?",
+      "answer": 8,
+      "type": "örüntü",
       "difficulty": 1,
-      "hint": "Sayıları kafanda sırala, topla"
+      "hint": "İlk iki sayıya bak, tekrar ediyor mu?",
+      "interactionMode": "pattern-select"
     },
     {
       "id": 1025,
-      "text": "1 + 3 = ?",
-      "answer": 4,
+      "code": "2025G0-B1-1025",
+      "text": "5 + 4 = ?",
+      "answer": 9,
       "type": "toplama",
       "difficulty": 1,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle"
+      "hint": "Önce onlukları topla, sonra birlikleri ekle",
+      "interactionMode": "text-input"
     },
     {
       "id": 1026,
-      "text": "1 + 2 = ?",
+      "code": "2025G0-B1-1026",
+      "text": "Kaç tane yıldız var: ⭐⭐⭐ = ?",
       "answer": 3,
-      "type": "toplama",
+      "type": "sayma",
       "difficulty": 1,
-      "hint": "Sayıları kafanda sırala, topla"
+      "hint": "Bir bir göster ve say",
+      "interactionMode": "tap-to-count"
     },
     {
       "id": 1027,
-      "text": "4 - 1 = ?",
-      "answer": 3,
-      "type": "çıkarma",
+      "code": "2025G0-B1-1027",
+      "text": "Kaç tane elma var: 🍎 = ?",
+      "answer": 1,
+      "type": "sayma",
       "difficulty": 1,
-      "hint": "Büyük sayıdan geriye doğru say"
+      "hint": "Parmaklarınla tek tek say",
+      "interactionMode": "tap-to-count"
     },
     {
       "id": 1028,
-      "text": "5 - 4 = ?",
-      "answer": 1,
-      "type": "çıkarma",
+      "code": "2025G0-B1-1028",
+      "text": "5 + 1 = ?",
+      "answer": 6,
+      "type": "toplama",
       "difficulty": 1,
-      "hint": "Sayı doğrusunda geriye git"
+      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
+      "interactionMode": "text-input"
     },
     {
       "id": 1029,
-      "text": "2 + 2 = ?",
-      "answer": 4,
-      "type": "toplama",
+      "code": "2025G0-B1-1029",
+      "text": "2, 3, 2, 3, ? = ?",
+      "answer": 2,
+      "type": "örüntü",
       "difficulty": 1,
-      "hint": "Sayıları kafanda sırala, topla"
+      "hint": "Sıra neyle devam ediyor?",
+      "interactionMode": "pattern-select"
     },
     {
       "id": 1030,
-      "text": "4 - 3 = ?",
-      "answer": 1,
-      "type": "çıkarma",
+      "code": "2025G0-B1-1030",
+      "text": "Hangisi büyük: 2, 5 = ?",
+      "answer": 5,
+      "type": "karşılaştırma",
       "difficulty": 1,
-      "hint": "Büyük sayıdan geriye doğru say"
+      "hint": "Parmaklarınla karşılaştır",
+      "interactionMode": "tap-to-choose"
     }
   ]
 }

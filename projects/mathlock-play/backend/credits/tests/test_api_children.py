@@ -166,8 +166,8 @@ class ChildReportViewTest(ThrottleMixin, AuthMixin, TestCase):
             stats_json={
                 "byType": {
                     "toplama": {"shown": 40, "correct": 38, "avgTime": 3.2, "hintUsed": 2, "topicUsed": 1},
-                    "cikarma": {"shown": 30, "correct": 20, "avgTime": 5.5, "hintUsed": 5, "topicUsed": 3},
-                    "carpma": {"shown": 30, "correct": 17, "avgTime": 8.0, "hintUsed": 10, "topicUsed": 5},
+                    "çıkarma": {"shown": 30, "correct": 20, "avgTime": 5.5, "hintUsed": 5, "topicUsed": 3},
+                    "çarpma": {"shown": 30, "correct": 17, "avgTime": 8.0, "hintUsed": 10, "topicUsed": 5},
                 }
             },
             daily_stats={
@@ -202,10 +202,10 @@ class ChildReportViewTest(ThrottleMixin, AuthMixin, TestCase):
         by_type = data['by_type']
         # toplama: 95% + 3.2s → USTA
         self.assertEqual(by_type['toplama']['category'], 'category_master')
-        # cikarma: 66.7% → GELİŞEN
-        self.assertEqual(by_type['cikarma']['category'], 'category_developing')
-        # carpma: 56.7% → ZORLU
-        self.assertEqual(by_type['carpma']['category'], 'category_challenging')
+        # çıkarma: 66.7% → GELİŞEN
+        self.assertEqual(by_type['çıkarma']['category'], 'category_developing')
+        # çarpma: 56.7% → ZORLU
+        self.assertEqual(by_type['çarpma']['category'], 'category_challenging')
 
     def test_child_report_missing_token(self):
         self.client.credentials()

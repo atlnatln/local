@@ -134,7 +134,7 @@
                     android:imeOptions="actionDone" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Seçenek Butonları (siralama tipinde input yerine gösterilir) -->
+            <!-- Seçenek Butonları (sıralama tipinde input yerine gösterilir) -->
             <LinearLayout
                 android:id="@+id/layoutOptions"
                 android:layout_width="match_parent"

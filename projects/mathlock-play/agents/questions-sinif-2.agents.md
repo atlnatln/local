@@ -141,7 +141,7 @@ Seviye 1: toplama + çıkarma
 Seviye 2: + çarpma        (toplama ve çıkarmada basari >= %75 ise)
 Seviye 3: + bölme         (çarpmada basari >= %70 ise)
 Seviye 4: + sıralama      (dort islemde basari >= %70 ise)
-Seviye 5: + eksik_sayi    (tumunde basari >= %70 ise)
+Seviye 5: + eksik_sayı    (tümünde başarı >= %70 ise)
 ```
 
 Yeni tanitilan tip:
@@ -194,7 +194,7 @@ stats.json yoksa cocugun seviyesini bilmiyoruz. Guvenli bir baslangic:
 - çarpma: 5 soru (5x zorluk 1, sadece x2 tablosu — 1x2, 2x2, 3x2, 4x2, 5x2)
 - bölme: 4 soru (4x zorluk 1, sadece /2 — 2/2, 4/2, 6/2, 8/2)
 - sıralama: 2 soru (2x zorluk 1)
-- eksik_sayi: 1 soru (1x zorluk 1)
+- eksik_sayı: 1 soru (1x zorluk 1)
 
 ### Siralama:
 - Pozisyon 1-3: En kolay toplama (3+2, 4+1 gibi)
@@ -254,12 +254,14 @@ stats.json yoksa cocugun seviyesini bilmiyoruz. Guvenli bir baslangic:
 
 | Alan | Tip | Kural |
 |------|-----|-------|
-| id | int | 1-50 arası benzersiz sıra numarası |
+| id | int | 1-50 arası benzersiz sıra numarası (geriye uyumluluk) |
+| code | string | Yapılandırılmış ID: `YYYYG{Sınıf}-B{Batch}-{SıraNo}` (örn: `2025G2-B1-3001`) |
 | text | string | Soru metni. `= ?` ile biter |
 | answer | int | Doğru cevap. Her zaman >= 0 (negatif YASAK) |
 | type | string | Geçerli değerler: `toplama`, `çıkarma`, `çarpma`, `bölme`, `sıralama`, `eksik_sayı` |
 | difficulty | int | 1-5 arası |
 | hint | string | Yanlış cevapta gösterilen ipucu. Türkçe, çocuk dili, cevabı VERMEZ |
+| interactionMode | string | `text-input` (default), `tap-to-count`, `pattern-select`, `tap-to-choose` |
 
 -### Operatör Sembolleri (text alanında):
 - Toplama: `+`
@@ -283,7 +285,7 @@ Her zorluk seviyesi için KESİN sayı aralıkları. AI modeli bu sınırlar dı
 | 2 | a + b = ? | a: 10-19, b: 1-10 | 11-29 | 12 + 7 = ? |
 | 3 | a + b = ? | a: 10-30, b: 10-20 | 20-50 | 23 + 18 = ? |
 | 4 | a + b = ? | a: 20-60, b: 10-40 | 30-100 | 45 + 32 = ? |
-| 5 | a + b + c = ? | a: 10-40, b: 10-30, c: 5-20 | 25-100 | 25 + 13 + 8 = ? |
+| 5 | a + b + c = ? | a: 10-50, b: 10-30, c: 5-20 | 25-100 | 25 + 13 + 8 = ? |
 
 **KURAL:** Zorluk 5 toplama sonucu en fazla 100 olabilir (MEB 2. sınıf "100'e kadar eldeli toplama" kazanımına uygun).
 
@@ -307,9 +309,9 @@ Her zorluk seviyesi için KESİN sayı aralıkları. AI modeli bu sınırlar dı
 | 2 | a x b = ? | a: 2-5, b: 2-5 | 4-25 | 4 x 3 = ? |
 | 3 | a x b = ? | a: 2-9, b: 6-9 | 12-81 | 7 x 8 = ? |
 | 4 | a x 10 = ? | a: 1-10 | 10-100 | 6 x 10 = ? |
-| 5 | a x b = ? | a: 2-10, b: 2-10 | 4-100 | 8 x 9 = ? |
+| 5 | a x b = ? | a: 2-9, b: 2-9 | 4-81 | 8 x 9 = ? |
 
-**KURAL:** Çarpma tablosu 10x10 sınırını GEÇEMEZ. Sonuç maksimum 100.
+**KURAL:** Çarpma tablosu 9×9 sınırını GEÇEMEZ. Sonuç maksimum 81 (MEB MAT.2.1.4). 10×10=100 3. sınıfta tanıtılır.
 
 ### 7.4 Bölme
 

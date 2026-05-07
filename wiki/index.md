@@ -59,6 +59,7 @@ Aktif mimari karar kayıtları (ADR).
 | [[adr-004-memory-game-integration]] | Active | 2026-05-03 | Sayı Hafızası oyununun MathLock Play'e entegrasyonu |
 | [[adr-005-ops-bot-acp-sdk-migration]] | Active | 2026-05-04 | Ops-bot ACP client'ının resmi SDK'ya geçiş kararı |
 | [[adr-006-github-sync-cross-machine-dev]] | Active | 2026-05-05 | GitHub Sync + Cross-Machine Development |
+| [[adr-007-mathlock-meb-curriculum-compliance-implantation]] | Active | 2026-05-07 | MathLock Play MEB 2024 müfredat uyum implantasyonu |
 
 ## Archived Decisions
 
@@ -86,11 +87,11 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 ## Recently Updated
 
+- [[mathlock-play-ai]] — MEB uyum düzeltmeleri: curriculum JSON non-üniter kesir fix, generate script çıkarma=0 fix, zorluk 5 toplama 100'e genişletildi, Android TYPE_LABELS standardizasyonu tamamlandı (2026-05-07)
+- [[mathlock-play-android]] — `StatsDashboardActivity` + `PerformanceReportActivity` tip isimlendirme fix'i eklendi (2026-05-07)
 - [[proactive-wiki]] — Auto-sync davranışı eklendi: `docs(wiki):` sonsuz döngü koruması, `.pending` cross-machine sync, `git commit --amend` yerine ayrı commit stratejisi (2026-05-07)
 - [[ops-bot]] — `critical_security_alert.py` medium severity desteği, `token_abuse_detector.py` auth endpoint genişlemesi, `OPS_BOT_CRITICAL_STATE_PATH` tanımı (2026-05-07)
 - [[sec-agent]] — State path karışıklığı troubleshooting notu eklendi (2026-05-07)
-- [[security-ai-reporting]] — AI analiz koşulları medium severity'yi de kapsayacak şekilde güncellendi (2026-05-07)
-- [[agents-md]] — "SEN NEREDESİN?" bölümü eklendi, ortam tespiti her açılışta zorunlu ve detaylandırıldı (2026-05-06)
 - [[ops-bot]] — `.gitignore` güncellendi: `.venv/`, `venv/`, `data/sec-agent-*.json` eklendi (2026-05-06)
 - [[webimar]] — `.gitignore` güncellendi, `deploy.sh`'ta VPS domain check `-k` flag'i eklendi (2026-05-06)
 - [[mathlock-play]] — `.env.example` güncellendi: DB config ayrıldı, Celery/Redis eklendi, Google Play path güncellendi (2026-05-06)

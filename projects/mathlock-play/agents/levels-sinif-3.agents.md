@@ -47,7 +47,7 @@ Hedef: **Algoritmik planlama**, **matematik operasyonlarını entegre kullanma**
 ### Operasyon Değer Aralıkları
 - `+N`: N = 1-8
 - `-N`: N = 1-5 (dikkat: sonuç ≥1 olmalı)
-- `×N`: N = 2-3 (çarpma operasyonu orta zorlukta)
+- `×N`: N = 2-3 (çarpma operasyonu orta zorlukta). **N > 3 YASAK — MEB 3. sınıf çarpım tablosu 2-3 ile sınırlıdır.**
 - `÷` operasyonu — YASAK (uygulama desteklemiyor)
 
 ---

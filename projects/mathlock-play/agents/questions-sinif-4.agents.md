@@ -80,12 +80,14 @@ Bu dönemde yeni tip eklenmez — mevcut 8 tipin zorluk seviyeleri artar.
 
 | Alan | Tip | Kural |
 |------|-----|-------|
-| id | int | 1-50 arası benzersiz |
+| id | int | 1-50 arası benzersiz (geriye uyumluluk) |
+| code | string | Yapılandırılmış ID: `YYYYG{Sınıf}-B{Batch}-{SıraNo}` (örn: `2025G4-B1-5001`) |
 | text | string | `= ?` ile biter |
 | answer | int | >= 0 |
 | type | string | `toplama`, `çıkarma`, `çarpma`, `bölme`, `sıralama`, `eksik_sayı`, `kesir`, `problem` |
 | difficulty | int | 1-5 |
 | hint | string | Türkçe, çocuk dili, cevabı vermez |
+| interactionMode | string | `text-input` (default), `tap-to-count`, `pattern-select`, `tap-to-choose` |
 
 ---
 

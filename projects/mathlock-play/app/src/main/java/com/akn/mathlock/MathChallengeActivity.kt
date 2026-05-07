@@ -202,8 +202,9 @@ class MathChallengeActivity : BaseActivity() {
         binding.btnNext.visibility = View.GONE
         binding.btnRetry.visibility = View.GONE
 
-        // Sıralama tipinde seçenek butonları, diğer tiplerde yazı input
-        if (q.type == "sıralama") {
+        // Sıralama ve karşılaştırma tiplerinde seçenek butonları (2 sayı ise),
+        // diğer tiplerde ve çok sayılı sıralamada yazı input
+        if (q.type == "sıralama" || q.type == "karşılaştırma") {
             setupOptionsForSiralama(q.text)
         } else {
             binding.tilAnswer.visibility = View.VISIBLE
@@ -348,18 +349,18 @@ class MathChallengeActivity : BaseActivity() {
             .show()
     }
 
-    // Sıralama tipinde soru metninden sayıları çıkarıp seçenek butonlarına ata
+    // Sıralama / karşılaştırma tiplerinde soru metninden sayıları çıkarıp seçenek butonlarına ata
     private fun setupOptionsForSiralama(text: String) {
         val numbers = Regex("\\d+").findAll(text).map { it.value.toInt() }.toList()
-        if (numbers.size < 2) {
-            // Parse başarısız → normal input'a geri dön
+        if (numbers.size != 2) {
+            // 2 sayı yoksa (çok sayılı sıralama veya parse hatası) → normal input'a geri dön
             binding.tilAnswer.visibility = View.VISIBLE
             binding.layoutOptions.visibility = View.GONE
             binding.btnCheck.visibility = View.VISIBLE
             binding.etAnswer.requestFocus()
             return
         }
-        // Buton sırasını karıştır (büyük sayı hep sağda olmasın)
+        // Buton sırasını karıştır (doğru cevap her zaman sağda olmasın)
         val opts = if (Math.random() > 0.5) listOf(numbers[0], numbers[1])
                    else listOf(numbers[1], numbers[0])
         binding.tilAnswer.visibility = View.GONE

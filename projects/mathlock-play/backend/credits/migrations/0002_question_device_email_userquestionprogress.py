@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('question_id', models.IntegerField(help_text="Global benzersiz soru ID'si", unique=True)),
                 ('text', models.CharField(max_length=500)),
                 ('answer', models.IntegerField()),
-                ('question_type', models.CharField(help_text='toplama, cikarma, carpma, bolme', max_length=50)),
+                ('question_type', models.CharField(help_text='toplama, çıkarma, çarpma, bölme, sıralama, eksik_sayı, kesir, problem, sayma, karşılaştırma, örüntü, kare', max_length=50)),
                 ('difficulty', models.IntegerField(default=1)),
                 ('hint', models.CharField(blank=True, max_length=500)),
                 ('batch_number', models.IntegerField(db_index=True, default=0, help_text='0=ücretsiz set, 1+=kredi ile açılan set')),

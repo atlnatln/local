@@ -131,6 +131,30 @@ return accessToken  // ← önceki: return token (raw UUID)
 
 Bu, `MathChallengeActivity`, `SettingsActivity`, `SayiYolculuguActivity` ve tüm `getOrRegister()` çağıranlar için geçerlidir.
 
+## Android Tip İsimlendirme Fix (2026-05-07)
+
+**Sorun:** `StatsDashboardActivity.kt` ve `PerformanceReportActivity.kt` içindeki `TYPE_LABELS` sözlük anahtarları hâlâ Türkçe karaktersiz isimler (`siralama`, `cikarma`, `carpma`, `bolme`, `eksik_sayi`, `karsilastirma`) kullanıyordu. Bu, backend'den gelen Türkçe karakterli tip isimleriyle (`sıralama`, `çıkarma`, `çarpma`, `bölme`, `eksik_sayı`, `karşılaştırma`) eşleşmiyordu → istatistik ve rapor ekranlarında tip adları boş görünüyordu.
+
+**Düzeltme:** Her iki dosyadaki `TYPE_LABELS` haritası tamamen Türkçe karakterli standartlara çevrildi. Eksik tip anahtarları (`kesir`, `problem`, `örüntü`) eklendi.
+
+```kotlin
+// file: projects/mathlock-play/app/src/main/java/com/akn/mathlock/StatsDashboardActivity.kt
+private val TYPE_LABELS = mapOf(
+    "toplama" to "Toplama",
+    "çıkarma" to "Çıkarma",        // ← önceki: "cikarma"
+    "çarpma" to "Çarpma",          // ← önceki: "carpma"
+    "bölme" to "Bölme",            // ← önceki: "bolme"
+    "sıralama" to "Sıralama",      // ← önceki: "siralama"
+    "eksik_sayı" to "Eksik Sayı",  // ← önceki: "eksik_sayi"
+    "karşılaştırma" to "Karşılaştırma", // ← önceki: "karsilastirma"
+    "sayma" to "Sayma",
+    "kesir" to "Kesir",            // ← yeni eklendi
+    "problem" to "Problem",        // ← yeni eklendi
+    "örüntü" to "Örüntü",          // ← yeni eklendi
+    ...
+)
+```
+
 ## Sayı Yolculuğu child_id Retry Fix (2026-05-03)
 
 **Sorun:** `fetchLevels()` ve `uploadLevelProgress()` `child_id` mismatch yüzünden 404 alıyordu; retry yoktu. `uploadLevelProgress` hata durumunda callback çağırmıyordu → kullanıcı set bitince yeni set alamıyordu.

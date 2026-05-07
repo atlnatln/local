@@ -208,12 +208,14 @@ Pozisyon 29-30: KOLAY (GRUP A, zorluk 1)
 
 | Alan | Tip | Kural |
 |------|-----|-------|
-| id | int | 1-30 arası benzersiz sıra numarası |
+| id | int | 1-30 arası benzersiz sıra numarası (geriye uyumluluk) |
+| code | string | Yapılandırılmış ID: `YYYYG{Sınıf}-B{Batch}-{SıraNo}` (örn: `2025G0-B1-1001`) |
 | text | string | Soru metni. İşlem tipleri için `= ?` ile biter. Sayma/örüntü tipleri için soru formatında doğrudan yazılır. |
 | answer | int | Doğru cevap. Her zaman >= 0 |
 | type | string | Geçerli: `sayma`, `toplama`, `çıkarma`, `karşılaştırma`, `örüntü` |
 | difficulty | int | 1-5 arası |
 | hint | string | Türkçe, çocuk dili, cevabı VERMEZ, emoji kullan |
+| interactionMode | string | `text-input` (default), `tap-to-count` (sayma), `pattern-select` (örüntü), `tap-to-choose` (karşılaştırma) |
 
 ### Operatör Sembolleri:
 - Toplama: `+`

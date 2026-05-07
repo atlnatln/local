@@ -109,11 +109,15 @@ cd projects/mathlock-play
 - [[infrastructure]] — nginx, SSL, mathlock.com.tr domain
 - [[deployment]] — VPS deploy
 
+## Related Decisions
+
+- [[adr-007-mathlock-meb-curriculum-compliance-implantation]] — MEB 2024 müfredat uyum implantasyonu
+
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `90d86baf` fix(mathlock-play): MEB uyum düzeltmeleri — curriculum JSON, generate script, agents.md (2026-05-07)
+- `582ff046` fix(agents): MEB müfredat uyumu + tip isimlendirme standardizasyonu (2026-05-07)
+- `fa6174fc` feat(mathlock): age-appropriate questions, parent auth, settings UI, memory game fixes (2026-05-06)
+- `3dc2e3db` chore(wiki): lint fixes, add page size policy, update archived handling (2026-05-06)
 - `78015644` fix(deploy): increase celery wait time from 3s to 5s (2026-05-06)
-- `5d6f569b` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
-- `a95abf9c` feat(deploy): add VPS environment detection to all deploy scripts (2026-05-05)
-- `c77c85e8` chore(cleanup): remove stale files, fix .gitignore, update env example (2026-05-05)
-- `b59bef3b` feat(mathlock-play): backend model updates, split test suite (2026-05-03)

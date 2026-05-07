@@ -166,12 +166,14 @@ Aynı tipten arka arkaya **3'ten fazla** soru koyma.
 
 | Alan | Tip | Kural |
 |------|-----|-------|
-| id | int | 1-40 arası benzersiz |
+| id | int | 1-40 arası benzersiz (geriye uyumluluk) |
+| code | string | Yapılandırılmış ID: `YYYYG{Sınıf}-B{Batch}-{SıraNo}` (örn: `2025G1-B1-2001`) |
 | text | string | `= ?` ile biter |
 | answer | int | >= 0 |
 | type | string | `toplama`, `çıkarma`, `sıralama`, `eksik_sayı` |
 | difficulty | int | 1-5 |
 | hint | string | Türkçe, çocuk dili, cevabı vermez |
+| interactionMode | string | `text-input` (default), `tap-to-count`, `pattern-select`, `tap-to-choose` |
 
 ---
 

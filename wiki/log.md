@@ -2391,3 +2391,121 @@ tags: [meta, log]
 **Etki:** Page Size uyarısı giderildi. Lint: 9/10 passing (1 tag audit warning).
 
 **Güncellenen index'ler:** `wiki/index.md`, `wiki/projects/index.md`
+## [2026-05-07 23:44] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 9 (adaptive-learning, api, auth, backend, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 209 entries
+
+
+## [2026-05-07 23:44] ingest | mathlock-play | a85334a | 3 sayfa
+- Dosyalar: M:10 (agents/curriculum/sinif_3.json, agents/questions-sinif-2.agents.md, StatsDashboardActivity.kt, PerformanceReportActivity.kt, generate_age_questions.py, data/questions-*.json × 5)
+- Pages created: —
+- Pages updated: [[mathlock-play-ai]], [[mathlock-play-android]], [[mathlock-play]]
+- Pages archived: —
+- Diff özeti: MEB uyum düzeltmeleri eklendi: curriculum/sinif_3.json non-üniter kesir fix, generate_age_questions.py grade1 çıkarma=0 fix, questions-sinif-2.agents.md zorluk 5 toplama 100'e genişletildi. Android TYPE_LABELS Türkçe karakter standardizasyonu tamamlandı.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+- Revert: git checkout a85334a^ -- wiki/
+
+## [2026-05-07 23:44] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 9 (adaptive-learning, api, auth, backend, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 211 entries
+## [2026-05-07 23:45] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 9 (adaptive-learning, api, auth, backend, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 212 entries
+
+
+## [2026-05-07 23:55] decision | adr-007 | mathlock-play | meb-curriculum-compliance-implantation
+- Type: new-adr
+- Page: [[adr-007-mathlock-meb-curriculum-compliance-implantation]]
+- Status: Active
+- Scope: mathlock-play, mathlock-play-ai, mathlock-play-android, mathlock-play-backend
+- Summary: MEB 2024 müfredat uyum implantasyonu — 4 eksiklik giderildi:
+  1. Ağırlıklı işlem dağılımı (OPERATION_WEIGHTS + random.choices)
+  2. Kazanım bazlı min-max bantlar (generator keyword-only args, 9×9 çarpma, üniter kesir zorunlu)
+  3. Yapılandırılmış ID (question_code CharField, structured_id(), geriye uyumlu id korundu)
+  4. interactionMode (tap-to-count, pattern-select, tap-to-choose, text-input)
+- Files changed: generate_age_questions.py, validate-questions.py, backend/credits/models.py, agents/questions-*.agents.md (6 dosya)
+- Wiki: index.md güncellendi, log.md güncellendi
+## [2026-05-08 00:46] lint | 7/10
+- Orphan pages: 1 ([[adr-007-mathlock-meb-curriculum-compliance-implantation]])
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 214 entries
+
+## [2026-05-08 00:47] lint | 8/10
+- Orphan pages: 1 ([[adr-007-mathlock-meb-curriculum-compliance-implantation]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 215 entries
+
+## [2026-05-08 00:47] lint | 8/10
+- Orphan pages: 1 ([[adr-007-mathlock-meb-curriculum-compliance-implantation]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 216 entries
+
+## [2026-05-08 00:48] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 217 entries
+
+## [2026-05-08 00:52] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 218 entries
+

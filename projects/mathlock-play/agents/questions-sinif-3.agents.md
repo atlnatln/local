@@ -107,12 +107,14 @@ Seviye 3: + problem      (kesir dahil tümünde başarı >= %70 ise)
 
 | Alan | Tip | Kural |
 |------|-----|-------|
-| id | int | 1-50 arası benzersiz |
+| id | int | 1-50 arası benzersiz (geriye uyumluluk) |
+| code | string | Yapılandırılmış ID: `YYYYG{Sınıf}-B{Batch}-{SıraNo}` (örn: `2025G3-B1-4001`) |
 | text | string | `= ?` ile biter |
 | answer | int | >= 0 |
 | type | string | `toplama`, `çıkarma`, `çarpma`, `bölme`, `sıralama`, `eksik_sayı`, `kesir`, `problem` |
 | difficulty | int | 1-5 |
 | hint | string | Türkçe, çocuk dili, cevabı vermez |
+| interactionMode | string | `text-input` (default), `tap-to-count`, `pattern-select`, `tap-to-choose` |
 
 ### Operatör Sembolleri:
 - Toplama: `+`, Çıkarma: `-`, Çarpma: `x`, Bölme: `÷`, Eşittir: `=`, Bilinmeyen: `?`
@@ -189,7 +191,7 @@ Seviye 3: + problem      (kesir dahil tümünde başarı >= %70 ise)
 
 ### 7.7 Kesir (YENİ — 3. sınıf, ÜNİTER kesirler)
 
-**KURAL:** 3. sınıf müfredatında sadece üniter kesirler (pay = 1) vardır. Non-üniter kesirler (2/3, 3/5 vb.) 4. sınıfta tanıtılır.
+**KURAL:** 3. sınıf müfredatında sadece üniter kesirler (pay = 1) vardır. Non-üniter kesirler (2/3, 3/5 vb.) 4. sınıfta tanıtılır. **pay = 1 zorunlu, non-üniter YASAK.**
 
 | Zorluk | Format | Örnek |
 |--------|--------|-------|
