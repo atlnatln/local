@@ -180,7 +180,8 @@ Güvenlik üç katmandır:
 
 1. **Birinci katman — Kimi-CLI Agent Spec:** Her subagent'ın `tools` listesiyle sadece gerekli tool'lar aktiftir. `ops-security-agent`'ta `WriteFile` yoksa hiçbir dosya yazılamaz.
 2. **İkinci katman — OpsBotAcpClient:** `bot/acp_sdk_client.py` `request_permission` method'unda riskli komut filtrelemesi:
-   - **Reject edilen kalıplar:** `git`, `rm`, `mv`, `cp`, `chmod`, `chown`, `sudo`, `mkfs`, `dd`, `wget`, `curl`, `nc`, `netcat`, `nmap`
+   - **Reject edilen kalıplar:** `rm`, `mv`, `cp`, `chmod`, `chown`, `sudo`, `mkfs`, `dd`, `wget`, `curl`, `nc`, `netcat`, `nmap`
+   - `git` kelime olarak değil, **alt komut** bazlı reject edilir: `git push|commit|reset|checkout|clean|rebase|filter-branch|remote|merge|stash` reject; `git log|status|diff|show|branch` approve
    - **Approve edilenler:** Güvenli read-only ve yönetim komutları
    - Tool call başlığı ilk 200 karaktere bakılarak karar verilir
    - **Word-boundary matching:** `re.findall(r"\b\w+\b", ...)` ile tam kelime eşleşmesi — `"perform"` gibi substring'ler yanlış reject yapmaz

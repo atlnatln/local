@@ -2099,3 +2099,20 @@ tags: [meta, log]
 - Files: M:3
 - Pages updated: [[ops-bot]], [[sec-agent]], [[security-ai-reporting]]
 - Diff summary: ops-bot AI analiz koşulları medium severity’ye genişletildi, token_abuse_detector auth endpoint listesi güncellendi, systemd service state path sabitlendi.
+
+## [2026-05-07 13:10] ingest | ops-bot | 4a37ea0 | 1 sayfa
+- Files: M:1
+- Pages updated: [[ops-bot]]
+- Diff summary: acp_sdk_client.py git read-only komutlarına (log, status, diff) izin verdi, yazma komutları (push, commit, reset) reject listesine alındı.
+## [2026-05-07 13:18] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 185 entries
+
