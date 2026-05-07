@@ -44,22 +44,16 @@ object MathQuestionGenerator {
     // ─── 1. Sınıf: toplama / çıkarma (1-10 arası), nadiren basit çarpma ────
 
     private fun generateGrade1(): MathQuestion {
-        return when (Random.nextInt(5)) {
-            0, 1 -> {
+        return when (Random.nextInt(2)) {
+            0 -> {
                 val a = Random.nextInt(1, 11)  // 1-10
                 val b = Random.nextInt(1, 11)  // 1-10  → sonuç max 20
                 MathQuestion("$a + $b = ?", a + b, "toplama")
             }
-            2, 3 -> {
+            else -> {
                 val a = Random.nextInt(2, 11)  // 2-10
                 val b = Random.nextInt(1, a)   // sonuç pozitif
                 MathQuestion("$a - $b = ?", a - b, "çıkarma")
-            }
-            else -> {
-                // Çok nadir basit çarpma (1-3 tablosu)
-                val a = Random.nextInt(2, 4)   // 2-3
-                val b = Random.nextInt(1, 4)   // 1-3
-                MathQuestion("$a × $b = ?", a * b, "çarpma")
             }
         }
     }
@@ -67,12 +61,11 @@ object MathQuestionGenerator {
     // ─── 2. Sınıf: mevcut varsayılan seviye ───────────────────────────────
 
     private fun generateGrade2(): MathQuestion {
-        return when (Random.nextInt(5)) {
+        return when (Random.nextInt(4)) {
             0 -> generateAddition(maxA = 50, maxB = 50)
             1 -> generateSubtraction(minA = 10, maxA = 99)
             2 -> generateMultiplication(maxA = 10, maxB = 10)
-            3 -> generateDivision(maxDivisor = 10, maxResult = 10)
-            else -> generateSquare(max = 12)
+            else -> generateDivision(maxDivisor = 10, maxResult = 10)
         }
     }
 

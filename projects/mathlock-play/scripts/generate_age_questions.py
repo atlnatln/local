@@ -83,35 +83,31 @@ def generate_preschool(count: int = 30) -> list:
 
 
 def generate_grade1(count: int = 40) -> list:
-    """1. sınıf: toplama/çıkarma 1-10, %20 ihtimalle basit çarpma (1-3 tablosu)."""
+    """1. sınıf: toplama/çıkarma 1-10. Çarpma YOK (MEB 1. sınıf müfredatında çarpma yoktur)."""
     questions = []
     for _ in range(count):
         r = random.random()
-        if r < 0.40:
+        if r < 0.55:
             q = generate_addition(10, 10)
-        elif r < 0.80:
-            q = generate_subtraction(2, 10)
         else:
-            q = generate_multiplication(3, 3)
+            q = generate_subtraction(2, 10)
         questions.append(q)
     return questions
 
 
 def generate_grade2(count: int = 50) -> list:
-    """2. sınıf: mevcut varsayılan seviye."""
+    """2. sınıf: toplama, çıkarma, çarpma, bölme. Kare YOK (MEB 2. sınıf müfredatında kare sayılar yoktur)."""
     questions = []
     for _ in range(count):
         r = random.random()
-        if r < 0.20:
+        if r < 0.25:
             q = generate_addition(50, 50)
-        elif r < 0.40:
+        elif r < 0.50:
             q = generate_subtraction(10, 99)
-        elif r < 0.60:
+        elif r < 0.75:
             q = generate_multiplication(10, 10)
-        elif r < 0.80:
-            q = generate_division(10, 10)
         else:
-            q = generate_square(12)
+            q = generate_division(10, 10)
         questions.append(q)
     return questions
 

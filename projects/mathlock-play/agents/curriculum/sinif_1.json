@@ -15,7 +15,7 @@
         "Onluk ve birlik kavramını açıklar",
         "Verilen sayının onluğunu ve birliğini belirtir"
       ],
-      "soruTipleri": ["siralama", "eksik_sayi"],
+      "soruTipleri": ["sıralama", "eksik_sayı"],
       "sayiAraligi": [0, 100],
       "zorlukSinirlari": {
         "1": "1-20 arası sıralama, hangisi büyük/küçük",
@@ -50,7 +50,7 @@
         "Tek basamaklı sayılarla çıkarma yapar",
         "20'ye kadar olan sayılarda çıkarma yapar (onluktan bozma yok)"
       ],
-      "soruTipleri": ["cikarma"],
+      "soruTipleri": ["çıkarma"],
       "sayiAraligi": [0, 20],
       "zorlukSinirlari": {
         "1": "a - b, a: 2-5, b: 1-2, sonuç ≥ 1",
@@ -66,7 +66,7 @@
         "Toplama ve çıkarmada bilinmeyen sayıyı bulur",
         "? + a = b formatında çözüm yapar"
       ],
-      "soruTipleri": ["eksik_sayi"],
+      "soruTipleri": ["eksik_sayı"],
       "sayiAraligi": [0, 20],
       "zorlukSinirlari": {
         "1": "? + a = b, a: 1-3, b: 3-7",
@@ -82,7 +82,7 @@
         "<, >, = sembollerini kullanır",
         "Sayıları küçükten büyüğe / büyükten küçüğe sıralar"
       ],
-      "soruTipleri": ["siralama"],
+      "soruTipleri": ["sıralama"],
       "sayiAraligi": [0, 100],
       "zorlukSinirlari": {
         "1": "Hangisi büyük: A, B (1-20)",
@@ -93,7 +93,7 @@
       }
     }
   ],
-  "toplamSoruTipleri": ["toplama", "cikarma", "siralama", "eksik_sayi"],
+  "toplamSoruTipleri": ["toplama", "çıkarma", "sıralama", "eksik_sayı"],
   "ozelKurallar": [
     "Çarpma ve bölme YOK — 1. sınıf müfredatında değil",
     "Toplama sonucu 20'yi geçmemeli (eldesiz)",

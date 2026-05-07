@@ -13,7 +13,7 @@
         "Sayıların basamak değerlerini bilir",
         "Sayıları yuvarlar (onluğa, yüzlüğe)"
       ],
-      "soruTipleri": ["siralama"],
+      "soruTipleri": ["sıralama"],
       "sayiAraligi": [0, 99999]
     },
     {
@@ -23,7 +23,7 @@
         "Tahmin ve zihinden hesaplama yapar",
         "İşlem sonucunu tahmin eder"
       ],
-      "soruTipleri": ["toplama", "cikarma"],
+      "soruTipleri": ["toplama", "çıkarma"],
       "sayiAraligi": [0, 99999],
       "zorlukSinirlari": {
         "1": "a + b veya a - b, a: 100-999, b: 10-200",
@@ -40,7 +40,7 @@
         "10, 100, 1000 ile çarpma yapar",
         "Çarpma ile ilgili problem çözer"
       ],
-      "soruTipleri": ["carpma"],
+      "soruTipleri": ["çarpma"],
       "sayiAraligi": [1, 10000],
       "zorlukSinirlari": {
         "1": "a x b, a: 2-9, b: 2-9, sonuç ≤ 81",
@@ -57,7 +57,7 @@
         "Kalanlı bölme yapar",
         "Bölme ile çarpma arasındaki ilişkiyi kullanır"
       ],
-      "soruTipleri": ["bolme"],
+      "soruTipleri": ["bölme"],
       "sayiAraligi": [1, 10000],
       "zorlukSinirlari": {
         "1": "a ÷ b, b: 2-9, a: b'nin katları, a ≤ 81",
@@ -108,11 +108,11 @@
         "Dört işlemde bilinmeyen değeri bulur",
         "Büyük sayıları sıralar"
       ],
-      "soruTipleri": ["eksik_sayi", "siralama"],
+      "soruTipleri": ["eksik_sayı", "sıralama"],
       "sayiAraligi": [0, 99999]
     }
   ],
-  "toplamSoruTipleri": ["toplama", "cikarma", "carpma", "bolme", "kesir", "problem", "siralama", "eksik_sayi"],
+  "toplamSoruTipleri": ["toplama", "çıkarma", "çarpma", "bölme", "kesir", "problem", "sıralama", "eksik_sayı"],
   "ozelKurallar": [
     "Bölme her zaman tam bölünmeli (kalan = 0) — kalanlı bölme sadece problem tipinde olabilir",
     "Kesir soruları sonucu her zaman tam sayı olacak şekilde seçilmeli",

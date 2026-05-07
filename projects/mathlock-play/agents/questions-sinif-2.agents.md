@@ -1,4 +1,4 @@
-# MathLock AI - Adaptif Matematik Soru Motoru
+# MathLock AI - Adaptif Matematik Soru Motoru (2. Sınıf, 7-8 yaş)
 
 ## 1. Misyon
 
@@ -137,10 +137,10 @@ En iyi performanslı GELİŞEN tiplerden mevcut_zorluk+1 ile doldur. Çocuğun e
 2. sinif mufredatina gore kademeli tanitim. Yeni tip eklemek icin **tum mevcut tiplerde** ortalama basarinin >= %70 olmasi gerekir.
 
 ```
-Seviye 1: toplama + cikarma
-Seviye 2: + carpma        (toplama ve cikarmada basari >= %75 ise)
-Seviye 3: + bolme         (carpmada basari >= %70 ise)
-Seviye 4: + siralama      (dort islemde basari >= %70 ise)
+Seviye 1: toplama + çıkarma
+Seviye 2: + çarpma        (toplama ve çıkarmada basari >= %75 ise)
+Seviye 3: + bölme         (çarpmada basari >= %70 ise)
+Seviye 4: + sıralama      (dort islemde basari >= %70 ise)
 Seviye 5: + eksik_sayi    (tumunde basari >= %70 ise)
 ```
 
@@ -190,17 +190,17 @@ stats.json yoksa cocugun seviyesini bilmiyoruz. Guvenli bir baslangic:
 
 ### Dagitim:
 - toplama: 22 soru (12x zorluk 1 + 10x zorluk 2)
-- cikarma: 16 soru (9x zorluk 1 + 7x zorluk 2)
-- carpma: 5 soru (5x zorluk 1, sadece x2 tablosu — 1x2, 2x2, 3x2, 4x2, 5x2)
-- bolme: 4 soru (4x zorluk 1, sadece /2 — 2/2, 4/2, 6/2, 8/2)
-- siralama: 2 soru (2x zorluk 1)
+- çıkarma: 16 soru (9x zorluk 1 + 7x zorluk 2)
+- çarpma: 5 soru (5x zorluk 1, sadece x2 tablosu — 1x2, 2x2, 3x2, 4x2, 5x2)
+- bölme: 4 soru (4x zorluk 1, sadece /2 — 2/2, 4/2, 6/2, 8/2)
+- sıralama: 2 soru (2x zorluk 1)
 - eksik_sayi: 1 soru (1x zorluk 1)
 
 ### Siralama:
 - Pozisyon 1-3: En kolay toplama (3+2, 4+1 gibi)
-- Pozisyon 4-5: Kolay cikarma (5-2, 7-3 gibi)
+- Pozisyon 4-5: Kolay çıkarma (5-2, 7-3 gibi)
 - Pozisyon 6-8: Kolay toplama (2+3, 6+1 gibi)
-- Pozisyon 9-10: Kolay cikarma (8-3, 9-4 gibi)
+- Pozisyon 9-10: Kolay çıkarma (8-3, 9-4 gibi)
 - Pozisyon 11-48: Kalan sorular karisik ama tip tekrari arka arkaya 3'u gecmesin
 - Pozisyon 49-50: Kolay toplama (zorluk 1)
 
@@ -257,15 +257,15 @@ stats.json yoksa cocugun seviyesini bilmiyoruz. Guvenli bir baslangic:
 | id | int | 1-50 arası benzersiz sıra numarası |
 | text | string | Soru metni. `= ?` ile biter |
 | answer | int | Doğru cevap. Her zaman >= 0 (negatif YASAK) |
-| type | string | Geçerli değerler: toplama, çıkarma, çarpma, bölme, sıralama, eksik_sayi |
+| type | string | Geçerli değerler: `toplama`, `çıkarma`, `çarpma`, `bölme`, `sıralama`, `eksik_sayı` |
 | difficulty | int | 1-5 arası |
 | hint | string | Yanlış cevapta gösterilen ipucu. Türkçe, çocuk dili, cevabı VERMEZ |
 
 -### Operatör Sembolleri (text alanında):
 - Toplama: `+`
-- Cikarma: `-`
-- Carpma: `x` (kucuk x, Unicode degil)
-- Bolme: `÷`
+- Çıkarma: `-`
+- Çarpma: `x` (kucuk x, Unicode degil)
+- Bölme: `÷`
 - Esittir: `=`
 - Bilinmeyen sayi: `?`
 
@@ -283,9 +283,11 @@ Her zorluk seviyesi için KESİN sayı aralıkları. AI modeli bu sınırlar dı
 | 2 | a + b = ? | a: 10-19, b: 1-10 | 11-29 | 12 + 7 = ? |
 | 3 | a + b = ? | a: 10-30, b: 10-20 | 20-50 | 23 + 18 = ? |
 | 4 | a + b = ? | a: 20-60, b: 10-40 | 30-100 | 45 + 32 = ? |
-| 5 | a + b + c = ? | a: 10-40, b: 10-30, c: 5-20 | 25-90 | 25 + 13 + 8 = ? |
+| 5 | a + b + c = ? | a: 10-40, b: 10-30, c: 5-20 | 25-100 | 25 + 13 + 8 = ? |
 
-### 7.2 Cikarma
+**KURAL:** Zorluk 5 toplama sonucu en fazla 100 olabilir (MEB 2. sınıf "100'e kadar eldeli toplama" kazanımına uygun).
+
+### 7.2 Çıkarma
 
 | Zorluk | Kural | Sayi Araligi | Sonuc | Ornek |
 |--------|-------|--------------|-------|-------|
@@ -297,7 +299,7 @@ Her zorluk seviyesi için KESİN sayı aralıkları. AI modeli bu sınırlar dı
 
 **KURAL:** Çıkarma sonucu HER ZAMAN >= 0. Negatif sonuç üretme. b < a olmalı (veya b + c < a zorluk 5 için).
 
-### 7.3 Carpma
+### 7.3 Çarpma
 
 | Zorluk | Kural | Carpanlar | Sonuc Araligi | Ornek |
 |--------|-------|-----------|---------------|-------|
@@ -309,7 +311,7 @@ Her zorluk seviyesi için KESİN sayı aralıkları. AI modeli bu sınırlar dı
 
 **KURAL:** Çarpma tablosu 10x10 sınırını GEÇEMEZ. Sonuç maksimum 100.
 
-### 7.4 Bolme
+### 7.4 Bölme
 
 | Zorluk | Kural | Sayi Araligi | Bolum | Ornek |
 |--------|-------|--------------|-------|-------|
@@ -326,11 +328,11 @@ Her zorluk seviyesi için KESİN sayı aralıkları. AI modeli bu sınırlar dı
 
 | Zorluk | Format | Sayı Aralığı | Örnek |
 |--------|--------|--------------|-------|
-| 1 | Hangisi buyuk: A, B | 1-20 | Hangisi buyuk: 7, 12 |
-| 2 | En kucugu hangisi: A, B, C | 1-30, 3 sayi | En kucugu hangisi: 15, 8, 22 |
-| 3 | En kucugu hangisi: A, B, C, D | 1-50, 4 sayi | En kucugu hangisi: 31, 12, 45, 7 |
-| 4 | En buyugu hangisi: A, B, C, D, E | 1-80, 5 sayi | En buyugu hangisi: 23, 67, 41, 55, 12 |
-| 5 | X ile Y arasinda kac sayi var? | X, Y: 1-100, Y - X >= 3 | 15 ile 22 arasinda kac sayi var? |
+| 1 | Hangisi buyuk: A, B = ? | 1-20 | Hangisi buyuk: 7, 12 = ? |
+| 2 | En kucugu hangisi: A, B, C = ? | 1-30, 3 sayi | En kucugu hangisi: 15, 8, 22 = ? |
+| 3 | En kucugu hangisi: A, B, C, D = ? | 1-50, 4 sayi | En kucugu hangisi: 31, 12, 45, 7 = ? |
+| 4 | En buyugu hangisi: A, B, C, D, E = ? | 1-80, 5 sayi | En buyugu hangisi: 23, 67, 41, 55, 12 = ? |
+| 5 | X ile Y arasinda kac sayi var? = ? | X, Y: 1-100, Y - X >= 3 | 15 ile 22 arasinda kac sayi var? = ? |
 
 **KURAL sıralama için:**
 - `text` içinde sayılar virgüllü verilir
@@ -339,7 +341,7 @@ Her zorluk seviyesi için KESİN sayı aralıkları. AI modeli bu sınırlar dı
 - Zorluk 4 için: en büyük sayıyı `answer` olarak yaz
 - Zorluk 5 için: aradaki sayı adedi (sınır sayıları hariç, yani Y - X - 1)
 
-### 7.6 Eksik Sayi
+### 7.6 Eksik Sayı
 
 | Zorluk | Format | Sayi Araligi | Ornek |
 |--------|--------|--------------|-------|
@@ -464,7 +466,7 @@ tam olarak budur — farklı isimlendirme kullanılmaz.
   "totalCorrect": 35,
   "byType": {
     "toplama": { "shown": 20, "correct": 18, "avgTime": "3.1", "hintUsed": 2, "topicUsed": 0 },
-    "cikarma": { "shown": 15, "correct": 10, "avgTime": "4.2", "hintUsed": 5, "topicUsed": 3 }
+    "çıkarma": { "shown": 15, "correct": 10, "avgTime": "4.2", "hintUsed": 5, "topicUsed": 3 }
   },
   "byDifficulty": {
     "1": { "shown": 25, "correct": 22 },
@@ -507,7 +509,7 @@ tam olarak budur — farklı isimlendirme kullanılmaz.
 - `questionId`: int — questions.json'daki id
 - `correct`: bool — doğru cevaplandı mı
 - `attempts`: int — kaç deneme yapıldı (1 = ilk seferde doğru)
-- `time`: string — saniye cinsinden cevaplama süresi (örneğin "2.9")
+- `time`: string — saniye cinsinden cevaplama süre (örneğin "2.9")
 - `sawHint`: bool — ipucu gösterildi mi (1. yanlış cevapta true olur)
 - `sawTopic`: bool — konu anlatımı açıldı mı (2. yanlış cevapta true olur)
 
@@ -580,7 +582,7 @@ Soru uretimi tamamlanmadan once su kurallarin TUMUNU kontrol et:
 5. `id` alanları 1-50 arası sıralama
 6. `difficulty` alanları 1-5 arası
 7. `answer` alanları hep >= 0 (negatif YASAK)
-8. `type` alanları geçerli 6 tipten biri
+8. `type` alanları geçerli 6 tipten biri: `toplama`, `çıkarma`, `çarpma`, `bölme`, `sıralama`, `eksik_sayı`
 9. `hint` alanları boş değil, Türkçe, cevabı vermiyor
 10. `version` = mevcut version + 1 (yoksa 1)
 11. `generatedAt` = üretim anı (ISO 8601)
@@ -615,22 +617,23 @@ Soruları ürettikten sonra `data/report.json` dosyasına bir ebeveyn raporu yaz
 ```json
 {
   "reportDate": "2026-04-18",
-  "summary": "Bu hafta toplam X soru çözüldü. Toplama ve çıkarma konularında çok başarılı (%Y). Z konusunda gelişim gösteriyor.",
+  "summary": "Bu hafta toplam X soru çözüldü. Eldeli toplama ve çarpım tablosunda çok başarılı (%Y). Bölmede gelişim gösteriyor.",
   "strengths": [
-    "Toplama işlemlerinde çok hızlı ve doğru",
-    "İpucu kullanma oranı düşük — özgüveni yüksek"
+    "Eldeli toplama işlemlerinde hızlı ve doğru",
+    "Çarpım tablosunu (1-5) ezberlemeye başlamış"
   ],
   "improvementAreas": [
-    "Bölme işlemlerinde zorlanıyor",
-    "3. zorluk seviyesinde süre artıyor"
+    "Onluktan bozmalı çıkarmada bazen zorlanıyor",
+    "Çarpma işleminde henüz yavaş, ezber tamamlanmamış"
   ],
-  "recommendation": "Bölme konusunda somut örneklerle pratik yapması önerilir.",
+  "recommendation": "Çarpım tablosunu günlük 5 dakika tekrar etmek ve somut nesnelerle bölme işlemini göstermek faydalı olur.",
   "metrics": {
     "totalQuestionsSolved": 50,
     "averageAccuracy": 78.5,
     "byType": {
       "toplama": {"accuracy": 92, "trend": "stable"},
-      "cikarma": {"accuracy": 85, "trend": "improving"}
+      "çıkarma": {"accuracy": 75, "trend": "improving"},
+      "çarpma": {"accuracy": 68, "trend": "improving"}
     }
   }
 }

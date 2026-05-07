@@ -13,7 +13,7 @@
         "Yüzlük, onluk ve birlik kavramlarını açıklar",
         "Sayıları büyükten küçüğe ve küçükten büyüğe sıralar"
       ],
-      "soruTipleri": ["siralama"],
+      "soruTipleri": ["sıralama"],
       "sayiAraligi": [0, 999]
     },
     {
@@ -40,7 +40,7 @@
         "Üç basamaklı sayılarda çıkarma yapar",
         "Zihinden çıkarma stratejileri geliştirir"
       ],
-      "soruTipleri": ["cikarma"],
+      "soruTipleri": ["çıkarma"],
       "sayiAraligi": [0, 999],
       "zorlukSinirlari": {
         "1": "a - b, a: 2-10, b: 1-(a-1), sonuç ≥ 1",
@@ -57,7 +57,7 @@
         "2, 3, 4, 5 ile çarpma yapar",
         "Çarpma tablosunu (1-5) bilir"
       ],
-      "soruTipleri": ["carpma"],
+      "soruTipleri": ["çarpma"],
       "sayiAraligi": [1, 50],
       "zorlukSinirlari": {
         "1": "a x 2 veya a x 3, a: 1-5, sonuç ≤ 15",
@@ -74,7 +74,7 @@
         "2'ye ve 5'e bölme yapar",
         "Tam bölme kavramını bilir"
       ],
-      "soruTipleri": ["bolme"],
+      "soruTipleri": ["bölme"],
       "sayiAraligi": [1, 100],
       "zorlukSinirlari": {
         "1": "a ÷ 2, a: 2,4,6,8,10",
@@ -90,11 +90,11 @@
         "Dört işlemde bilinmeyen sayıyı bulur",
         "Sayıları sıralar ve karşılaştırır"
       ],
-      "soruTipleri": ["eksik_sayi", "siralama"],
+      "soruTipleri": ["eksik_sayı", "sıralama"],
       "sayiAraligi": [0, 999]
     }
   ],
-  "toplamSoruTipleri": ["toplama", "cikarma", "carpma", "bolme", "siralama", "eksik_sayi"],
+  "toplamSoruTipleri": ["toplama", "çıkarma", "çarpma", "bölme", "sıralama", "eksik_sayı"],
   "ozelKurallar": [
     "Mevcut questions.agents.md kuralları aynen geçerli",
     "Bu dönem MathLock'un mevcut varsayılan dönemidir",

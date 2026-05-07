@@ -123,9 +123,9 @@ Okul öncesi müfredatına göre kademeli tanıtım:
 
 ```
 Seviye 1: sayma + toplama
-Seviye 2: + cikarma      (toplama başarısı >= %80 ise)
-Seviye 3: + karsilastirma (toplama ve çıkarmada başarı >= %75 ise)
-Seviye 4: + oruntu        (tümünde başarı >= %75 ise)
+Seviye 2: + çıkarma      (toplama başarısı >= %80 ise)
+Seviye 3: + karşılaştırma (toplama ve çıkarmada başarı >= %75 ise)
+Seviye 4: + örüntü       (tümünde başarı >= %75 ise)
 ```
 
 **ASLA yapılmayacaklar:**
@@ -141,7 +141,7 @@ Pozisyon 1-3:   ÇOOK KOLAY (zorluk 1, en basit tip)
                 → "Ben yapabiliyorum!" hissi
 Pozisyon 4-8:   KOLAY (GRUP A)
 Pozisyon 9-15:  KOLAY-ORTA (GRUP A + B)
-Pozisyon 16-25: KARISIK (GRUP B + C)
+Pozisyon 16-25: KARIŞIK (GRUP B + C)
 Pozisyon 26-28: ORTA (GRUP B)
 Pozisyon 29-30: KOLAY (GRUP A, zorluk 1)
                 → "Bitirdim, başarılıyım!" hissi
@@ -156,13 +156,13 @@ Pozisyon 29-30: KOLAY (GRUP A, zorluk 1)
 ### Dağıtım:
 - sayma: 8 soru (8x zorluk 1 — kaç tane var, say)
 - toplama: 12 soru (8x zorluk 1 + 4x zorluk 2)
-- cikarma: 6 soru (6x zorluk 1)
-- karsilastirma: 3 soru (3x zorluk 1)
-- oruntu: 1 soru (1x zorluk 1)
+- çıkarma: 6 soru (6x zorluk 1)
+- karşılaştırma: 3 soru (3x zorluk 1)
+- örüntü: 1 soru (1x zorluk 1)
 
 ### Sıralama:
-- Pozisyon 1-3: En kolay sayma (kaç elma var: 🍎🍎🍎)
-- Pozisyon 4-5: En kolay toplama (1+1, 1+2)
+- Pozisyon 1-3: En kolay sayma (kaç elma var: 🍎🍎🍎 = ?)
+- Pozisyon 4-5: En kolay toplama (1 + 1 = ?, 1 + 2 = ?)
 - Pozisyon 6-28: Karışık ama tip tekrarı arka arkaya 2'yi geçmesin
 - Pozisyon 29-30: Kolay toplama (zorluk 1)
 
@@ -209,9 +209,9 @@ Pozisyon 29-30: KOLAY (GRUP A, zorluk 1)
 | Alan | Tip | Kural |
 |------|-----|-------|
 | id | int | 1-30 arası benzersiz sıra numarası |
-| text | string | Soru metni. `= ?` ile biter |
+| text | string | Soru metni. İşlem tipleri için `= ?` ile biter. Sayma/örüntü tipleri için soru formatında doğrudan yazılır. |
 | answer | int | Doğru cevap. Her zaman >= 0 |
-| type | string | Geçerli: sayma, toplama, cikarma, karsilastirma, oruntu |
+| type | string | Geçerli: `sayma`, `toplama`, `çıkarma`, `karşılaştırma`, `örüntü` |
 | difficulty | int | 1-5 arası |
 | hint | string | Türkçe, çocuk dili, cevabı VERMEZ, emoji kullan |
 
@@ -229,11 +229,11 @@ Pozisyon 29-30: KOLAY (GRUP A, zorluk 1)
 
 | Zorluk | Format | Aralık | Örnek |
 |--------|--------|--------|-------|
-| 1 | Kaç tane var: 🍎🍎🍎 | 1-5 nesne | Kaç tane elma var: 🍎🍎🍎 |
-| 2 | Kaç tane var: ⭐⭐⭐⭐⭐⭐ | 1-10 nesne | Kaç tane yıldız var: ⭐⭐⭐⭐⭐⭐ |
-| 3 | Eksik sayıyı bul: 1, 2, ?, 4, 5 | 1-15 | 1, 2, ?, 4, 5 |
-| 4 | 2'şer say: 2, 4, 6, ? | 2-20 | 2, 4, 6, ? |
-| 5 | Geriye say: 10, 9, 8, ? | 1-20 | 10, 9, 8, ? |
+| 1 | Kaç tane var: 🍎🍎🍎 = ? | 1-5 nesne | Kaç tane elma var: 🍎🍎🍎 = ? |
+| 2 | Kaç tane var: ⭐⭐⭐⭐⭐⭐ = ? | 1-10 nesne | Kaç tane yıldız var: ⭐⭐⭐⭐⭐⭐ = ? |
+| 3 | Eksik sayıyı bul: 1, 2, ?, 4, 5 = ? | 1-15 | 1, 2, ?, 4, 5 = ? |
+| 4 | 2'şer say: 2, 4, 6, ? = ? | 2-20 | 2, 4, 6, ? = ? |
+| 5 | Geriye say: 10, 9, 8, ? = ? | 1-20 | 10, 9, 8, ? = ? |
 
 **KURAL:** Sayma sorularında `text` alanında emoji kullan. `answer` sayısal değer.
 
@@ -265,11 +265,11 @@ Pozisyon 29-30: KOLAY (GRUP A, zorluk 1)
 
 | Zorluk | Format | Sayı Aralığı | Örnek |
 |--------|--------|--------------|-------|
-| 1 | Hangisi büyük: A, B | 1-5, fark belirgin | Hangisi büyük: 2, 5 |
-| 2 | Hangisi büyük: A, B | 1-10 | Hangisi büyük: 7, 4 |
-| 3 | Hangisi küçük: A, B | 1-10 | Hangisi küçük: 8, 3 |
-| 4 | En büyüğü hangisi: A, B, C | 1-10 | En büyüğü hangisi: 3, 7, 5 |
-| 5 | En küçüğü hangisi: A, B, C | 1-15 | En küçüğü hangisi: 9, 2, 11 |
+| 1 | Hangisi büyük: A, B = ? | 1-5, fark belirgin | Hangisi büyük: 2, 5 = ? |
+| 2 | Hangisi büyük: A, B = ? | 1-10 | Hangisi büyük: 7, 4 = ? |
+| 3 | Hangisi küçük: A, B = ? | 1-10 | Hangisi küçük: 8, 3 = ? |
+| 4 | En büyüğü hangisi: A, B, C = ? | 1-10 | En büyüğü hangisi: 3, 7, 5 = ? |
+| 5 | En küçüğü hangisi: A, B, C = ? | 1-15 | En küçüğü hangisi: 9, 2, 11 = ? |
 
 **KURAL:** `answer` = doğru cevap sayısal değer.
 
@@ -277,11 +277,11 @@ Pozisyon 29-30: KOLAY (GRUP A, zorluk 1)
 
 | Zorluk | Format | Örnek |
 |--------|--------|-------|
-| 1 | AB: 1, 2, 1, 2, ? | 1, 2, 1, 2, ? → answer: 1 |
-| 2 | ABB: 1, 2, 2, 1, 2, 2, ? | answer: 1 |
-| 3 | ABC: 1, 2, 3, 1, 2, 3, ? | answer: 1 |
-| 4 | +2 artan: 2, 4, 6, ? | answer: 8 |
-| 5 | +2 artan: 1, 3, 5, 7, ? | answer: 9 |
+| 1 | AB: 1, 2, 1, 2, ? = ? | 1, 2, 1, 2, ? = ? → answer: 1 |
+| 2 | ABB: 1, 2, 2, 1, 2, 2, ? = ? | answer: 1 |
+| 3 | ABC: 1, 2, 3, 1, 2, 3, ? = ? | answer: 1 |
+| 4 | +2 artan: 2, 4, 6, ? = ? | answer: 8 |
+| 5 | +2 artan: 1, 3, 5, 7, ? = ? | answer: 9 |
 
 ---
 
@@ -370,7 +370,7 @@ Yeni set: v{yeni} | 30 soru | {kısa dağılım}
 5. `id` alanları 1-30 arası sıralı
 6. `difficulty` alanları 1-5 arası
 7. `answer` alanları hep >= 0
-8. `type` alanları geçerli 5 tipten biri: sayma, toplama, cikarma, karsilastirma, oruntu
+8. `type` alanları geçerli 5 tipten biri: `sayma`, `toplama`, `çıkarma`, `karşılaştırma`, `örüntü`
 9. `hint` alanları boş değil, Türkçe, cevabı vermiyor, emoji içerir
 10. Toplama sonucu 10'u geçmez
 11. Çıkarma sonucu 0'dan küçük olmaz
@@ -399,22 +399,22 @@ Soruları ürettikten sonra `data/report.json` dosyasına bir ebeveyn raporu yaz
 ```json
 {
   "reportDate": "2026-04-18",
-  "summary": "Bu hafta toplam X soru çözüldü. Toplama ve çıkarma konularında çok başarılı (%Y). Z konusunda gelişim gösteriyor.",
+  "summary": "Bu hafta toplam X soru çözüldü. Sayma ve toplama konularında çok başarılı (%Y). Yeni konularda gelişim gösteriyor.",
   "strengths": [
-    "Toplama işlemlerinde çok hızlı ve doğru",
-    "İpucu kullanma oranı düşük — özgüveni yüksek"
+    "Sayma işlemlerinde çok hızlı ve doğru",
+    "Toplamada somut nesneleri hayal ederek çözüyor"
   ],
   "improvementAreas": [
-    "Bölme işlemlerinde zorlanıyor",
-    "3. zorluk seviyesinde süre artıyor"
+    "Çıkarma işlemlerinde parmak kullanarak sayıyor",
+    "Yeni örüntülerde bazen takılıyor"
   ],
-  "recommendation": "Bölme konusunda somut örneklerle pratik yapması önerilir.",
+  "recommendation": "Evde 5-10 arası nesneleri (oyuncak, fındık) sayarak ve gruplara ayırarak pratik yapması önerilir.",
   "metrics": {
-    "totalQuestionsSolved": 50,
+    "totalQuestionsSolved": 30,
     "averageAccuracy": 78.5,
     "byType": {
-      "toplama": {"accuracy": 92, "trend": "stable"},
-      "cikarma": {"accuracy": 85, "trend": "improving"}
+      "sayma": {"accuracy": 92, "trend": "stable"},
+      "toplama": {"accuracy": 85, "trend": "improving"}
     }
   }
 }

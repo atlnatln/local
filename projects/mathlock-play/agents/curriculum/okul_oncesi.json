@@ -47,7 +47,7 @@
         "Basit çıkarma yapar (somut nesnelerle, sonuç ≥0)",
         "Bir gruptan ayırma kavramını anlar"
       ],
-      "soruTipleri": ["cikarma"],
+      "soruTipleri": ["çıkarma"],
       "sayiAraligi": [1, 10],
       "zorlukSinirlari": {
         "1": "a - b, a: 2-5, b: 1, sonuç ≥ 1",
@@ -64,7 +64,7 @@
         "Çok-az, aynı kavramlarını kullanır",
         "Miktar eşleştirme yapar"
       ],
-      "soruTipleri": ["karsilastirma"],
+      "soruTipleri": ["karşılaştırma"],
       "sayiAraligi": [1, 10],
       "zorlukSinirlari": {
         "1": "Hangisi büyük: A, B (1-5 arası, fark belirgin)",
@@ -80,7 +80,7 @@
         "Basit tekrar eden örüntüleri tanır (AB, ABB)",
         "Örüntüdeki eksik elemanı bulur"
       ],
-      "soruTipleri": ["oruntu"],
+      "soruTipleri": ["örüntü"],
       "sayiAraligi": [1, 10],
       "zorlukSinirlari": {
         "1": "AB örüntüsü: 1, 2, 1, 2, ? → 1",
@@ -91,7 +91,7 @@
       }
     }
   ],
-  "toplamSoruTipleri": ["sayma", "toplama", "cikarma", "karsilastirma", "oruntu"],
+  "toplamSoruTipleri": ["sayma", "toplama", "çıkarma", "karşılaştırma", "örüntü"],
   "ozelKurallar": [
     "İpuçları SOMUT nesnelerle verilmeli (parmak, elma, top)",
     "Cevap her zaman ≥ 0",

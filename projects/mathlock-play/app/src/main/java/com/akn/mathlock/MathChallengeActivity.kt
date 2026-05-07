@@ -203,7 +203,7 @@ class MathChallengeActivity : BaseActivity() {
         binding.btnRetry.visibility = View.GONE
 
         // Sıralama tipinde seçenek butonları, diğer tiplerde yazı input
-        if (q.type == "siralama") {
+        if (q.type == "sıralama") {
             setupOptionsForSiralama(q.text)
         } else {
             binding.tilAnswer.visibility = View.VISIBLE

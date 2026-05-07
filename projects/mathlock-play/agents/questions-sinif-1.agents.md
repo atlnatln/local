@@ -8,7 +8,7 @@ Bu dosya, 6-7 yaşında ilkokul **1. sınıfa** giden bir çocuk için **adaptif
 
 **Pedagojik temel:** Vygotsky'nin Yakınsal Gelişim Alanı. Hedef başarı oranı: **%65-80**
 
-**ÖNEMLİ:** Bu dönemde **40 soru** üretilir. Çarpma ve bölme bu dönemde YOKTUR.
+**ÖNEMLİ:** Bu dönemde **40 soru** üretilir. Çarpma ve bölme bu dönemde YOKTUR (MEB 1. sınıf müfredatında sadece toplama ve çıkarma vardır).
 
 ## 2. Çalışma Ortamı
 
@@ -99,13 +99,13 @@ USTA ve GÜVENLİ tiplerden. Zorluk = mevcut+1.
 1. sınıf müfredatına göre:
 
 ```
-Seviye 1: toplama + cikarma
-Seviye 2: + siralama       (toplama ve çıkarmada başarı >= %75 ise)
-Seviye 3: + eksik_sayi     (tümünde başarı >= %70 ise)
+Seviye 1: toplama + çıkarma
+Seviye 2: + sıralama       (toplama ve çıkarmada başarı >= %75 ise)
+Seviye 3: + eksik_sayı     (tümünde başarı >= %70 ise)
 ```
 
 **ASLA yapılmayacaklar:**
-- Çarpma ve bölme bu dönemde YASAK
+- Çarpma ve bölme bu dönemde YASAK (MEB 1. sınıf müfredatında yoktur)
 - Bir sette 1'den fazla yeni tip tanıtma
 - Toplama sonucu 20'yi geçme (eldesiz)
 - Onluktan bozma gerektiren çıkarma YASAK
@@ -115,9 +115,9 @@ Seviye 3: + eksik_sayi     (tümünde başarı >= %70 ise)
 ```
 Pozisyon 1-3:   KOLAY (zorluk 1, en güvenli tip)
 Pozisyon 4-8:   KOLAY-ORTA (GRUP A)
-Pozisyon 9-18:  KARISIK (GRUP A + B)
-Pozisyon 19-32: KARISIK (GRUP B + C)
-Pozisyon 33-38: KARISIK (GRUP A + B + C)
+Pozisyon 9-18:  KARIŞIK (GRUP A + B)
+Pozisyon 19-32: KARIŞIK (GRUP B + C)
+Pozisyon 33-38: KARIŞIK (GRUP A + B + C)
 Pozisyon 39-40: KOLAY (GRUP A, zorluk 1)
 ```
 
@@ -129,9 +129,9 @@ Aynı tipten arka arkaya **3'ten fazla** soru koyma.
 
 ### Dağıtım:
 - toplama: 18 soru (12x zorluk 1 + 6x zorluk 2)
-- cikarma: 14 soru (10x zorluk 1 + 4x zorluk 2)
-- siralama: 5 soru (5x zorluk 1)
-- eksik_sayi: 3 soru (3x zorluk 1)
+- çıkarma: 14 soru (10x zorluk 1 + 4x zorluk 2)
+- sıralama: 5 soru (5x zorluk 1)
+- eksik_sayı: 3 soru (3x zorluk 1)
 
 ### difficultyProfile:
 ```json
@@ -169,7 +169,7 @@ Aynı tipten arka arkaya **3'ten fazla** soru koyma.
 | id | int | 1-40 arası benzersiz |
 | text | string | `= ?` ile biter |
 | answer | int | >= 0 |
-| type | string | toplama, cikarma, siralama, eksik_sayi |
+| type | string | `toplama`, `çıkarma`, `sıralama`, `eksik_sayı` |
 | difficulty | int | 1-5 |
 | hint | string | Türkçe, çocuk dili, cevabı vermez |
 
@@ -196,20 +196,20 @@ Aynı tipten arka arkaya **3'ten fazla** soru koyma.
 | 1 | a - b = ? | a: 2-5, b: 1-2 | ≥ 1 | 4 - 2 = ? |
 | 2 | a - b = ? | a: 5-10, b: 1-4 | ≥ 1 | 8 - 3 = ? |
 | 3 | a - b = ? | a: 10-15, b: 1-5 | ≥ 1 | 13 - 4 = ? |
-| 4 | a - b = ? | a: 10-20, b: 1-9 | ≥ 1 | 17 - 6 = ? |
-| 5 | a - b = ? | a: 15-20, b: 5-9 | ≥ 1 | 18 - 7 = ? |
+| 4 | a - b = ? | a: 10-20, b: 1-(a mod 10) | ≥ 1 | 17 - 6 = ? |
+| 5 | a - b = ? | a: 15-20, b: 1-(a mod 10) | ≥ 1 | 18 - 3 = ? |
 
-**KURAL:** Onluktan bozma gerektiren çıkarma YASAK (15-8 YASAK çünkü 5 < 8). Sonuç HER ZAMAN >= 0.
+**KURAL:** Onluktan bozma gerektiren çıkarma YASAK (15-8 YASAK çünkü 5 < 8). Bu nedenle `b` değeri `a`'nın birler basamağından büyük olamaz: `b ≤ (a mod 10)`. Örn. a=17 için b en fazla 7 olabilir. Sonuç HER ZAMAN >= 0.
 
 ### 7.3 Sıralama
 
 | Zorluk | Format | Sayı Aralığı | Örnek |
 |--------|--------|--------------|-------|
-| 1 | Hangisi büyük: A, B | 1-20 | Hangisi büyük: 7, 12 |
-| 2 | En küçüğü hangisi: A, B, C | 1-30 | En küçüğü hangisi: 15, 8, 22 |
-| 3 | En büyüğü hangisi: A, B, C | 1-50 | En büyüğü hangisi: 31, 12, 45 |
-| 4 | 4 sayı, en küçüğünü yaz | 1-50 | En küçüğü hangisi: 23, 8, 41, 15 |
-| 5 | A ile B arasında kaç sayı var | 1-50 | 15 ile 20 arasında kaç sayı var? |
+| 1 | Hangisi büyük: A, B = ? | 1-20 | Hangisi büyük: 7, 12 = ? |
+| 2 | En küçüğü hangisi: A, B, C = ? | 1-30 | En küçüğü hangisi: 15, 8, 22 = ? |
+| 3 | En büyüğü hangisi: A, B, C = ? | 1-50 | En büyüğü hangisi: 31, 12, 45 = ? |
+| 4 | 4 sayı, en küçüğünü yaz = ? | 1-50 | En küçüğü hangisi: 23, 8, 41, 15 = ? |
+| 5 | A ile B arasında kaç sayı var = ? | 1-50 | 15 ile 20 arasında kaç sayı var = ? |
 
 ### 7.4 Eksik Sayı
 
@@ -279,7 +279,7 @@ Yeni set: v{yeni} | 40 soru | {kısa dağılım}
 5. `id` alanları 1-40 arası
 6. `difficulty` 1-5 arası
 7. `answer` >= 0
-8. `type` geçerli: toplama, cikarma, siralama, eksik_sayi
+8. `type` geçerli: `toplama`, `çıkarma`, `sıralama`, `eksik_sayı`
 9. `hint` Türkçe, cevabı vermiyor
 10. Toplama sonucu 20'yi geçmez (eldesiz)
 11. Çıkarma onluktan bozmasız
@@ -308,22 +308,22 @@ Soruları ürettikten sonra `data/report.json` dosyasına bir ebeveyn raporu yaz
 ```json
 {
   "reportDate": "2026-04-18",
-  "summary": "Bu hafta toplam X soru çözüldü. Toplama ve çıkarma konularında çok başarılı (%Y). Z konusunda gelişim gösteriyor.",
+  "summary": "Bu hafta toplam X soru çözüldü. Eldesiz toplama ve onluktan bozmasız çıkarmada çok başarılı (%Y). Yeni konularda gelişim gösteriyor.",
   "strengths": [
-    "Toplama işlemlerinde çok hızlı ve doğru",
+    "Eldesiz toplama işlemlerinde çok hızlı ve doğru",
     "İpucu kullanma oranı düşük — özgüveni yüksek"
   ],
   "improvementAreas": [
-    "Bölme işlemlerinde zorlanıyor",
-    "3. zorluk seviyesinde süre artıyor"
+    "Eldeli toplamada henüz tanıtılmadığı için zorlanabilir (normal)",
+    "Sayı sıralamasında büyük sayılarla karşılaştığında yavaşlıyor"
   ],
-  "recommendation": "Bölme konusunda somut örneklerle pratik yapması önerilir.",
+  "recommendation": "Evde 1-20 arası sayıları kartlarla sıralama oyunu oynaması önerilir. Toplama için somut nesneler (fındık, lego) kullanılabilir.",
   "metrics": {
-    "totalQuestionsSolved": 50,
+    "totalQuestionsSolved": 40,
     "averageAccuracy": 78.5,
     "byType": {
       "toplama": {"accuracy": 92, "trend": "stable"},
-      "cikarma": {"accuracy": 85, "trend": "improving"}
+      "çıkarma": {"accuracy": 85, "trend": "improving"}
     }
   }
 }

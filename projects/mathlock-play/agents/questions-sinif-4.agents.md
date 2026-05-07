@@ -33,7 +33,7 @@ Tek fark — yeni tip tanıtma sırası:
 4. sınıf müfredatına göre:
 
 ```
-İlk set: toplama + cikarma + carpma + bolme + siralama + eksik_sayi + kesir + problem
+İlk set: toplama + çıkarma + çarpma + bölme + sıralama + eksik_sayı + kesir + problem
          (3. sınıftan gelen çocuk tüm bunları biliyor)
 ```
 
@@ -45,11 +45,11 @@ Bu dönemde yeni tip eklenmez — mevcut 8 tipin zorluk seviyeleri artar.
 
 ### Dağıtım:
 - toplama: 8 soru (4x zorluk 3 + 4x zorluk 4)
-- cikarma: 8 soru (4x zorluk 3 + 4x zorluk 4)
-- carpma: 8 soru (4x zorluk 3 + 4x zorluk 4)
-- bolme: 7 soru (4x zorluk 3 + 3x zorluk 4)
-- siralama: 3 soru (3x zorluk 3)
-- eksik_sayi: 4 soru (2x zorluk 3 + 2x zorluk 4)
+- çıkarma: 8 soru (4x zorluk 3 + 4x zorluk 4)
+- çarpma: 8 soru (4x zorluk 3 + 4x zorluk 4)
+- bölme: 7 soru (4x zorluk 3 + 3x zorluk 4)
+- sıralama: 3 soru (3x zorluk 3)
+- eksik_sayı: 4 soru (2x zorluk 3 + 2x zorluk 4)
 - kesir: 6 soru (3x zorluk 2 + 3x zorluk 3)
 - problem: 6 soru (3x zorluk 2 + 3x zorluk 3)
 
@@ -83,7 +83,7 @@ Bu dönemde yeni tip eklenmez — mevcut 8 tipin zorluk seviyeleri artar.
 | id | int | 1-50 arası benzersiz |
 | text | string | `= ?` ile biter |
 | answer | int | >= 0 |
-| type | string | toplama, cikarma, carpma, bolme, siralama, eksik_sayi, kesir, problem |
+| type | string | `toplama`, `çıkarma`, `çarpma`, `bölme`, `sıralama`, `eksik_sayı`, `kesir`, `problem` |
 | difficulty | int | 1-5 |
 | hint | string | Türkçe, çocuk dili, cevabı vermez |
 
@@ -139,11 +139,11 @@ Bu dönemde yeni tip eklenmez — mevcut 8 tipin zorluk seviyeleri artar.
 
 | Zorluk | Format | Aralık | Örnek |
 |--------|--------|--------|-------|
-| 1 | Hangisi büyük: A, B | 1-100 | Hangisi büyük: 45, 78 |
-| 2 | En küçüğü: A, B, C | 1-1000 | En küçüğü hangisi: 345, 127, 890 |
-| 3 | En küçüğü: A, B, C, D | 1-5000 | En küçüğü hangisi: 1234, 987, 3456, 2345 |
-| 4 | En büyüğü: A, B, C, D, E | 1-10000 | En büyüğü hangisi: ... |
-| 5 | X ile Y arası kaç sayı | 1-10000 | 4567 ile 4575 arasında kaç sayı var? |
+| 1 | Hangisi büyük: A, B = ? | 1-100 | Hangisi büyük: 45, 78 = ? |
+| 2 | En küçüğü: A, B, C = ? | 1-1000 | En küçüğü hangisi: 345, 127, 890 = ? |
+| 3 | En küçüğü: A, B, C, D = ? | 1-5000 | En küçüğü hangisi: 1234, 987, 3456, 2345 = ? |
+| 4 | En büyüğü: A, B, C, D, E = ? | 1-10000 | En büyüğü hangisi: ... = ? |
+| 5 | X ile Y arası kaç sayı = ? | 1-10000 | 4567 ile 4575 arasında kaç sayı var = ? |
 
 ### 7.6 Eksik Sayı
 
@@ -157,6 +157,8 @@ Bu dönemde yeni tip eklenmez — mevcut 8 tipin zorluk seviyeleri artar.
 
 ### 7.7 Kesir (Gelişmiş)
 
+**KURAL:** 4. sınıfta non-üniter kesirler (pay > 1) ve denk kesirler tanıtılır.
+
 | Zorluk | Format | Örnek |
 |--------|--------|-------|
 | 1 | a'nın 1/2'si kaçtır? | 24'ün yarısı kaçtır = ? → 12 |
@@ -168,6 +170,8 @@ Bu dönemde yeni tip eklenmez — mevcut 8 tipin zorluk seviyeleri artar.
 **KURAL:** Sonuç HER ZAMAN tam sayı. `a` değeri paydanın katı olmalı.
 
 ### 7.8 Problem (Çok Adımlı)
+
+**KURAL:** 4. sınıfta 3+ işlemli problemler tanıtılır.
 
 | Zorluk | Format | Örnek |
 |--------|--------|-------|
@@ -207,7 +211,7 @@ Bu dönemde yeni tip eklenmez — mevcut 8 tipin zorluk seviyeleri artar.
 5. `id` 1-50 arası
 6. `difficulty` 1-5
 7. `answer` >= 0
-8. `type` geçerli: toplama, cikarma, carpma, bolme, siralama, eksik_sayi, kesir, problem
+8. `type` geçerli: `toplama`, `çıkarma`, `çarpma`, `bölme`, `sıralama`, `eksik_sayı`, `kesir`, `problem`
 9. `hint` Türkçe, cevabı vermiyor
 10. Çarpma sonucu 10000'i geçmez
 11. Bölme tam bölünür (kalan = 0)
@@ -237,22 +241,23 @@ Soruları ürettikten sonra `data/report.json` dosyasına bir ebeveyn raporu yaz
 ```json
 {
   "reportDate": "2026-04-18",
-  "summary": "Bu hafta toplam X soru çözüldü. Toplama ve çıkarma konularında çok başarılı (%Y). Z konusunda gelişim gösteriyor.",
+  "summary": "Bu hafta toplam X soru çözüldü. İki basamaklı bölme ve çok adımlı problemlerde çok başarılı (%Y). Kesir konularında gelişim gösteriyor.",
   "strengths": [
-    "Toplama işlemlerinde çok hızlı ve doğru",
-    "İpucu kullanma oranı düşük — özgüveni yüksek"
+    "İki basamaklı bölenle bölme işlemini adım adım uyguluyor",
+    "Çok adımlı problemleri parçalara ayırarak çözebiliyor"
   ],
   "improvementAreas": [
-    "Bölme işlemlerinde zorlanıyor",
-    "3. zorluk seviyesinde süre artıyor"
+    "Çok basamaklı çarpma işleminde onlar basamağı çarpımını unutabiliyor",
+    "Kesir karşılaştırmada paydaları eşitlemede zorlanıyor"
   ],
-  "recommendation": "Bölme konusunda somut örneklerle pratik yapması önerilir.",
+  "recommendation": "Çok basamaklı çarpma pratiği için günlük 3-4 soru çözdürmek ve kesirleri somut materyallerle (pizza dilimi, çikolata parçası) göstermek faydalı olur.",
   "metrics": {
     "totalQuestionsSolved": 50,
     "averageAccuracy": 78.5,
     "byType": {
-      "toplama": {"accuracy": 92, "trend": "stable"},
-      "cikarma": {"accuracy": 85, "trend": "improving"}
+      "bölme": {"accuracy": 88, "trend": "stable"},
+      "problem": {"accuracy": 82, "trend": "improving"},
+      "kesir": {"accuracy": 70, "trend": "improving"}
     }
   }
 }
