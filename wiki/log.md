@@ -2364,3 +2364,30 @@ tags: [meta, log]
 **Kalan teknik borç:**
 - AI pipeline (Batch 1+) ID formatı yapılandırılmadı (`{Yıl}G{Sınıf}-B{Batch}-{SıraNo}` önerisi beklemede)
 - `generate_age_questions.py` zorluk skalası 1-3, agents.md 1-5 arası (bilinen uyumsuzluk, wiki'ye not düşüldü)
+## [2026-05-07 23:34] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 9 (adaptive-learning, api, auth, backend, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 208 entries
+
+
+## 2026-05-07 — MathLock-Play Wiki Sayfa Bölme
+
+**Değişiklik:** `wiki/projects/mathlock-play.md` (528 satır) 4 sayfaya bölündü:
+
+| Yeni Sayfa | Satır | İçerik |
+|-----------|-------|--------|
+| `mathlock-play.md` | ~140 | Ana sayfa: stack, entry points, env vars, servisler, deploy, alt sayfa linkleri |
+| `mathlock-play-ai.md` | ~210 | AI pipeline, adaptif algoritma, MEB uyumu, batch 0/1+, tip standardizasyonu |
+| `mathlock-play-android.md` | ~230 | Android oyunları, crash prevention, auth fix'leri, Sayı Yolculuğu düzeltmeleri |
+| `mathlock-play-backend.md` | ~190 | Backend auth, test suite (169 test), child_id mismatch fix'leri |
+
+**Etki:** Page Size uyarısı giderildi. Lint: 9/10 passing (1 tag audit warning).
+
+**Güncellenen index'ler:** `wiki/index.md`, `wiki/projects/index.md`
