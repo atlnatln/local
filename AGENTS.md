@@ -338,21 +338,52 @@ cd ~/.kimi/skills/local-wiki && python3 scripts/wiki_lint.py /home/akn/local/wik
 - Eğer 10/10 passing ise → Adım 8'e devam
 - Eğer hata varsa → Hataları düzelt, tekrar lint çalıştır
 
-### Adım 8: Checkpoint'leri Güncelle
-Her proje için mevcut HEAD SHA'sını checkpoint dosyasına yaz:
+### Adım 8: Checkpoint'leri Güncelle ve Doğrula
+
+**KESİN KURAL:** Her checkpoint, KENDİ git reposunun HEAD SHA'sını içermelidir. Asla başka repo'nun SHA'sını yazma.
+
 ```bash
+# local monorepo (anka, mathlock-play, telegram-kimi, sayi-yolculugu, infrastructure)
 cd /home/akn/local && git rev-parse HEAD > wiki/.checkpoints/local.sha
+
+# ops-bot (AYRI repo — kendi .git'i var)
 cd /home/akn/local/ops-bot && git rev-parse HEAD > /home/akn/local/wiki/.checkpoints/ops-bot.sha
+
+# webimar (AYRI repo — kendi .git'i var)
 cd /home/akn/local/projects/webimar && git rev-parse HEAD > /home/akn/local/wiki/.checkpoints/webimar.sha
 ```
 
-### Adım 9: Son Temizlik
-1. `.pending` marker dosyasını temizle: `> /home/akn/local/wiki/.pending`
+#### Doğrulama Adımı (ZORUNLU)
+Checkpoint yazıldıktan HEMEN sonra doğrula:
+```bash
+echo "=== CHECKPOINT DOĞRULAMA ==="
+echo "local:    $(cat /home/akn/local/wiki/.checkpoints/local.sha)    (expected: $(cd /home/akn/local && git rev-parse HEAD))"
+echo "ops-bot:  $(cat /home/akn/local/wiki/.checkpoints/ops-bot.sha)  (expected: $(cd /home/akn/local/ops-bot && git rev-parse HEAD))"
+echo "webimar:  $(cat /home/akn/local/wiki/.checkpoints/webimar.sha)  (expected: $(cd /home/akn/local/projects/webimar && git rev-parse HEAD))"
+```
+Eğer herhangi biri uyuşmuyorsa:
+1. Hata rapor et
+2. `.pending` dosyasını **SİLME** (bir sonraki ingest'te tekrar denenecek)
+3. Kullanıcıya "Checkpoint yazım hatası — manuel kontrol gerekli" de
+
+### Adım 9: Son Temizlik (KESİN)
+
+**Bu adım asla atlanmamalı.**
+
+1. `.pending` marker dosyasını **her durumda** temizle:
+   ```bash
+   > /home/akn/local/wiki/.pending
+   ```
+   - Ingest başarılı olduysa: temizle
+   - Ingest başarısız olduysa: YİNE TEMİZLE (hatalı durum `.pending`'de kalmamalı, çünkü bir sonraki session'da yeni git diff kontrolü yapılacak)
+   - Diff boş çıktıysa: temizle (Adım 3 zaten bunu yapıyor, burada tekrar garantile)
+
 2. Kullanıcıya özet rapor ver:
    - Kaç proje güncellendi
    - Kaç sayfa değiştirildi/eklendi/silindi
    - Lint sonucu
    - Yeni checkpoint SHA'ları
+   - `.pending` durumu (temizlendiği teyit edilsin)
 
 ---
 
@@ -392,20 +423,47 @@ Bu proje `github.com/atlnatln/local.git` reposu üzerinden yönetilir. GitHub = 
 - VPS'teki `/home/akn/vps/` deploy script'lerinin hedefi olarak kalır (GitHub'dan bağımsız).
 - AGENTS.md'lerdeki `/home/akn/local/` yolları her iki makinede de çalışır.
 
-### Session Başı Git Kontrolü
+### Session Başı Git Kontrolü (Çift Yönlü Sync)
 
-Her session başında wiki kontrolüne paralel:
+**Kullanıcı tek kişidir ve ya local'de ya da VPS'te geliştirir.** Kimi her session açılışında **önce GitHub'a bakmalı**, sonra wiki'ye. Çünkü diğer makineden push edilmiş commit'ler olabilir.
 
+**Sıra (KESİN):** Git Sync Kontrolü → Pull (gerekirse) → Wiki Kontrolü
+
+#### Adım 1 — Tüm Repo'lar İçin Fetch
+
+```bash
+cd /home/akn/local          && timeout 5 git fetch origin 2>/dev/null || true
+cd /home/akn/local/ops-bot  && timeout 5 git fetch origin 2>/dev/null || true
+cd /home/akn/local/projects/webimar && timeout 5 git fetch origin 2>/dev/null || true
 ```
-1. rm -f ~/.wiki-skip-session
-2. (command -v git >/dev/null 2>&1 && timeout 5 git fetch origin 2>/dev/null) || true
-   → Behind ise: "GitHub'da yeni değişiklik var (N commit). Pull yapalım mı?"
-   → Ahead ise: "Local'de push bekleyen değişiklik var."
-   → Sync veya offline: sessizce devam et
-3. Wiki kontrolü (.pending)
+
+#### Adım 2 — Behind/Ahead Kontrolü
+
+Her repo için:
+```bash
+cd /home/akn/local          && git rev-list --left-right --count origin/main...HEAD 2>/dev/null || echo "0 0"
+cd /home/akn/local/ops-bot  && git rev-list --left-right --count origin/main...HEAD 2>/dev/null || echo "0 0"
+cd /home/akn/local/projects/webimar && git rev-list --left-right --count origin/main...HEAD 2>/dev/null || echo "0 0"
 ```
 
-**Not:** Otomatik pull YAPMA. Conflict riski var. Kullanıcı onay verirse `git pull` çalıştır.
+| Çıktı | Anlamı | Eylem |
+|-------|--------|-------|
+| `Behind > 0` | GitHub'da yeni commit var (diğer makineden push edilmiş) | **Wiki kontrolünü ATLA.** "GitHub'da N commit var. Önce `git pull` yapmalısın." |
+| `Ahead > 0` | Local'de push bekleyen değişiklik var | Bilgi ver. Wiki kontrolüne devam et (ama "önce push et" öner). |
+| `Behind=0, Ahead=0` | Sync | Wiki kontrolüne geç. |
+
+#### Adım 3 — Karar (KESİN)
+
+- **Behind > 0 olan repo varsa:** Wiki proaktif kontrolünü **TAMAMEN ATLA**. Kullanıcıya sadece şunu söyle:
+  > "GitHub'da {N} yeni commit var ({repo listesi}). Diğer makineden push edilmiş olabilir. Önce `git pull` yapalım mı?"
+- Pull onay verilirse: `git pull origin main` çalıştır, ardından wiki kontrolüne geç.
+- Pull reddedilirse: Kullanıcının orijinal sorusuna geç. Wiki'yi sorma.
+
+**Neden?** Eğer behind durumunda wiki toplarsan, eski commit'lere göre wiki'yi güncellersin. Bu, diğer makinede yapılan geliştirmelerin wiki'ye yansımasını engeller veya geri taşır.
+
+#### Adım 4 — Wiki Kontrolü (Sadece Sync Durumunda)
+
+Tüm repo'lar `Behind=0` ise, normal "Proaktif Wiki Kontrolü" akışına devam et.
 
 ### Push Komutu Protokolü (Zorunlu Wiki Ingest)
 
