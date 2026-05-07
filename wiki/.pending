@@ -2,3 +2,4 @@
 # Bu dosya iki makine arasinda sync edilir.
 # Format: DATE|SHA|REPO|FILES
 # Bos satir = bekleyen yok.
+2026-05-07 19:33|9459f2246c43af609dc39d890450fd6138eaea80|local|.gitignore,wiki/.pending,
