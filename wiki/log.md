@@ -2193,3 +2193,27 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 193 entries
 
+
+## [2026-05-08 10:15] ingest | local + webimar | hizli checkpoint sync
+- Checkpoint'ler senkronize edildi:
+  - local: d648d303 → 0b42e9b2
+  - ops-bot: 8ceee1c (degisiklik yok)
+  - webimar: 33b6574 → 4cb13b0b5
+- Yeni eklenen kaynaklar:
+  - scripts/auto-sync.sh (cross-machine git sync)
+  - projects/webimar/ENVIRONMENT.md (.env dokumantasyonu)
+  - scripts/wiki-weekly-maintenance.sh (ff-only pull duzeltmesi)
+- AGENTS.md guncellendi: Session basi git kontrolu, auto-sync.sh referansi
+- Detayli wiki sayfa guncellemeleri sonraki session'a birakildi
+## [2026-05-07 19:25] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 195 entries
+
