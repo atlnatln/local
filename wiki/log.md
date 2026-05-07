@@ -2256,3 +2256,15 @@ tags: [meta, log]
 - Android: MemoryGameActivity restartGame() kart değeri fix, ChallengePickerActivity/MainActivity ebeveyn desen desteği, SettingsActivity kart yapısı yeniden düzenlendi, MathQuestionGenerator yaş uygun soru üretimi.
 - Backend: Question.education_period alanı, load_questions.py --period parametresi, get_questions endpoint filtrelemesi.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+## [2026-05-07 21:04] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 200 entries
+
