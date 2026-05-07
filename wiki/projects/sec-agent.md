@@ -296,6 +296,10 @@ if 'IP_ADRESI' in data:
 ### Memory limit aşımı
 `MemoryMax=512M` aşılırsa pruning limitleri daraltılmalı (`prune_after_hours` değerleri düşürülmeli).
 
+### State dosyası karışıklığı
+
+`ops-bot-critical-alert.service` `OPS_BOT_CRITICAL_STATE_PATH` tanımlı değilse, state dosyası default olarak `/home/akn/local/ops-bot/data/sec-agent-critical-state.json` altına yazılır. Bu, deploy sonrası VPS `vps/` dizini ile local `local/` dizini arasında state kaymasına yol açar. Çözüm: servis dosyasına `Environment=OPS_BOT_CRITICAL_STATE_PATH=/home/akn/vps/ops-bot/data/sec-agent-critical-state.json` eklemek.
+
 ### events.jsonl çok büyük
 Rotation otomatik çalışır ama manuel temizlik gerekiyorsa:
 ```bash

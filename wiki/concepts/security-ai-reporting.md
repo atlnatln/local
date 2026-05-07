@@ -58,7 +58,7 @@ AI analizi çalışması için **tümü** sağlanmalı:
 
 1. `DAILY_DIGEST_MODE=true` (günlük özet modu aktif)
 2. `AI_ANALYZER_AVAILABLE=true` (`ai_security_analyzer.py` import edilebiliyor)
-3. Anomaly listesinde en az bir `critical` veya `high` severity kayıt var
+3. Anomaly listesinde en az bir `critical`, `high` veya `medium` severity kayıt var
 4. `CRITICAL_ALERT_COOLDOWN_MINUTES` (varsayılan 360 dk) süresi dolmuş
 
 ## Telegram Message Format
@@ -95,7 +95,7 @@ AI analizi çalışması için **tümü** sağlanmalı:
 
 ### Mesaj 2 — AI Analizi (koşullu)
 
-Sadece critical/high anomaly varsa gönderilir:
+`critical`, `high` veya `medium` severity anomaly varsa gönderilir. Low severity'ler analiz dışı bırakılır (gürültü önlemi).
 
 ```
 🤖 AI GÜVENLİK ANALİZİ
@@ -126,3 +126,5 @@ Sadece critical/high anomaly varsa gönderilir:
 - `ops-bot-daily.timer` sistemde **kapalıdır** (düşük gürültü politikası). Günlük raporlama `ops-bot-critical-alert.timer` üzerinden `DAILY_DIGEST_MODE=true` ile yapılır.
 - AI analizi ikinci mesaj olarak gönderilir; ilk mesaj başarısız olursa ikincisi de atlanmaz ama state kaydedilmez.
 - `ai_security_analyzer.py` kimi-cli'yi subprocess olarak çağırır, doğrudan python kütüphanesi olarak entegre değildir.
+- `token_abuse_detector.py` auth endpoint listesi: `/api/accounts/me/`, `/api/token/`, `/api/admin/`, `/api/accounts/analytics/events/` vb. (güncellendi 2026-05-07).
+- `ops-bot-critical-alert.service` içinde `OPS_BOT_CRITICAL_STATE_PATH` tanımlıdır; state dosyası VPS dizinine (`/home/akn/vps/ops-bot/data/`) yazılır.

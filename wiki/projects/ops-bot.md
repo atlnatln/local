@@ -1,7 +1,7 @@
 ---
 title: "Ops-Bot"
 created: 2026-05-01
-updated: 2026-05-06
+updated: 2026-05-07
 type: project
 tags: [ops-bot, python, telegram-bot, systemd, security, acp, kimi-cli]
 related:
@@ -206,7 +206,7 @@ Güvenlik üç katmandır:
 | `sec-agent.timer` | systemd timer | 3 dk'da bir `sec-agent-once.service` |
 | `sec-agent-metrics.service` | systemd | Prometheus metrikleri (`:9101`) |
 | `ops-bot-weekly-security-report.timer` | systemd timer | Haftalık özet |
-| `ops-bot-critical-alert.timer` | systemd timer | 3 saatte bir kritik eşik kontrolü |
+| `ops-bot-critical-alert.timer` | systemd timer | Günde 1 kez 08:00'de günlük özet (eski: 3 saatte bir kritik eşik) |
 
 ## Deploy
 
@@ -244,6 +244,7 @@ Detaylı mimari ve operasyon bilgisi: bkz. [[sec-agent]].
 - VPS üretimi `/opt/sec-agent/` altında timer tabanlı one-shot çalışır
 - Guardrail korumalı otomatik block / ratelimit / alert
 - Günlük AI yorumlu rapor: bkz. [[security-ai-reporting]]
+- `ops-bot-critical-alert.service` `OPS_BOT_CRITICAL_STATE_PATH` env ile state dosyası yolunu sabitler (VPS dizinine yazar)
 
 ## Komutlar
 
@@ -333,6 +334,7 @@ sudo systemctl restart ops-bot
 <!-- AUTO-REFRESHED -->
 ## Recent Commits
 
+- `2956c27` fix(sec-agent): AI analizi medium anomaly'de de tetiklensin, auth endpoint listesi genişletilsin, state path sabitlensin (2026-05-07)
 - `d05f0b6` fix(gitignore): add .venv/ and sec-agent runtime state (2026-05-06)
 - `d093d94` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
 - `2414268` feat(deploy): add VPS environment detection (2026-05-06)

@@ -2082,3 +2082,20 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 181 entries
 
+## [2026-05-07 12:54] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 182 entries
+
+
+## [2026-05-07 12:52] ingest | ops-bot | 2956c27 | 3 sayfa
+- Files: M:3
+- Pages updated: [[ops-bot]], [[sec-agent]], [[security-ai-reporting]]
+- Diff summary: ops-bot AI analiz koşulları medium severity’ye genişletildi, token_abuse_detector auth endpoint listesi güncellendi, systemd service state path sabitlendi.
