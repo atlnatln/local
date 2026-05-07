@@ -2306,3 +2306,31 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 203 entries
 
+## [2026-05-07 23:08] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 204 entries
+
+
+## [2026-05-07 23:25] ingest | mathlock-play | manual | 1 sayfa
+- Files: A:0 M:1 D:0
+- Pages updated: [[mathlock-play]]
+- Diff summary: Batch 0 Üretim Algoritması bölümü eklendi: `generate_age_questions.py` yapısı, zorluk hesaplama heuristic'i, ID_RANGES offset tablosu, yaş grubu başına işlem dağılımı, Android `MathQuestionGenerator.kt` fallback üretim mantığı, hint ekleme mekanizması.
+## [2026-05-07 23:26] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1 ([[anka]] — unrelated)
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4 (mathlock-play 522L — expected after content expansion)
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 204 entries
