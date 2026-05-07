@@ -2150,3 +2150,22 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 189 entries
 
+
+## [2026-05-07 18:45] checkpoint-sync | all | cross-machine sync
+- Ops-bot: 8618166 → 8ceee1c (3 commit pulled from GitHub)
+- Webimar: 5b6a274 → 33b6574 (1 commit pulled from GitHub)
+- Local: d6d0f9c (1 commit ahead, post-commit fix + SSH remote switch)
+- Reason: VPS'ten geliştirme sonrası cross-machine sync
+- Actions: SSH remotes activated, redundant github remote removed, pre-commit hook disabled
+## [2026-05-07 18:46] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 191 entries
+
