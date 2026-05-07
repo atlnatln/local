@@ -461,7 +461,24 @@ cd /home/akn/local/projects/webimar && git rev-list --left-right --count origin/
 
 **Neden?** Eğer behind durumunda wiki toplarsan, eski commit'lere göre wiki'yi güncellersin. Bu, diğer makinede yapılan geliştirmelerin wiki'ye yansımasını engeller veya geri taşır.
 
-#### Adım 4 — Wiki Kontrolü (Sadece Sync Durumunda)
+#### Adım 4 — Otomatik Sync (İsteğe Bağlı)
+
+Manuel fetch kontrolü yerine `auto-sync.sh` script'i kullanılabilir:
+
+```bash
+cd /home/akn/local
+bash scripts/auto-sync.sh
+```
+
+Bu script:
+- Tüm repo'lar için `fetch` yapar
+- Behind varsa **otomatik fast-forward pull** yapar
+- Ahead varsa "push bekliyor" bildirir
+- Diverged (conflict) varsa hata rapor eder, manuel müdahale ister
+
+**Not:** `auto-sync.sh` sadece fast-forward pull yapar. Conflict varsa durur ve kullanıcıya bildirir.
+
+#### Adım 5 — Wiki Kontrolü (Sadece Sync Durumunda)
 
 Tüm repo'lar `Behind=0` ise, normal "Proaktif Wiki Kontrolü" akışına devam et.
 
