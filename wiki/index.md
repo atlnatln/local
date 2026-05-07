@@ -83,6 +83,7 @@ Geçersiz kılınmış veya değişmiş kararlar.
 
 ## Recently Updated
 
+- [[proactive-wiki]] — Auto-sync davranışı eklendi: `docs(wiki):` sonsuz döngü koruması, `.pending` cross-machine sync, `git commit --amend` yerine ayrı commit stratejisi (2026-05-07)
 - [[ops-bot]] — `critical_security_alert.py` medium severity desteği, `token_abuse_detector.py` auth endpoint genişlemesi, `OPS_BOT_CRITICAL_STATE_PATH` tanımı (2026-05-07)
 - [[sec-agent]] — State path karışıklığı troubleshooting notu eklendi (2026-05-07)
 - [[security-ai-reporting]] — AI analiz koşulları medium severity'yi de kapsayacak şekilde güncellendi (2026-05-07)

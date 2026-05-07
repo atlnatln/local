@@ -2217,3 +2217,22 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 195 entries
 
+
+## [2026-05-07 19:45] ingest | local | 903450e8 | 1 sayfa
+- Files: A:0 M:1 D:0
+- Pages updated: [[proactive-wiki]]
+- Diff summary: [[proactive-wiki]]'ye auto-sync davranışı, cross-machine sync, `docs(wiki):` sonsuz döngü koruması eklendi. `wiki/.pending` artık `.gitignore`'da değil.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+- Revert: git checkout 0b42e9b2d72ee0d852a02d38628429714c45c0aa -- wiki/
+## [2026-05-07 19:55] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 197 entries
+
