@@ -2,3 +2,7 @@
 # Bu dosya iki makine arasinda sync edilir.
 # Format: DATE|SHA|REPO|FILES
 # Bos satir = bekleyen yok.
+2026-05-07 19:42|688ecac1|scripts|/home/akn/local/scripts/wiki-post-commit.sh
+2026-05-07 19:42|6f2d2020fcf38705a425ced620a87a6d94c13600|local|scripts/test-amend,
+2026-05-07 19:42|ed5e49e6e7079c56775d428cd831f1c42aa55e33|local|scripts/test-amend,wiki/.pending,
+2026-05-07 19:42|48fc60e6b90198f5484d6d3460795d306498cfe4|local|scripts/test-amend,wiki/.pending,
