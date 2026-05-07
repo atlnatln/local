@@ -2116,3 +2116,20 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 185 entries
 
+
+## [2026-05-07 13:22] cleanup | ops-bot | — | 1 sayfa
+- Files: D:1 (VPS)
+- Pages updated: [[ops-bot]]
+- Diff summary: Eski `logs/router_debug.jsonl` silindi (router.py kaldırıldığı için artık güncellenmiyordu).
+## [2026-05-07 13:25] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 187 entries
+
