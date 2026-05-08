@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play — AI Soru Pipeline"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-05-08
 type: project
 tags: [mathlock-play, ai, pipeline, adaptive-learning, meb]
 related:
@@ -45,6 +45,10 @@ Telefon yeni seti indirir
 cd projects/mathlock-play
 python3 scripts/generate_age_questions.py
 ```
+
+**Otomatik versiyon artırma:** `data/.version` dosyasına persist edilen counter. Her regenerate'de +1 artar, tüm `questions-*.json` dosyalarına yansır. `deploy.sh --sync-data` versiyon karşılaştırması yaparak otomatik sync eder.
+
+**Batch 0 doğrulama:** `scripts/validate-questions.py` — tip dağılımı, zorluk aralığı, duplicate, ID/code çakışması, interactionMode kontrolü. Tüm 5 dönem **PASS**.
 
 ### AI Adaptif Soru Üretim Pipeline
 
@@ -131,7 +135,7 @@ def generate_division(max_divisor, max_result)  # a ÷ b = ?, difficulty = f(max
 difficulty = 1 if max_a <= 10 else (2 if max_a <= 50 else 3)
 ```
 
-> **Bilinen uyumsuzluk:** `generate_age_questions.py` zorluk skalasını 1-3 arası üretirken, `agents.md` dosyaları 1-5 skalasını tanımlar. Batch 0'da zorluk 4-5 soruları bulunmaz; bu seviyeler sadece AI pipeline (Batch 1+) tarafından üretilir. Adaptif algoritma zorluk 1-5 arası ayar yapar, ancak batch 0 setinde zorluk 3 ile sınırlıdır.
+> **Zorluk 4-5 implantasyonu (2026-05-08):** `_calc_difficulty_*` fonksiyonları 1-5 skalasına genişletildi. `sinif_4`'te `eksik_sayı` zorluk 4 (`generate_missing_number(50, 500)`) ve zorluk 5 (`generate_missing_number(100, 1000)`) varyasyonları `random.choice` ile dağıtılır.
 
 **ID aralıkları (`ID_RANGES`) — DB unique constraint çakışmasını önler:**
 | Dönem | Offset | ID aralığı |

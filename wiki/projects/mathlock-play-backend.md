@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play — Backend"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-05-08
 type: project
 tags: [mathlock-play, backend, django, drf, api, tests]
 related:
@@ -166,3 +166,30 @@ Kimlik doğrulama testleri şu senaryoları kapsar:
 ---
 
 > Android tarafı auth detayları için bkz. [[mathlock-play-android]]
+
+## Cleanup — Dead Endpoints & CreditPackage Removal (2026-05-08)
+
+**Kaldırılanlar:**
+- `CreditPackage` modeli (`credits/models.py`) — hiçbir endpoint kullanmıyordu
+- `GET /packages/` endpoint + view
+- `GET /jobs/<id>/status/` endpoint + view
+- `check_url` alanları response'dan kaldırıldı
+- Django admin devre dışı bırakıldı (`INSTALLED_APPS`, `urls.py`, `admin.py`)
+
+**Migration:** `0012_remove_creditpackage.py` — tabloyu kaldırır.
+
+**Testler:** 165 test, 1.2s — tümü OK.
+
+## validate-questions.py (2026-05-08)
+
+Dönem bazlı soru seti doğrulama aracı. `scripts/validate-questions.py`:
+
+| Kontrol | Açıklama |
+|---------|----------|
+| Tip dağılımı | `OPERATION_WEIGHTS` beklentisine uygunluk (±tolerance) |
+| Zorluk aralığı | Döneme özgü min/max zorluk kontrolü |
+| Duplicate | Tekrar eden soru metni kontrolü |
+| ID/Code çakışması | Benzersizlik kontrolü |
+| interactionMode | `text-input`, `tap-to-count`, `pattern-select`, `tap-to-choose` |
+
+Tüm 5 dönem (`okul_oncesi` → `sinif_4`) için **PASS**.

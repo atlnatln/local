@@ -2563,3 +2563,27 @@ tags: [meta, log]
 - Güncelleme: projects/mathlock-play.md (cross-reference eklendi)
 - Log size: 223 entries
 
+
+## 2026-05-08 — MathLock Play ingest (batch-0 validation, CreditPackage removal, version auto-increment)
+
+- Yeni: `scripts/validate-questions.py` — dönem bazlı doğrulama aracı
+- Güncelleme: `generate_age_questions.py` — zorluk 4-5, versiyon artırma (`data/.version`)
+- Güncelleme: `backend/credits/models.py` — `CreditPackage` kaldırıldı
+- Güncelleme: `backend/credits/views.py` — `CreditPackage` import temizliği
+- Yeni: `backend/credits/migrations/0012_remove_creditpackage.py`
+- Güncelleme: Batch 0 JSON'ları regenerate edildi (versiyon 5)
+- Data sync: `/var/www/mathlock/data/questions.json` versiyon 5'e yükseltildi
+- Deploy: VPS'te 0011 + 0012 migration uygulandı, 220 soru backfill edildi
+- Sayfa güncellemeleri: `projects/mathlock-play.md`, `projects/mathlock-play-backend.md`, `projects/mathlock-play-ai.md`
+## [2026-05-08 14:31] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 224 entries
+

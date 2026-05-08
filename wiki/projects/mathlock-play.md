@@ -55,6 +55,7 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | `projects/mathlock-play/deploy.sh` | Build + data sync |
 | `projects/mathlock-play/ai-generate.sh` | AI soru üretim pipeline'ı |
 | `projects/mathlock-play/ai-generate-levels.sh` | AI bulmaca seviye üretim pipeline'ı (Sayı Yolculuğu) |
+| `projects/mathlock-play/scripts/validate-questions.py` | Dönem bazlı soru seti doğrulama aracı (tip/zorluk/duplicate/code) |
 
 ## Environment Variables
 
@@ -117,8 +118,8 @@ cd projects/mathlock-play
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `5977e94b` feat(mathlock-play): auto-increment version in generate_age_questions.py, sync data to vps (2026-05-08)
+- `d1b7aa29` feat(mathlock-play): validate-questions.py, grade4 missing-number variety, remove CreditPackage model (2026-05-08)
 - `90d86baf` fix(mathlock-play): MEB uyum düzeltmeleri — curriculum JSON, generate script, agents.md (2026-05-07)
 - `582ff046` fix(agents): MEB müfredat uyumu + tip isimlendirme standardizasyonu (2026-05-07)
 - `fa6174fc` feat(mathlock): age-appropriate questions, parent auth, settings UI, memory game fixes (2026-05-06)
-- `3dc2e3db` chore(wiki): lint fixes, add page size policy, update archived handling (2026-05-06)
-- `78015644` fix(deploy): increase celery wait time from 3s to 5s (2026-05-06)
