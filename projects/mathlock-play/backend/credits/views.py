@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from django.utils.translation import gettext_lazy as _
 
-from .models import (ChildProfile, CreditBalance, CreditPackage,
+from .models import (ChildProfile, CreditBalance,
                      Device, LevelSet, PurchaseRecord, Question, QuestionSet,
                      RenewalLock, UserQuestionProgress)
 from .authentication import DeviceTokenSigner

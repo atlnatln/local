@@ -461,7 +461,9 @@ def generate_grade4(count: int = 50) -> list:
         "çarpma": lambda: generate_multiplication(100, 50, result_max=10000),
         "bölme": lambda: generate_division(50, 100),
         "sıralama": lambda: generate_sorting(10000, count=5, mode="biggest"),
-        "eksik_sayı": lambda: generate_missing_number(100, 1000),
+        "eksik_sayı": lambda: generate_missing_number(
+            *random.choice([(50, 500), (100, 1000)])
+        ),
         "kesir": lambda: generate_fraction(unit_fraction=False),
         "problem": lambda: generate_problem(difficulty=random.randint(2, 5)),
     }

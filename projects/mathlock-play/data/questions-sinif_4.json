@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-08T08:35:29.583644+00:00",
+  "generatedAt": "2026-05-08T09:04:12.569423+00:00",
   "generatedBy": "mathlock-generator",
   "educationPeriod": "sinif_4",
   "difficultyProfile": {
@@ -62,26 +62,16 @@
     {
       "id": 5006,
       "code": "2025G4-B1-5006",
-      "text": "? + 98 = 311",
-      "answer": 213,
+      "text": "? + 41 = 150",
+      "answer": 109,
       "type": "eksik_sayı",
-      "difficulty": 5,
+      "difficulty": 4,
       "hint": "Bilinmeyen yerde ne olmalı?",
       "interactionMode": "text-input"
     },
     {
       "id": 5007,
       "code": "2025G4-B1-5007",
-      "text": "370 - 109 = ?",
-      "answer": 261,
-      "type": "çıkarma",
-      "difficulty": 4,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 5008,
-      "code": "2025G4-B1-5008",
       "text": "185 - 170 = ?",
       "answer": 15,
       "type": "çıkarma",
@@ -90,10 +80,20 @@
       "interactionMode": "text-input"
     },
     {
+      "id": 5008,
+      "code": "2025G4-B1-5008",
+      "text": "91 - 21 = ?",
+      "answer": 70,
+      "type": "çıkarma",
+      "difficulty": 4,
+      "hint": "Büyük sayıdan geriye doğru say",
+      "interactionMode": "text-input"
+    },
+    {
       "id": 5009,
       "code": "2025G4-B1-5009",
-      "text": "12 × 11 = ?",
-      "answer": 132,
+      "text": "32 × 12 = ?",
+      "answer": 384,
       "type": "çarpma",
       "difficulty": 5,
       "hint": "10 ile çarpınca sona 0 eklenir",
@@ -102,7 +102,7 @@
     {
       "id": 5010,
       "code": "2025G4-B1-5010",
-      "text": "En büyüğü hangisi: 3930, 2848, 9044, 1230, 2565 = ?",
+      "text": "En büyüğü hangisi: 9044, 1230, 2565, 44, 6694 = ?",
       "answer": 9044,
       "type": "sıralama",
       "difficulty": 5,
@@ -112,18 +112,18 @@
     {
       "id": 5011,
       "code": "2025G4-B1-5011",
-      "text": "90 elma 9 çocuğa eşit paylaştırıldı. Her çocuğa kaç elma düştü = ?",
-      "answer": 10,
+      "text": "6 paket aldı, her biri 6 TL. 55 TL verdi. Para üstü kaç = ?",
+      "answer": 19,
       "type": "problem",
-      "difficulty": 2,
+      "difficulty": 5,
       "hint": "Sayıları işleme yerleştir",
       "interactionMode": "text-input"
     },
     {
       "id": 5012,
       "code": "2025G4-B1-5012",
-      "text": "100 ÷ 20 = ?",
-      "answer": 5,
+      "text": "1820 ÷ 20 = ?",
+      "answer": 91,
       "type": "bölme",
       "difficulty": 5,
       "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?",
@@ -132,8 +132,8 @@
     {
       "id": 5013,
       "code": "2025G4-B1-5013",
-      "text": "168 - 74 = ?",
-      "answer": 94,
+      "text": "194 - 180 = ?",
+      "answer": 14,
       "type": "çıkarma",
       "difficulty": 4,
       "hint": "Sayı doğrusunda geriye git",
@@ -142,8 +142,8 @@
     {
       "id": 5014,
       "code": "2025G4-B1-5014",
-      "text": "362 + 145 = ?",
-      "answer": 507,
+      "text": "441 + 233 = ?",
+      "answer": 674,
       "type": "toplama",
       "difficulty": 4,
       "hint": "Önce onlukları topla, sonra birlikleri ekle",
@@ -152,16 +152,6 @@
     {
       "id": 5015,
       "code": "2025G4-B1-5015",
-      "text": "409 - 233 = ?",
-      "answer": 176,
-      "type": "çıkarma",
-      "difficulty": 4,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 5016,
-      "code": "2025G4-B1-5016",
       "text": "86 - 30 = ?",
       "answer": 56,
       "type": "çıkarma",
@@ -170,10 +160,20 @@
       "interactionMode": "text-input"
     },
     {
-      "id": 5017,
-      "code": "2025G4-B1-5017",
+      "id": 5016,
+      "code": "2025G4-B1-5016",
       "text": "185 - 161 = ?",
       "answer": 24,
+      "type": "çıkarma",
+      "difficulty": 4,
+      "hint": "Büyük sayıdan geriye doğru say",
+      "interactionMode": "text-input"
+    },
+    {
+      "id": 5017,
+      "code": "2025G4-B1-5017",
+      "text": "351 - 339 = ?",
+      "answer": 12,
       "type": "çıkarma",
       "difficulty": 4,
       "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
@@ -182,8 +182,8 @@
     {
       "id": 5018,
       "code": "2025G4-B1-5018",
-      "text": "302 + 339 = ?",
-      "answer": 641,
+      "text": "412 + 479 = ?",
+      "answer": 891,
       "type": "toplama",
       "difficulty": 4,
       "hint": "Sayıları kafanda sırala, topla",
@@ -452,8 +452,8 @@
     {
       "id": 5045,
       "code": "2025G4-B1-5045",
-      "text": "? - 297 = 206",
-      "answer": 503,
+      "text": "? - 680 = 411",
+      "answer": 1091,
       "type": "eksik_sayı",
       "difficulty": 5,
       "hint": "Bilinmeyen yerde ne olmalı?",

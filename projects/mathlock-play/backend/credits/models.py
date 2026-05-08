@@ -164,31 +164,6 @@ class QuestionSet(models.Model):
         return f"{ai} v{self.version} ({self.child.name})"
 
 
-class CreditPackage(models.Model):
-    """
-    Satın alınabilir kredi paketleri.
-    Backend'den dinamik çekilir; Play Console'daki product_id ile eşleşmeli.
-    """
-    product_id = models.CharField(max_length=100, unique=True,
-                                  help_text="Google Play product ID (ör: kredi_5)")
-    display_name = models.CharField(max_length=200, help_text="Kullanıcıya gösterilen ad")
-    credits = models.IntegerField(help_text="Bu paketle eklenen kredi sayısı")
-    questions_count = models.IntegerField(
-        help_text="credits × QUESTIONS_PER_CREDIT — bilgi amaçlı gösterim için"
-    )
-    description = models.CharField(max_length=500, blank=True, default='')
-    is_active = models.BooleanField(default=True)
-    sort_order = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['sort_order', 'credits']
-
-    def __str__(self):
-        return f"{self.display_name} ({self.product_id}) — {self.credits} kredi"
-
-
 class LevelSet(models.Model):
     """Çocuk için AI tarafından üretilen kişisel seviye seti (12 bulmaca)."""
     child = models.ForeignKey(ChildProfile, on_delete=models.CASCADE, related_name='level_sets')
