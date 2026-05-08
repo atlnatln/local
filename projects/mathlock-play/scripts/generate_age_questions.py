@@ -568,6 +568,18 @@ def structured_id(year: int, grade: int, batch: int, seq: int) -> str:
     return f"{year}G{grade}-B{batch}-{seq:04d}"
 
 
+def _next_version(data_dir: Path) -> int:
+    vf = data_dir / ".version"
+    try:
+        return int(vf.read_text().strip()) + 1
+    except (FileNotFoundError, ValueError):
+        return 1
+
+
+def _save_version(data_dir: Path, version: int) -> None:
+    (data_dir / ".version").write_text(str(version))
+
+
 def package(questions: list, period: str, version: int = 1, use_offset: bool = True, year: int = 2025, batch: int = 1) -> dict:
     avg_diff = round(sum(q.get("difficulty", 1) for q in questions) / len(questions), 1)
     if avg_diff < 1.5:
@@ -635,6 +647,8 @@ def main():
         ("sinif_4", generate_grade4, 50),
     ]
 
+    version = _next_version(data_dir)
+
     for period, generator, count in configs:
         questions = generator(count)
         questions = _deduplicate(questions, count)
@@ -649,7 +663,7 @@ def main():
                     break
             attempts += 1
         questions = add_hints(questions)
-        data = package(questions, period, use_offset=True)
+        data = package(questions, period, version=version, use_offset=True)
 
         out_path = data_dir / f"questions-{period}.json"
         out_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -672,13 +686,15 @@ def main():
             if len(default_questions) >= default_count:
                 break
     default_questions = add_hints(default_questions)
-    default_data = package(default_questions, default_period, use_offset=False)
+    default_data = package(default_questions, default_period, version=version, use_offset=False)
     (data_dir / "questions.json").write_text(
         json.dumps(default_data, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     print(f"✅ default: {len(default_questions)} soru → questions.json (sinif_2, ID 1-{len(default_questions)})")
 
+    _save_version(data_dir, version)
     print(f"\n📁 Tüm dosyalar: {data_dir}/")
+    print(f"🔢 Yeni versiyon: {version}")
 
 
 if __name__ == "__main__":
