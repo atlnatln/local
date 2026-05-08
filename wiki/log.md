@@ -2575,6 +2575,13 @@ tags: [meta, log]
 - Data sync: `/var/www/mathlock/data/questions.json` versiyon 5'e yükseltildi
 - Deploy: VPS'te 0011 + 0012 migration uygulandı, 220 soru backfill edildi
 - Sayfa güncellemeleri: `projects/mathlock-play.md`, `projects/mathlock-play-backend.md`, `projects/mathlock-play-ai.md`
+## 2026-05-08 — Webimar ana sayfa duyurusu ve bağ evi max alan bilgisi
+
+- Yeni: Ana sayfa duyuru banner'ı — hayvancılık ve yıkama tesisleri için su tahsis belgesi aranmayacak
+- Güncelleme: `webimar-nextjs/pages/index.tsx` + `styles/HomePage.module.css` — duyuru banner'ı ve responsive stil
+- Güncelleme: `webimar-react/src/modules/BagEvi/utils/calculator.ts` — success mesajlarına max 30 m² taban / 60 m² toplam alan notu eklendi
+- Sayfa güncellemeleri: `projects/webimar.md`
+
 ## [2026-05-08 14:31] lint | 8/10
 - Orphan pages: 0
 - Broken links: 0
@@ -2586,4 +2593,16 @@ tags: [meta, log]
 - Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
 - Raw existence: 0
 - Log size: 224 entries
+
+## [2026-05-08 15:22] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 4
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 225 entries
 

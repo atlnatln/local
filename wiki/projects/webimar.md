@@ -1,7 +1,7 @@
 ---
 title: "Webimar"
 created: 2026-05-01
-updated: 2026-05-06
+updated: 2026-05-08
 type: project
 tags: [webimar, django, nextjs, react, docker, nginx]
 related:
@@ -131,6 +131,11 @@ Günlük güvenlik raporunda tespit edilen token sızıntısı ve `/api/accounts
 - **Diğer:** Hara (`hara.py`), Evcil Hayvan (`evcil_hayvan.py`), Tarımsal Ürün Yıkama Tesisi (`ana_modul.py`)
 
 Kod blokları `# GEÇİCİ: ... devre dışı (2026-05-06)` başlığıyla yorum satırına alındı; ileride tek hamlede geri açılabilir. Yıkama tesisi için YAS kontrolü (`yas_var_mi`) hâlâ aktif.
+
+## Ana Sayfa Duyurusu ve Bağ Evi Alan Kontrolü (2026-05-08)
+
+- **Ana sayfa duyuru banner'ı:** `webimar-nextjs/pages/index.tsx`'e hayvancılık ve yıkama tesisleri başvurularında su tahsis belgesi aranmayacağını bildiren duyuru banner'ı eklendi; responsive stil `HomePage.module.css`'te tanımlandı
+- **Bağ evi max alan bilgisi:** `webimar-react/src/modules/BagEvi/utils/calculator.ts`'de başarılı hesaplama sonuçlarına "max 30 m² taban, 60 m² toplam (2 kat)" notu otomatik olarak ekleniyor
 
 ## Recent Commits
 
