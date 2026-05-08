@@ -56,12 +56,6 @@ class EndToEndFlowTest(ThrottleMixin, AuthMixin, TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(resp.json()['auto_renewal_started'])
 
-        # 4. Job status kontrol et (mock Celery)
-        job_id = resp.json()['job_id']
-        resp = self.client.get(f'/api/mathlock/jobs/{job_id}/status/')
-        self.assertEqual(resp.status_code, 200)
-        self.assertIn(resp.json()['state'], ['PENDING', 'SUCCESS', 'FAILURE'])
-
     @patch('credits.views._generate_levels_via_kimi', return_value=[
         {'id': i, 'title': f'S{i}'} for i in range(1, 4)
     ])
@@ -267,42 +261,4 @@ class InputValidationEdgeCaseTest(ThrottleMixin, AuthMixin, TestCase):
         child = ChildProfile.objects.get(device=device)
         self.assertEqual(child.locale, 'tr')
 
-class JobStatusEndpointTest(ThrottleMixin, AuthMixin, TestCase):
-    """GET /jobs/<job_id>/status/ endpoint testleri."""
 
-    def setUp(self):
-        super().setUp()
-        self.client = APIClient()
-        self.device = Device.objects.create(
-            installation_id='job-status-device',
-            device_token=uuid.uuid4()
-        )
-        self._auth_client(self.device)
-
-    @patch('celery.result.AsyncResult', _FakeAsyncResult)
-    def test_job_status_pending(self):
-        resp = self.client.get('/api/mathlock/jobs/test-job-123/status/')
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json()['state'], 'PENDING')
-
-    @patch('celery.result.AsyncResult', _FakeAsyncResult)
-    def test_job_status_success(self):
-        class FakeSuccess(_FakeAsyncResult):
-            def __init__(self, job_id):
-                super().__init__(job_id)
-                self.state = 'SUCCESS'
-                self.result = {'question_set_id': 42}
-
-        with patch('celery.result.AsyncResult', FakeSuccess):
-            resp = self.client.get('/api/mathlock/jobs/test-job-456/status/')
-        self.assertEqual(resp.status_code, 200)
-        data = resp.json()
-        self.assertEqual(data['state'], 'SUCCESS')
-        self.assertEqual(data['result']['question_set_id'], 42)
-
-    @patch('celery.result.AsyncResult', _FakeAsyncResult)
-    def test_job_status_invalid_id(self):
-        """Geçersiz job ID ile bile endpoint 200 döner ve state içerir."""
-        resp = self.client.get('/api/mathlock/jobs/invalid-id/status/')
-        self.assertEqual(resp.status_code, 200)
-        self.assertIn('state', resp.json())

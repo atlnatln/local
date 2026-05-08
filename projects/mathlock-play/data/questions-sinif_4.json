@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-07T21:48:59.162847+00:00",
+  "generatedAt": "2026-05-08T08:35:29.583644+00:00",
   "generatedBy": "mathlock-generator",
   "educationPeriod": "sinif_4",
   "difficultyProfile": {
-    "overall": "intermediate",
-    "avgDifficulty": 2.9,
+    "overall": "advanced",
+    "avgDifficulty": 4.3,
     "adjustmentReason": "Yaş uygun ilk set — sinif_4"
   },
   "questions": [
@@ -15,7 +15,7 @@
       "text": "276 - 153 = ?",
       "answer": 123,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Sayı doğrusunda geriye git",
       "interactionMode": "text-input"
     },
@@ -25,7 +25,7 @@
       "text": "441 + 302 = ?",
       "answer": 743,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
       "interactionMode": "text-input"
     },
@@ -35,7 +35,7 @@
       "text": "269 - 157 = ?",
       "answer": 112,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Sayı doğrusunda geriye git",
       "interactionMode": "text-input"
     },
@@ -45,7 +45,7 @@
       "text": "292 + 318 = ?",
       "answer": 610,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Sayıları kafanda sırala, topla",
       "interactionMode": "text-input"
     },
@@ -55,7 +55,7 @@
       "text": "395 ÷ 5 = ?",
       "answer": 79,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?",
       "interactionMode": "text-input"
     },
@@ -65,7 +65,7 @@
       "text": "? + 98 = 311",
       "answer": 213,
       "type": "eksik_sayı",
-      "difficulty": 1,
+      "difficulty": 5,
       "hint": "Bilinmeyen yerde ne olmalı?",
       "interactionMode": "text-input"
     },
@@ -75,7 +75,7 @@
       "text": "370 - 109 = ?",
       "answer": 261,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan geriye doğru say",
       "interactionMode": "text-input"
     },
@@ -85,7 +85,7 @@
       "text": "185 - 170 = ?",
       "answer": 15,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan geriye doğru say",
       "interactionMode": "text-input"
     },
@@ -95,7 +95,7 @@
       "text": "12 × 11 = ?",
       "answer": 132,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "10 ile çarpınca sona 0 eklenir",
       "interactionMode": "text-input"
     },
@@ -105,7 +105,7 @@
       "text": "En büyüğü hangisi: 3930, 2848, 9044, 1230, 2565 = ?",
       "answer": 9044,
       "type": "sıralama",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Hangi sayı daha çok?",
       "interactionMode": "tap-to-choose"
     },
@@ -125,7 +125,7 @@
       "text": "100 ÷ 20 = ?",
       "answer": 5,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?",
       "interactionMode": "text-input"
     },
@@ -135,7 +135,7 @@
       "text": "168 - 74 = ?",
       "answer": 94,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Sayı doğrusunda geriye git",
       "interactionMode": "text-input"
     },
@@ -145,7 +145,7 @@
       "text": "362 + 145 = ?",
       "answer": 507,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Önce onlukları topla, sonra birlikleri ekle",
       "interactionMode": "text-input"
     },
@@ -155,7 +155,7 @@
       "text": "409 - 233 = ?",
       "answer": 176,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan geriye doğru say",
       "interactionMode": "text-input"
     },
@@ -165,7 +165,7 @@
       "text": "86 - 30 = ?",
       "answer": 56,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan geriye doğru say",
       "interactionMode": "text-input"
     },
@@ -175,7 +175,7 @@
       "text": "185 - 161 = ?",
       "answer": 24,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
       "interactionMode": "text-input"
     },
@@ -185,7 +185,7 @@
       "text": "302 + 339 = ?",
       "answer": 641,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Sayıları kafanda sırala, topla",
       "interactionMode": "text-input"
     },
@@ -195,7 +195,7 @@
       "text": "770 ÷ 14 = ?",
       "answer": 55,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Eşit parçalara bölersen her tarafa kaç düşer?",
       "interactionMode": "text-input"
     },
@@ -205,7 +205,7 @@
       "text": "108 - 70 = ?",
       "answer": 38,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
       "interactionMode": "text-input"
     },
@@ -225,7 +225,7 @@
       "text": "48 ÷ 6 = ?",
       "answer": 8,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Çarpma tablosunu tersten düşün",
       "interactionMode": "text-input"
     },
@@ -235,7 +235,7 @@
       "text": "En büyüğü hangisi: 2719, 5040, 9750, 9326, 4729 = ?",
       "answer": 9750,
       "type": "sıralama",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Hangi sayı daha çok?",
       "interactionMode": "tap-to-choose"
     },
@@ -245,7 +245,7 @@
       "text": "225 + 64 = ?",
       "answer": 289,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
       "interactionMode": "text-input"
     },
@@ -255,7 +255,7 @@
       "text": "84'nin 4/6'i kaçtır = ?",
       "answer": 56,
       "type": "kesir",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Sayıyı paydaya böl, sonucu pay ile çarp",
       "interactionMode": "text-input"
     },
@@ -265,7 +265,7 @@
       "text": "36 × 33 = ?",
       "answer": 1188,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "10 ile çarpınca sona 0 eklenir",
       "interactionMode": "text-input"
     },
@@ -275,7 +275,7 @@
       "text": "128'nin 5/8'i kaçtır = ?",
       "answer": 80,
       "type": "kesir",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Önce paydaya böl, sonra pay kadar çarp",
       "interactionMode": "text-input"
     },
@@ -285,7 +285,7 @@
       "text": "539 ÷ 7 = ?",
       "answer": 77,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Eşit parçalara bölersen her tarafa kaç düşer?",
       "interactionMode": "text-input"
     },
@@ -295,7 +295,7 @@
       "text": "7 × 28 = ?",
       "answer": 196,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "10 ile çarpınca sona 0 eklenir",
       "interactionMode": "text-input"
     },
@@ -305,7 +305,7 @@
       "text": "96 × 21 = ?",
       "answer": 2016,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Toplama ile düşün: 3 × 2 = 3 + 3",
       "interactionMode": "text-input"
     },
@@ -315,7 +315,7 @@
       "text": "359 - 129 = ?",
       "answer": 230,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
       "interactionMode": "text-input"
     },
@@ -325,7 +325,7 @@
       "text": "14 + 47 = ?",
       "answer": 61,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Sayıları kafanda sırala, topla",
       "interactionMode": "text-input"
     },
@@ -345,7 +345,7 @@
       "text": "75 × 3 = ?",
       "answer": 225,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "10 ile çarpınca sona 0 eklenir",
       "interactionMode": "text-input"
     },
@@ -355,7 +355,7 @@
       "text": "72'nin 3/4'i kaçtır = ?",
       "answer": 54,
       "type": "kesir",
-      "difficulty": 2,
+      "difficulty": 3,
       "hint": "Bütünü parçalara böl, kaç parça alındı?",
       "interactionMode": "text-input"
     },
@@ -365,7 +365,7 @@
       "text": "85 × 29 = ?",
       "answer": 2465,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Toplama ile düşün: 3 × 2 = 3 + 3",
       "interactionMode": "text-input"
     },
@@ -375,7 +375,7 @@
       "text": "470 + 143 = ?",
       "answer": 613,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
       "interactionMode": "text-input"
     },
@@ -385,7 +385,7 @@
       "text": "975 ÷ 13 = ?",
       "answer": 75,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Eşit parçalara bölersen her tarafa kaç düşer?",
       "interactionMode": "text-input"
     },
@@ -395,7 +395,7 @@
       "text": "224 + 326 = ?",
       "answer": 550,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Önce onlukları topla, sonra birlikleri ekle",
       "interactionMode": "text-input"
     },
@@ -405,7 +405,7 @@
       "text": "417 + 252 = ?",
       "answer": 669,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
       "interactionMode": "text-input"
     },
@@ -415,7 +415,7 @@
       "text": "427 ÷ 7 = ?",
       "answer": 61,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Çarpma tablosunu tersten düşün",
       "interactionMode": "text-input"
     },
@@ -425,7 +425,7 @@
       "text": "228 - 105 = ?",
       "answer": 123,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Büyük sayıdan geriye doğru say",
       "interactionMode": "text-input"
     },
@@ -445,7 +445,7 @@
       "text": "211 + 356 = ?",
       "answer": 567,
       "type": "toplama",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Sayıları kafanda sırala, topla",
       "interactionMode": "text-input"
     },
@@ -455,7 +455,7 @@
       "text": "? - 297 = 206",
       "answer": 503,
       "type": "eksik_sayı",
-      "difficulty": 2,
+      "difficulty": 5,
       "hint": "Bilinmeyen yerde ne olmalı?",
       "interactionMode": "text-input"
     },
@@ -465,7 +465,7 @@
       "text": "3550 ÷ 50 = ?",
       "answer": 71,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Çarpma tablosunu tersten düşün",
       "interactionMode": "text-input"
     },
@@ -475,7 +475,7 @@
       "text": "12'nin 2/3'i kaçtır = ?",
       "answer": 8,
       "type": "kesir",
-      "difficulty": 1,
+      "difficulty": 2,
       "hint": "Önce paydaya böl, sonra pay kadar çarp",
       "interactionMode": "text-input"
     },
@@ -485,7 +485,7 @@
       "text": "211 - 65 = ?",
       "answer": 146,
       "type": "çıkarma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
       "interactionMode": "text-input"
     },
@@ -495,7 +495,7 @@
       "text": "330 ÷ 22 = ?",
       "answer": 15,
       "type": "bölme",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?",
       "interactionMode": "text-input"
     },
@@ -505,7 +505,7 @@
       "text": "100 × 26 = ?",
       "answer": 2600,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 5,
       "hint": "Çarpım tablosunu hatırla",
       "interactionMode": "text-input"
     }

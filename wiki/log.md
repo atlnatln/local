@@ -2509,3 +2509,57 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 218 entries
 
+## [2026-05-08 09:22] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
+- Raw existence: 0
+- Log size: 219 entries
+
+## [2026-05-08 10:33] lint | 5/10
+- Orphan pages: 1 ([[meb-2024-curriculum-technical-alignment]])
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 1
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 220 entries
+
+## [2026-05-08 10:34] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 221 entries
+
+## [2026-05-08 11:49] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 222 entries
+
+## [2026-05-08 11:50] ingest | mathlock-play-meb-analysis
+- Yeni: analysis/meb-2024-curriculum-technical-alignment.md (MEB 2024 uyum analizi, 5 bölüm)
+- Güncelleme: index.md (analysis sayfası eklendi)
+- Güncelleme: projects/mathlock-play.md (cross-reference eklendi)
+- Log size: 223 entries
+

@@ -51,16 +51,8 @@ class AuthMixin:
         self.client.credentials(HTTP_AUTHORIZATION=f'Device {signed}')
 
 
-class _FakeAsyncResult:
-    """Celery AsyncResult mock'u — backend bağlantısı olmadan."""
-    def __init__(self, job_id):
-        self.id = job_id
-        self.state = 'PENDING'
-        self.result = None
-
-
 __all__ = [
-    'NO_THROTTLE', 'ThrottleMixin', 'AuthMixin', '_FakeAsyncResult',
+    'NO_THROTTLE', 'ThrottleMixin', 'AuthMixin',
     '_deduct_credit_and_lock', '_release_renewal_lock',
     'DeviceTokenSigner', 'DeviceTokenAuthentication',
     'BadSignature', 'SignatureExpired', 'AuthenticationFailed',

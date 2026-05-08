@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.akn.mathlock.databinding.ActivityAccountBinding
+import com.akn.mathlock.api.RealApiClient
 import com.akn.mathlock.util.AccountManager
 import com.akn.mathlock.util.BillingHelper
 import com.android.billingclient.api.ProductDetails
@@ -326,7 +327,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
 
         Thread {
             try {
-                val url = java.net.URL("https://mathlock.com.tr/api/mathlock/purchase/verify/")
+                val url = java.net.URL("${RealApiClient.API_BASE}/purchase/verify/")
                 val conn = url.openConnection() as java.net.HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
@@ -389,7 +390,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
 
         Thread {
             try {
-                val url = java.net.URL("https://mathlock.com.tr/api/mathlock/purchase/verify/")
+                val url = java.net.URL("${RealApiClient.API_BASE}/purchase/verify/")
                 val conn = url.openConnection() as java.net.HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")

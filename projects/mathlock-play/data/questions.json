@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-07T21:48:59.163285+00:00",
+  "generatedAt": "2026-05-08T08:35:29.584705+00:00",
   "generatedBy": "mathlock-generator",
   "educationPeriod": "sinif_2",
   "difficultyProfile": {
@@ -15,7 +15,7 @@
       "text": "? + 2 = 33",
       "answer": 31,
       "type": "eksik_sayı",
-      "difficulty": 1,
+      "difficulty": 2,
       "hint": "Sonuçtan bilinen sayıyı çıkar",
       "interactionMode": "text-input"
     },
@@ -395,7 +395,7 @@
       "text": "? + 7 = 38",
       "answer": 31,
       "type": "eksik_sayı",
-      "difficulty": 1,
+      "difficulty": 2,
       "hint": "Sonuçtan bilinen sayıyı çıkar",
       "interactionMode": "text-input"
     },

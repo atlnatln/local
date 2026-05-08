@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-07T21:48:59.161474+00:00",
+  "generatedAt": "2026-05-08T08:35:29.580552+00:00",
   "generatedBy": "mathlock-generator",
   "educationPeriod": "sinif_1",
   "difficultyProfile": {
     "overall": "beginner",
-    "avgDifficulty": 1.1,
+    "avgDifficulty": 1.0,
     "adjustmentReason": "Yaş uygun ilk set — sinif_1"
   },
   "questions": [
@@ -75,7 +75,7 @@
       "text": "? - 9 = 1",
       "answer": 10,
       "type": "eksik_sayı",
-      "difficulty": 2,
+      "difficulty": 1,
       "hint": "Sonuçtan bilinen sayıyı çıkar",
       "interactionMode": "text-input"
     },
@@ -395,7 +395,7 @@
       "text": "? - 3 = 1",
       "answer": 4,
       "type": "eksik_sayı",
-      "difficulty": 2,
+      "difficulty": 1,
       "hint": "Bilinmeyen yerde ne olmalı?",
       "interactionMode": "text-input"
     },

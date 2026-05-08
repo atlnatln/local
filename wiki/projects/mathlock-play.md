@@ -43,6 +43,7 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | [[mathlock-play-ai]] | AI soru üretim pipeline'ı, adaptif algoritma, MEB uyumu, batch sistemi |
 | [[mathlock-play-android]] | Android oyunları, crash önleme, Android auth, Sayı Yolculuğu fix'leri |
 | [[mathlock-play-backend]] | Django backend, API testleri, backend auth, child_id düzeltmeleri |
+| [[meb-2024-curriculum-technical-alignment]] | MEB 2024 müfredat uyum analizi — kazanım haritası, render katmanı, ontoloji, adaptif zorluk, raporlama |
 
 ## Entry Points
 

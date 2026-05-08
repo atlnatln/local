@@ -1002,69 +1002,6 @@ def health(request):
     return Response({'status': 'ok', 'service': 'mathlock-backend'})
 
 
-# ─── Dinamik Paket Listesi ───────────────────────────────────────────────────
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_packages(request):
-    """
-    Güncel kredi paket listesini döndür.
-    Önce DB'ye bakar (admin panelinden yönetilebilir), DB boşsa settings.py'den okur.
-
-    GET /api/mathlock/packages/
-    Response: {
-        "packages": [
-            { "product_id": "kredi_1",  "display_name": "Başlangıç", "credits": 1,  "questions_count": 50 },
-            { "product_id": "kredi_5",  "display_name": "Standart",  "credits": 5,  "questions_count": 250 },
-            { "product_id": "kredi_10", "display_name": "Süper",     "credits": 10, "questions_count": 500 }
-        ],
-        "source": "db" | "settings"
-    }
-    """
-    db_packages = CreditPackage.objects.filter(is_active=True)
-
-    if db_packages.exists():
-        data = [
-            {
-                'product_id': p.product_id,
-                'display_name': p.display_name,
-                'credits': p.credits,
-                'questions_count': p.questions_count,
-                'description': p.description,
-                'sort_order': p.sort_order,
-            }
-            for p in db_packages
-        ]
-        return Response({'packages': data, 'source': 'db'})
-
-    # Fallback: settings.py'deki statik tanım
-    credits_map = getattr(settings, 'CREDITS_PER_PURCHASE', {})
-    questions_per_credit = getattr(settings, 'QUESTIONS_PER_CREDIT', 50)
-
-    # Makul bir görüntü adı üret
-    display_names = {
-        'kredi_1': _('package_starter'),
-        'kredi_5': _('package_standard'),
-        'kredi_10': _('package_super'),
-    }
-
-    data = sorted(
-        [
-            {
-                'product_id': pid,
-                'display_name': display_names.get(pid, pid),
-                'credits': credits,
-                'questions_count': credits * questions_per_credit,
-                'description': '',
-                'sort_order': i,
-            }
-            for i, (pid, credits) in enumerate(credits_map.items())
-        ],
-        key=lambda x: x['credits'],
-    )
-    return Response({'packages': data, 'source': 'settings'})
-
-
 # ─── Email Kayıt ─────────────────────────────────────────────────────────────
 
 @api_view(['POST'])
@@ -1430,7 +1367,6 @@ def update_progress(request):
                     'total_accessible': total_free + total_ai,
                     'auto_renewal_started': True,
                     'job_id': task.id,
-                    'check_url': f'/jobs/{task.id}/status/',
                     'credits_remaining': credits_remaining or 0,
                 })
 
@@ -1983,7 +1919,6 @@ def update_level_progress(request):
                     'all_completed': all_completed,
                     'auto_renewal_started': True,
                     'job_id': task.id,
-                    'check_url': f'/jobs/{task.id}/status/',
                     'credits_remaining': credits_remaining or 0,
                 })
             else:
@@ -2005,7 +1940,6 @@ def update_level_progress(request):
                     'all_completed': all_completed,
                     'auto_renewal_started': True,
                     'job_id': task.id,
-                    'check_url': f'/jobs/{task.id}/status/',
                     'credits_remaining': 0,
                 })
 
@@ -2018,24 +1952,3 @@ def update_level_progress(request):
         **(({'credits_remaining': credits_remaining}) if auto_renewal_started else {}),
     })
 
-
-
-# ─── Celery Job Durumu ───────────────────────────────────────────────────────
-
-@api_view(['GET'])
-def job_status(request, job_id):
-    """
-    Celery task durumunu sorgula.
-
-    GET /api/mathlock/jobs/<job_id>/status/
-    Response: { "state": "PENDING"|"SUCCESS"|"FAILURE", "result": {...} }
-    """
-    from celery.result import AsyncResult
-
-    result = AsyncResult(job_id)
-    response = {'state': result.state}
-    if result.state == 'SUCCESS':
-        response['result'] = result.result
-    elif result.state == 'FAILURE':
-        response['error'] = str(result.result)
-    return Response(response)

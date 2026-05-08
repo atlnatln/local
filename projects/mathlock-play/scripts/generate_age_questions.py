@@ -63,9 +63,65 @@ OPERATION_WEIGHTS = {
 }
 
 
+# ─── Zorluk hesaplama (1–5 skalası) ─────────────────────────────────────────
+
+def _calc_difficulty_addition(max_a: int) -> int:
+    if max_a <= 10: return 1
+    if max_a <= 50: return 2
+    if max_a <= 200: return 3
+    if max_a <= 500: return 4
+    return 5
+
+
+def _calc_difficulty_multiplication(max_a: int) -> int:
+    if max_a <= 3: return 1
+    if max_a <= 5: return 2
+    if max_a <= 10: return 3
+    if max_a <= 20: return 4
+    return 5
+
+
+def _calc_difficulty_division(max_divisor: int) -> int:
+    if max_divisor <= 2: return 1
+    if max_divisor <= 5: return 2
+    if max_divisor <= 9: return 3
+    if max_divisor <= 20: return 4
+    return 5
+
+
+def _calc_difficulty_sorting(count: int, max_val: int) -> int:
+    if count <= 2 and max_val <= 20: return 1
+    if count <= 3 and max_val <= 100: return 2
+    if count <= 4 and max_val <= 500: return 3
+    if count <= 5 and max_val <= 5000: return 4
+    return 5
+
+
+def _calc_difficulty_fraction(denominator: int, unit_fraction: bool = True) -> int:
+    base = 1
+    if denominator > 3: base = 2
+    if denominator > 5: base = 3
+    if denominator > 8: base = 4
+    if denominator > 10: base = 5
+    # Non-üniter kesirler (pay > 1) ek bilişsel adım içerir
+    if not unit_fraction:
+        base = min(5, base + 1)
+    return base
+
+
+def _calc_difficulty_missing_number(max_a: int, max_result: int) -> int:
+    if max_a <= 5 and max_result <= 10: return 1
+    if max_a <= 15 and max_result <= 50: return 2
+    if max_a <= 30 and max_result <= 100: return 3
+    if max_a <= 50 and max_result <= 500: return 4
+    return 5
+
+
 # ─── Temel üreticiler ───────────────────────────────────────────────────────
 
 def generate_addition(max_a: int, max_b: int, result_max: int = None, *, min_a: int = 1, min_b: int = 1) -> dict:
+    if result_max is not None and min_a + min_b > result_max:
+        raise ValueError(f"min_a({min_a}) + min_b({min_b}) = {min_a + min_b} > result_max({result_max})")
     a = random.randint(min_a, max_a)
     b = random.randint(min_b, max_b)
     if result_max and a + b > result_max:
@@ -74,7 +130,7 @@ def generate_addition(max_a: int, max_b: int, result_max: int = None, *, min_a: 
         "text": f"{a} + {b} = ?",
         "answer": a + b,
         "type": "toplama",
-        "difficulty": 1 if max_a <= 10 else (2 if max_a <= 50 else 3),
+        "difficulty": _calc_difficulty_addition(max_a),
     }
 
 
@@ -92,11 +148,13 @@ def generate_subtraction(min_a: int, max_a: int, no_borrow: bool = False) -> dic
         "text": f"{a} - {b} = ?",
         "answer": a - b,
         "type": "çıkarma",
-        "difficulty": 1 if max_a <= 10 else (2 if max_a <= 50 else 3),
+        "difficulty": _calc_difficulty_addition(max_a),
     }
 
 
 def generate_multiplication(max_a: int, max_b: int, result_max: int = None, *, min_a: int = 2, min_b: int = 1) -> dict:
+    if result_max is not None and min_a * min_b > result_max:
+        raise ValueError(f"min_a({min_a}) × min_b({min_b}) = {min_a * min_b} > result_max({result_max})")
     a = random.randint(min_a, max_a)
     b = random.randint(min_b, max_b)
     if result_max and a * b > result_max:
@@ -105,7 +163,7 @@ def generate_multiplication(max_a: int, max_b: int, result_max: int = None, *, m
         "text": f"{a} × {b} = ?",
         "answer": a * b,
         "type": "çarpma",
-        "difficulty": 1 if max_a <= 3 else (2 if max_a <= 5 else 3),
+        "difficulty": _calc_difficulty_multiplication(max_a),
     }
 
 
@@ -117,7 +175,7 @@ def generate_division(max_divisor: int, max_result: int, *, min_divisor: int = 2
         "text": f"{a} ÷ {b} = ?",
         "answer": result,
         "type": "bölme",
-        "difficulty": 1 if max_divisor <= 2 else (2 if max_divisor <= 5 else 3),
+        "difficulty": _calc_difficulty_division(max_divisor),
     }
 
 
@@ -171,7 +229,7 @@ def generate_comparison(max_val: int = 10, mode: str = "biggest") -> dict:
         "text": text,
         "answer": answer,
         "type": "karşılaştırma",
-        "difficulty": 1,
+        "difficulty": 1 if max_val <= 10 else 2,
     }
 
 
@@ -192,7 +250,7 @@ def generate_sorting(max_val: int, count: int = 2, mode: str = "biggest") -> dic
         "text": text,
         "answer": answer,
         "type": "sıralama",
-        "difficulty": 1 if count <= 2 and max_val <= 20 else (2 if count <= 3 else 3),
+        "difficulty": _calc_difficulty_sorting(count, max_val),
     }
 
 
@@ -205,7 +263,7 @@ def generate_missing_number(max_a: int, max_result: int) -> dict:
             "text": f"? + {a} = {b}",
             "answer": b - a,
             "type": "eksik_sayı",
-            "difficulty": 1,
+            "difficulty": _calc_difficulty_missing_number(max_a, max_result),
         }
     else:
         a = random.randint(2, max_result)
@@ -214,7 +272,7 @@ def generate_missing_number(max_a: int, max_result: int) -> dict:
             "text": f"? - {a} = {b}",
             "answer": a + b,
             "type": "eksik_sayı",
-            "difficulty": 2,
+            "difficulty": _calc_difficulty_missing_number(max_a, max_result),
         }
 
 
@@ -248,7 +306,7 @@ def generate_fraction(unit_fraction: bool = True, *, max_denominator: int = 10) 
         "text": f"{a}'nin {name} kaçtır = ?",
         "answer": answer,
         "type": "kesir",
-        "difficulty": 1 if den <= 3 else (2 if den <= 5 else 3),
+        "difficulty": _calc_difficulty_fraction(den, unit_fraction),
     }
 
 
@@ -510,7 +568,14 @@ def structured_id(year: int, grade: int, batch: int, seq: int) -> str:
 
 def package(questions: list, period: str, version: int = 1, use_offset: bool = True, year: int = 2025, batch: int = 1) -> dict:
     avg_diff = round(sum(q.get("difficulty", 1) for q in questions) / len(questions), 1)
-    overall = "beginner" if avg_diff < 1.5 else ("developing" if avg_diff < 2.5 else "intermediate")
+    if avg_diff < 1.5:
+        overall = "beginner"
+    elif avg_diff < 2.5:
+        overall = "developing"
+    elif avg_diff < 3.5:
+        overall = "intermediate"
+    else:
+        overall = "advanced"
     id_base = ID_RANGES.get(period, 0) if use_offset else 0
     grade_num = int(period.replace("sinif_", "").replace("okul_oncesi", "0"))
 

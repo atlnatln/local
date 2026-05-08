@@ -26,11 +26,9 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1')
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,mathlock.com.tr').split(',')
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',

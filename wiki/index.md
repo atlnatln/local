@@ -46,6 +46,7 @@ Ortak altyapı ve platform servisleri. Diğer tüm projelere hizmet eden katman.
 | [[kimi-code-cli]] | concept | Terminal tabanlı AI kodlama asistanı — kurulum, modlar, customisation |
 | [[agents-md]] | concept | AI agent'lar için proje context dosyası — format, konum, best practices |
 | [[acp-protocol]] | concept | Agent Client Protocol — client ↔ AI agent JSON-RPC stdio protokolü |
+| [[meb-2024-curriculum-technical-alignment]] | concept | MEB 2024 müfredatı ile teknik sistem uyum analizi ve çözüm çerçevesi |
 
 ## Active Decisions
 

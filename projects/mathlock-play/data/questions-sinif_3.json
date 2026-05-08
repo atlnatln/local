@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-07T21:48:59.162353+00:00",
+  "generatedAt": "2026-05-08T08:35:29.582578+00:00",
   "generatedBy": "mathlock-generator",
   "educationPeriod": "sinif_3",
   "difficultyProfile": {
     "overall": "intermediate",
-    "avgDifficulty": 2.8,
+    "avgDifficulty": 3.1,
     "adjustmentReason": "Yaş uygun ilk set — sinif_3"
   },
   "questions": [
@@ -15,7 +15,7 @@
       "text": "3 × 6 = ?",
       "answer": 18,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Çarpım tablosunu hatırla",
       "interactionMode": "text-input"
     },
@@ -75,7 +75,7 @@
       "text": "4 × 9 = ?",
       "answer": 36,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "10 ile çarpınca sona 0 eklenir",
       "interactionMode": "text-input"
     },
@@ -145,7 +145,7 @@
       "text": "2 × 4 = ?",
       "answer": 8,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Toplama ile düşün: 3 × 2 = 3 + 3",
       "interactionMode": "text-input"
     },
@@ -195,7 +195,7 @@
       "text": "10 × 7 = ?",
       "answer": 70,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "10 ile çarpınca sona 0 eklenir",
       "interactionMode": "text-input"
     },
@@ -215,7 +215,7 @@
       "text": "? + 25 = 46",
       "answer": 21,
       "type": "eksik_sayı",
-      "difficulty": 1,
+      "difficulty": 3,
       "hint": "Ters işlem yap",
       "interactionMode": "text-input"
     },
@@ -275,7 +275,7 @@
       "text": "? + 19 = 100",
       "answer": 81,
       "type": "eksik_sayı",
-      "difficulty": 1,
+      "difficulty": 3,
       "hint": "Sonuçtan bilinen sayıyı çıkar",
       "interactionMode": "text-input"
     },
@@ -315,7 +315,7 @@
       "text": "19 × 8 = ?",
       "answer": 152,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Çarpım tablosunu hatırla",
       "interactionMode": "text-input"
     },
@@ -325,7 +325,7 @@
       "text": "13 × 3 = ?",
       "answer": 39,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "10 ile çarpınca sona 0 eklenir",
       "interactionMode": "text-input"
     },
@@ -415,7 +415,7 @@
       "text": "10 × 9 = ?",
       "answer": 90,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Çarpım tablosunu hatırla",
       "interactionMode": "text-input"
     },
@@ -435,7 +435,7 @@
       "text": "20 × 6 = ?",
       "answer": 120,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "10 ile çarpınca sona 0 eklenir",
       "interactionMode": "text-input"
     },
@@ -465,7 +465,7 @@
       "text": "16 × 5 = ?",
       "answer": 80,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Çarpım tablosunu hatırla",
       "interactionMode": "text-input"
     },
@@ -505,7 +505,7 @@
       "text": "12 × 4 = ?",
       "answer": 48,
       "type": "çarpma",
-      "difficulty": 3,
+      "difficulty": 4,
       "hint": "Çarpım tablosunu hatırla",
       "interactionMode": "text-input"
     }
