@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play — Backend"
 created: 2026-05-07
-updated: 2026-05-08
+updated: 2026-05-09
 type: project
 tags: [mathlock-play, backend, django, drf, api, tests]
 related:
@@ -193,3 +193,50 @@ Dönem bazlı soru seti doğrulama aracı. `scripts/validate-questions.py`:
 | interactionMode | `text-input`, `tap-to-count`, `pattern-select`, `tap-to-choose` |
 
 Tüm 5 dönem (`okul_oncesi` → `sinif_4`) için **PASS**.
+
+## Backend Credits & Auth Güncellemeleri (2026-05-09)
+
+### Değişen Modüller
+
+| Dosya | Değişiklik |
+|-------|------------|
+| `credits/models.py` | Kredi modeli güncellemeleri (iade flag, state tracking) |
+| `credits/views.py` | 503 response handling, credits refund flag, purchase verify retry desteği |
+| `credits/authentication.py` | Raw device_token body/query param desteği (imzalı token ile birlikte) |
+| `credits/tasks.py` | Celery task güncellemeleri (async işlem stabilitesi) |
+
+### Yeni Testler
+
+`credits/tests/` altına yeni test dosyaları eklendi:
+
+- `test_credits_refund.py` — 503 durumunda credits refunded flag doğrulama
+- `test_purchase_retry.py` — 409 retry loop senaryoları
+- `test_device_token_raw.py` — Raw token + signed token dual-auth flow
+
+### Raw Token + Signed Token Dual Auth
+
+Android v1.0.77 ile birlikte backend, hem `Authorization: Device <signed_token>` header'ını hem de body/query param'daki raw `device_token`'ı kabul eder:
+
+```python
+# file: projects/mathlock-play/backend/credits/authentication.py
+class DeviceTokenAuthentication(BaseAuthentication):
+    def authenticate(self, request):
+        signed_token = None
+        # 1. Authorization header (imzalı token)
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith(self.keyword + ' '):
+            signed_token = auth_header[len(self.keyword) + 1:].strip()
+        # 2. Body/query param (raw token) — device lookup için
+        raw_token = request.data.get('device_token') or request.query_params.get('device_token')
+        # ... verify
+```
+
+### Deploy (2026-05-09)
+
+VPS'e deploy edildi. `systemd` servisleri restart edildi:
+
+```bash
+sudo systemctl restart mathlock-backend mathlock-celery
+```
+
+> Son test durumu: 169+ test, tümü OK.

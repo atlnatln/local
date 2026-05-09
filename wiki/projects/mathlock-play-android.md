@@ -198,6 +198,86 @@ private fun fetchLevels(): String? {
 }
 ```
 
+## 7 Kritik Bug Fix (2026-05-09) — v1.0.77
+
+### 1. StatsTracker: Idempotent Session ID'ler
+
+**Sorun:** Aynı oyun session'ı birden fazla kez kaydediliyor, istatistikler şişiyordu.
+
+**Düzeltme:** `session_id` UUID + 5-dakika penceresi ile idempotent hale getirildi. Aynı session 5 dk içinde tekrar gönderilirse backend tarafından atılır.
+
+### 2. AccountManager: 403 Otomatik Re-register
+
+**Sorun:** `getOrRefreshToken()` 403 alınca sonsuz döngüye giriyordu; expired token cache'de kalıyordu.
+
+**Düzeltme:** 403 alındığında token otomatik silinir (`SecurePrefs.remove(KEY_ACCESS_TOKEN)`) ve `getOrRegister()` ile re-register yapılır. `getRawDeviceToken()` eklendi; tüm aktiviteler body/query param'da raw token kullanır.
+
+### 3. CreditApiClient: 503 creditsRefunded Parse
+
+**Sorun:** 503 Service Unavailable responses'dan `creditsRefunded` flag parse edilmiyordu → kullanıcı kredisi iade edilmiş gibi görünmüyordu.
+
+**Düzeltme:** `CreditApiClient`'ta 503 response parsing'i `creditsRefunded` alanını da kapsayacak şekilde genişletildi.
+
+### 4. AccountActivity: 409 Retry Loop
+
+**Sorun:** `verifyAndConsumePurchase()` 409 Conflict hatasında tek deneme sonrası başarısız kalıyordu; Google Play acknowledge latency sorunu.
+
+**Düzeltme:** Max 3 retry, 2 saniye delay ile exponential backoff benzeri loop eklendi.
+
+### 5. Raw Device Token Kullanımı
+
+**Sorun:** İmzalı token (`access_token`) backend'e body/query param olarak gönderiliyordu; backend bunu doğrulayamıyordu.
+
+**Düzeltme:** `AccountManager.getRawDeviceToken()` eklendi. Tüm aktiviteler (`MathChallengeActivity`, `SayiYolculuguActivity`, `SettingsActivity`, `AccountActivity`) body/query param'da raw `device_token` kullanır; `Authorization` header'da imzalı `access_token` kalır.
+
+### 6. LockStateManager: Thread-Safety
+
+**Sorun:** `HashMap`/`HashSet` kullanımı race condition'a açıktı; ANR ve tutarsız lock state.
+
+**Düzeltme:** `ConcurrentHashMap` ve `ConcurrentHashMap.newKeySet()` ile thread-safe hale getirildi.
+
+### 7. SecurePrefs: IllegalStateException
+
+**Sorun:** Android Keystore bozulduğunda plain-text fallback devreye giriyordu; güvenlik zaafiyeti.
+
+**Düzeltme:** Keystore hatasında `IllegalStateException` atılır, plain-text fallback tamamen kaldırıldı. Uygulama reinstall gerektirir.
+
+## UI/UX İyileştirmeleri (2026-05-09) — v1.0.77
+
+### ChallengePickerActivity: Parent Auth Pattern/PIN
+
+**Değişiklik:** `BiometricPrompt` `BIOMETRIC_STRONG or DEVICE_CREDENTIAL` kombinasyonuna geçirildi. Cihazda parmak izi yoksa PIN/desen/şifre ile ebeveyn doğrulaması yapılabilir.
+
+> Önceki: Sadece `BIOMETRIC_STRONG` destekliyordu; PIN kilidi olan cihazlarda prompt açılmıyordu.
+
+### MathChallengeActivity: btnNext Büyütme
+
+**Değişiklik:** `btnNext` 64dp yüksekliğe, bold yazı tipine, 16dp corner radius'a yükseltildi. `showKeyboard()` helper eklendi; soru değişiminde klavye otomatik gösterilir.
+
+### Parent Card Görsel Düzenleme
+
+**Değişiklik:** Ebeveyn kartı emoji 🫆 → 🔑 değiştirildi. `cardElevation` 8dp, `strokeWidth` 1dp ile görsel derinlik eklendi.
+
+## Yeni Testler (2026-05-09)
+
+| Test | Kapsam |
+|------|--------|
+| `AccountManagerTest.kt` | Token refresh, 403 re-register, raw token, getOrRegister flow |
+| `StatsTrackerTest.kt` | Session ID idempotency, 5-dakika penceresi, batch flush |
+| `LockStateManagerTest.kt` | Concurrent put/remove, keySet consistency, thread-safety |
+
+## Test Fix: Conscrypt UnsatisfiedLinkError (2026-05-09)
+
+**Sorun:** `SayiYolculuguActivityApiTest` Android instrumented test'inde `UnsatisfiedLinkError: conscrypt` hatası alınıyordu.
+
+**Düzeltme:** Test sınıfına `@ConscryptMode(ConscryptMode.Mode.OFF)` annotation eklendi. Robolectric/native conscrypt çakışması böylece çözüldü.
+
+## Sürüm (2026-05-09)
+
+- **Version Code:** 76 → 77
+- **Version Name:** v1.0.77
+- **Play Store:** Internal testing track'e yüklendi
+
 ---
 
 > Backend auth ve API detayları için bkz. [[mathlock-play-backend]]

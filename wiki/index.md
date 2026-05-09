@@ -1,7 +1,7 @@
 ---
 title: "Wiki Index"
 created: 2026-05-01
-updated: 2026-05-07
+updated: 2026-05-09
 type: index
 tags: [meta, index]
 related: []
@@ -78,21 +78,21 @@ Geçersiz kılınmış veya değişmiş kararlar.
 | [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67+ test) | 2026-05-07 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-07 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-05 |
-| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) | 2026-05-07 |
+| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) | 2026-05-09 |
 | [[mathlock-play-ai]] | project | MathLock AI soru pipeline'ı | 2026-05-07 |
-| [[mathlock-play-android]] | project | MathLock Android detayları | 2026-05-07 |
-| [[mathlock-play-backend]] | project | MathLock backend detayları | 2026-05-07 |
+| [[mathlock-play-android]] | project | MathLock Android detayları | 2026-05-09 |
+| [[mathlock-play-backend]] | project | MathLock backend detayları | 2026-05-09 |
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
 | [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-03 |
 
 ## Recently Updated
 
+- [[mathlock-play-android]] — 7 kritik bug fix (StatsTracker idempotency, AccountManager 403 re-register, CreditApiClient 503 parsing, 409 retry loop, raw device token, LockStateManager thread-safety, SecurePrefs hard fail), UI/UX iyileştirmeleri, yeni testler (AccountManagerTest, StatsTrackerTest, LockStateManagerTest), v1.0.77 (2026-05-09)
+- [[mathlock-play-backend]] — credits/auth güncellemeleri, raw+signed token dual auth, 503/409 handling, VPS deploy, yeni testler (2026-05-09)
+- [[mathlock-play]] — v1.0.77 release, recent commits güncellendi (2026-05-09)
 - [[mathlock-play-ai]] — MEB uyum düzeltmeleri: curriculum JSON non-üniter kesir fix, generate script çıkarma=0 fix, zorluk 5 toplama 100'e genişletildi, Android TYPE_LABELS standardizasyonu tamamlandı (2026-05-07)
-- [[mathlock-play-android]] — `StatsDashboardActivity` + `PerformanceReportActivity` tip isimlendirme fix'i eklendi (2026-05-07)
 - [[proactive-wiki]] — Auto-sync davranışı eklendi: `docs(wiki):` sonsuz döngü koruması, `.pending` cross-machine sync, `git commit --amend` yerine ayrı commit stratejisi (2026-05-07)
-- [[ops-bot]] — `critical_security_alert.py` medium severity desteği, `token_abuse_detector.py` auth endpoint genişlemesi, `OPS_BOT_CRITICAL_STATE_PATH` tanımı (2026-05-07)
-- [[sec-agent]] — State path karışıklığı troubleshooting notu eklendi (2026-05-07)
 - [[ops-bot]] — `.gitignore` güncellendi: `.venv/`, `venv/`, `data/sec-agent-*.json` eklendi (2026-05-06)
 - [[webimar]] — `.gitignore` güncellendi, `deploy.sh`'ta VPS domain check `-k` flag'i eklendi (2026-05-06)
 - [[mathlock-play]] — `.env.example` güncellendi: DB config ayrıldı, Celery/Redis eklendi, Google Play path güncellendi (2026-05-06)

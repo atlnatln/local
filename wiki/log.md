@@ -2704,3 +2704,23 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 234 entries
 
+
+## [2026-05-09 15:01] ingest | mathlock-play | 681346a3 | 3
+- Files: A:3 M:4 D:0
+- Pages created: (none)
+- Pages updated: [[mathlock-play]], [[mathlock-play-android]], [[mathlock-play-backend]]
+- Pages archived: (none)
+- Diff summary: 7 critical Android bug fixes (StatsTracker idempotency, AccountManager 403 re-register, CreditApiClient 503 parsing, 409 retry loop, raw device token, LockStateManager thread-safety, SecurePrefs hard fail). UI/UX improvements (ChallengePickerActivity BIOMETRIC_STRONG or DEVICE_CREDENTIAL, btnNext sizing, parent card styling). New tests: AccountManagerTest, StatsTrackerTest, LockStateManagerTest. Conscrypt test fix. Backend credits/auth updates + VPS deploy. v1.0.77.
+- Lint: pending
+## [2026-05-09 16:04] lint | 7/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 6
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 236 entries
+
