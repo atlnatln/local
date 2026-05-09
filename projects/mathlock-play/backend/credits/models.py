@@ -51,6 +51,10 @@ class ChildProfile(models.Model):
     total_time_seconds = models.IntegerField(
         default=0, help_text="Toplam çözüm süresi (saniye)"
     )
+    last_sync_session_id = models.CharField(
+        max_length=64, blank=True, null=True,
+        help_text="Son işlenen istatistik oturum ID'si — idempotency için"
+    )
     current_difficulty = models.IntegerField(default=1)
     stats_json = models.JSONField(default=dict, blank=True,
                                   help_text="Tip/zorluk bazlı detaylı istatistikler")
@@ -98,6 +102,10 @@ class CreditBalance(models.Model):
     total_purchased = models.IntegerField(default=0, help_text="Toplam satın alınan kredi")
     total_used = models.IntegerField(default=0, help_text="Toplam kullanılan kredi")
     free_set_used = models.BooleanField(default=False, help_text="Ücretsiz 50 soru kullanıldı mı")
+    last_refund_check_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Son iade kontrolü zamanı — 24 saatte bir throttle"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

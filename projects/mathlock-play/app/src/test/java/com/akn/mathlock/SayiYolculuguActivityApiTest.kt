@@ -5,10 +5,13 @@ import android.content.SharedPreferences
 import com.akn.mathlock.api.ApiClient
 import com.akn.mathlock.api.MockApiClient
 import com.akn.mathlock.util.PreferenceManager
+import com.akn.mathlock.util.AccountManager
 import com.akn.mathlock.util.SecurePrefs
 import io.mockk.every
+import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
+import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Assert.*
@@ -18,6 +21,9 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.ConscryptMode
+import org.robolectric.shadows.ShadowLooper
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.concurrent.CountDownLatch
@@ -35,6 +41,8 @@ import java.util.concurrent.TimeUnit
  *    yeni set alamıyordu.
  */
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [28])
+@ConscryptMode(ConscryptMode.Mode.OFF)
 class SayiYolculuguActivityApiTest {
 
     private lateinit var context: Context
@@ -45,16 +53,27 @@ class SayiYolculuguActivityApiTest {
     fun setUp() {
         context = RuntimeEnvironment.getApplication()
         mockkObject(SecurePrefs)
+        mockkConstructor(AccountManager::class)
+
+        // Fake AccountManager
+        every { anyConstructed<AccountManager>().getOrRefreshToken() } returns "test-token"
+        every { anyConstructed<AccountManager>().getDeviceToken() } returns "test-device-token"
+        every { anyConstructed<AccountManager>().getRawDeviceToken() } returns "test-device-token"
 
         // Fake access token (imzalı format değil, mock auth için yeterli)
         val fakePrefs = context.getSharedPreferences("test_account", Context.MODE_PRIVATE)
         every { SecurePrefs.get(any(), "mathlock_account") } returns fakePrefs
         fakePrefs.edit().putString("access_token", "test-token").apply()
+        fakePrefs.edit().putString("device_token", "test-device-token").apply()
 
         // Fake PreferenceManager childId
         val prefPrefs = context.getSharedPreferences("mathlock_prefs", Context.MODE_PRIVATE)
         every { SecurePrefs.get(any(), "mathlock_prefs") } returns prefPrefs
         prefPrefs.edit().putInt("active_child_id", 99).apply()
+
+        // Fake sayi_yolculugu prefs (activity onCreate içinde SecurePrefs kullanıyor)
+        val sayiPrefs = context.getSharedPreferences("sayi_yolculugu", Context.MODE_PRIVATE)
+        every { SecurePrefs.get(any(), "sayi_yolculugu") } returns sayiPrefs
 
         activity = Robolectric.buildActivity(SayiYolculuguActivity::class.java).create().get()
         mockApiClient = MockApiClient()
@@ -76,8 +95,8 @@ class SayiYolculuguActivityApiTest {
             ApiClient.Response(404, JSONObject()),
             ApiClient.Response(200, JSONObject().apply {
                 put("set_id", 42)
-                put("levels", listOf<Any>())
-                put("completed_level_ids", listOf<Any>())
+                put("levels", JSONArray())
+                put("completed_level_ids", JSONArray())
             })
         )
 
@@ -100,8 +119,8 @@ class SayiYolculuguActivityApiTest {
             ApiClient.Response(404, JSONObject()),
             ApiClient.Response(200, JSONObject().apply {
                 put("set_id", 42)
-                put("levels", listOf<Any>())
-                put("completed_level_ids", listOf<Any>())
+                put("levels", JSONArray())
+                put("completed_level_ids", JSONArray())
             })
         )
 
@@ -123,16 +142,15 @@ class SayiYolculuguActivityApiTest {
             })
         )
 
-        val latch = CountDownLatch(1)
         var receivedResp: JSONObject? = null
-
         invokeUploadLevelProgress(activity, listOf(1)) { resp ->
             receivedResp = resp
-            latch.countDown()
         }
 
-        assertTrue("Callback should be invoked", latch.await(3, TimeUnit.SECONDS))
-        assertNotNull(receivedResp)
+        Thread.sleep(500)
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+
+        assertNotNull("Callback should be invoked", receivedResp)
         assertTrue("auto_renewal_started should be true",
             receivedResp!!.optBoolean("auto_renewal_started", false))
 
@@ -149,16 +167,15 @@ class SayiYolculuguActivityApiTest {
     fun uploadLevelProgress_httpError_invokesCallback() {
         mockApiClient.nextResponse = ApiClient.Response(500, JSONObject())
 
-        val latch = CountDownLatch(1)
         var receivedResp: JSONObject? = null
-
         invokeUploadLevelProgress(activity, listOf(1)) { resp ->
             receivedResp = resp
-            latch.countDown()
         }
 
-        assertTrue("Callback should be invoked even on HTTP 500", latch.await(3, TimeUnit.SECONDS))
-        assertNotNull(receivedResp)
+        Thread.sleep(500)
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+
+        assertNotNull("Callback should be invoked even on HTTP 500", receivedResp)
         assertEquals("error field should indicate http_500", "http_500", receivedResp!!.optString("error"))
         assertFalse("auto_renewal_started should be false on error",
             receivedResp!!.optBoolean("auto_renewal_started", true))
@@ -176,16 +193,15 @@ class SayiYolculuguActivityApiTest {
         }
         injectApiClient(activity, brokenClient)
 
-        val latch = CountDownLatch(1)
         var receivedResp: JSONObject? = null
-
         invokeUploadLevelProgress(activity, listOf(1)) { resp ->
             receivedResp = resp
-            latch.countDown()
         }
 
-        assertTrue("Callback should be invoked even on exception", latch.await(3, TimeUnit.SECONDS))
-        assertNotNull(receivedResp)
+        Thread.sleep(500)
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+
+        assertNotNull("Callback should be invoked even on exception", receivedResp)
         assertEquals("exception", receivedResp!!.optString("error"))
     }
 

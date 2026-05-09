@@ -63,7 +63,8 @@ class DeviceTokenAuthentication(BaseAuthentication):
 
         signer = DeviceTokenSigner()
         try:
-            device_token = signer.unsign(signed_token)
+            # Token 90 gün geçerli; eski app versiyonları için backward-compatible
+            device_token = signer.unsign(signed_token, max_age=90 * 86400)
         except SignatureExpired:
             raise AuthenticationFailed('Token expired.')
         except BadSignature:

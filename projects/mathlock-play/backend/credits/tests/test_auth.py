@@ -1,3 +1,4 @@
+import time
 from .base import *
 
 class DeviceTokenSignerTest(TestCase):
@@ -70,6 +71,19 @@ class DeviceTokenAuthenticationTest(ThrottleMixin, TestCase):
         signed = self.signer.sign(str(self.device.device_token))
         # Django TimestampSigner.unsign'i patch'le — tüm DeviceTokenSigner instance'ları etkilenir
         with patch('credits.authentication.TimestampSigner.unsign', side_effect=SignatureExpired('expired')):
+            auth = DeviceTokenAuthentication()
+            request = MagicMock()
+            request.headers = {'Authorization': f'Device {signed}'}
+            with self.assertRaises(AuthenticationFailed) as ctx:
+                auth.authenticate(request)
+            self.assertIn('expired', str(ctx.exception).lower())
+
+    def test_token_expires_after_90_days(self):
+        """90+ gün eski token reddedilmeli (max_age=90*86400)."""
+        signed = self.signer.sign(str(self.device.device_token))
+        # time.time'ı 91 gün ileri al
+        future = time.time() + 91 * 86400
+        with patch('time.time', return_value=future):
             auth = DeviceTokenAuthentication()
             request = MagicMock()
             request.headers = {'Authorization': f'Device {signed}'}

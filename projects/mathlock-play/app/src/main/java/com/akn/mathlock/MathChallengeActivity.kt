@@ -1,10 +1,12 @@
 package com.akn.mathlock
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.akn.mathlock.databinding.ActivityMathChallengeBinding
@@ -92,7 +94,7 @@ class MathChallengeActivity : BaseActivity() {
         // JSON modunu arka planda sync et, sonra soruları göster
         Thread {
             // Cihaz kaydı + bekleyen ilerleme gönderimi
-            val authToken = accountManager.getOrRegister()
+            val authToken = accountManager.getOrRefreshToken()
             if (authToken != null) {
                 questionManager.uploadProgress(authToken)
             }
@@ -132,6 +134,14 @@ class MathChallengeActivity : BaseActivity() {
             requiredCount = prefManager.passScore.coerceAtLeast(1)
             sessionSolvedCount = 0
             showNextJsonQuestion()
+        }
+    }
+
+    private fun showKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        binding.etAnswer.post {
+            showKeyboard()
+            imm.showSoftInput(binding.etAnswer, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
@@ -438,6 +448,7 @@ class MathChallengeActivity : BaseActivity() {
 
     private fun onPracticeSetComplete() {
         Log.d(TAG, "Pratik mod: set tamamlandı, stats yükleniyor...")
+        statsTracker.endSession()
         // Stats yükle ve progress sıfırla
         Thread {
             val authToken = accountManager.getAccessToken()
@@ -492,6 +503,8 @@ class MathChallengeActivity : BaseActivity() {
         binding.progressBar.max = questionManager.totalCount()
         binding.progressBar.progress = questionManager.totalCount()
 
+        statsTracker.endSession()
+
         // Stats yükle + kredi kullan + sıradaki set için soruları arka planda hazırla
         Thread {
             val authToken = accountManager.getAccessToken()
@@ -510,16 +523,29 @@ class MathChallengeActivity : BaseActivity() {
             if (authToken != null) {
                 val statsJson = statsTracker.buildStatsJson(questionManager.getVersion())
                 val creditResult = creditClient.useCredit(authToken, childName, statsJson)
-                if (creditResult.success) {
-                    Log.d(TAG, "Kredi kullanıldı: kalan=${creditResult.creditsRemaining}, ücretsiz=${creditResult.isFree}, set_version=${creditResult.setVersion}")
-                } else {
-                    Log.w(TAG, "Kredi kullanılamadı: ${creditResult.error}")
-                    runOnUiThread {
-                        Toast.makeText(
-                            this@MathChallengeActivity,
-                            "🎉 50 soru tamamlandı! Yeni sorular için kredi satın alabilirsin.",
-                            Toast.LENGTH_LONG
-                        ).show()
+                when {
+                    creditResult.creditsRefunded -> {
+                        Log.w(TAG, "Kredi iade edildi: ${creditResult.error}")
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@MathChallengeActivity,
+                                "Yeni sorular hazırlanamadı, kredi iade edildi. Tekrar deneyin.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                    creditResult.success -> {
+                        Log.d(TAG, "Kredi kullanıldı: kalan=${creditResult.creditsRemaining}, ücretsiz=${creditResult.isFree}, set_version=${creditResult.setVersion}")
+                    }
+                    else -> {
+                        Log.w(TAG, "Kredi kullanılamadı: ${creditResult.error}")
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@MathChallengeActivity,
+                                "🎉 50 soru tamamlandı! Yeni sorular için kredi satın alabilirsin.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
             }
@@ -580,7 +606,7 @@ class MathChallengeActivity : BaseActivity() {
         binding.btnCheck.visibility = View.VISIBLE
         binding.btnNext.visibility = View.GONE
         binding.btnRetry.visibility = View.GONE
-        binding.etAnswer.requestFocus()
+        showKeyboard()
     }
 
     private fun checkFallbackAnswer() {

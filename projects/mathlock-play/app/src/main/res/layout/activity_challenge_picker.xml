@@ -332,8 +332,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        app:cardElevation="8dp"
         app:cardBackgroundColor="@color/card_parent"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/on_surface_secondary"
         android:clickable="true"
         android:focusable="true">
 
@@ -347,7 +349,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🫆"
+                android:text="🔑"
                 android:textSize="40sp"
                 android:layout_marginEnd="16dp" />
 

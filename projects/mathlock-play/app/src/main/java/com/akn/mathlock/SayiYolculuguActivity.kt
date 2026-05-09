@@ -182,19 +182,21 @@ class SayiYolculuguActivity : BaseActivity() {
     private fun fetchLevels(): String? {
         val accountManager = AccountManager(this)
         val prefManager = PreferenceManager(this)
-        var token = accountManager.getAccessToken()
-        if (token.isNullOrBlank()) {
-            token = accountManager.getOrRegister()
+        val accessToken = accountManager.getOrRefreshToken()
+        var deviceToken = accountManager.getDeviceToken()
+        if (deviceToken.isNullOrBlank()) {
+            accountManager.getOrRegister()
+            deviceToken = accountManager.getDeviceToken()
         }
-        apiClient.setAuthToken(token)
+        apiClient.setAuthToken(accessToken)
         val childId = prefManager.activeChildId
-        System.out.println("[SY-FETCH] token=${token?.take(8)} childId=$childId")
+        System.out.println("[SY-FETCH] token=${accessToken?.take(8)} childId=$childId")
 
-        if (!token.isNullOrBlank()) {
+        if (!accessToken.isNullOrBlank() && !deviceToken.isNullOrBlank()) {
             try {
                 val locale = PreferenceManager(this).appLocale
                 fun tryFetch(withChildId: Boolean): String? {
-                    var path = "/levels/?device_token=${token!!.trim()}"
+                    var path = "/levels/?device_token=${deviceToken.trim()}"
                     if (withChildId && childId > 0) path += "&child_id=$childId"
                     path += "&locale=$locale"
                     System.out.println("[SY-FETCH] GET $path")
@@ -399,22 +401,24 @@ class SayiYolculuguActivity : BaseActivity() {
             try {
                 val accountManager = AccountManager(this)
                 val prefManager = PreferenceManager(this)
-                var token = accountManager.getAccessToken()
-                if (token.isNullOrBlank()) {
-                    token = accountManager.getOrRegister()
+                val accessToken = accountManager.getOrRefreshToken()
+                var deviceToken = accountManager.getDeviceToken()
+                if (deviceToken.isNullOrBlank()) {
+                    accountManager.getOrRegister()
+                    deviceToken = accountManager.getDeviceToken()
                 }
-                if (token.isNullOrBlank()) {
+                if (accessToken.isNullOrBlank() || deviceToken.isNullOrBlank()) {
                     System.out.println("[SY-UPLOAD] no token")
                     invokeResult(JSONObject().put("error", "no_token"))
                     return@Thread
                 }
-                apiClient.setAuthToken(token)
+                apiClient.setAuthToken(accessToken)
                 val childId = prefManager.activeChildId
                 System.out.println("[SY-UPLOAD] set_id=$currentSetId childId=$childId completed=${completedLevelIds.sorted()}")
 
                 fun tryUpload(withChildId: Boolean): Boolean {
                     val body = JSONObject().apply {
-                        put("device_token", token)
+                        put("device_token", deviceToken)
                         if (withChildId && childId > 0) put("child_id", childId)
                         currentSetId?.let { put("set_id", it) }
                         val arr = JSONArray()

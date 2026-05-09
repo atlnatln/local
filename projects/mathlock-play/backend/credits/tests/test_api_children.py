@@ -271,3 +271,19 @@ class ChildReportViewTest(ThrottleMixin, AuthMixin, TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Device invalid-token')
         resp = self.client.get(f'/api/mathlock/children/stats-history/?device_token={uuid.uuid4()}&child_name=Elif')
         self.assertEqual(resp.status_code, 403)
+
+    def test_weekly_report_avg_daily_active_days(self):
+        """Ortalama sadece aktif günler (solved > 0) üzerinden hesaplanmalı."""
+        child = self.child
+        today = timezone.now().date()
+        child.daily_stats = {
+            (today - timedelta(days=1)).isoformat(): {'solved': 10, 'correct': 8, 'time_seconds': 600},
+            (today - timedelta(days=2)).isoformat(): {'solved': 5, 'correct': 4, 'time_seconds': 300},
+        }
+        child.save()
+
+        _refresh_weekly_report(child)
+        child.refresh_from_db()
+        report = child.weekly_report_json
+        # 2 aktif gün, toplam 900 saniye = 15 dakika / 2 = 7.5
+        self.assertEqual(report['avgDailyMinutes'], 7.5)

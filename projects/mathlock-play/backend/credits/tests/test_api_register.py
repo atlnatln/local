@@ -212,6 +212,16 @@ class RegisterEmailViewTest(ThrottleMixin, AuthMixin, TestCase):
         self.assertEqual(cb.total_purchased, 7)  # sadece eski cihazdan gelen
         self.assertEqual(cb.total_used, 1)
 
+    def test_register_email_atomic_device_save(self):
+        """Email kaydı transaction içinde gerçekleşmeli."""
+        resp = self.client.post(self.url, {
+            'device_token': str(self.device.device_token),
+            'email': 'atomic@example.com',
+        }, format='json')
+        self.assertEqual(resp.status_code, 200)
+        self.device.refresh_from_db()
+        self.assertEqual(self.device.email, 'atomic@example.com')
+
 class HealthViewTest(ThrottleMixin, TestCase):
 
     def setUp(self):

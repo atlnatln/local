@@ -57,10 +57,16 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun loadProfiles() {
-        val token = accountManager.getAccessToken() ?: return
+        accountManager.getAccessToken() ?: return
+        var deviceToken = accountManager.getDeviceToken()
+        if (deviceToken.isNullOrBlank()) {
+            accountManager.getOrRegister()
+            deviceToken = accountManager.getDeviceToken()
+        }
+        if (deviceToken.isNullOrBlank()) return
         Thread {
             try {
-                val url = URL("$API_BASE/children/?device_token=$token")
+                val url = URL("$API_BASE/children/?device_token=$deviceToken")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
                 conn.connectTimeout = TIMEOUT
@@ -200,7 +206,13 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun createChild(name: String, period: String) {
-        val token = accountManager.getAccessToken() ?: return
+        accountManager.getAccessToken() ?: return
+        var deviceToken = accountManager.getDeviceToken()
+        if (deviceToken.isNullOrBlank()) {
+            accountManager.getOrRegister()
+            deviceToken = accountManager.getDeviceToken()
+        }
+        if (deviceToken.isNullOrBlank()) return
         Thread {
             try {
                 val url = URL("$API_BASE/children/")
@@ -212,7 +224,7 @@ class ChildProfilesActivity : BaseActivity() {
                 conn.readTimeout = TIMEOUT
 
                 val body = JSONObject().apply {
-                    put("device_token", token)
+                    put("device_token", deviceToken)
                     put("name", name)
                     put("education_period", period)
                 }
@@ -257,10 +269,16 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun updateChild(childId: Int, name: String? = null, period: String? = null, setActive: Boolean = false) {
-        val token = accountManager.getAccessToken() ?: return
+        accountManager.getAccessToken() ?: return
+        var deviceToken = accountManager.getDeviceToken()
+        if (deviceToken.isNullOrBlank()) {
+            accountManager.getOrRegister()
+            deviceToken = accountManager.getDeviceToken()
+        }
+        if (deviceToken.isNullOrBlank()) return
         Thread {
             try {
-                val url = URL("$API_BASE/children/detail/?device_token=$token&child_id=$childId")
+                val url = URL("$API_BASE/children/detail/?device_token=$deviceToken&child_id=$childId")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "PUT"
                 conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
@@ -292,10 +310,16 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun deleteChild(childId: Int) {
-        val token = accountManager.getAccessToken() ?: return
+        accountManager.getAccessToken() ?: return
+        var deviceToken = accountManager.getDeviceToken()
+        if (deviceToken.isNullOrBlank()) {
+            accountManager.getOrRegister()
+            deviceToken = accountManager.getDeviceToken()
+        }
+        if (deviceToken.isNullOrBlank()) return
         Thread {
             try {
-                val url = URL("$API_BASE/children/detail/?device_token=$token&child_id=$childId")
+                val url = URL("$API_BASE/children/detail/?device_token=$deviceToken&child_id=$childId")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "DELETE"
                 conn.connectTimeout = TIMEOUT

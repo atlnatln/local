@@ -22,8 +22,8 @@ android {
         applicationId = "com.akn.mathlock.play"
         minSdk = 26
         targetSdk = 35
-        versionCode = 76
-        versionName = "1.0.76"
+        versionCode = 77
+        versionName = "1.0.77"
     }
 
     signingConfigs {
@@ -48,12 +48,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     buildFeatures {
@@ -64,6 +64,7 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+
         }
     }
 }
@@ -94,4 +95,5 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")
     testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("org.json:json:20231013")
+    testImplementation("org.robolectric:robolectric:4.12.1")
 }

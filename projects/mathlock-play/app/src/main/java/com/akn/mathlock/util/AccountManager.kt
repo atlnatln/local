@@ -40,8 +40,36 @@ class AccountManager(
     /** Kayıtlı device_token (null = henüz kayıt yok). */
     fun getDeviceToken(): String? = prefs.getString(KEY_DEVICE_TOKEN, null)
 
+    /** Kayıtlı raw device_token (imzalı değil, UUID formatında). */
+    fun getRawDeviceToken(): String? = prefs.getString(KEY_DEVICE_TOKEN, null)
+
     /** Kayıtlı access_token (imzalı, Authorization header için). */
     fun getAccessToken(): String? = prefs.getString(KEY_ACCESS_TOKEN, null)
+
+    /**
+     * Token'ı doğrula, 403 (expired) ise sil ve yeniden kaydol.
+     * IO thread'den çağır.
+     * @return geçerli access_token veya null
+     */
+    fun getOrRefreshToken(): String? {
+        val existing = getAccessToken()
+        if (existing.isNullOrBlank()) return getOrRegister()
+
+        return try {
+            val response = apiClient.get("/credits/")
+            if (response.statusCode == 403) {
+                Log.w(TAG, "Access token expired (403), re-registering...")
+                prefs.edit().remove(KEY_ACCESS_TOKEN).apply()
+                apiClient.setAuthToken(null)
+                getOrRegister()
+            } else {
+                existing
+            }
+        } catch (e: Exception) {
+            // Offline — mevcut token'ı kullan
+            existing
+        }
+    }
 
     /** Kayıtlı email (null = kayıt yok). */
     fun getEmail(): String? = prefs.getString(KEY_EMAIL, null)

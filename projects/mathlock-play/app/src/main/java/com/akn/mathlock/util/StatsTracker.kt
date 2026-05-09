@@ -24,6 +24,8 @@ class StatsTracker(private val context: Context) {
         private const val KEY_TOTAL_CORRECT = "total_correct_alltime"
         private const val KEY_TOTAL_SHOWN = "total_shown_alltime"
         private const val KEY_LAST_UPLOADED_TIME = "last_uploaded_time"
+        private const val KEY_LAST_SESSION_ID = "last_session_id"
+        private const val KEY_LAST_SESSION_TIME = "last_session_time"
         private const val API_STATS_URL = "https://mathlock.com.tr/api/mathlock/stats/"
     }
 
@@ -99,12 +101,14 @@ class StatsTracker(private val context: Context) {
         val totalTime = todayTimeSeconds()
         val lastUploaded = prefs.getLong(KEY_LAST_UPLOADED_TIME, 0)
         val sessionTimeDelta = (totalTime - lastUploaded).coerceAtLeast(0)
+        val sessionId = generateSessionId()
 
         // API endpoint'ine POST
         val apiBody = JSONObject().apply {
             put("child_name", childName)
             put("question_version", questionVersion)
             put("session_time_seconds", sessionTimeDelta)
+            put("session_id", sessionId)
             put("stats", JSONObject(statsJson))
         }
 
@@ -124,8 +128,10 @@ class StatsTracker(private val context: Context) {
                 prefs.edit()
                     .remove(KEY_RESULTS)
                     .putLong(KEY_LAST_UPLOADED_TIME, totalTime)
+                    .putString(KEY_LAST_SESSION_ID, sessionId)
+                    .putLong(KEY_LAST_SESSION_TIME, System.currentTimeMillis())
                     .apply()
-                Log.d(TAG, "Stats API'ye yüklendi (v$questionVersion)")
+                Log.d(TAG, "Stats API'ye yüklendi (v$questionVersion, session=$sessionId)")
                 true
             } else {
                 Log.w(TAG, "Stats API yükleme başarısız: HTTP $code")
@@ -202,6 +208,14 @@ class StatsTracker(private val context: Context) {
             arr.put(j)
         }
         prefs.edit().putString(KEY_RESULTS, arr.toString()).apply()
+    }
+
+    private fun generateSessionId(): String {
+        val lastSessionId = prefs.getString(KEY_LAST_SESSION_ID, null)
+        val lastSessionTime = prefs.getLong(KEY_LAST_SESSION_TIME, 0)
+        val now = System.currentTimeMillis()
+        val sameSession = lastSessionId != null && (now - lastSessionTime) < 300_000 // 5 dk
+        return if (sameSession) lastSessionId!! else "${now}-${kotlin.random.Random.nextInt(10000)}"
     }
 
     private fun loadSaved() {

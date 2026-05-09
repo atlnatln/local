@@ -19,9 +19,10 @@ from credits.models import (
     QuestionSet, RenewalLock, Question, UserQuestionProgress,
 )
 from credits.google_play import verify_purchase
-from credits.views import _deduct_credit_and_lock, _release_renewal_lock
+from credits.views import _deduct_credit_and_lock, _release_renewal_lock, _refresh_weekly_report, _refund_credit
 from credits.authentication import DeviceTokenSigner, DeviceTokenAuthentication
 from django.core.signing import BadSignature, SignatureExpired
+from django.db import IntegrityError
 from rest_framework.exceptions import AuthenticationFailed
 
 # Test ortamında throttle'ı devre dışı bırak
@@ -53,12 +54,12 @@ class AuthMixin:
 
 __all__ = [
     'NO_THROTTLE', 'ThrottleMixin', 'AuthMixin',
-    '_deduct_credit_and_lock', '_release_renewal_lock',
+    '_deduct_credit_and_lock', '_release_renewal_lock', '_refresh_weekly_report', '_refund_credit',
     'DeviceTokenSigner', 'DeviceTokenAuthentication',
     'BadSignature', 'SignatureExpired', 'AuthenticationFailed',
     'json', 'uuid', 'timedelta', 'patch', 'MagicMock',
     'TestCase', 'override_settings', 'timezone', 'APIClient',
     'Device', 'ChildProfile', 'CreditBalance', 'LevelSet',
     'PurchaseRecord', 'QuestionSet', 'RenewalLock', 'Question', 'UserQuestionProgress',
-    'verify_purchase',
+    'verify_purchase', 'IntegrityError',
 ]

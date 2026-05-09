@@ -34,7 +34,8 @@ def generate_level_set(self, child_pk, credit_balance_pk, is_free, level_stats, 
         return {'success': True, 'level_set_id': level_set.pk}
     except Exception as exc:
         logger.error("Celery seviye üretimi hatası: %s", exc)
-        if credit_balance_pk:
+        # Kredi iadesini sadece son denemede yap — retry başına 1 iade
+        if credit_balance_pk and self.request.retries >= self.max_retries:
             _refund_credit(credit_balance_pk, is_free)
         _release_renewal_lock(child_pk, 'levels')
         raise self.retry(exc=exc, countdown=60)
@@ -72,7 +73,8 @@ def generate_question_set(self, child_pk, credit_balance_pk, is_free):
         return {'success': True, 'question_set_id': question_set.pk}
     except Exception as exc:
         logger.error("Celery soru üretimi hatası: %s", exc)
-        if credit_balance_pk:
+        # Kredi iadesini sadece son denemede yap — retry başına 1 iade
+        if credit_balance_pk and self.request.retries >= self.max_retries:
             _refund_credit(credit_balance_pk, is_free)
         _release_renewal_lock(child_pk, 'questions')
         raise self.retry(exc=exc, countdown=60)

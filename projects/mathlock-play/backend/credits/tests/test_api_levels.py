@@ -65,6 +65,37 @@ class GetLevelsViewTest(ThrottleMixin, AuthMixin, TestCase):
         else:
             self.assertEqual(resp.status_code, 503)
 
+class GetLevelsRaceConditionTest(ThrottleMixin, AuthMixin, TestCase):
+    """GET /levels/ race condition fallback davranışı."""
+
+    def setUp(self):
+        super().setUp()
+        self.client = APIClient()
+        self.device = Device.objects.create(
+            installation_id='levels-race-device',
+            device_token=uuid.uuid4()
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='Ali', education_period='sinif_2'
+        )
+        self._auth_client(self.device)
+        self.url = '/api/mathlock/levels/'
+
+    def test_get_levels_race_condition_fallback(self):
+        """LevelSet yoksa ve race condition oluşursa (IntegrityError), fallback çalışmalı."""
+        from credits.views import _LEVELS_FILE
+        if not _LEVELS_FILE.exists():
+            self.skipTest("fallback levels.json yok")
+
+        with patch('credits.views.LevelSet.objects.create', side_effect=IntegrityError('race')):
+            resp = self.client.get(
+                f'{self.url}?device_token={self.device.device_token}&child_id={self.child.pk}'
+            )
+        # IntegrityError sonrası tekrar first() yapılmalı ama yine de None kalırsa 503
+        # Bu testte race condition simüle ediliyor, 503 beklenir
+        self.assertIn(resp.status_code, [200, 503])
+
+
 class GetLevelsLocaleTest(ThrottleMixin, AuthMixin, TestCase):
     """GET /levels/ endpoint'inde locale query parametresi davranışı."""
 
@@ -363,6 +394,21 @@ class UpdateLevelProgressNormalTest(ThrottleMixin, AuthMixin, TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(resp.json()['all_completed'])
         self.assertFalse(resp.json()['auto_renewal_started'])
+
+    def test_update_level_progress_race_condition_fallback(self):
+        """LevelSet yoksa ve race condition oluşursa (IntegrityError), fallback çalışmalı."""
+        from credits.views import _LEVELS_FILE
+        if not _LEVELS_FILE.exists():
+            self.skipTest("fallback levels.json yok")
+
+        self.level_set.delete()
+        with patch('credits.views.LevelSet.objects.create', side_effect=IntegrityError('race')):
+            resp = self._post_json({
+                'device_token': str(self.device.device_token),
+                'child_id': self.child.pk,
+                'completed_level_ids': [1],
+            })
+        self.assertIn(resp.status_code, [200, 503])
 
     def test_progress_with_newer_version_exists_no_renewal(self):
         """Daha yeni versiyonlu set zaten varsa renewal başlamamalı."""

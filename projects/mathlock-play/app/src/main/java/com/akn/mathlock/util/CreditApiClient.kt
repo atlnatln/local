@@ -26,7 +26,8 @@ class CreditApiClient {
         val isFree: Boolean,
         val questionsGenerated: Int,
         val setVersion: Int,
-        val error: String? = null
+        val error: String? = null,
+        val creditsRefunded: Boolean = false
     )
 
     /**
@@ -74,9 +75,15 @@ class CreditApiClient {
                     setVersion = json.optInt("set_version", 0)
                 )
             } else {
-                val err = try { JSONObject(responseText).optString("error", "HTTP $code") } catch (_: Exception) { "HTTP $code" }
-                Log.w(TAG, "useCredit başarısız: $err")
-                UseCreditResult(success = false, creditsRemaining = 0, isFree = false, questionsGenerated = 0, setVersion = 0, error = err)
+                val json = try { JSONObject(responseText) } catch (_: Exception) { null }
+                val err = json?.optString("error", "HTTP $code") ?: "HTTP $code"
+                val refunded = code == 503 && json?.optBoolean("credits_refunded", false) == true
+                Log.w(TAG, "useCredit başarısız: $err, refunded=$refunded")
+                UseCreditResult(
+                    success = false, creditsRemaining = 0, isFree = false,
+                    questionsGenerated = 0, setVersion = 0, error = err,
+                    creditsRefunded = refunded
+                )
             }
         } catch (e: Exception) {
             Log.w(TAG, "useCredit hatası: ${e.message}")

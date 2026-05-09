@@ -342,6 +342,10 @@ def _refresh_weekly_report(child) -> None:
             total = len(ls.levels_json or [])
             level_summary = {'completed': done, 'total': total, 'version': ls.version}
 
+        # Aktif gün sayısı: solved > 0 olan günler
+        active_days = sum(1 for d in week_days.values() if d.get('solved', 0) > 0)
+        avg_daily_minutes = round(total_time / 60 / active_days, 1) if active_days > 0 else 0.0
+
         report = {
             'generatedAt': today.isoformat(),
             'period': 'last_7_days',
@@ -349,7 +353,7 @@ def _refresh_weekly_report(child) -> None:
             'totalCorrect': total_correct,
             'accuracy': weekly_acc,
             'totalTimeMinutes': round(total_time / 60, 1),
-            'avgDailyMinutes': round(total_time / 60 / 7, 1),
+            'avgDailyMinutes': avg_daily_minutes,
             'currentDifficulty': child.current_difficulty,
             'strongTopics': strong,
             'weakTopics': weak,
@@ -650,6 +654,13 @@ def verify_purchase_view(request):
             ).first()
 
             if existing:
+                # Güvenlik: token başka cihaza aitse reddet
+                if existing.device_id != device.pk:
+                    return Response(
+                        {'error': _('purchase_token_invalid')},
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
+
                 if existing.verified:
                     _check_refunded_purchases(device)
                     credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
@@ -659,9 +670,54 @@ def verify_purchase_view(request):
                         'total_credits': credit_balance.balance,
                         'message': _('purchase_already_processed'),
                     })
+
+                # Pending veya eski başarısız kayıt: tekrar doğrula
+                needs_retry = (
+                    existing.purchase_state == 2
+                    or existing.last_verified_at is None
+                    or (timezone.now() - existing.last_verified_at) > timedelta(hours=24)
+                )
+                if not needs_retry:
+                    return Response(
+                        {'error': _('purchase_token_pending')},
+                        status=status.HTTP_409_CONFLICT,
+                    )
+
+                # Tekrar doğrula ve kaydı güncelle
+                verification = verify_purchase(purchase_token, product_id)
+                existing.verification_response = verification.get('raw_response', {})
+                existing.purchase_state = verification.get('purchase_state', -1)
+                existing.last_verified_at = timezone.now()
+
+                if not verification.get('valid'):
+                    error_msg = verification.get('error', _('verification_failed'))
+                    existing.save()
+                    return Response({'success': False, 'error': error_msg},
+                                    status=status.HTTP_402_PAYMENT_REQUIRED)
+
+                if existing.purchase_state == 0:
+                    existing.verified = True
+                    existing.credits_added = credits_to_add
+                    existing.order_id = verification.get('order_id', '')
+                    existing.save()
+                    credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
+                    credit_balance.add_credits(credits_to_add)
+                    _run_in_background(_check_and_auto_renew_after_purchase, device.pk)
+                    return Response({
+                        'success': True,
+                        'credits_added': credits_to_add,
+                        'total_credits': credit_balance.balance,
+                    })
+
+                existing.save()
+                if existing.purchase_state == 2:
+                    return Response(
+                        {'error': _('purchase_token_pending')},
+                        status=status.HTTP_409_CONFLICT,
+                    )
                 return Response(
-                    {'error': _('purchase_token_pending')},
-                    status=status.HTTP_409_CONFLICT,
+                    {'error': _('purchase_canceled')},
+                    status=status.HTTP_402_PAYMENT_REQUIRED,
                 )
 
             # DEBUG token bypass — yalnızca settings.DEBUG=True devrede iken
@@ -762,32 +818,31 @@ def _check_refunded_purchases(device):
       - purchase_state=-1 veya last_verified_at 24 saatten eskiyse tekrar doğrula
       - purchase_state=1 (canceled) ise krediyi düşür, verified=False yap
     """
-    for record in device.purchases.filter(verified=True):
-        needs_check = (
-            record.purchase_state == -1
-            or record.last_verified_at is None
-            or (timezone.now() - record.last_verified_at) > timedelta(hours=24)
-        )
-        if not needs_check:
-            continue
-
+    from django.db import models
+    needs_check_q = (
+        models.Q(purchase_state=-1)
+        | models.Q(last_verified_at__isnull=True)
+        | models.Q(last_verified_at__lt=timezone.now() - timedelta(hours=24))
+    )
+    for record in device.purchases.filter(verified=True).filter(needs_check_q):
         try:
             verification = verify_purchase(record.purchase_token, record.product_id)
             record.purchase_state = verification.get('purchase_state', -1)
             record.last_verified_at = timezone.now()
 
             if record.purchase_state == 1:  # canceled = iade edilmiş
-                credit_balance = CreditBalance.objects.filter(device=device).first()
-                if credit_balance and record.credits_added > 0:
-                    credit_balance.balance = max(0, credit_balance.balance - record.credits_added)
-                    credit_balance.total_purchased = max(0, credit_balance.total_purchased - record.credits_added)
-                    credit_balance.save()
-                    logger.warning(
-                        "Satın alma iade edildi, kredi düşürüldü: device=%s, order=%s, credits=%d",
-                        device.installation_id[:12], record.order_id, record.credits_added
-                    )
-                record.verified = False
-                record.save()
+                with transaction.atomic():
+                    credit_balance = CreditBalance.objects.select_for_update().filter(device=device).first()
+                    if credit_balance and record.credits_added > 0:
+                        credit_balance.balance = max(0, credit_balance.balance - record.credits_added)
+                        credit_balance.total_purchased = max(0, credit_balance.total_purchased - record.credits_added)
+                        credit_balance.save()
+                        logger.warning(
+                            "Satın alma iade edildi, kredi düşürüldü: device=%s, order=%s, credits=%d",
+                            device.installation_id[:12], record.order_id, record.credits_added
+                        )
+                    record.verified = False
+                    record.save()
             else:
                 record.save()
         except Exception as e:
@@ -807,9 +862,15 @@ def get_credits(request):
     """
     device = request.user
 
-    _check_refunded_purchases(device)
-
     credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
+
+    # İade kontrolünü en fazla 24 saatte bir yap (Google API rate limit koruması)
+    now = timezone.now()
+    if (credit_balance.last_refund_check_at is None or
+            (now - credit_balance.last_refund_check_at) > timedelta(hours=24)):
+        _check_refunded_purchases(device)
+        credit_balance.last_refund_check_at = now
+        credit_balance.save(update_fields=['last_refund_check_at'])
 
     return Response({
         'credits': credit_balance.balance,
@@ -896,13 +957,30 @@ def use_credit(request):
     latest = QuestionSet.objects.filter(child=child).order_by('-version').first()
     next_version = (latest.version + 1) if latest else 1
 
-    question_set = QuestionSet.objects.create(
-        child=child,
-        version=next_version,
-        questions_json=questions,
-        is_ai_generated=True,
-        credit_used=not is_free,
-    )
+    try:
+        question_set = QuestionSet.objects.create(
+            child=child,
+            version=next_version,
+            questions_json=questions,
+            is_ai_generated=True,
+            credit_used=not is_free,
+        )
+    except Exception as exc:
+        logger.error("QuestionSet kayıt hatası: %s", exc)
+        # Krediyi iade et
+        with transaction.atomic():
+            cb = CreditBalance.objects.select_for_update().get(device=device)
+            if is_free:
+                cb.free_set_used = False
+                cb.save(update_fields=['free_set_used', 'updated_at'])
+            else:
+                cb.balance += 1
+                cb.total_used -= 1
+                cb.save(update_fields=['balance', 'total_used', 'updated_at'])
+        return Response(
+            {'error': _('question_set_save_failed'), 'credits_refunded': True},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
 
     logger.info(
         "kimi-cli soru seti: child=%s, v%d, %d soru, is_free=%s",
@@ -944,6 +1022,16 @@ def upload_stats(request):
         return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
                         status=status.HTTP_404_NOT_FOUND)
 
+    # Idempotency: aynı session tekrar gönderilirse verileri katlama
+    session_id = request.data.get('session_id')
+    if session_id and child.last_sync_session_id == session_id:
+        return Response({
+            'success': True,
+            'difficulty': child.current_difficulty,
+            'total_correct': child.total_correct,
+            'total_shown': child.total_shown,
+        })
+
     # Kümülatif istatistik güncelle
     total_correct = stats.get('totalCorrect', 0)
     total_shown = stats.get('totalShown', 0)
@@ -977,6 +1065,8 @@ def upload_stats(request):
             child.current_difficulty -= 1
 
     child.stats_json = stats
+    if session_id:
+        child.last_sync_session_id = session_id
     child.save()
 
     # Haftalık gelişim raporunu DB istatistiklerinden güncelle
@@ -1106,8 +1196,11 @@ def register_email(request):
                     logger.info("Boş varsayılan profil temizlendi: device=%s",
                                 device.installation_id[:12])
 
-    device.email = email
-    device.save(update_fields=['email', 'last_seen'])
+            device.email = email
+            device.save(update_fields=['email', 'last_seen'])
+    else:
+        device.email = email
+        device.save(update_fields=['email', 'last_seen'])
 
     # Transfer sonrası güncel bakiyeyi döndür
     credit_balance, _created = CreditBalance.objects.get_or_create(device=device)
@@ -1426,15 +1519,16 @@ def children_list(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    # Max 5 çocuk profili
-    if device.children.count() >= 5:
-        return Response({'error': _('max_children_reached')},
-                        status=status.HTTP_400_BAD_REQUEST)
-
     try:
-        child = ChildProfile.objects.create(
-            device=device, name=name, education_period=education_period, is_active=False,
-        )
+        with transaction.atomic():
+            # Max 5 çocuk profili (race condition koruması için transaction içinde)
+            if device.children.count() >= 5:
+                return Response({'error': _('max_children_reached')},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            child = ChildProfile.objects.create(
+                device=device, name=name, education_period=education_period, is_active=False,
+            )
     except IntegrityError:
         return Response({'error': _('profile_name_exists').format(name=name)},
                         status=status.HTTP_409_CONFLICT)
@@ -1727,14 +1821,24 @@ def get_levels(request):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
 
-        level_set = LevelSet.objects.create(
-            child=child,
-            version=1,
-            levels_json=levels,
-            is_ai_generated=False,
-            credit_used=False,
-        )
+        try:
+            level_set = LevelSet.objects.create(
+                child=child,
+                version=1,
+                levels_json=levels,
+                is_ai_generated=False,
+                credit_used=False,
+            )
+        except IntegrityError:
+            # Race condition: başka istek aynı anda oluşturdu
+            level_set = LevelSet.objects.filter(child=child).order_by('-version').first()
         logger.info("İlk seviye seti oluşturuldu: child=%s", child.name)
+
+    if not level_set:
+        return Response(
+            {'error': _('levels_not_found')},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE
+        )
 
     completed = level_set.completed_level_ids or []
 
@@ -1826,14 +1930,24 @@ def update_level_progress(request):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
 
-        level_set = LevelSet.objects.create(
-            child=child,
-            version=1,
-            levels_json=levels,
-            is_ai_generated=False,
-            credit_used=False,
-        )
+        try:
+            level_set = LevelSet.objects.create(
+                child=child,
+                version=1,
+                levels_json=levels,
+                is_ai_generated=False,
+                credit_used=False,
+            )
+        except IntegrityError:
+            # Race condition: başka istek aynı anda oluşturdu
+            level_set = LevelSet.objects.filter(child=child).order_by('-version').first()
         logger.info("İlk seviye seti oluşturuldu (update_progress): child=%s, locale=%s", child.name, locale)
+
+    if not level_set:
+        return Response(
+            {'error': _('levels_not_found')},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE
+        )
 
     # İlerlemeyi güncelle
     existing = set(level_set.completed_level_ids or [])

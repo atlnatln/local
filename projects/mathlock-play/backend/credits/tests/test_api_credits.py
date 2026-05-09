@@ -31,6 +31,16 @@ class GetCreditsViewTest(ThrottleMixin, AuthMixin, TestCase):
         resp = self.client.get('/api/mathlock/credits/')
         self.assertEqual(resp.status_code, 403)
 
+    @patch('credits.views._check_refunded_purchases')
+    def test_refunded_purchases_checked_once_per_day(self, mock_check):
+        """24 saat içinde 2. get_credits çağrısı Google API yapmaz."""
+        # İlk çağrı
+        self.client.get(f'/api/mathlock/credits/?device_token={self.device.device_token}')
+        self.assertEqual(mock_check.call_count, 1)
+        # İkinci çağrı (aynı gün)
+        self.client.get(f'/api/mathlock/credits/?device_token={self.device.device_token}')
+        self.assertEqual(mock_check.call_count, 1)
+
 class VerifyPurchaseViewTest(ThrottleMixin, AuthMixin, TestCase):
 
     def setUp(self):
@@ -121,6 +131,58 @@ class VerifyPurchaseViewTest(ThrottleMixin, AuthMixin, TestCase):
             }, format='json')
         self.assertEqual(resp.status_code, 402)
 
+    @patch('credits.views.verify_purchase')
+    def test_verify_purchase_pending_then_success(self, mock_verify):
+        """İlk pending, sonra success döner, kredi eklenir."""
+        # İlk: pending
+        mock_verify.return_value = {
+            'valid': True, 'order_id': 'GPA-PENDING', 'purchase_state': 2,
+            'consumption_state': 0, 'raw_response': {}
+        }
+        self.client.post('/api/mathlock/purchase/verify/', {
+            'device_token': str(self.device.device_token),
+            'purchase_token': 'pending-token-001',
+            'product_id': 'kredi_10',
+        }, format='json')
+
+        # Sonra: success
+        mock_verify.return_value = {
+            'valid': True, 'order_id': 'GPA-SUCCESS', 'purchase_state': 0,
+            'consumption_state': 0, 'raw_response': {}
+        }
+        resp = self.client.post('/api/mathlock/purchase/verify/', {
+            'device_token': str(self.device.device_token),
+            'purchase_token': 'pending-token-001',
+            'product_id': 'kredi_10',
+        }, format='json')
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.json()['success'])
+        self.assertEqual(resp.json()['credits_added'], 10)
+        balance = CreditBalance.objects.get(device=self.device)
+        self.assertEqual(balance.balance, 10)
+
+    def test_verify_purchase_cross_device_token_rejected(self):
+        """Başka cihazın purchase_token'ı ile doğrulama reddedilmeli."""
+        other_device = Device.objects.create(
+            installation_id='other-purchase-device',
+            device_token=uuid.uuid4(),
+        )
+        PurchaseRecord.objects.create(
+            device=other_device,
+            purchase_token='cross-device-token',
+            product_id='kredi_10',
+            verified=False,
+            purchase_state=2,
+        )
+
+        resp = self.client.post('/api/mathlock/purchase/verify/', {
+            'device_token': str(self.device.device_token),
+            'purchase_token': 'cross-device-token',
+            'product_id': 'kredi_10',
+        }, format='json')
+        self.assertEqual(resp.status_code, 403)
+
 class UseCreditViewTest(ThrottleMixin, AuthMixin, TestCase):
 
     def setUp(self):
@@ -200,6 +262,27 @@ class UseCreditViewTest(ThrottleMixin, AuthMixin, TestCase):
         }, format='json')
         self.assertEqual(resp.status_code, 402)
 
+    @patch('credits.views._generate_via_kimi', return_value=[
+        {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
+    ] * 50)
+    def test_use_credit_db_error_refunds(self, mock_gen):
+        """QuestionSet create hatasında kredi iade edilmeli."""
+        self.balance.free_set_used = True
+        self.balance.balance = 3
+        self.balance.save()
+
+        with patch('credits.views.QuestionSet.objects.create', side_effect=IntegrityError('DB error')):
+            resp = self.client.post('/api/mathlock/credits/use/', {
+                'device_token': str(self.device.device_token),
+                'child_name': 'Çocuk',
+                'stats': {},
+            }, format='json')
+
+        self.assertEqual(resp.status_code, 503)
+        self.assertTrue(resp.json()['credits_refunded'])
+        self.balance.refresh_from_db()
+        self.assertEqual(self.balance.balance, 3)
+
 class UploadStatsViewTest(ThrottleMixin, AuthMixin, TestCase):
 
     def setUp(self):
@@ -258,3 +341,27 @@ class UploadStatsViewTest(ThrottleMixin, AuthMixin, TestCase):
         }, format='json')
         child.refresh_from_db()
         self.assertLessEqual(child.current_difficulty, 3)
+
+    def test_upload_stats_idempotent(self):
+        """Aynı session_id ile 2 kez gönderildiğinde değerler katlanmaz."""
+        session_id = 'test-session-001'
+        self.client.post('/api/mathlock/stats/', {
+            'device_token': str(self.device.device_token),
+            'child_name': 'Çocuk',
+            'question_version': 1,
+            'session_id': session_id,
+            'stats': {'totalCorrect': 40, 'totalShown': 50}
+        }, format='json')
+
+        resp = self.client.post('/api/mathlock/stats/', {
+            'device_token': str(self.device.device_token),
+            'child_name': 'Çocuk',
+            'question_version': 1,
+            'session_id': session_id,
+            'stats': {'totalCorrect': 40, 'totalShown': 50}
+        }, format='json')
+
+        self.assertEqual(resp.status_code, 200)
+        child = ChildProfile.objects.get(device=self.device, name='Çocuk')
+        self.assertEqual(child.total_correct, 40)
+        self.assertEqual(child.total_shown, 50)

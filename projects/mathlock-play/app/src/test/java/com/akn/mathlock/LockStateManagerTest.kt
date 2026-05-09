@@ -328,6 +328,56 @@ class LockStateManagerTest {
         assertFalse(LockStateManager.isParentBypassed(PKG_YOUTUBE))
     }
 
+    // ─── Thread-safety / Concurrent access (Hata 6) ────────────────────────
+
+    @Test
+    fun `concurrent notifyUnlocked - race condition olmamali`() {
+        val packages = (1..100).map { "com.app.$it" }
+        val threads = packages.map { pkg ->
+            Thread { LockStateManager.notifyUnlocked(pkg) }
+        }
+        threads.forEach { it.start() }
+        threads.forEach { it.join() }
+
+        packages.forEach { pkg ->
+            assertTrue("$pkg unlocked olmali", LockStateManager.isUnlocked(pkg))
+        }
+    }
+
+    @Test
+    fun `concurrent notifyUnlocked and notifyParentUnlocked - tutarli durum`() {
+        val threads = (1..50).map { i ->
+            Thread {
+                if (i % 2 == 0) {
+                    LockStateManager.notifyUnlocked(PKG_OPERA)
+                } else {
+                    LockStateManager.notifyParentUnlocked(PKG_OPERA)
+                }
+            }
+        }
+        threads.forEach { it.start() }
+        threads.forEach { it.join() }
+
+        // Son durum her iki türden biri olabilir, ama tutarlı olmalı
+        assertTrue("Son durumda unlocked veya bypassed olmali",
+            LockStateManager.isUnlocked(PKG_OPERA))
+        // Timer map ve bypass map aynı anda set edilmemeli
+        assertFalse("Hem timer hem bypass ayni anda olmamali",
+            LockStateManager.getActiveUnlocks().containsKey(PKG_OPERA) &&
+            LockStateManager.isParentBypassed(PKG_OPERA))
+    }
+
+    @Test
+    fun `concurrent forceRelock - race condition olmamali`() {
+        LockStateManager.notifyUnlocked(PKG_OPERA)
+        val threads = (1..50).map {
+            Thread { LockStateManager.forceRelock(PKG_OPERA) }
+        }
+        threads.forEach { it.start() }
+        threads.forEach { it.join() }
+
+        assertFalse(LockStateManager.isUnlocked(PKG_OPERA))
+    }
 
 }
 

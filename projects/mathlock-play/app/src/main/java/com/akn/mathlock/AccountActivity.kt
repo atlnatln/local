@@ -98,7 +98,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
 
     private fun refreshFromServer() {
         Thread {
-            val token = accountManager.getOrRegister()
+            val token = accountManager.getOrRefreshToken()
             if (token != null) {
                 accountManager.refreshCredits()
             }
@@ -319,8 +319,10 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         }
     }
 
-    private fun verifyAndConsumePurchase(purchase: Purchase) {
-        val token = accountManager.getAccessToken() ?: return
+    private fun verifyAndConsumePurchase(purchase: Purchase, attempt: Int = 1) {
+        // Cihaz kaydı yapılmamışsa önce kaydol
+        accountManager.getOrRegister() ?: return
+        val deviceToken = accountManager.getDeviceToken() ?: return
 
         // İlk satın alınan ürünün product_id'sini al
         val productId = purchase.products.firstOrNull() ?: return
@@ -336,7 +338,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
                 conn.readTimeout = 15000
 
                 val body = org.json.JSONObject().apply {
-                    put("device_token", token)
+                    put("device_token", deviceToken)
                     put("purchase_token", purchase.purchaseToken)
                     put("product_id", productId)
                 }
@@ -351,25 +353,35 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
                 conn.disconnect()
 
                 runOnUiThread {
-                    if (code in 200..299) {
-                        // Backend doğruladı — şimdi Google Play'de consume et
-                        billingHelper.consumePurchase(purchase)
+                    when {
+                        code in 200..299 -> {
+                            // Backend doğruladı — şimdi Google Play'de consume et
+                            billingHelper.consumePurchase(purchase)
 
-                        val resp = org.json.JSONObject(responseText)
-                        val added = resp.optInt("credits_added", 0)
-                        val total = resp.optInt("total_credits", 0)
-                        Snackbar.make(binding.root, "✅ $added kredi eklendi! Toplam: $total", Snackbar.LENGTH_LONG).show()
-                        refreshUI()
-                        // Kredi bilgisini arka planda güncelle
-                        Thread { accountManager.refreshCredits(); runOnUiThread { refreshUI() } }.start()
-                    } else {
-                        val error = try {
-                            org.json.JSONObject(responseText).optString("error", "Doğrulama hatası")
-                        } catch (_: Exception) { "Doğrulama hatası" }
-                        Snackbar.make(binding.root, "❌ $error", Snackbar.LENGTH_LONG)
-                            .setBackgroundTint(getColor(R.color.wrong_red))
-                            .setTextColor(getColor(android.R.color.white))
-                            .show()
+                            val resp = org.json.JSONObject(responseText)
+                            val added = resp.optInt("credits_added", 0)
+                            val total = resp.optInt("total_credits", 0)
+                            Snackbar.make(binding.root, "✅ $added kredi eklendi! Toplam: $total", Snackbar.LENGTH_LONG).show()
+                            refreshUI()
+                            // Kredi bilgisini arka planda güncelle
+                            Thread { accountManager.refreshCredits(); runOnUiThread { refreshUI() } }.start()
+                        }
+                        code == 409 && attempt < 3 -> {
+                            // Pending purchase — 2 saniye bekle ve tekrar dene
+                            Snackbar.make(binding.root, "Satın alma onaylanıyor, bekleyin...", Snackbar.LENGTH_SHORT).show()
+                            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                                verifyAndConsumePurchase(purchase, attempt + 1)
+                            }, 2000)
+                        }
+                        else -> {
+                            val error = try {
+                                org.json.JSONObject(responseText).optString("error", "Doğrulama hatası")
+                            } catch (_: Exception) { "Doğrulama hatası" }
+                            Snackbar.make(binding.root, "❌ $error", Snackbar.LENGTH_LONG)
+                                .setBackgroundTint(getColor(R.color.wrong_red))
+                                .setTextColor(getColor(android.R.color.white))
+                                .show()
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -385,7 +397,8 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
     }
 
     private fun purchaseDebugCredits(amount: Int, productId: String) {
-        val token = accountManager.getAccessToken() ?: return
+        accountManager.getOrRegister() ?: return
+        val deviceToken = accountManager.getDeviceToken() ?: return
         Snackbar.make(binding.root, "Kredi ekleniyor…", Snackbar.LENGTH_SHORT).show()
 
         Thread {
@@ -400,7 +413,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
 
                 val debugToken = "DEBUG_TEST_TOKEN_${System.currentTimeMillis()}"
                 val body = org.json.JSONObject().apply {
-                    put("device_token", token)
+                    put("device_token", deviceToken)
                     put("purchase_token", debugToken)
                     put("product_id", productId)
                 }

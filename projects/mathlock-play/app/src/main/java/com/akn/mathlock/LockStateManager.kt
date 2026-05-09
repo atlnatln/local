@@ -1,8 +1,10 @@
 package com.akn.mathlock
 
+import java.util.concurrent.ConcurrentHashMap
+
 /**
  * Kilit durumunu servis ve activity'ler arasında paylaşmak için
- * basit bir singleton manager.
+ * thread-safe singleton manager.
  *
  * İki tür "açık" vardır:
  *  1. notifyUnlocked       → çocuk challenge kazandı, TIMER çalışır
@@ -11,13 +13,13 @@ package com.akn.mathlock
 object LockStateManager {
 
     // package -> unlock timestamp  (çocuk challenge — timer çalışır)
-    private val unlockedApps = mutableMapOf<String, Long>()
+    private val unlockedApps = ConcurrentHashMap<String, Long>()
 
     // Ebeveyn girişiyle açılan paketler — ekran kapanınca temizlenir
-    private val parentBypassApps = mutableSetOf<String>()
+    private val parentBypassApps = ConcurrentHashMap.newKeySet<String>()
 
     // Timer dolduğunda işaretlenir; challenge ekranında "süreniz doldu" bannerı için
-    private val timerExpiredApps = mutableSetOf<String>()
+    private val timerExpiredApps = ConcurrentHashMap.newKeySet<String>()
 
     // ─── Çocuk unlock (timer çalışır) ───────────────────────────────────────
 

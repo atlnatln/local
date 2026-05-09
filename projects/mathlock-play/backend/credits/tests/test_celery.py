@@ -76,3 +76,33 @@ class CeleryTaskTest(TestCase):
         from credits.tasks import generate_question_set, generate_level_set
         self.assertEqual(generate_question_set.max_retries, 3)
         self.assertEqual(generate_level_set.max_retries, 3)
+
+    @patch('credits.views._generate_via_kimi', side_effect=Exception('AI failure'))
+    @patch('credits.views._refund_credit')
+    def test_task_no_refund_before_final_retry(self, mock_refund, mock_gen):
+        """Son deneme öncesi kredi iadesi yapılmamalı."""
+        from credits.tasks import generate_question_set
+        task = generate_question_set
+        original_retries = getattr(task.request, 'retries', 0)
+        try:
+            task.request.retries = 1  # max_retries=3, henüz son değil
+            with self.assertRaises(Exception):
+                task.run(self.child.pk, self.balance.pk, False)
+            self.assertEqual(mock_refund.call_count, 0)
+        finally:
+            task.request.retries = original_retries
+
+    @patch('credits.views._generate_via_kimi', side_effect=Exception('AI failure'))
+    @patch('credits.views._refund_credit')
+    def test_task_refunds_only_on_final_retry(self, mock_refund, mock_gen):
+        """Son denemede (retries >= max_retries) kredi iadesi yapılmalı."""
+        from credits.tasks import generate_question_set
+        task = generate_question_set
+        original_retries = getattr(task.request, 'retries', 0)
+        try:
+            task.request.retries = task.max_retries  # son deneme
+            with self.assertRaises(Exception):
+                task.run(self.child.pk, self.balance.pk, False)
+            self.assertEqual(mock_refund.call_count, 1)
+        finally:
+            task.request.retries = original_retries

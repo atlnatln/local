@@ -97,6 +97,7 @@ class AppLockService : Service() {
 
     // Challenge süreci aktif mi — overlay gösterildi, activity açılmayı bekliyor
     // Bu flag true iken aynı paket için launchChallenge tekrar tetiklenmez
+    @Volatile
     private var challengeActive = false
 
     // Challenge başlatıldığında zaman damgası — stuck durumu tespit etmek için
@@ -136,6 +137,7 @@ class AppLockService : Service() {
     // UsageEvents son 5 saniyeye bakar — kullanıcı uygulamada uzun süre beklerse
     // event gelmez ve getForegroundPackageName() null döner. Bu değişken son bilinen
     // ön plan uygulamayı tutar; timer expire olduğunda check kaçırılmaz.
+    @Volatile
     private var lastKnownForegroundPackage: String? = null
 
     private var pollingActive = false
@@ -146,9 +148,11 @@ class AppLockService : Service() {
             if (!isRunning) return
             // Yeni bir event varsa güncelle; yoksa son bilinen paketi kullan.
             // Bu sayede kullanıcı uygulamada uzun süre kalırken de timer doğru çalışır.
-            val detected = getForegroundPackageName()
-            if (detected != null) lastKnownForegroundPackage = detected
-            val foregroundPackage = lastKnownForegroundPackage
+            val foregroundPackage = synchronized(this) {
+                val detected = getForegroundPackageName()
+                if (detected != null) lastKnownForegroundPackage = detected
+                lastKnownForegroundPackage
+            }
             checkAndExpireTimers()
             checkForegroundApp(foregroundPackage)
             updateTimerNotification()

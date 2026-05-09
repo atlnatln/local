@@ -79,10 +79,12 @@ class PerformanceReportActivity : BaseActivity() {
     }
 
     private fun loadReport() {
-        val token = AccountManager(this).getAccessToken() ?: return
+        val am = AccountManager(this)
+        am.getOrRegister() // ensure registered
+        val deviceToken = am.getDeviceToken() ?: return
         Thread {
             try {
-                val url = URL("$API_BASE/children/report/?device_token=$token&child_name=${java.net.URLEncoder.encode(childName, "UTF-8")}")
+                val url = URL("$API_BASE/children/report/?device_token=$deviceToken&child_name=${java.net.URLEncoder.encode(childName, "UTF-8")}")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
                 conn.connectTimeout = TIMEOUT

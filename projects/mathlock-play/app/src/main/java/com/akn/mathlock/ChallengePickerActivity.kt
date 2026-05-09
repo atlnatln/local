@@ -114,11 +114,16 @@ class ChallengePickerActivity : BaseActivity() {
     }
 
     private fun showParentBiometricAuth() {
+        val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
+        } else {
+            BiometricManager.Authenticators.BIOMETRIC_STRONG
+        }
+
         val bm = BiometricManager.from(this)
-        if (bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
-            != BiometricManager.BIOMETRIC_SUCCESS
-        ) {
-            Toast.makeText(this, "⚠️ Bu cihazda parmak izi sensörü bulunamadı", Toast.LENGTH_SHORT).show()
+        if (bm.canAuthenticate(authenticators) != BiometricManager.BIOMETRIC_SUCCESS) {
+            Toast.makeText(this, "⚠️ Bu cihazda parmak izi veya desen kilidi bulunamadı", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -141,17 +146,24 @@ class ChallengePickerActivity : BaseActivity() {
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(this@ChallengePickerActivity, "❌ Parmak izi tanınmadı, tekrar deneyin", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ChallengePickerActivity, "❌ Kimlik doğrulama başarısız, tekrar deneyin", Toast.LENGTH_SHORT).show()
                 }
             })
 
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+        val promptInfoBuilder = BiometricPrompt.PromptInfo.Builder()
             .setTitle(getString(R.string.biometric_title))
             .setSubtitle(getString(R.string.biometric_subtitle))
-            .setNegativeButtonText(getString(R.string.biometric_cancel))
-            .build()
 
-        prompt.authenticate(promptInfo)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            promptInfoBuilder.setAllowedAuthenticators(
+                BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                        BiometricManager.Authenticators.DEVICE_CREDENTIAL
+            )
+        } else {
+            promptInfoBuilder.setNegativeButtonText(getString(R.string.biometric_cancel))
+        }
+
+        prompt.authenticate(promptInfoBuilder.build())
     }
 
     private fun onParentAuthSuccess() {

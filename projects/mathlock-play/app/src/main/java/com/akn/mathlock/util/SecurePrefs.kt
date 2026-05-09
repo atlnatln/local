@@ -2,12 +2,14 @@ package com.akn.mathlock.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
 /**
- * EncryptedSharedPreferences wrapper with fallback to regular SharedPreferences.
+ * EncryptedSharedPreferences wrapper.
  * All sensitive app data should use this instead of raw getSharedPreferences().
+ * Fallback to plain text KALDIRILDI — güvenlik riski (Hata 7 fix).
  */
 object SecurePrefs {
 
@@ -25,8 +27,12 @@ object SecurePrefs {
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
         } catch (e: Exception) {
-            // Fallback: if encryption fails (e.g., corrupted keystore), use regular prefs
-            context.getSharedPreferences(name, Context.MODE_PRIVATE)
+            // Fallback KALDIRILDI — güvenlik riski
+            Log.e("SecurePrefs", "Encryption init failed for '$name': ${e.message}")
+            throw IllegalStateException(
+                "Güvenli depolama başlatılamadı. Lütfen cihaz şifrelemesini kontrol edin.",
+                e
+            )
         }
     }
 }
