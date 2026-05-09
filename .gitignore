@@ -81,3 +81,4 @@
 **/.gradle/
 
 # Wiki machine-specific marker
+wiki/.checkpoints/

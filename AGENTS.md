@@ -340,31 +340,20 @@ cd ~/.kimi/skills/local-wiki && python3 scripts/wiki_lint.py /home/akn/local/wik
 
 ### Adım 8: Checkpoint'leri Güncelle ve Doğrula
 
-**KESİN KURAL:** Her checkpoint, KENDİ git reposunun HEAD SHA'sını içermelidir. Asla başka repo'nun SHA'sını yazma.
+**Kural:** Checkpoint'ler local consumer cursor'dur. `.checkpoints/*.sha` gitignored'dır, makine-spesifiktir. GitHub'a gitmez.
 
 ```bash
-# local monorepo (anka, mathlock-play, telegram-kimi, sayi-yolculugu, infrastructure)
+# local monorepo
 cd /home/akn/local && git rev-parse HEAD > wiki/.checkpoints/local.sha
 
-# ops-bot (AYRI repo — kendi .git'i var)
+# ops-bot (AYRI repo)
 cd /home/akn/local/ops-bot && git rev-parse HEAD > /home/akn/local/wiki/.checkpoints/ops-bot.sha
 
-# webimar (AYRI repo — kendi .git'i var)
+# webimar (AYRI repo)
 cd /home/akn/local/projects/webimar && git rev-parse HEAD > /home/akn/local/wiki/.checkpoints/webimar.sha
 ```
 
-#### Doğrulama Adımı (ZORUNLU)
-Checkpoint yazıldıktan HEMEN sonra doğrula:
-```bash
-echo "=== CHECKPOINT DOĞRULAMA ==="
-echo "local:    $(cat /home/akn/local/wiki/.checkpoints/local.sha)    (expected: $(cd /home/akn/local && git rev-parse HEAD))"
-echo "ops-bot:  $(cat /home/akn/local/wiki/.checkpoints/ops-bot.sha)  (expected: $(cd /home/akn/local/ops-bot && git rev-parse HEAD))"
-echo "webimar:  $(cat /home/akn/local/wiki/.checkpoints/webimar.sha)  (expected: $(cd /home/akn/local/projects/webimar && git rev-parse HEAD))"
-```
-Eğer herhangi biri uyuşmuyorsa:
-1. Hata rapor et
-2. `.pending` dosyasını **SİLME** (bir sonraki ingest'te tekrar denenecek)
-3. Kullanıcıya "Checkpoint yazım hatası — manuel kontrol gerekli" de
+> **Not:** Checkpoint'ler gitignored'dır. Her makine kendi cursor'ünü yönetir. SHA paradox'u yoktur.
 
 ### Adım 9: Son Temizlik (KESİN)
 
@@ -489,7 +478,7 @@ Kullanıcı "push yap" dediğinde:
 ```
 1. git status --short → değişiklik özetini göster
 2. ZORUNLU: Wiki kontrolü
-   a. git status --short | grep -E "wiki/|\\.checkpoints" → wiki değişikliği var mı?
+   a. git status --short | grep -E "^wiki/" → wiki değişikliği var mı?
    b. Eğer wiki değişikliği varsa:
       - "Wiki değişiklikleri toplanmamış. Önce wiki ingest çalıştırılıyor."
       - wiki ingest çalıştır (veya wiki topla)
@@ -500,7 +489,7 @@ Kullanıcı "push yap" dediğinde:
 5. Eğer ops-bot/ veya webimar/ dirty ise: "Nested repo'ları da unutma!" uyarısı
 ```
 
-**Kural:** Wiki dosyalarında (`wiki/`, `.checkpoints/`) değişiklik varsa, wiki ingest yapılmadan ve commit edilmeden **push yapılmaz**.
+**Kural:** Wiki dosyalarında (`wiki/`) değişiklik varsa, wiki ingest yapılmadan ve commit edilmeden **push yapılmaz**.
 
 ### Nested Repo Hatırlatması
 
@@ -512,7 +501,7 @@ Kullanıcı "push yap" dediğinde:
 
 - Wiki hem local'de hem VPS'de aktif.
 - Push öncesi wiki ingest iste (opsiyonel ama önerilir).
-- `.checkpoints/*.sha` GitHub'da kalmalı (ortak referans).
+- `.checkpoints/*.sha` gitignored'dır (local cursor). `.pending` GitHub üzerinden cross-machine sync sağlar.
 - `.pending` her makinede ayrı oluşur (`wiki/.pending` gitignore'dadır).
 
 ### Git Auth (VPS)

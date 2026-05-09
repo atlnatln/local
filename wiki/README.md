@@ -52,14 +52,16 @@ Kod değiştikçe wiki'yi güncel tutan komut.
 
 ### Checkpoint Nedir?
 
-`.checkpoints/` dizinindeki `.sha` dosyaları son işlenen commit hash'ini tutar. Ajan sadece değişen dosyaları işler.
+`.checkpoints/` dizinindeki `.sha` dosyaları **local consumer cursor**'dur. Her makine kendi cursor'ünü yönetir, gitignored'dır.
 
 ```bash
-wiki/.checkpoints/
-├── local.sha      # /home/akn/local monorepo
-├── ops-bot.sha    # ops-bot/ (ayrı git repo)
-└── webimar.sha    # projects/webimar/ (ayrı git repo)
+wiki/.checkpoints/  # gitignored — local cursor
+├── local.sha       # /home/akn/local monorepo
+├── ops-bot.sha     # ops-bot/ (ayrı git repo)
+└── webimar.sha     # projects/webimar/ (ayrı git repo)
 ```
+
+Cross-machine sync `wiki/.pending` dosyası üzerinden sağlanır.
 
 ---
 
