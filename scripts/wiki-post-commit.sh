@@ -1,6 +1,5 @@
 #!/bin/bash
 # wiki-post-commit.sh — Leaves a marker for the proactive wiki manager.
-# This hook is symlinked into multiple git repos.
 # On every commit, it appends a line to the marker file so kimi-cli
 # can ask "wiki güncelleyelim mi?" on the next session.
 #
@@ -8,9 +7,8 @@
 # wiki ingest/cleanup commit'idir — tekrar marker'a yazma. Aksi halde
 # sonsuz döngü oluşur.
 #
-# YENI: .pending otomatik olarak ayrı bir commit olarak atilir.
-# Böylece kullanıcı ekstra adım atmak zorunda kalmaz,
-# ve .pending GitHub'a otomatik gider (cross-machine sync).
+# NOT: .pending otomatik commit edilmez. Kullanıcı wiki ingest
+# yaparken manuel olarak git add + commit yapmalıdır.
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 REPO_NAME=$(basename "$REPO_ROOT")
@@ -31,10 +29,3 @@ MARKER="/home/akn/local/wiki/.pending"
 
 # Append one line per commit
 echo "${DATE}|${COMMIT_SHA}|${REPO_NAME}|${CHANGED_FILES}" >> "$MARKER"
-
-# Otomatik olarak ayrı bir commit at — .pending GitHub'a gitsin
-# Bu commit "docs(wiki):" ile başladığı için post-commit hook bunu atlar
-# (sonsuz döngü oluşmaz)
-cd "$REPO_ROOT" || exit 0
-git add "$MARKER" || true
-git commit --no-verify -m "docs(wiki): auto-sync pending marker" --quiet || true
