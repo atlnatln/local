@@ -135,7 +135,7 @@ Hook **atlar** (marker yazmaz) eğer:
 
 **Neden marker file, neden doğrudan git diff değil?**
 
-`git diff --name-status` checkpoint'ten HEAD'e bakar, ama bu sadece mevcut session'da çalışır. Kullanıcı commit atıp saatler sonra dönerse, hook olmadan bu değişiklikler "görünmez" kalır. Marker file, zamandan bağımsız olarak "commit yapıldı, wiki güncellenmedi" bilgisini korur.
+`git diff --name-status` checkpoint'ten HEAD'e bakar (checkpoint'ler local cursor'dur, gitignored), ama bu sadece mevcut session'da çalışır. Kullanıcı commit atıp saatler sonra dönerse, hook olmadan bu değişiklikler "görünmez" kalır. Marker file (`wiki/.pending`), zamandan bağımsız olarak "commit yapıldı, wiki güncellenmedi" bilgisini korur.
 
 **Neden /tmp değil de wiki/.pending?**
 
