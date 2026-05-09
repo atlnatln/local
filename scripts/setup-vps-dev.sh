@@ -8,11 +8,11 @@ echo "=== VPS Dev Ortamı Kurulumu ==="
 echo "Tarih: $(date)"
 
 # 1. Yedek al
-echo "[1/10] Mevcut VPS dizini yedekleniyor..."
+echo "[1/12] Mevcut VPS dizini yedekleniyor..."
 tar czf "$HOME/vps-backup-$(date +%Y%m%d).tar.gz" "$VPS_DIR" 2>/dev/null || true
 
 # 2. Git clone
-echo "[2/10] GitHub'dan local repo çekiliyor..."
+echo "[2/12] GitHub'dan local repo çekiliyor..."
 if [ ! -d "$LOCAL_DIR/.git" ]; then
     if [ -d "$LOCAL_DIR" ] && [ "$(ls -A $LOCAL_DIR)" ]; then
         mv "$LOCAL_DIR" "$LOCAL_DIR.backup.$(date +%s)"
@@ -23,12 +23,12 @@ fi
 cd "$LOCAL_DIR"
 
 # 3. Git config
-echo "[3/10] Git config ayarlanıyor..."
+echo "[3/12] Git config ayarlanıyor..."
 git config user.name "VPS Developer"
 git config user.email "vps@localhost"
 
 # 4. Git auth
-echo "[4/10] Git auth kontrolü..."
+echo "[4/12] Git auth kontrolü..."
 if [ -f "$HOME/.ssh/id_ed25519" ]; then
     git remote set-url origin git@github.com:atlnatln/local.git 2>/dev/null || true
     echo "  SSH key mevcut. Remote SSH olarak ayarlandı."
@@ -38,7 +38,7 @@ else
 fi
 
 # 5. Python venv'leri
-echo "[5/10] Python venv'leri kuruluyor..."
+echo "[5/12] Python venv'leri kuruluyor..."
 for proj in projects/mathlock-play/backend projects/telegram-kimi; do
     if [ -f "$proj/requirements.txt" ]; then
         echo "  → $proj"
@@ -48,7 +48,7 @@ for proj in projects/mathlock-play/backend projects/telegram-kimi; do
 done
 
 # 6. Node.js
-echo "[6/10] Node.js bağımlılıkları kuruluyor..."
+echo "[6/12] Node.js bağımlılıkları kuruluyor..."
 for proj in projects/webimar/webimar-nextjs projects/anka/services/frontend; do
     if [ -f "$proj/package.json" ]; then
         echo "  → $proj"
@@ -58,11 +58,11 @@ for proj in projects/webimar/webimar-nextjs projects/anka/services/frontend; do
 done
 
 # 7. Docker
-echo "[7/10] Docker kontrolü..."
+echo "[7/12] Docker kontrolü..."
 docker --version 2>/dev/null || echo "  UYARI: Docker kurulu değil."
 
 # 8. Android SDK
-echo "[8/10] Android SDK kontrolü..."
+echo "[8/12] Android SDK kontrolü..."
 ANDROID_SDK_ROOT="$HOME/android-sdk"
 if [ ! -d "$ANDROID_SDK_ROOT/cmdline-tools/latest" ]; then
     echo "  Android SDK kuruluyor..."
@@ -86,24 +86,59 @@ else
 fi
 
 # 9. Kimi CLI PATH
-echo "[9/10] Kimi CLI PATH kontrolü..."
+echo "[9/12] Kimi CLI PATH kontrolü..."
 if ! grep -q "\.kimi/bin" "$HOME/.bashrc" 2>/dev/null; then
     echo 'export PATH="$HOME/.kimi/bin:$PATH"' >> "$HOME/.bashrc"
     echo "  Kimi CLI PATH eklendi."
 fi
 
 # 10. Wiki skill
-echo "[10/10] Wiki skill symlink..."
+echo "[10/12] Wiki skill symlink..."
 mkdir -p "$HOME/.kimi/skills"
 ln -sf "$LOCAL_DIR/.kimi/skills/local-wiki" "$HOME/.kimi/skills/local-wiki" 2>/dev/null || true
 
 # 11. Git hooks
-echo "[11/11] Git hooks kuruluyor..."
+echo "[11/12] Git hooks kuruluyor..."
 cd "$LOCAL_DIR"
 ln -sf "$LOCAL_DIR/scripts/hooks/pre-commit" "$LOCAL_DIR/.git/hooks/pre-commit"
 ln -sf "$LOCAL_DIR/scripts/hooks/pre-push" "$LOCAL_DIR/.git/hooks/pre-push"
 ln -sf "$LOCAL_DIR/scripts/wiki-post-commit.sh" "$LOCAL_DIR/.git/hooks/post-commit"
 echo "  → local: pre-commit, pre-push, post-commit"
+
+# 12. Kimi CLI hooks
+echo "[12/12] Kimi CLI hooks yapılandırılıyor..."
+python3 << "PYEOF"
+import pathlib
+
+config_path = pathlib.Path.home() / ".kimi" / "config.toml"
+if config_path.exists():
+    content = config_path.read_text()
+    old_hooks = "hooks = []"
+    new_hooks = """[[hooks]]
+event = "PreToolUse"
+matcher = "WriteFile|StrReplaceFile"
+command = "/home/akn/local/scripts/hooks/protect-env.sh"
+timeout = 5
+
+[[hooks]]
+event = "PostToolUse"
+matcher = "WriteFile|StrReplaceFile"
+command = "/home/akn/local/scripts/hooks/wiki-auto-pending.sh"
+timeout = 5
+
+[[hooks]]
+event = "Stop"
+command = "/home/akn/local/scripts/hooks/wiki-lint-on-stop.sh"
+timeout = 30"""
+    if old_hooks in content:
+        content = content.replace(old_hooks, new_hooks)
+        config_path.write_text(content)
+        print("  → Kimi CLI hooks güncellendi")
+    else:
+        print("  → UYARI: config.toml'da hooks = [] bulunamadı, manuel kontrol gerekli")
+else:
+    print("  → UYARI: ~/.kimi/config.toml bulunamadı")
+PYEOF
 
 echo ""
 echo "=== Kurulum Tamamlandı ==="
