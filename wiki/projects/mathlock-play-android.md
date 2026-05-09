@@ -272,6 +272,27 @@ private fun fetchLevels(): String? {
 
 **Düzeltme:** Test sınıfına `@ConscryptMode(ConscryptMode.Mode.OFF)` annotation eklendi. Robolectric/native conscrypt çakışması böylece çözüldü.
 
+## Activity Auth Header Fix (2026-05-09)
+
+**Sorun:** `ChildProfilesActivity`, `StatsDashboardActivity`, `PerformanceReportActivity` ve `AccountActivity` (satın alma doğrulama + email kaydı) kendi `HttpURLConnection` instance'ları üzerinden backend'e istek atarken `Authorization: Device <signed_token>` header'ı göndermiyordu. Sadece `?device_token=<raw_uuid>` query parametresi veya body'de raw UUID gönderiliyordu. Backend `DeviceTokenAuthentication` imzalı token beklediği için bu istekler `403 Forbidden` dönüyordu.
+
+**Kök Neden:** Bu Activity'ler `AccountManager`'ın `apiClient`'ini kullanmıyor; kendi `HttpURLConnection` bağlantılarını açıyorlar. `RealApiClient` otomatik `Authorization` header eklerken, bu custom bağlantılar header eklemiyordu. Ayrıca `AccountActivity`'de email kaydı (`registerEmail()`) çağrılmadan önce `getOrRegister()` çağrılmıyordu; token null kalınca "Önce cihaz kaydı yapılmalı" hatası veriyordu.
+
+**Düzeltmeler:**
+- `ChildProfilesActivity.kt`: `loadProfiles()`, `createChild()`, `updateChild()`, `deleteChild()` metodlarına `Authorization` header eklendi. Token yoksa `getOrRegister()` otomatik çağrılıyor.
+- `StatsDashboardActivity.kt`: `loadStats()` metoduna `Authorization` header eklendi.
+- `PerformanceReportActivity.kt`: `loadReport()` metoduna `Authorization` header eklendi.
+- `AccountActivity.kt`: `onRegisterClick()` ve `registerEmailInBackground()` öncesinde `getOrRegister()` eklendi. `verifyAndConsumePurchase()` ve `purchaseDebugCredits()` metodlarına `Authorization` header eklendi.
+
+```kotlin
+// file: projects/mathlock-play/app/src/main/java/com/akn/mathlock/ChildProfilesActivity.kt
+val accessToken = am.getOrRegister() ?: return
+val conn = url.openConnection() as HttpURLConnection
+conn.setRequestProperty("Authorization", "Device $accessToken")
+```
+
+> Not: `device_token` query parametresi ve body alanı backward compatibility için korundu; backend hem header'dan hem query/body'den okuyabiliyor.
+
 ## Sürüm (2026-05-09)
 
 - **Version Code:** 76 → 77

@@ -2724,3 +2724,45 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 236 entries
 
+## [2026-05-09 16:50] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 237 entries
+
+
+## [2026-05-09 16:47] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 238 entries
+- Note: Post-pull cleanup, checkpoints synced, .pending cleared
+
+## [2026-05-09 18:54] ingest | mathlock-play | c603c9ee | mathlock-play-android
+- Dosyalar: M:4
+- Pages updated: [[mathlock-play-android]]
+- Diff özeti: ChildProfilesActivity, StatsDashboardActivity, PerformanceReportActivity ve AccountActivity'e `Authorization: Device <signed_token>` header eklendi. AccountActivity email kaydında `getOrRegister()` çağrısı eklendi. Backend `DeviceTokenAuthentication` imzalı token beklediği için raw UUID ile `403 Forbidden` dönüyordu.
+## [2026-05-09 18:56] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 240 entries
+
