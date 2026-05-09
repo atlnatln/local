@@ -2606,3 +2606,27 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 225 entries
 
+## [2026-05-09 10:44] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 226 entries
+
+## [2026-05-09 10:45] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 227 entries
+
