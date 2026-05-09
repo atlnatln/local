@@ -63,13 +63,14 @@ class StatsDashboardActivity : BaseActivity() {
 
     private fun loadStats() {
         val am = AccountManager(this)
-        am.getOrRegister() // ensure registered
+        val accessToken = am.getOrRegister() ?: return
         val deviceToken = am.getDeviceToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/stats-history/?device_token=$deviceToken&child_name=${java.net.URLEncoder.encode(childName, "UTF-8")}")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
+                conn.setRequestProperty("Authorization", "Device $accessToken")
                 conn.connectTimeout = TIMEOUT
                 conn.readTimeout = TIMEOUT
 

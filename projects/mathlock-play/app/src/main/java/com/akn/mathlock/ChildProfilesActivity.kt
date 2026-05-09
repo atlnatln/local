@@ -57,18 +57,18 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun loadProfiles() {
-        accountManager.getAccessToken() ?: return
-        var deviceToken = accountManager.getDeviceToken()
-        if (deviceToken.isNullOrBlank()) {
-            accountManager.getOrRegister()
-            deviceToken = accountManager.getDeviceToken()
+        var accessToken = accountManager.getAccessToken()
+        if (accessToken.isNullOrBlank()) {
+            accessToken = accountManager.getOrRegister()
         }
-        if (deviceToken.isNullOrBlank()) return
+        if (accessToken.isNullOrBlank()) return
+        val deviceToken = accountManager.getDeviceToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/?device_token=$deviceToken")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
+                conn.setRequestProperty("Authorization", "Device $accessToken")
                 conn.connectTimeout = TIMEOUT
                 conn.readTimeout = TIMEOUT
 
@@ -206,18 +206,18 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun createChild(name: String, period: String) {
-        accountManager.getAccessToken() ?: return
-        var deviceToken = accountManager.getDeviceToken()
-        if (deviceToken.isNullOrBlank()) {
-            accountManager.getOrRegister()
-            deviceToken = accountManager.getDeviceToken()
+        var accessToken = accountManager.getAccessToken()
+        if (accessToken.isNullOrBlank()) {
+            accessToken = accountManager.getOrRegister()
         }
-        if (deviceToken.isNullOrBlank()) return
+        if (accessToken.isNullOrBlank()) return
+        val deviceToken = accountManager.getDeviceToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "POST"
+                conn.setRequestProperty("Authorization", "Device $accessToken")
                 conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
                 conn.doOutput = true
                 conn.connectTimeout = TIMEOUT
@@ -269,18 +269,18 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun updateChild(childId: Int, name: String? = null, period: String? = null, setActive: Boolean = false) {
-        accountManager.getAccessToken() ?: return
-        var deviceToken = accountManager.getDeviceToken()
-        if (deviceToken.isNullOrBlank()) {
-            accountManager.getOrRegister()
-            deviceToken = accountManager.getDeviceToken()
+        var accessToken = accountManager.getAccessToken()
+        if (accessToken.isNullOrBlank()) {
+            accessToken = accountManager.getOrRegister()
         }
-        if (deviceToken.isNullOrBlank()) return
+        if (accessToken.isNullOrBlank()) return
+        val deviceToken = accountManager.getDeviceToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/detail/?device_token=$deviceToken&child_id=$childId")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "PUT"
+                conn.setRequestProperty("Authorization", "Device $accessToken")
                 conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
                 conn.doOutput = true
                 conn.connectTimeout = TIMEOUT
@@ -310,18 +310,18 @@ class ChildProfilesActivity : BaseActivity() {
     }
 
     private fun deleteChild(childId: Int) {
-        accountManager.getAccessToken() ?: return
-        var deviceToken = accountManager.getDeviceToken()
-        if (deviceToken.isNullOrBlank()) {
-            accountManager.getOrRegister()
-            deviceToken = accountManager.getDeviceToken()
+        var accessToken = accountManager.getAccessToken()
+        if (accessToken.isNullOrBlank()) {
+            accessToken = accountManager.getOrRegister()
         }
-        if (deviceToken.isNullOrBlank()) return
+        if (accessToken.isNullOrBlank()) return
+        val deviceToken = accountManager.getDeviceToken() ?: return
         Thread {
             try {
                 val url = URL("$API_BASE/children/detail/?device_token=$deviceToken&child_id=$childId")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "DELETE"
+                conn.setRequestProperty("Authorization", "Device $accessToken")
                 conn.connectTimeout = TIMEOUT
                 conn.readTimeout = TIMEOUT
 

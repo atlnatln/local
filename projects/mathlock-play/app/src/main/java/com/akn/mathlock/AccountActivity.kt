@@ -127,6 +127,17 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         binding.btnRegister.text = "Kaydediliyor…"
 
         Thread {
+            accountManager.getOrRegister() ?: run {
+                runOnUiThread {
+                    binding.btnRegister.isEnabled = true
+                    binding.btnRegister.text = "Kayıt Ol"
+                    Snackbar.make(binding.root, "❌ Cihaz kaydı yapılamadı", Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(getColor(R.color.wrong_red))
+                        .setTextColor(getColor(android.R.color.white))
+                        .show()
+                }
+                return@Thread
+            }
             val result = accountManager.registerEmail(email)
             runOnUiThread {
                 binding.btnRegister.isEnabled = true
@@ -198,6 +209,15 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
     private fun registerEmailInBackground(email: String) {
         Snackbar.make(binding.root, "Kaydediliyor…", Snackbar.LENGTH_SHORT).show()
         Thread {
+            accountManager.getOrRegister() ?: run {
+                runOnUiThread {
+                    Snackbar.make(binding.root, "❌ Cihaz kaydı yapılamadı", Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(getColor(R.color.wrong_red))
+                        .setTextColor(getColor(android.R.color.white))
+                        .show()
+                }
+                return@Thread
+            }
             val result = accountManager.registerEmail(email)
             runOnUiThread {
                 when (result) {
@@ -327,11 +347,13 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         // İlk satın alınan ürünün product_id'sini al
         val productId = purchase.products.firstOrNull() ?: return
 
+        val accessToken = accountManager.getAccessToken()
         Thread {
             try {
                 val url = java.net.URL("${RealApiClient.API_BASE}/purchase/verify/")
                 val conn = url.openConnection() as java.net.HttpURLConnection
                 conn.requestMethod = "POST"
+                conn.setRequestProperty("Authorization", "Device $accessToken")
                 conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
                 conn.doOutput = true
                 conn.connectTimeout = 15000
@@ -401,11 +423,13 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         val deviceToken = accountManager.getDeviceToken() ?: return
         Snackbar.make(binding.root, "Kredi ekleniyor…", Snackbar.LENGTH_SHORT).show()
 
+        val accessToken = accountManager.getAccessToken()
         Thread {
             try {
                 val url = java.net.URL("${RealApiClient.API_BASE}/purchase/verify/")
                 val conn = url.openConnection() as java.net.HttpURLConnection
                 conn.requestMethod = "POST"
+                conn.setRequestProperty("Authorization", "Device $accessToken")
                 conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
                 conn.doOutput = true
                 conn.connectTimeout = 8000
