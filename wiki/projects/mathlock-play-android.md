@@ -293,6 +293,36 @@ conn.setRequestProperty("Authorization", "Device $accessToken")
 
 > Not: `device_token` query parametresi ve body alanı backward compatibility için korundu; backend hem header'dan hem query/body'den okuyabiliyor.
 
+## Memory Game Preview & Dynamic Card Fix (2026-05-09)
+
+**Sorun:** 20 çift kart ekranı taşıyordu; kart boyutları sabit `72dp` idi. Ayrıca oyun başlamadan önce kartları görme süresi yoktu.
+
+**Düzeltmeler:**
+- `buildGrid()` ekran genişliğine göre dinamik kart boyutu hesaplıyor: `cardSize = (screenWidth - padding - margin) / columnCount`
+- Sütun sayısı 5'e çıkarıldı (`pairCount <= 30`)
+- Max çift sayısı 20'den 30'a yükseltildi
+- `PreferenceManager`'a `memoryGamePreviewSeconds` (0–10 sn) eklendi
+- `SettingsActivity`'ye preview slider eklendi
+- `startGame()` ve `restartGame()` içinde `showPreviewThenHide()` çağrılıyor
+
+## AppLockService Overlay Bypass (2026-05-09)
+
+**Sorun:** Kilitli uygulama açıldığında `AppLockService` önce siyah tam ekran overlay gösteriyor, sonra MathLock açılıyordu. Kullanıcı 2-3 saniye siyah ekran görüyordu.
+
+**Düzeltme:** `launchChallenge()` içinde `showBlockingOverlay()` çağrısı kaldırıldı. Artık direkt `ChallengePickerActivity` açılıyor. Overlay sadece activity başlatma başarısız olursa fallback olarak gösteriliyor.
+
+## MathChallenge Set/Batch Display (2026-05-09)
+
+**Sorun:** Matematik oyununda soru numarası görünüyordu ama hangi set/batch'te olduğu görünmüyordu.
+
+**Düzeltme:** `activity_math_challenge.xml`'de `tvBatch` eklendi. `showNextJsonQuestion()` içinde mevcut sorunun `batch` değeri gösteriliyor: "Set X" veya "Ücretsiz Set".
+
+## Sayı Yolculuğu Cache Fix (2026-05-09)
+
+**Sorun:** Oyun ilk açıldığında 1 saniye takılıyordu.
+
+**Düzeltme:** `clearCache(true)` kaldırıldı, `LOAD_NO_CACHE` → `LOAD_DEFAULT`. Debug `System.out.println`'ler `Log.d`'ye çevrildi.
+
 ## Sürüm (2026-05-09)
 
 - **Version Code:** 76 → 77

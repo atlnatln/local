@@ -2766,3 +2766,20 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 240 entries
 
+
+## [2026-05-09 19:15] ingest | mathlock-play | 33e003a2 | mathlock-play-android
+- Dosyalar: M:11
+- Pages updated: [[mathlock-play-android]]
+- Diff özeti: Memory Game preview + dynamic card size, AppLockService overlay bypass, MathChallenge set/batch display, SayiYolculugu cache fix, Settings preview slider.
+## [2026-05-09 23:58] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 242 entries
+
