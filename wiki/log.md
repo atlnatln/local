@@ -2630,3 +2630,25 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 227 entries
 
+
+## [2026-05-09 11:00] ingest | system-audit | hook-fix | checkpoint-sync
+
+- AGENTS.md güncellendi (tarih: 2026-05-09, lint: 8/10, GitHub push: verified)
+- VPS hook sistemi tamamlandı: git hooks + kimi-cli hooks (protect-env, wiki-auto-pending, wiki-lint-on-stop)
+- Checkpoint SHA'ları düzeltildi (local, webimar, mathlock-play, infrastructure, sec-agent)
+- `scripts/setup-vps-dev.sh` felaket senaryosuna hazır: git hooks + kimi-cli hooks otomatik kurulum
+- `wiki/concepts/agents-md.md` updated: 2026-05-09
+- Pages updated: [[agents-md]], [[git-workflow]], [[proactive-wiki]]
+
+## [2026-05-09 11:06] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 229 entries
+

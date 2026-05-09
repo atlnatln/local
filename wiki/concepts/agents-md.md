@@ -1,7 +1,7 @@
 ---
 title: "AGENTS.md"
 created: 2026-05-03
-updated: 2026-05-06
+updated: 2026-05-09
 type: concept
 tags: [kimi-cli, agents, configuration, coding-conventions]
 related:
