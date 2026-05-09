@@ -97,6 +97,14 @@ echo "[10/10] Wiki skill symlink..."
 mkdir -p "$HOME/.kimi/skills"
 ln -sf "$LOCAL_DIR/.kimi/skills/local-wiki" "$HOME/.kimi/skills/local-wiki" 2>/dev/null || true
 
+# 11. Git hooks
+echo "[11/11] Git hooks kuruluyor..."
+cd "$LOCAL_DIR"
+ln -sf "$LOCAL_DIR/scripts/hooks/pre-commit" "$LOCAL_DIR/.git/hooks/pre-commit"
+ln -sf "$LOCAL_DIR/scripts/hooks/pre-push" "$LOCAL_DIR/.git/hooks/pre-push"
+ln -sf "$LOCAL_DIR/scripts/wiki-post-commit.sh" "$LOCAL_DIR/.git/hooks/post-commit"
+echo "  → local: pre-commit, pre-push, post-commit"
+
 echo ""
 echo "=== Kurulum Tamamlandı ==="
 echo "Geliştirme: $LOCAL_DIR"
