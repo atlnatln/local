@@ -145,8 +145,12 @@ class SettingsActivity : BaseActivity() {
 
         // Sayı Hafızası ayarları
         val memoryPairs = prefManager.memoryGamePairCount.toFloat()
-        binding.sliderMemoryPairs.value = memoryPairs.coerceIn(4f, 20f)
+        binding.sliderMemoryPairs.value = memoryPairs.coerceIn(4f, 30f)
         binding.tvMemoryPairs.text = getString(R.string.settings_memory_pairs, memoryPairs.toInt())
+
+        val memoryPreview = prefManager.memoryGamePreviewSeconds.toFloat()
+        binding.sliderMemoryPreview.value = memoryPreview.coerceIn(0f, 10f)
+        binding.tvMemoryPreview.text = getString(R.string.settings_memory_preview, memoryPreview.toInt())
 
         val memoryRounds = prefManager.memoryGameRequiredRounds.toFloat()
         binding.sliderMemoryRounds.value = memoryRounds.coerceIn(1f, 10f)
@@ -312,6 +316,12 @@ class SettingsActivity : BaseActivity() {
             val count = value.toInt()
             prefManager.memoryGamePairCount = count
             binding.tvMemoryPairs.text = getString(R.string.settings_memory_pairs, count)
+        }
+
+        binding.sliderMemoryPreview.addOnChangeListener { _, value, _ ->
+            val seconds = value.toInt()
+            prefManager.memoryGamePreviewSeconds = seconds
+            binding.tvMemoryPreview.text = getString(R.string.settings_memory_preview, seconds)
         }
 
         binding.sliderMemoryRounds.addOnChangeListener { _, value, _ ->

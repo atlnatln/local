@@ -374,30 +374,21 @@ class AppLockService : Service() {
         // 1) Ana ekrana gönder — kilitli uygulamayı ön plandan düşür
         forceUserHome()
 
-        // 2) Overlay'ı hemen göster — kilitli uygulama görsel olarak engellenir
-        handler.postDelayed({
-            if (blockingOverlayView == null) {
-                showBlockingOverlay(lockedPackage)
-            }
-        }, 100)
-
-        // 3) 500ms sonra ChallengePickerActivity'yi otomatik aç (buton beklemeden)
-        //    Overlay yarım saniye görünür, ardından activity ön plana gelir.
-        //    Activity ön plana gelince checkForegroundApp overlay'ı kaldırır.
-        handler.postDelayed({
-            val timerExpired = LockStateManager.isTimerExpired(lockedPackage)
-            val intent = Intent(this, ChallengePickerActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                putExtra("locked_package", lockedPackage)
-                putExtra("timer_expired", timerExpired)
-            }
-            try {
-                startActivity(intent)
-                Log.d(TAG, "Challenge activity otomatik başlatıldı: $lockedPackage")
-            } catch (e: Exception) {
-                Log.w(TAG, "Activity başlatılamadı, overlay kalacak: ${e.message}")
-                // Overlay zaten gösteriliyor, kullanıcı butona basabilir
-            }
+        // 2) Direkt ChallengePickerActivity'yi aç — siyah overlay atlanıyor
+        val timerExpired = LockStateManager.isTimerExpired(lockedPackage)
+        val intent = Intent(this, ChallengePickerActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            putExtra("locked_package", lockedPackage)
+            putExtra("timer_expired", timerExpired)
+        }
+        try {
+            startActivity(intent)
+            Log.d(TAG, "Challenge activity otomatik başlatıldı: $lockedPackage")
+        } catch (e: Exception) {
+            Log.w(TAG, "Activity başlatılamadı, overlay gösteriliyor: ${e.message}")
+            // Fallback: sadece activity açılamazsa overlay göster
+            showBlockingOverlay(lockedPackage)
+        }
         }, 500)
 
         Log.d(TAG, "Challenge tetiklendi: $lockedPackage")

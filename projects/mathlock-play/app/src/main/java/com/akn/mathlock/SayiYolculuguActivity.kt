@@ -59,8 +59,7 @@ class SayiYolculuguActivity : BaseActivity() {
         webView.settings.domStorageEnabled = true
         webView.settings.allowFileAccess = false
         webView.settings.allowContentAccess = false
-        webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
-        webView.clearCache(true)
+        webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
         webView.addJavascriptInterface(GameBridge(), "Android")
 
         webView.webViewClient = object : WebViewClient() {
@@ -190,7 +189,7 @@ class SayiYolculuguActivity : BaseActivity() {
         }
         apiClient.setAuthToken(accessToken)
         val childId = prefManager.activeChildId
-        System.out.println("[SY-FETCH] token=${accessToken?.take(8)} childId=$childId")
+        Log.d(TAG, "[SY-FETCH] token=${accessToken?.take(8)} childId=$childId")
 
         if (!accessToken.isNullOrBlank() && !deviceToken.isNullOrBlank()) {
             try {
@@ -199,9 +198,9 @@ class SayiYolculuguActivity : BaseActivity() {
                     var path = "/levels/?device_token=${deviceToken.trim()}"
                     if (withChildId && childId > 0) path += "&child_id=$childId"
                     path += "&locale=$locale"
-                    System.out.println("[SY-FETCH] GET $path")
+                    Log.d(TAG, "[SY-FETCH] GET $path")
                     val response = apiClient.get(path)
-                    System.out.println("[SY-FETCH] response code=${response.statusCode} body=${response.body.toString().take(120)}")
+                    Log.d(TAG, "[SY-FETCH] response code=${response.statusCode} body=${response.body.toString().take(120)}")
                     if (response.statusCode == 200) {
                         val json = response.body.toString()
                         try {
@@ -225,14 +224,14 @@ class SayiYolculuguActivity : BaseActivity() {
                             saveCompletedLevels()
                             currentSetId = serverSetId
                             saveCurrentSetId()
-                            System.out.println("[SY-FETCH] API OK set_id=$currentSetId isNewSet=$isNewSet completed=${completedLevelIds.size}")
+                            Log.d(TAG, "[SY-FETCH] API OK set_id=$currentSetId isNewSet=$isNewSet completed=${completedLevelIds.size}")
                         } catch (e: Exception) {
-                            System.out.println("[SY-FETCH] API parse exception: ${e.message}")
+                            Log.d(TAG, "[SY-FETCH] API parse exception: ${e.message}")
                         }
                         val injected = injectCompletedIds(json)
                         SecurePrefs.get(this, PREFS_NAME)
                             .edit().putString(KEY_CACHED_LEVELS, injected).apply()
-                        System.out.println("[SY-FETCH] cached and returning injected")
+                        Log.d(TAG, "[SY-FETCH] cached and returning injected")
                         return injected
                     }
                     return null
@@ -241,20 +240,20 @@ class SayiYolculuguActivity : BaseActivity() {
                 // Önce child_id ile dene; 404 alırsa child_id olmadan dene (backend active child döner)
                 var result = tryFetch(true)
                 if (result == null && childId > 0) {
-                    System.out.println("[SY-FETCH] child_id=$childId not found, retrying without child_id")
+                    Log.d(TAG, "[SY-FETCH] child_id=$childId not found, retrying without child_id")
                     result = tryFetch(false)
                     if (result != null) {
                         // Backend farklı child döndürdü; local childId'yi sıfırla
-                        System.out.println("[SY-FETCH] Resetting local childId from $childId")
+                        Log.d(TAG, "[SY-FETCH] Resetting local childId from $childId")
                         prefManager.activeChildId = 0
                     }
                 }
                 if (result != null) return result
             } catch (e: Exception) {
-                System.out.println("[SY-FETCH] API exception: ${e.javaClass.simpleName} ${e.message}")
+                Log.d(TAG, "[SY-FETCH] API exception: ${e.javaClass.simpleName} ${e.message}")
             }
         } else {
-            System.out.println("[SY-FETCH] token blank/null")
+            Log.d(TAG, "[SY-FETCH] token blank/null")
         }
 
         val cached = SecurePrefs.get(this, PREFS_NAME)
@@ -288,7 +287,7 @@ class SayiYolculuguActivity : BaseActivity() {
             val injected = injectCompletedIds(cached)
             SecurePrefs.get(this, PREFS_NAME)
                 .edit().putString(KEY_CACHED_LEVELS, injected).apply()
-            System.out.println("[SY-FETCH] cache loaded set=$currentSetId completed=${completedLevelIds.size}")
+            Log.d(TAG, "[SY-FETCH] cache loaded set=$currentSetId completed=${completedLevelIds.size}")
             return injected
         }
 

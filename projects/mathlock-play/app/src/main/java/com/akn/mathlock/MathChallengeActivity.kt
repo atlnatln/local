@@ -183,6 +183,9 @@ class MathChallengeActivity : BaseActivity() {
             .replace(" / ", " ÷ ")
             .replace("_", "?")
 
+        val batchNum = currentJsonQuestion?.batch ?: 0
+        binding.tvBatch.text = if (batchNum > 0) "Set $batchNum" else "Ücretsiz Set"
+
         if (isTestMode) {
             // Ebeveyn önizleme: "Soru 3/50" — toplam soru sayısını göster
             val totalQ = questionManager.totalCount()

@@ -37,6 +37,7 @@ class MemoryGameActivity : BaseActivity() {
 
     private var pairCount = 6
     private var requiredRounds = 2
+    private var previewSeconds = 2
     private var sessionSolvedCount = 0
     private var isProcessing = false
 
@@ -63,6 +64,7 @@ class MemoryGameActivity : BaseActivity() {
 
         pairCount = prefManager.memoryGamePairCount
         requiredRounds = prefManager.memoryGameRequiredRounds
+        previewSeconds = prefManager.memoryGamePreviewSeconds
 
         setupListeners()
 
@@ -93,6 +95,7 @@ class MemoryGameActivity : BaseActivity() {
             pairCount = count
             binding.tvPairCountLabel.text = "$count çift (${count * 2} kart)"
         }
+        binding.sliderPairCount.valueTo = 30f
 
         binding.btnStart.setOnClickListener {
             binding.setupContainer.visibility = View.GONE
@@ -106,7 +109,8 @@ class MemoryGameActivity : BaseActivity() {
         binding.gameScroll.visibility = View.GONE
         binding.winOverlay.visibility = View.GONE
         binding.btnRestart.visibility = View.GONE
-        binding.tvRounds.visibility = View.GONE
+        binding.tvRounds.visibility = View.VISIBLE
+        updateRoundDisplay()
         binding.sliderPairCount.value = pairCount.toFloat()
         binding.tvPairCountLabel.text = "$pairCount çift (${pairCount * 2} kart)"
     }
@@ -118,11 +122,29 @@ class MemoryGameActivity : BaseActivity() {
         buildGrid()
         updateScore()
         binding.btnRestart.visibility = View.VISIBLE
+        binding.tvRounds.visibility = View.VISIBLE
+        updateRoundDisplay()
 
-        if (!isPracticeMode && !isTestMode) {
-            binding.tvRounds.visibility = View.VISIBLE
-            updateRoundDisplay()
+        if (previewSeconds > 0) {
+            showPreviewThenHide()
         }
+    }
+
+    private fun showPreviewThenHide() {
+        isProcessing = true
+        // Tüm kartları aç (animasyonsuz)
+        cardViews.forEach { holder ->
+            holder.front.visibility = View.INVISIBLE
+            holder.back.visibility = View.VISIBLE
+        }
+        handler.postDelayed({
+            // Tüm kartları kapat
+            cardViews.forEach { holder ->
+                holder.back.visibility = View.INVISIBLE
+                holder.front.visibility = View.VISIBLE
+            }
+            isProcessing = false
+        }, previewSeconds * 1000L)
     }
 
     private fun restartGame() {
@@ -141,15 +163,28 @@ class MemoryGameActivity : BaseActivity() {
         }
         updateScore()
         binding.winOverlay.visibility = View.GONE
+        if (previewSeconds > 0) {
+            showPreviewThenHide()
+        }
     }
 
     private fun buildGrid() {
         val grid = binding.cardGrid
         grid.removeAllViews()
-        grid.columnCount = engine?.getColumnCount() ?: 3
+        val columnCount = engine?.getColumnCount() ?: 3
+        grid.columnCount = columnCount
 
         val inflater = LayoutInflater.from(this)
         val density = resources.displayMetrics.density
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+
+        val gridPadding = (16 * density).toInt()
+        val cardMargin = (6 * density).toInt()
+        val availableWidth = screenWidth - gridPadding * 2
+        val cardSize = (availableWidth - cardMargin * 2 * columnCount) / columnCount
+        val finalCardSize = cardSize.coerceAtLeast((40 * density).toInt())
+        val textSize = (finalCardSize / density * 0.35f).coerceIn(12f, 28f)
 
         engine?.cards?.forEachIndexed { index, card ->
             val view = inflater.inflate(R.layout.item_memory_card, grid, false)
@@ -160,7 +195,18 @@ class MemoryGameActivity : BaseActivity() {
             val matchedOverlay = view.findViewById<View>(R.id.matchedOverlay)
 
             valueText.text = card.value.toString()
+            valueText.textSize = textSize
             container.cameraDistance = 8000 * density
+
+            // Dinamik kart boyutu
+            val lp = FrameLayout.LayoutParams(finalCardSize, finalCardSize)
+            lp.setMargins(cardMargin, cardMargin, cardMargin, cardMargin)
+            view.layoutParams = lp
+
+            val cardLp = FrameLayout.LayoutParams(finalCardSize, finalCardSize)
+            front.layoutParams = cardLp
+            back.layoutParams = cardLp
+            matchedOverlay.layoutParams = cardLp
 
             val holder = ViewHolder(container, front, back, valueText, matchedOverlay)
             cardViews.add(holder)
@@ -268,7 +314,7 @@ class MemoryGameActivity : BaseActivity() {
     }
 
     private fun updateRoundDisplay() {
-        binding.tvRounds.text = "Tur: $sessionSolvedCount/$requiredRounds"
+        binding.tvRounds.text = "Set: $sessionSolvedCount/$requiredRounds"
     }
 
     private fun onRoundComplete() {
@@ -291,7 +337,7 @@ class MemoryGameActivity : BaseActivity() {
             handler.postDelayed({ unlockAndLaunchApp() }, 1500)
         } else {
             // Daha tur var, kısa mesaj sonra yeni oyun
-            showWinDialog("Tur Tamamlandı!", "$sessionSolvedCount/$requiredRounds tur bitti.\nSonraki tur başlıyor...")
+            showWinDialog("Set Tamamlandı!", "$sessionSolvedCount/$requiredRounds set bitti.\nSonraki set başlıyor...")
             handler.postDelayed({
                 binding.winOverlay.visibility = View.GONE
                 restartGame()

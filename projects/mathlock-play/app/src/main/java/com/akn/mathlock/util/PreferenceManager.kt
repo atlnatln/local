@@ -31,6 +31,7 @@ class PreferenceManager(context: Context) {
         private const val KEY_MEMORY_ENABLED = "challenge_memory_enabled"
         private const val KEY_MEMORY_PAIR_COUNT = "memory_pair_count"
         private const val KEY_MEMORY_REQUIRED_ROUNDS = "memory_required_rounds"
+        private const val KEY_MEMORY_PREVIEW_SECONDS = "memory_preview_seconds"
         private const val KEY_ACTIVE_CHILD_ID = "active_child_id"
         private const val KEY_ACTIVE_CHILD_NAME = "active_child_name"
         private const val KEY_ACTIVE_EDUCATION_PERIOD = "active_education_period"
@@ -42,6 +43,7 @@ class PreferenceManager(context: Context) {
         private const val DEFAULT_GUESS_REQUIRED_ROUNDS = 1
         private const val DEFAULT_MEMORY_PAIR_COUNT = 6
         private const val DEFAULT_MEMORY_REQUIRED_ROUNDS = 2
+        private const val DEFAULT_MEMORY_PREVIEW_SECONDS = 2
 
         const val EXPIRE_ACTION_RELOCK = "relock"
         const val EXPIRE_ACTION_CLOSE = "close"
@@ -185,6 +187,10 @@ class PreferenceManager(context: Context) {
     var memoryGameRequiredRounds: Int
         get() = prefs.getInt(KEY_MEMORY_REQUIRED_ROUNDS, DEFAULT_MEMORY_REQUIRED_ROUNDS).coerceIn(1, 10)
         set(value) = prefs.edit().putInt(KEY_MEMORY_REQUIRED_ROUNDS, value.coerceIn(1, 10)).apply()
+
+    var memoryGamePreviewSeconds: Int
+        get() = prefs.getInt(KEY_MEMORY_PREVIEW_SECONDS, DEFAULT_MEMORY_PREVIEW_SECONDS).coerceIn(0, 10)
+        set(value) = prefs.edit().putInt(KEY_MEMORY_PREVIEW_SECONDS, value.coerceIn(0, 10)).apply()
 
     // --- Çocuk Profili ---
 

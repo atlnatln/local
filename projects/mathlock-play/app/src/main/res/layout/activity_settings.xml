@@ -705,8 +705,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:valueFrom="4"
-                    android:valueTo="20"
+                    android:valueTo="30"
                     android:stepSize="2" />
+
+                <TextView
+                    android:id="@+id/tvMemoryPreview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderMemoryPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="0"
+                    android:valueTo="10"
+                    android:stepSize="1" />
 
                 <TextView
                     android:id="@+id/tvMemoryRounds"

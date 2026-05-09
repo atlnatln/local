@@ -331,19 +331,27 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Ebeveyn erişim butonu -->
-        <TextView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/btnParentAccess"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🫆"
-            android:textSize="40sp"
-            android:alpha="0.6"
-            android:padding="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/card_parent"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Ebeveyn Girişi" />
+            app:rippleColor="#66000000">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔑"
+                android:textSize="40sp"
+                android:padding="16dp"
+                android:contentDescription="Ebeveyn Girişi" />
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>

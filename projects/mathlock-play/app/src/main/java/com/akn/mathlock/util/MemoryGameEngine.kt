@@ -33,7 +33,7 @@ class MemoryGameEngine(val pairCount: Int) {
         private set
 
     init {
-        require(pairCount in 4..20) { "pairCount 4-20 arası olmalı" }
+        require(pairCount in 4..30) { "pairCount 4-30 arası olmalı" }
         shuffle()
     }
 
@@ -115,6 +115,8 @@ class MemoryGameEngine(val pairCount: Int) {
     fun getColumnCount(): Int = when {
         pairCount <= 6 -> 2
         pairCount <= 12 -> 3
-        else -> 4
+        pairCount <= 20 -> 4
+        pairCount <= 30 -> 5
+        else -> 6
     }
 }
