@@ -573,9 +573,9 @@ journalctl -u ops-bot -n 50 --no-pager
 
 ---
 
-> **Son güncelleme:** 2026-05-05  
-> **Wiki durumu:** 7 proje ingest edildi, 10/10 lint passing  
+> **Son güncelleme:** 2026-05-09  
+> **Wiki durumu:** 7 proje ingest edildi, 8/10 lint passing  
 > **VPS durumu:** ops-bot ✅, sec-agent ✅, telegram-kimi ✅, webimar ✅, mathlock-play ✅
 > **GitHub:** `github.com/atlnatln/local.git`
 
-> **GitHub push:** 2026-05-05 tarihinde test edildi ✅
+> **GitHub push:** 2026-05-09 tarihinde test edildi ✅
