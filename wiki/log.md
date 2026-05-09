@@ -2684,3 +2684,23 @@ tags: [meta, log]
 - Pages archived: (none)
 - Diff summary: wiki/concepts/proactive-wiki.md değişikliği — proaktif wiki yöneticisi konsept sayfası güncellendi.
 - Lint: 8/10 passing (2 warnings: pre-existing)
+
+## [2026-05-09 13:43] ingest | local | 73d9abcb | 4
+- Files: A:0 M:4 D:0
+- Pages created: (none)
+- Pages updated: [[mathlock-play]], [[mathlock-play-android]]
+- Pages archived: (none)
+- Diff summary: Parent auth bottom sheet kaldırıldı — doğrudan BiometricPrompt. AndroidManifest.xml'e USE_BIOMETRIC + USE_FINGERPRINT eklendi. AGENTS.md wiki filtreleme kuralı eklendi. v1.0.76 release build.
+- Lint: 8/10 passing (2 warnings: pre-existing)
+## [2026-05-09 13:46] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
+- Raw existence: 0
+- Log size: 234 entries
+

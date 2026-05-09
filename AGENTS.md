@@ -244,155 +244,46 @@ Neden: Kullanıcı "bu session'da tekrar sorma" dedi, kapattı, ertesi gün açt
 
 ## Proaktif Wiki Kontrolü (Auto-Prompt)
 
-Kullanıcıya ilk yanıt vermeden ÖNCE aşağıdaki adımları takip et:
+Kullanıcıya ilk yanıt vermeden ÖNCE:
 
-### Skip Koşulları (Proaktif Kontrolü Atlama)
-Aşağıdaki durumlarda proaktif kontrolü ATLA:
-- Kullanıcı direkt `wiki ...` komutu söylediyse (örn. `wiki durum`). Zaten wiki ile ilgileniyor, tekrar sorma.
-- Kullanıcı `/flow:wiki-topla` yazdıysa. Zaten flow çalışıyor, tekrar sorma.
-- `~/.wiki-skip-session` dosyası varsa (kullanıcı "bu session'da tekrar sorma" dedi).
+1. `rm -f ~/.wiki-skip-session` → Session temizliği
+2. `cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"`
+3. `EMPTY` değilse → `AskUserQuestion`: "Wiki güncellemesi bekliyor: {X} proje, {Y} commit. Otomatik toplayayım mı?"
+   - **Evet** → `wiki topla` flow'u başlat (kullanıcıya ara sorma)
+   - **Hayır/şimdi değil** → marker'ı koru, devam et
+   - **Bu session sorma** → `touch ~/.wiki-skip-session`, devam et
 
-**NOT:** Kullanıcı `wiki topla`, `wiki ingest`, `wiki güncelle` gibi komutlar söylerse, proaktif kontrolü atla ve doğrudan **Wiki Ingest Flow (Tool-Based)** bölümündeki adımları takip et.
-
-### Kontrol Adımları
-1. `cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"` çalıştır
-2. Eğer çıktı `EMPTY` değilse:
-   - Satır sayısını say → kaç commit bekliyor
-   - Repo isimlerini parse et → kaç proje etkilenmiş
-   - `AskUserQuestion` ile kullanıcıya sor:
-     - **Soru:** "Wiki güncellemesi bekliyor: {X} proje, {Y} commit. Otomatik toplayayım mı?"
-     - **Seçenekler:**
-       1. "Evet, otomatik topla" (Recommended)
-       2. "Sadece bir projeyi güncelle (manual)" → proje adı iste, sonra `local-wiki` skill'ini kullan
-       3. "Durumu göster" → `wiki durum` çalıştır, sonra tekrar bu soruyu sor
-       4. "Şimdi değil (bir sonraki seansta tekrar sor)" → sessizce devam et, marker'ı koru
-       5. "Bu session'da tekrar sorma" → `touch ~/.wiki-skip-session`, sessizce devam et
-3. **Seçenek 1 seçilirse (CRITICAL):**
-   - Hemen **Wiki Ingest Flow (Tool-Based)** bölümündeki adımları takip et
-   - Kullanıcıya ara sorular sorma, tüm işlemi tek seferde bitir
-4. Seçenek 2 veya 3 seçilirse:
-   - `local-wiki` skill'ini lazy-load et (SKILL.md oku)
-   - Orientation Ritual'ı takip et: CONVENTIONS.md → SCHEMA.md → index.md → log.md
-   - WORKFLOW.md'ye göre ingest çalıştır
-   - **Başarılı ingest sonrası** marker dosyasını temizle: `> /home/akn/local/wiki/.pending`
-5. Seçenek 4 ("Şimdi değil") seçilirse:
-   - Marker'ı silme (bir sonraki seansta tekrar sorulacak)
-   - Kullanıcının orijinal sorusuna/söylediğine geç
-6. Seçenek 5 ("Bu session'da tekrar sorma") seçilirse:
-   - `touch ~/.wiki-skip-session`
-   - Marker'ı silme (bir sonraki session'da tekrar sorulacak, ama bu session'da atlanacak)
-   - Kullanıcının orijinal sorusuna/söylediğine geç
+**Skip:** Kullanıcı zaten `wiki ...` komutu söylediyse veya `~/.wiki-skip-session` varsa atla.
 
 ---
 
 ## Wiki Ingest Flow (Tool-Based)
 
-Bu bölüm, wiki ingest işleminin **tam otomatik** çalışması için gerekli adımları tanımlar. Kullanıcı "Evet, otomatik topla" dediğinde veya `wiki topla`/`wiki ingest`/`wiki güncelle` komutları geldiğinde, LLM bu adımları ara sormadan tek seferde tamamlar.
+Kullanıcı "wiki topla" / "wiki ingest" / "wiki güncelle" dediğinde veya proaktif kontrolde "evet" seçildiğinde, aşağıdaki 9 adımı ara sormadan tek seferde tamamla:
 
-### Adım 1: Checkpoint'leri Oku
-```bash
-cat /home/akn/local/wiki/.checkpoints/local.sha
-cat /home/akn/local/wiki/.checkpoints/ops-bot.sha
-cat /home/akn/local/wiki/.checkpoints/webimar.sha
-```
+| Adım | İşlem |
+|------|-------|
+| 1 | Checkpoint SHA'ları oku (`wiki/.checkpoints/*.sha`) |
+| 2 | Her repo için `git diff --name-status <checkpoint>..HEAD` |
+| 3 | Tüm diff boşsa → `.pending` temizle, lint çalıştır, log'a "no changes", bitir |
+| 4 | Diff doluysa → değişen dosyaları analiz et (A/M/D/R) |
+| 5 | İlgili wiki sayfalarını güncelle (`wiki/projects/<repo>.md`) |
+| 6 | Çapraz referansları yenile (`index.md`, `log.md`) |
+| 7 | Lint çalıştır: `python3 scripts/wiki_lint.py /home/akn/local/wiki` |
+| 8 | Checkpoint'leri güncelle (`git rev-parse HEAD > wiki/.checkpoints/<repo>.sha`) |
+| 9 | `.pending` temizle (`> /home/akn/local/wiki/.pending`), kullanıcıya özet rapor ver |
 
-### Adım 2: Git Diff Kontrolü
-Her proje için checkpoint SHA ile HEAD arasındaki farkı kontrol et:
-```bash
-cd /home/akn/local && git diff --name-status $(cat wiki/.checkpoints/local.sha)..HEAD
-cd /home/akn/local/ops-bot && git diff --name-status $(cat /home/akn/local/wiki/.checkpoints/ops-bot.sha)..HEAD
-cd /home/akn/local/projects/webimar && git diff --name-status $(cat /home/akn/local/wiki/.checkpoints/webimar.sha)..HEAD
-```
-
-### Adım 3: Karar (LLM Kendi Yapar, Kullanıcıya Sorma)
-- **Eğer TÜM diff'ler boşsa:**
-  1. `.pending` marker dosyasını temizle: `> /home/akn/local/wiki/.pending`
-  2. Wiki lint çalıştır
-  3. Log'a "no changes" girişi ekle
-  4. Kullanıcıya özet rapor ver, bitir
-- **Eğer en az bir diff doluysa:** Adım 4'e devam et
-
-### Adım 4: Değişen Dosyaları Analiz Et
-Diff çıktısındaki her satırı parse et:
-- `A	<path>` → Yeni dosya eklendi
-- `M	<path>` → Dosya değiştirildi
-- `D	<path>` → Dosya silindi
-- `R	<old>	<new>` → Dosya yeniden adlandırıldı
-
-### Adım 5: Wiki Sayfalarını Güncelle
-Her değişen dosya için ilgili wiki sayfasını bul (wiki/projects/<repo>.md):
-- Yeni dosya → Sayfa bölümüne ekle
-- Değişiklik → Sayfadaki ilgili bölümü güncelle
-- Silme → Sayfaya `[STALE]` işareti koy veya arşivle
-- Yeniden adlandırma → Eski yolu güncelle, yeni ekle
-
-### Adım 6: Çapraz Referansları Yenile
-- `wiki/index.md`'deki proje listesini kontrol et
-- Yeni projeler varsa ekle
-- `wiki/log.md`'ye yeni giriş ekle
-
-### Adım 7: Lint Kontrolü
-```bash
-cd ~/.kimi/skills/local-wiki && python3 scripts/wiki_lint.py /home/akn/local/wiki
-```
-- Eğer 10/10 passing ise → Adım 8'e devam
-- Eğer hata varsa → Hataları düzelt, tekrar lint çalıştır
-
-### Adım 8: Checkpoint'leri Güncelle ve Doğrula
-
-**Kural:** Checkpoint'ler local consumer cursor'dur. `.checkpoints/*.sha` gitignored'dır, makine-spesifiktir. GitHub'a gitmez.
-
-```bash
-# local monorepo
-cd /home/akn/local && git rev-parse HEAD > wiki/.checkpoints/local.sha
-
-# ops-bot (AYRI repo)
-cd /home/akn/local/ops-bot && git rev-parse HEAD > /home/akn/local/wiki/.checkpoints/ops-bot.sha
-
-# webimar (AYRI repo)
-cd /home/akn/local/projects/webimar && git rev-parse HEAD > /home/akn/local/wiki/.checkpoints/webimar.sha
-```
-
-> **Not:** Checkpoint'ler gitignored'dır. Her makine kendi cursor'ünü yönetir. SHA paradox'u yoktur.
-
-### Adım 9: Son Temizlik (KESİN)
-
-**Bu adım asla atlanmamalı.**
-
-1. `.pending` marker dosyasını **her durumda** temizle:
-   ```bash
-   > /home/akn/local/wiki/.pending
-   ```
-   - Ingest başarılı olduysa: temizle
-   - Ingest başarısız olduysa: YİNE TEMİZLE (hatalı durum `.pending`'de kalmamalı, çünkü bir sonraki session'da yeni git diff kontrolü yapılacak)
-   - Diff boş çıktıysa: temizle (Adım 3 zaten bunu yapıyor, burada tekrar garantile)
-
-2. Kullanıcıya özet rapor ver:
-   - Kaç proje güncellendi
-   - Kaç sayfa değiştirildi/eklendi/silindi
-   - Lint sonucu
-   - Yeni checkpoint SHA'ları
-   - `.pending` durumu (temizlendiği teyit edilsin)
+Detaylı komutlar ve kurallar: bkz. `wiki/README.md` ve `~/.kimi/skills/local-wiki/SKILL.md`.
 
 ---
 
 ## Wiki Kullanımı (local-wiki)
 
-`/home/akn/local/wiki` — Kimi CLI tarafından yönetilen bilgi tabanı. Detaylı komut rehberi ve organizasyon kuralları: bkz. `wiki/README.md`.
+`/home/akn/local/wiki` — Kimi CLI tarafından yönetilen bilgi tabanı.
 
-**Wiki komutları:**
-- `wiki topla` veya `wiki ingest` veya `wiki güncelle` — **Tool-based flow'u başlat** (yukarıdaki 9 adımı otomatik çalıştır)
-- `wiki durum` veya `wiki status` — Wiki durum özetini göster
-- `/flow:wiki-topla` — Yapılandırılmış prompt flow (manuel kullanım için)
+**Komutlar:** `wiki topla` / `wiki ingest` / `wiki güncelle` → Tool-based flow başlatır. `wiki durum` → özet gösterir.
 
-**Ne zaman wiki ingest yapılır:**
-- Yeni modül eklendiğinde / refactor sonrası
-- Deploy script değiştiğinde
-- README veya dokümantasyon güncellendiğinde
-- Haftalık bakım rutini
-- Kullanıcı `wiki topla`, `wiki ingest` istediğinde
-
-**Obsidian:** `wiki/` dizinini vault olarak açabilirsin. `[[wikilink]]` desteği ve Graph View çalışır.
+Detaylı rehber: `wiki/README.md` ve `~/.kimi/skills/local-wiki/SKILL.md`.
 
 ---
 
@@ -513,6 +404,34 @@ Wiki dosyalarında **"X yok"**, **"Y yansımamış"** gibi kesin olumsuz iddia y
 3. Hâlâ emin değilsen **"kontrol edeyim"** de, **"yok"** deme
 
 > **Neden:** Wiki ingest'ler (`docs(wiki): ingest ...`) kod commit'lerinden bağımsız ayrı commit'lerle yapılır. `git log -- projects/foo` sadece kod değişikliklerini gösterir; `wiki/` altındaki ingest commit'lerini görmez.
+
+### Wiki Toplama Filtreleme Kuralı
+
+`.pending` dosyasındaki her commit'i toplama sırasında filtrele. Post-commit hook basit tutulur (her commit'i yazar); agent (sen) `.pending`'i okuduğunda AGENTS.md'ye göre karar verirsin.
+
+**Wiki'ye YAZILMALILAR (Etkili Değişiklikler):**
+- `projects/*/app/src/main/java/**/*.kt` — Android logic değişiklikleri
+- `projects/*/backend/**/*.py` — Backend API/model değişiklikleri
+- `projects/*/scripts/*.py` — Pipeline/script değişiklikleri
+- `deploy.sh`, `docker-compose.yml`, `systemd/` — Altyapı değişiklikleri
+- `AGENTS.md`, `README.md`, `SCHEMA.md` — Proje dokümantasyonu değişiklikleri
+- `.env.example` — Çevre değişkeni şablonu değişiklikleri
+
+**Wiki'ye YAZILMAMALILAR (Atla):**
+- `*.xml` layout/values dosyaları — Sadece UI renk/padding/dimens
+- `res/drawable/*`, `*.png`, `*.svg`, `*.jpg` — Saf görsel asset'ler
+- `*Test.kt`, `test_*.py`, `*_test.go` — Test dosyaları
+- `.gitignore`, `gradle.properties`, `local.properties` — Config dosyaları
+- `wiki/` altındaki dosyalar — Zaten wiki'nin kendisi
+- `*.md` dosyaları (wiki hariç) — Zaten markdown
+
+**Karar veremediğinde:**
+```bash
+cd /home/akn/local && git show --stat <SHA>
+```
+Değişen dosyaları gör, sonra yukarıdaki listeye göre karar ver.
+
+> **Neden:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Böylece kurallar zamanla evrilebilir, agent her session'da güncel kılavuzu okur.
 
 ### Git Auth (VPS)
 

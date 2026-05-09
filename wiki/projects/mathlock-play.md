@@ -118,6 +118,7 @@ cd projects/mathlock-play
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `73d9abcb` fix(mathlock-play): revert parent auth to direct biometric prompt, add USE_BIOMETRIC permission (2026-05-09) — v1.0.76
 - `5977e94b` feat(mathlock-play): auto-increment version in generate_age_questions.py, sync data to vps (2026-05-08)
 - `d1b7aa29` feat(mathlock-play): validate-questions.py, grade4 missing-number variety, remove CreditPackage model (2026-05-08)
 - `90d86baf` fix(mathlock-play): MEB uyum düzeltmeleri — curriculum JSON, generate script, agents.md (2026-05-07)

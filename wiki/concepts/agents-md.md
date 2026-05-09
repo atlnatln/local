@@ -167,6 +167,12 @@ AGENTS.md açık bir formattır ve birden fazla agent/tool tarafından desteklen
 - Aider (`.aider.conf.yml` ile yapılandırılabilir)
 - Gemini CLI (`.gemini/settings.json` ile yapılandırılabilir)
 
+## Güncellemeler (2026-05-09)
+
+- **Wiki İçeriği İddiası Kuralı** eklendi: "X yok / Y yansımamış" demeden önce `grep -r "terim" wiki/` ile doğrulama zorunluluğu
+- **Wiki Toplama Filtreleme Kuralı** eklendi: Etkili değişiklikler (logic, API, config) wiki'ye yazılır; etkisizler (UI renk, padding, test, asset) atlanır. Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz
+- Wiki bölümleri sadeleştirildi: Detaylar `wiki/README.md` ve `local-wiki SKILL.md`'ye yönlendirildi
+
 ## Kaynaklar
 
 - [agents.md](https://agents.md) — Resmi site ve spec

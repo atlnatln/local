@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play — Android"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-05-09
 type: project
 tags: [mathlock-play, android, kotlin, games, auth]
 related:
@@ -20,6 +20,27 @@ Kotlin ile yazılmış Android uygulaması. UsageStatsManager tabanlı kilit mek
 `AccountManager` cihaz kaydı yapar ve `device_token`'ı imzalı hale getirir. Her `ApiClient` instance'ına `setAuthToken()` ile atanır.
 
 > **Önemli:** `SayiYolculuguActivity` kendi `RealApiClient()` instance'ını oluşturur. Bu instance'a da `apiClient.setAuthToken(accountManager.getAccessToken())` çağrısı yapılmalıdır, aksi halde tüm backend çağrıları `403 Forbidden` döner. Bkz. [[mathlock-play]] Sayı Yolculuğu Auth Fix bölümü.
+
+## Parent Authentication (Ebeveyn Doğrulaması)
+
+Ebeveyn ayarlarına erişim için cihazın kendi güvenlik yöntemi kullanılır (`BiometricPrompt` + `DEVICE_CREDENTIAL`).
+
+**Akış:**
+1. Kullanıcı ebeveyn girişi butonuna basar veya logoya 5 kez hızlı tıklar
+2. Doğrudan sistem `BiometricPrompt`'u açılır (parmak izi / desen / PIN / şifre)
+3. Doğrulama başarılı ise `SettingsActivity`'e yönlendirilir
+
+**Önceki hali (kaldırıldı):** `fa6174fc` commit'inde eklenen "Ebeveyn Doğrulaması" bottom sheet (`showParentAuthOptions()`) kaldırıldı. Bottom sheet arada fazladan bir adım oluşturuyordu; doğrudan sistem prompt'u daha hızlı ve net.
+
+**Manifest değişikliği (2026-05-09):**
+```xml
+<uses-permission android:name="android.permission.USE_BIOMETRIC" />
+<uses-permission android:name="android.permission.USE_FINGERPRINT" />
+```
+
+**Sınırlamalar:**
+- Cihazda herhangi bir güvenlik yöntemi (parmak izi, desen, PIN, şifre) yoksa `Toast` ile "Bu cihazda parmak izi veya desen kilidi bulunamadı" mesajı gösterilir
+- Xiaomi MIUI cihazlarda `BIOMETRIC_STRONG or DEVICE_CREDENTIAL` kombinasyonu ile sistem prompt davranışı cihaza bağlıdır
 
 ## Android Fallback Üretimi (`MathQuestionGenerator.kt`)
 
