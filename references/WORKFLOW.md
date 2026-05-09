@@ -354,3 +354,46 @@ Eğer kullanıcı "eski ADR'yi güncelle" veya "bu karar değişti" derse:
 - Ajan: adr-NNN numarasını belirler, kısa başlık üretir
 - Kullanıcıdan sadece eksik detayları ister (context, alternatifler)
 - Template'i doldurur, cross-link kurar
+
+
+---
+
+## Ek A: Wiki Toplama Filtreleme Kuralı
+
+`.pending` dosyasındaki her commit'i toplama sırasında filtrele. Post-commit hook basit tutulur (her commit'i yazar); agent `.pending`'i okuduğunda aşağıdaki kurallara göre karar verir.
+
+**Wiki'ye YAZILMALILAR (Etkili Değişiklikler):**
+- `projects/*/app/src/main/java/**/*.kt` — Android logic değişiklikleri
+- `projects/*/backend/**/*.py` — Backend API/model değişiklikleri
+- `projects/*/scripts/*.py` — Pipeline/script değişiklikleri
+- `deploy.sh`, `docker-compose.yml`, `systemd/` — Altyapı değişiklikleri
+- `AGENTS.md`, `README.md`, `SCHEMA.md` — Proje dokümantasyonu değişiklikleri
+- `.env.example` — Çevre değişkeni şablonu değişiklikleri
+
+**Wiki'ye YAZILMAMALILAR (Atla):**
+- `*.xml` layout/values dosyaları — Sadece UI renk/padding/dimens
+- `res/drawable/*`, `*.png`, `*.svg`, `*.jpg` — Saf görsel asset'ler
+- `*Test.kt`, `test_*.py`, `*_test.go` — Test dosyaları
+- `.gitignore`, `gradle.properties`, `local.properties` — Config dosyaları
+- `wiki/` altındaki dosyalar — Zaten wiki'nin kendisi
+- `*.md` dosyaları (wiki hariç) — Zaten markdown
+
+**Karar veremediğinde:**
+```bash
+cd /home/akn/local && git show --stat <SHA>
+```
+Değişen dosyaları gör, sonra yukarıdaki listeye göre karar ver.
+
+> **Neden:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Böylece kurallar zamanla evrilebilir, agent her session'da güncel kılavuzu okur.
+
+---
+
+## Ek B: Wiki İçeriği İddiası Kuralı
+
+Wiki dosyalarında **"X yok"**, **"Y yansımamış"** gibi kesin olumsuz iddia yapmadan önce:
+
+1. `grep -r "aranan-terim" wiki/` ile doğrudan wiki dosyalarında ara
+2. Bulamazsan `git log --grep="proje-adı" -- wiki/` ile wiki ingest commit'lerini kontrol et
+3. Hâlâ emin değilsen **"kontrol edeyim"** de, **"yok"** deme
+
+> **Neden:** Wiki ingest'ler (`docs(wiki): ingest ...`) kod commit'lerinden bağımsız ayrı commit'lerle yapılır. `git log -- projects/foo` sadece kod değişikliklerini gösterir; `wiki/` altındaki ingest commit'lerini görmez.
