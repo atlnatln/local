@@ -37,4 +37,4 @@ echo "${DATE}|${COMMIT_SHA}|${REPO_NAME}|${CHANGED_FILES}" >> "$MARKER"
 # (sonsuz döngü oluşmaz)
 cd "$REPO_ROOT" || exit 0
 git add "$MARKER" || true
-git commit -m "docs(wiki): auto-sync pending marker" --quiet || true
+git commit --no-verify -m "docs(wiki): auto-sync pending marker" --quiet || true
