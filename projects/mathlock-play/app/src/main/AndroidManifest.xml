@@ -38,6 +38,10 @@
     <!-- Tam ekran bildirim (Android 14+: kilitli uygulama alarmı için) -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
+    <!-- Biometric/Parmak izi doğrulama -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"

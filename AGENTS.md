@@ -504,6 +504,16 @@ Kullanıcı "push yap" dediğinde:
 - `.checkpoints/*.sha` gitignored'dır (local cursor). `.pending` GitHub üzerinden cross-machine sync sağlar.
 - `.pending` her makinede ayrı oluşur (`wiki/.pending` gitignore'dadır).
 
+### Wiki İçeriği İddiası Kuralı
+
+Wiki dosyalarında **"X yok"**, **"Y yansımamış"** gibi kesin olumsuz iddia yapmadan önce:
+
+1. `grep -r "aranan-terim" wiki/` ile doğrudan wiki dosyalarında ara
+2. Bulamazsan `git log --grep="proje-adı" -- wiki/` ile wiki ingest commit'lerini kontrol et
+3. Hâlâ emin değilsen **"kontrol edeyim"** de, **"yok"** deme
+
+> **Neden:** Wiki ingest'ler (`docs(wiki): ingest ...`) kod commit'lerinden bağımsız ayrı commit'lerle yapılır. `git log -- projects/foo` sadece kod değişikliklerini gösterir; `wiki/` altındaki ingest commit'lerini görmez.
+
 ### Git Auth (VPS)
 
 - **SSH tercih edilir:** `git remote set-url origin git@github.com:atlnatln/local.git`

@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.akn.mathlock.databinding.ActivityMainBinding
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.PreferenceManager
@@ -73,7 +72,7 @@ class MainActivity : BaseActivity() {
     private fun setupListeners() {
         // Ebeveyn erişim butonu (🫆) → parmak izi doğrulama doğrudan bu ekranda
         binding.btnParentAccess.setOnClickListener {
-            showParentAuthOptions()
+            showParentBiometricAuth()
         }
 
         // Pratik modu: çocuk matematik sorusu çözer
@@ -120,53 +119,9 @@ class MainActivity : BaseActivity() {
 
             if (logoTapCount >= REQUIRED_TAPS) {
                 logoTapCount = 0
-                showParentAuthOptions()
+                showParentBiometricAuth()
             }
         }
-    }
-
-    private fun showParentAuthOptions() {
-        val options = mutableListOf<String>()
-        val actions = mutableListOf<() -> Unit>()
-
-        val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            BiometricManager.Authenticators.BIOMETRIC_STRONG or
-                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
-        } else {
-            BiometricManager.Authenticators.BIOMETRIC_STRONG
-        }
-        val bm = BiometricManager.from(this)
-        val hasBiometric = bm.canAuthenticate(authenticators) == BiometricManager.BIOMETRIC_SUCCESS
-
-        if (hasBiometric) {
-            options.add("👆 Parmak izi / Ekran kilidi")
-            actions.add { showParentBiometricAuth() }
-        }
-
-        if (prefManager.hasPattern() && prefManager.isPatternEnabled) {
-            options.add("🔢 Desen kullan")
-            actions.add { launchPatternVerify() }
-        }
-
-        if (options.isEmpty()) {
-            Toast.makeText(this, "⚠️ Doğrulama yöntemi bulunamadı", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Ebeveyn Doğrulaması")
-            .setItems(options.toTypedArray()) { _, which ->
-                actions[which]()
-            }
-            .setNegativeButton("İptal", null)
-            .show()
-    }
-
-    private fun launchPatternVerify() {
-        val intent = Intent(this, PatternActivity::class.java).apply {
-            putExtra("mode", "verify")
-        }
-        startActivityForResult(intent, REQUEST_PATTERN)
     }
 
     private fun showParentBiometricAuth() {
@@ -220,16 +175,5 @@ class MainActivity : BaseActivity() {
         }
 
         prompt.authenticate(promptInfoBuilder.build())
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_PATTERN && resultCode == RESULT_OK) {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
-    }
-
-    companion object {
-        private const val REQUEST_PATTERN = 1001
     }
 }

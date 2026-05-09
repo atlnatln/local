@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.akn.mathlock.databinding.ActivityChallengePickerBinding
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.PreferenceManager
@@ -110,65 +109,16 @@ class ChallengePickerActivity : BaseActivity() {
         }
 
         binding.cardParent.setOnClickListener {
-            showParentAuthOptions()
+            showParentBiometricAuth()
         }
-    }
-
-    private fun showParentAuthOptions() {
-        val options = mutableListOf<String>()
-        val actions = mutableListOf<() -> Unit>()
-
-        val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            BiometricManager.Authenticators.BIOMETRIC_STRONG or
-                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
-        } else {
-            BiometricManager.Authenticators.BIOMETRIC_STRONG
-        }
-        val bm = BiometricManager.from(this)
-        val hasBiometric = bm.canAuthenticate(authenticators) == BiometricManager.BIOMETRIC_SUCCESS
-
-        if (hasBiometric) {
-            options.add("👆 Parmak izi / Ekran kilidi")
-            actions.add { showParentBiometricAuth() }
-        }
-
-        if (prefManager.hasPattern() && prefManager.isPatternEnabled) {
-            options.add("🔢 Desen kullan")
-            actions.add { launchPatternVerify() }
-        }
-
-        if (options.isEmpty()) {
-            Toast.makeText(this, "⚠️ Doğrulama yöntemi bulunamadı", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Ebeveyn Doğrulaması")
-            .setItems(options.toTypedArray()) { _, which ->
-                actions[which]()
-            }
-            .setNegativeButton("İptal", null)
-            .show()
-    }
-
-    private fun launchPatternVerify() {
-        val intent = Intent(this, PatternActivity::class.java).apply {
-            putExtra("mode", "verify")
-        }
-        startActivityForResult(intent, REQUEST_PATTERN)
     }
 
     private fun showParentBiometricAuth() {
-        val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            BiometricManager.Authenticators.BIOMETRIC_STRONG or
-                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
-        } else {
-            BiometricManager.Authenticators.BIOMETRIC_STRONG
-        }
-
         val bm = BiometricManager.from(this)
-        if (bm.canAuthenticate(authenticators) != BiometricManager.BIOMETRIC_SUCCESS) {
-            Toast.makeText(this, "⚠️ Bu cihazda parmak izi veya desen kilidi bulunamadı", Toast.LENGTH_SHORT).show()
+        if (bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+            != BiometricManager.BIOMETRIC_SUCCESS
+        ) {
+            Toast.makeText(this, "⚠️ Bu cihazda parmak izi sensörü bulunamadı", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -191,24 +141,17 @@ class ChallengePickerActivity : BaseActivity() {
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(this@ChallengePickerActivity, "❌ Kimlik doğrulama başarısız, tekrar deneyin", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ChallengePickerActivity, "❌ Parmak izi tanınmadı, tekrar deneyin", Toast.LENGTH_SHORT).show()
                 }
             })
 
-        val promptInfoBuilder = BiometricPrompt.PromptInfo.Builder()
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(getString(R.string.biometric_title))
             .setSubtitle(getString(R.string.biometric_subtitle))
+            .setNegativeButtonText(getString(R.string.biometric_cancel))
+            .build()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            promptInfoBuilder.setAllowedAuthenticators(
-                BiometricManager.Authenticators.BIOMETRIC_STRONG or
-                        BiometricManager.Authenticators.DEVICE_CREDENTIAL
-            )
-        } else {
-            promptInfoBuilder.setNegativeButtonText(getString(R.string.biometric_cancel))
-        }
-
-        prompt.authenticate(promptInfoBuilder.build())
+        prompt.authenticate(promptInfo)
     }
 
     private fun onParentAuthSuccess() {
@@ -223,13 +166,6 @@ class ChallengePickerActivity : BaseActivity() {
         finish()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_PATTERN && resultCode == RESULT_OK) {
-            onParentAuthSuccess()
-        }
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
         // Geri tuşu - ana ekrana gönder
@@ -239,9 +175,5 @@ class ChallengePickerActivity : BaseActivity() {
         }
         startActivity(homeIntent)
         finish()
-    }
-
-    companion object {
-        private const val REQUEST_PATTERN = 1001
     }
 }
