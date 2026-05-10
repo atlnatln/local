@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play"
 created: 2026-05-01
-updated: 2026-05-09
+updated: 2026-05-10
 type: project
 tags: [mathlock-play, android, django, kotlin, python, systemd]
 related:
@@ -56,6 +56,7 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | `projects/mathlock-play/ai-generate.sh` | AI soru üretim pipeline'ı |
 | `projects/mathlock-play/ai-generate-levels.sh` | AI bulmaca seviye üretim pipeline'ı (Sayı Yolculuğu) |
 | `projects/mathlock-play/scripts/validate-questions.py` | Dönem bazlı soru seti doğrulama aracı (tip/zorluk/duplicate/code) |
+| `projects/mathlock-play/scripts/upload-play-store.py` | Google Play Store internal track'e AAB upload script'i |
 
 ## Environment Variables
 
@@ -111,6 +112,8 @@ cd projects/mathlock-play
 - [[infrastructure]] — nginx, SSL, mathlock.com.tr domain
 - [[deployment]] — VPS deploy
 
+> **Repo Durumu:** MathLock Play artık `github.com/atlnatln/mathlock-play` adresinde ayrı repo olarak yönetiliyor. Monorepo'dan çıkarıldı, `projects/mathlock-play/` `.gitignore`'a alındı.
+
 ## Related Decisions
 
 - [[adr-007-mathlock-meb-curriculum-compliance-implantation]] — MEB 2024 müfredat uyum implantasyonu
@@ -118,9 +121,9 @@ cd projects/mathlock-play
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `e5ae1fc1` fix(mathlock-play): v1.0.78 — compile fix, test limit, Play Store upload script (2026-05-10) — v1.0.78
 - `681346a3` fix(mathlock-play): 7 critical bug fixes, UI/UX improvements, new tests, v1.0.77 (2026-05-09) — v1.0.77
 - `73d9abcb` fix(mathlock-play): revert parent auth to direct biometric prompt, add USE_BIOMETRIC permission (2026-05-09) — v1.0.76
 - `5977e94b` feat(mathlock-play): auto-increment version in generate_age_questions.py, sync data to vps (2026-05-08)
-- `d1b7aa29` feat(mathlock-play): validate-questions.py, grade4 missing-number variety, remove CreditPackage model (2026-05-08)
+- `d1b7aa29` feat(mathlock-play): grade4 missing-number variety, remove CreditPackage model (2026-05-08)
 - `90d86baf` fix(mathlock-play): MEB uyum düzeltmeleri — curriculum JSON, generate script, agents.md (2026-05-07)
-- `582ff046` fix(agents): MEB müfredat uyumu + tip isimlendirme standardizasyonu (2026-05-07)

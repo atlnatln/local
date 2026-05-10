@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play — Android"
 created: 2026-05-07
-updated: 2026-05-09
+updated: 2026-05-10
 type: project
 tags: [mathlock-play, android, kotlin, games, auth]
 related:
@@ -323,12 +323,26 @@ conn.setRequestProperty("Authorization", "Device $accessToken")
 
 **Düzeltme:** `clearCache(true)` kaldırıldı, `LOAD_NO_CACHE` → `LOAD_DEFAULT`. Debug `System.out.println`'ler `Log.d`'ye çevrildi.
 
-## Sürüm (2026-05-09)
+## Sürüm Geçmişi
+
+### v1.0.78 (2026-05-10)
+
+- **Version Code:** 77 → 78
+- **Version Name:** v1.0.78
+- **Değişiklikler:**
+  - `AppLockService.kt`: Kalan `}, 500)` lambda kapanışı kaldırıldı — derleme hatası düzeltildi
+  - `MemoryGameEngineTest`: Exception test limiti 25 → 31 çift (max 30 çift kuralına uyum)
+  - `scripts/upload-play-store.py`: Google Play Store internal track'e AAB upload script'i eklendi
+- **Play Store:** Internal testing track'e yüklendi
+
+### v1.0.77 (2026-05-09)
 
 - **Version Code:** 76 → 77
 - **Version Name:** v1.0.77
 - **Play Store:** Internal testing track'e yüklendi
 
 ---
+
+> **Not:** MathLock Play artık ayrı bir GitHub repo'sunda geliştiriliyor: `github.com/atlnatln/mathlock-play`. Monorepo'dan çıkarıldı, `.gitignore`'a alındı. Fiziksel dosyalar hâlâ `projects/mathlock-play/` altındadır ancak git tracking'den çıkarılmıştır.
 
 > Backend auth ve API detayları için bkz. [[mathlock-play-backend]]

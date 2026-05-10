@@ -240,3 +240,5 @@ sudo systemctl restart mathlock-backend mathlock-celery
 ```
 
 > Son test durumu: 169+ test, tümü OK.
+>
+> **Repo Durumu:** MathLock Play artık `github.com/atlnatln/mathlock-play` adresinde ayrı repo olarak yönetiliyor. Backend kodu monorepo'dan çıkarıldı, `projects/mathlock-play/` `.gitignore`'a alındı.

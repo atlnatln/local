@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,7 +71,8 @@ WSGI_APPLICATION = 'mathlock_backend.wsgi.application'
 # Database — PostgreSQL only (SQLite removed for production consistency)
 # Test runner'da SQLite kullan (hızlı, bağımsız)
 import sys
-if 'test' in sys.argv:
+TESTING = 'test' in sys.argv or 'pytest' in sys.modules
+if TESTING:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

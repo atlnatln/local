@@ -2846,3 +2846,24 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 248 entries
 
+## [2026-05-10 11:37] ingest | local | 7853108 | 4 sayfa
+- Files: A:1 M:10 D:3
+- Pages created: 
+- Pages updated: [[local]], [[mathlock-play]], [[mathlock-play-android]], [[mathlock-play-backend]]
+- Pages archived: 
+- Diff summary: MathLock Play monorepo'dan ayrı repo'ya çıkarıldı (github.com/atlnatln/mathlock-play). AGENTS.md, QUICKREF.md, setup-vps-dev.sh, pre-push güncellendi. v1.0.78 derleme fix, upload-play-store.py eklendi. .gitignore'a eklendi.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+- Revert: git checkout e5ae1fc1 -- wiki/
+
+## [2026-05-10 11:44] lint | 6/10
+- Orphan pages: 1 ([[local]])
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 6
+- Unknown tags: 14 (adaptive-learning, agent-instructions, alignment, analysis, api, auth, backend, curriculum, drf, games...)
+- Raw existence: 0
+- Log size: 250 entries
+

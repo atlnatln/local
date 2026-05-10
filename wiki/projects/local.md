@@ -28,14 +28,13 @@ Ana geliştirme monorepo'su. Tüm projelerin kaynak kodu, altyapı konfigürasyo
 ├── ops-bot/           # Telegram bot — ayrı git repo
 ├── projects/
 │   ├── webimar/       # Django + Next.js — ayrı git repo
-│   ├── mathlock-play/ # Android + Django backend
 │   └── telegram-kimi/ # Telegram Kimi bot
 ├── scripts/           # Yardımcı script'ler
 ├── wiki/              # LLM Wiki (local-wiki skill)
 └── ARCHITECTURE.md    # Detaylı mimari doküman
 ```
 
-`ops-bot/` ve `projects/webimar/` root repo'da `.gitignore`'dadır; bunlar ayrı GitHub repo'larıdır.
+`ops-bot/`, `projects/webimar/` ve `projects/mathlock-play/` root repo'da `.gitignore`'dadır; bunlar ayrı GitHub repo'larıdır. `mathlock-play` artık `github.com/atlnatln/mathlock-play` adresinde bağımsız repo olarak yönetiliyor.
 
 ---
 
@@ -51,8 +50,10 @@ Detaylı komutlar `references/QUICKREF.md`'de, wiki iş akışları `references/
 |---|---|---|
 | Çalışma Dizini | `/home/akn/local` | `/home/akn/vps` |
 | Amaç | Kod yazma, test, build, wiki | Production, monitoring |
-| Servisler | `mathlock-backend`, `mathlock-celery` | `ops-bot`, `sec-agent`, `telegram-kimi`, `webimar`, `mathlock-play` |
+| Servisler | `mathlock-backend`, `mathlock-celery` | `ops-bot`, `sec-agent`, `telegram-kimi`, `webimar` |
 
+> **Not:** `mathlock-play` VPS servis listesinden çıkarıldı. Backend (`mathlock-backend`, `mathlock-celery`) local makinede çalışır; Android build ve deploy `mathlock-play` ayrı repo'sundan yönetilir.
+>
 > Kod local'de yazılır/build edilir, `deploy.sh` ile VPS'e gönderilir. Canlı ortam dosyalarını doğrudan düzenleme.
 
 ### Wiki Ingest Kuralı
@@ -80,6 +81,8 @@ Detaylı komutlar `references/QUICKREF.md`'de, wiki iş akışları `references/
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `78531089` refactor(mathlock-play): extract to separate repo github.com/atlnatln/mathlock-play (2026-05-10)
+- `e5ae1fc1` fix(mathlock-play): v1.0.78 — compile fix, test limit, Play Store upload script (2026-05-10)
 - `73185046` chore(wiki): clear pending after ingest (2026-05-10)
 - `02ce0371` docs(references): refactor AGENTS.md — split into focused rules + QUICKREF.md (2026-05-10)
 - `9abf557c` docs(wiki): ingest mathlock-play memory game, overlay, set display fixes (2026-05-10)
