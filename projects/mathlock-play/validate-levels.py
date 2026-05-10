@@ -10,13 +10,14 @@ Kullanım:
 Çıkış kodları: 0 = başarılı, 1 = hata var
 """
 import json
+import os
 import sys
 from collections import deque
 from pathlib import Path
 
 VALID_COMMANDS = {"x+", "x-", "y+", "y-", "z+", "z-"}
 VALID_OP_TYPES = {"+", "-", "×"}
-VALID_AGE_GROUPS = {"5-6", "7-8", "9-10", "11-12"}
+VALID_AGE_GROUPS = {"5-6", "6-7", "7-8", "8-9", "9-10", "11-12"}
 VALID_OVERALLS = {"beginner", "developing", "intermediate", "advanced"}
 EXPECTED_LEVELS = 12
 MAX_GRID = 64  # cols * rows limit
@@ -40,7 +41,7 @@ def warn(msg):
 
 
 def bfs_solvable(level):
-    """BFS: (x, y, val) state space. Returns (solvable, min_steps)."""
+    """BFS: (x, y, val) state space. Returns (solvable, min_steps, solution_path)."""
     cols, rows = level["cols"], level["rows"]
     sx, sy, sv = level["startX"], level["startY"], level["startVal"]
     tx, ty = level["targetX"], level["targetY"]
@@ -48,17 +49,27 @@ def bfs_solvable(level):
     commands = level["commands"]
     max_cmds = level["maxCmds"]
 
+    # Normalize ops format (AI sometimes produces [[x,y,type,val], ...] instead of [{x,y,type,val}, ...])
+    raw_ops = level.get("ops", [])
+    ops = []
+    for o in raw_ops:
+        if isinstance(o, list) and len(o) >= 4:
+            ops.append({"x": o[0], "y": o[1], "type": o[2], "val": o[3]})
+        elif isinstance(o, dict):
+            ops.append(o)
+
     wall_set = set()
     for w in level.get("walls", []):
         wall_set.add((w[0], w[1]))
 
     op_map = {}
-    for o in level.get("ops", []):
+    for o in ops:
         op_map[(o["x"], o["y"])] = o
 
-    # BFS
+    # BFS with path tracking
     start = (sx, sy, sv)
-    visited = {start}
+    # visited[state] = (parent_state, command_used) for path reconstruction
+    visited = {start: None}
     queue = deque([(start, 0)])  # (state, steps)
 
     while queue:
@@ -97,30 +108,40 @@ def bfs_solvable(level):
             if state in visited:
                 continue
 
+            visited[state] = ((cx, cy, cv), cmd_id)
+
             # check win
             pos_ok = nx == tx and ny == ty
             val_ok = tv is None or nv == tv
             if pos_ok and val_ok:
-                return True, steps + 1
+                # Reconstruct solution path
+                path = []
+                cur = state
+                while visited[cur] is not None:
+                    parent, cmd = visited[cur]
+                    path.append(cmd)
+                    cur = parent
+                path.reverse()
+                return True, steps + 1, path
 
             # limit value range to prevent infinite state space
             if nv < -100 or nv > 1000:
                 continue
 
-            visited.add(state)
             queue.append((state, steps + 1))
 
-    return False, -1
+    return False, -1, []
 
 
 def validate_level(lv, idx, age_group):
     """Validate a single level."""
     prefix = f"Seviye {idx + 1} (id={lv.get('id', '?')})"
 
-    # Required fields
+    # Required fields (AI does NOT write 'solution' — BFS fills it below)
     required = ["id", "title", "desc", "difficulty", "cols", "rows",
                 "startX", "startY", "startVal", "targetX", "targetY",
-                "walls", "ops", "commands", "maxCmds", "stars"]
+                "walls", "ops", "commands", "maxCmds", "stars",
+                "fingerprint"]
     for field in required:
         if field not in lv:
             err(f"{prefix}: '{field}' alanı eksik")
@@ -175,7 +196,15 @@ def validate_level(lv, idx, age_group):
     if (lv["targetX"], lv["targetY"]) in wall_set:
         err(f"{prefix}: hedef noktasında duvar var!")
 
-    # Ops check
+    # Ops check — normalize list format first
+    raw_ops = lv.get("ops", [])
+    norm_ops = []
+    for o in raw_ops:
+        if isinstance(o, list) and len(o) >= 4:
+            norm_ops.append({"x": o[0], "y": o[1], "type": o[2], "val": o[3]})
+        elif isinstance(o, dict):
+            norm_ops.append(o)
+    lv["ops"] = norm_ops
     for o in lv["ops"]:
         if not all(k in o for k in ["x", "y", "type", "val"]):
             err(f"{prefix}: operasyon eksik alan: {o}")
@@ -194,6 +223,18 @@ def validate_level(lv, idx, age_group):
     if not isinstance(stars, list) or len(stars) != 2:
         err(f"{prefix}: stars formatı [3yıldız, 2yıldız] olmalı")
     else:
+        # Auto-fix stars inconsistencies (AI sometimes miscalculates)
+        needs_fix = False
+        if stars[1] > lv["maxCmds"]:
+            stars[1] = lv["maxCmds"]
+            needs_fix = True
+        if stars[0] >= stars[1]:
+            stars[0] = max(1, stars[1] - 1) if stars[1] > 1 else 1
+            needs_fix = True
+        if needs_fix:
+            lv["stars"] = stars
+            warn(f"{prefix}: stars auto-fix yapıldı → {stars}")
+
         if stars[0] >= stars[1]:
             err(f"{prefix}: stars[0]={stars[0]} >= stars[1]={stars[1]} (3-yıldız < 2-yıldız olmalı)")
         if stars[1] > lv["maxCmds"]:
@@ -209,11 +250,23 @@ def validate_level(lv, idx, age_group):
     if len(lv["desc"]) < 5 or len(lv["desc"]) > 60:
         warn(f"{prefix}: desc uzunluğu {len(lv['desc'])} (5-60 arası ideal)")
 
-    # Solvability (BFS)
-    solvable, min_steps = bfs_solvable(lv)
+    # fingerprint check
+    fp = lv.get("fingerprint")
+    if not isinstance(fp, dict):
+        err(f"{prefix}: fingerprint eksik veya dict değil")
+    else:
+        fp_required = ["grid", "pathShape", "branching", "backtracking", "valuePlanning", "wallTopology", "ops"]
+        for f in fp_required:
+            if f not in fp:
+                err(f"{prefix}: fingerprint.{f} eksik")
+
+    # Solvability (BFS) — also fills optimal solution
+    solvable, min_steps, opt_solution = bfs_solvable(lv)
     if not solvable:
         err(f"{prefix}: ÇÖZÜLEMİYOR! BFS ile başlangıçtan hedefe ulaşılamadı.")
     else:
+        # Auto-fill solution from BFS (AI no longer writes this)
+        lv["solution"] = opt_solution
         if min_steps > lv["maxCmds"]:
             err(f"{prefix}: optimum çözüm ({min_steps} adım) > maxCmds ({lv['maxCmds']})")
         if min_steps > lv["stars"][0]:
@@ -222,7 +275,27 @@ def validate_level(lv, idx, age_group):
         print(f"  ✅ {prefix}: çözülebilir (optimum={min_steps}, 3⭐≤{stars[0]}, 2⭐≤{stars[1]}, max={lv['maxCmds']})")
 
 
-def validate(data):
+def _mechanics_fingerprint(lv):
+    fp = lv.get('fingerprint')
+    if isinstance(fp, dict):
+        return (
+            f"grid={fp.get('grid', '?x?')}|"
+            f"pathShape={fp.get('pathShape', '?')}|"
+            f"branching={fp.get('branching', '?')}|"
+            f"wallTopology={fp.get('wallTopology', '?')}|"
+            f"valuePlanning={fp.get('valuePlanning', '?')}|"
+            f"ops={fp.get('ops', '?')}"
+        )
+    # Fallback to legacy format for backward compatibility
+    cmds = ','.join(sorted(lv.get('commands', [])))
+    has_ops = 'yes' if lv.get('ops') else 'no'
+    has_walls = 'yes' if lv.get('walls') else 'no'
+    has_target_val = 'yes' if lv.get('targetVal') is not None else 'no'
+    grid = f"{lv.get('cols', 0)}x{lv.get('rows', 0)}"
+    return f"cmds={cmds}|ops={has_ops}|walls={has_walls}|targetVal={has_target_val}|grid={grid}"
+
+
+def validate(data, stats_file=None):
     """Validate the entire levels.json."""
 
     # Top-level structure
@@ -261,6 +334,30 @@ def validate(data):
             err(f"Seviye {i + 1}: title tekrarı: '{t}'")
         titles.add(t)
 
+    # Cross-set duplicate check
+    previous_titles = set()
+    previous_mechanics = set()
+    if stats_file and os.path.exists(stats_file):
+        try:
+            with open(stats_file, 'r', encoding='utf-8') as f:
+                stats = json.load(f)
+            for ps in stats.get('previousSets', []):
+                for t in ps.get('titles', []):
+                    previous_titles.add(t.lower().strip())
+                for m in ps.get('mechanics', []):
+                    previous_mechanics.add(m)
+        except Exception:
+            pass  # Graceful degradation if stats file is unreadable
+
+    for i, lv in enumerate(levels):
+        t = lv.get("title", "").lower().strip()
+        if t in previous_titles:
+            err(f"Seviye {i + 1}: önceki setlerde kullanılan title tekrarı: '{lv.get('title')}'")
+
+        mech = _mechanics_fingerprint(lv)
+        if mech in previous_mechanics:
+            err(f"Seviye {i + 1}: önceki setlerde kullanılan mekanik tekrarı (title='{lv.get('title')}')")
+
     # Difficulty progression check
     diffs = [lv.get("difficulty", 0) for lv in levels]
     if len(diffs) >= 2:
@@ -272,10 +369,19 @@ def validate(data):
 
 def main():
     file_path = Path("data/levels.json")
+    stats_file = None
 
-    for i, arg in enumerate(sys.argv[1:]):
-        if arg == "--file" and i + 1 < len(sys.argv) - 1:
-            file_path = Path(sys.argv[i + 2])
+    args = sys.argv[1:]
+    i = 0
+    while i < len(args):
+        if args[i] == "--file" and i + 1 < len(args):
+            file_path = Path(args[i + 1])
+            i += 2
+        elif args[i] == "--stats-file" and i + 1 < len(args):
+            stats_file = args[i + 1]
+            i += 2
+        else:
+            i += 1
 
     print(f"\n{'='*60}")
     print(f"  Sayı Yolculuğu — Seviye Doğrulama")
@@ -293,7 +399,7 @@ def main():
         print(f"❌ JSON parse hatası: {e}")
         sys.exit(1)
 
-    validate(data)
+    validate(data, stats_file=stats_file)
 
     print(f"\n{'─'*60}")
     if warnings:

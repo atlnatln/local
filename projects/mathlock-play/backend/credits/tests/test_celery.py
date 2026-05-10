@@ -1,4 +1,10 @@
+import json
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 from .base import *
+
 
 class CeleryTaskTest(TestCase):
     """Celery task'larının doğrudan davranış testleri (worker olmadan)."""
@@ -23,86 +29,175 @@ class CeleryTaskTest(TestCase):
             device=self.device, balance=2, total_purchased=2, free_set_used=True
         )
 
-    @patch('credits.views._generate_via_kimi', return_value=[
-        {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
-    ] * 50)
-    def test_generate_question_set_creates_record(self, mock_gen):
+    @patch('credits.tasks.subprocess.Popen')
+    def test_generate_question_set_creates_job(self, mock_popen):
+        """Question launcher subprocess başlatır ve GenerationJob oluşturur."""
         from credits.tasks import generate_question_set
+        mock_process = MagicMock()
+        mock_process.pid = 12345
+        mock_popen.return_value = mock_process
+
         result = generate_question_set.run(self.child.pk, self.balance.pk, False)
         self.assertTrue(result['success'])
         self.assertTrue(
-            QuestionSet.objects.filter(child=self.child).exists()
+            GenerationJob.objects.filter(
+                child=self.child, content_type='questions', status='running'
+            ).exists()
         )
 
-    @patch('credits.views._generate_levels_via_kimi', return_value=[
-        {'id': 1, 'title': 'S1'}, {'id': 2, 'title': 'S2'}, {'id': 3, 'title': 'S3'}
-    ])
-    def test_generate_level_set_creates_record(self, mock_gen):
+    @patch('credits.tasks.subprocess.Popen')
+    def test_generate_level_set_creates_job(self, mock_popen):
+        """Level launcher subprocess başlatır ve GenerationJob oluşturur."""
         from credits.tasks import generate_level_set
+        mock_process = MagicMock()
+        mock_process.pid = 12346
+        mock_popen.return_value = mock_process
+
         result = generate_level_set.run(self.child.pk, self.balance.pk, False, {}, 'sinif_2')
         self.assertTrue(result['success'])
         self.assertTrue(
-            LevelSet.objects.filter(child=self.child).exists()
+            GenerationJob.objects.filter(
+                child=self.child, content_type='levels', status='running'
+            ).exists()
         )
 
-    @patch('credits.views._generate_via_kimi', return_value=[
-        {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
-    ] * 50)
-    def test_task_releases_lock_on_success(self, mock_gen):
-        from credits.tasks import generate_question_set
+    @patch('credits.tasks.subprocess.Popen')
+    def test_launcher_releases_lock_and_refunds_on_subprocess_failure(self, mock_popen):
+        """Subprocess başlatılamazsa kilit serbest bırakılır ve kredi iade edilir."""
+        from credits.tasks import generate_level_set
+        mock_popen.side_effect = OSError("Cannot start")
+
+        RenewalLock.objects.create(
+            child=self.child, content_type='levels',
+            expires_at=timezone.now() + timedelta(minutes=15)
+        )
+        old_balance = self.balance.balance
+
+        result = generate_level_set.run(self.child.pk, self.balance.pk, False, {}, 'sinif_2')
+        self.assertFalse(result['success'])
+        self.balance.refresh_from_db()
+        self.assertEqual(self.balance.balance, old_balance + 1)
+        self.assertFalse(
+            RenewalLock.objects.filter(child=self.child, content_type='levels').exists()
+        )
+
+    def test_poll_generations_completes_level_job(self):
+        """Poller subprocess bitince LevelSet oluşturur."""
+        from credits.tasks import poll_generation_jobs
+        tmpdir = tempfile.mkdtemp()
+        levels_file = Path(tmpdir) / 'levels.json'
+        levels_file.write_text(json.dumps({
+            'levels': [{'id': i, 'title': f'S{i}'} for i in range(1, 13)]
+        }))
+
+        job = GenerationJob.objects.create(
+            child=self.child,
+            content_type='levels',
+            status='running',
+            pid=99999,  # Non-existent PID → process bitti kabul edilir
+            temp_dir=tmpdir,
+            credit_balance_pk=self.balance.pk,
+            is_free=False,
+            education_period='sinif_2',
+        )
+        RenewalLock.objects.create(
+            child=self.child, content_type='levels',
+            expires_at=timezone.now() + timedelta(minutes=15)
+        )
+
+        poll_generation_jobs.run()
+
+        self.assertTrue(
+            LevelSet.objects.filter(child=self.child, version=1).exists()
+        )
+        self.assertFalse(
+            RenewalLock.objects.filter(child=self.child, content_type='levels').exists()
+        )
+        job.refresh_from_db()
+        self.assertEqual(job.status, 'completed')
+
+    def test_poll_generations_completes_question_job(self):
+        """Poller subprocess bitince QuestionSet oluşturur."""
+        from credits.tasks import poll_generation_jobs
+        tmpdir = tempfile.mkdtemp()
+        questions_file = Path(tmpdir) / 'questions.json'
+        questions_file.write_text(json.dumps({
+            'questions': [
+                {'text': f'S{i}', 'answer': i, 'type': 'toplama', 'difficulty': 1}
+                for i in range(1, 51)
+            ]
+        }))
+
+        job = GenerationJob.objects.create(
+            child=self.child,
+            content_type='questions',
+            status='running',
+            pid=99999,
+            temp_dir=tmpdir,
+            credit_balance_pk=self.balance.pk,
+            is_free=False,
+            education_period='sinif_2',
+        )
         RenewalLock.objects.create(
             child=self.child, content_type='questions',
             expires_at=timezone.now() + timedelta(minutes=15)
         )
-        generate_question_set.run(self.child.pk, self.balance.pk, False)
+
+        poll_generation_jobs.run()
+
+        self.assertTrue(
+            QuestionSet.objects.filter(child=self.child, version=1).exists()
+        )
         self.assertFalse(
             RenewalLock.objects.filter(child=self.child, content_type='questions').exists()
         )
+        job.refresh_from_db()
+        self.assertEqual(job.status, 'completed')
 
-    @patch('credits.views._generate_via_kimi', side_effect=Exception('AI failure'))
-    def test_task_releases_lock_on_failure(self, mock_gen):
-        from credits.tasks import generate_question_set
+    def test_poll_generations_refunds_on_failure(self):
+        """Poller output yoksa kredi iade eder."""
+        from credits.tasks import poll_generation_jobs
+        tmpdir = tempfile.mkdtemp()
+        job = GenerationJob.objects.create(
+            child=self.child,
+            content_type='levels',
+            status='running',
+            pid=99999,
+            temp_dir=tmpdir,
+            credit_balance_pk=self.balance.pk,
+            is_free=False,
+        )
         RenewalLock.objects.create(
-            child=self.child, content_type='questions',
+            child=self.child, content_type='levels',
             expires_at=timezone.now() + timedelta(minutes=15)
         )
-        with self.assertRaises(Exception):
-            generate_question_set.run(self.child.pk, self.balance.pk, False)
+        old_balance = self.balance.balance
+
+        poll_generation_jobs.run()
+
+        self.balance.refresh_from_db()
+        self.assertEqual(self.balance.balance, old_balance + 1)
+        job.refresh_from_db()
+        self.assertEqual(job.status, 'failed')
         self.assertFalse(
-            RenewalLock.objects.filter(child=self.child, content_type='questions').exists()
+            RenewalLock.objects.filter(child=self.child, content_type='levels').exists()
         )
 
-    def test_task_retries_on_failure(self):
-        from credits.tasks import generate_question_set, generate_level_set
-        self.assertEqual(generate_question_set.max_retries, 3)
-        self.assertEqual(generate_level_set.max_retries, 3)
+    def test_poll_generations_skips_running_process(self):
+        """PID hâlâ çalışıyorsa poller atlar."""
+        import os
+        from credits.tasks import poll_generation_jobs
+        tmpdir = tempfile.mkdtemp()
+        # Mevcut process PID'sini kullan (kesinlikle çalışıyor)
+        job = GenerationJob.objects.create(
+            child=self.child,
+            content_type='levels',
+            status='running',
+            pid=os.getpid(),  # kendi process'imiz — kesinlikle çalışıyor
+            temp_dir=tmpdir,
+        )
 
-    @patch('credits.views._generate_via_kimi', side_effect=Exception('AI failure'))
-    @patch('credits.views._refund_credit')
-    def test_task_no_refund_before_final_retry(self, mock_refund, mock_gen):
-        """Son deneme öncesi kredi iadesi yapılmamalı."""
-        from credits.tasks import generate_question_set
-        task = generate_question_set
-        original_retries = getattr(task.request, 'retries', 0)
-        try:
-            task.request.retries = 1  # max_retries=3, henüz son değil
-            with self.assertRaises(Exception):
-                task.run(self.child.pk, self.balance.pk, False)
-            self.assertEqual(mock_refund.call_count, 0)
-        finally:
-            task.request.retries = original_retries
+        poll_generation_jobs.run()
 
-    @patch('credits.views._generate_via_kimi', side_effect=Exception('AI failure'))
-    @patch('credits.views._refund_credit')
-    def test_task_refunds_only_on_final_retry(self, mock_refund, mock_gen):
-        """Son denemede (retries >= max_retries) kredi iadesi yapılmalı."""
-        from credits.tasks import generate_question_set
-        task = generate_question_set
-        original_retries = getattr(task.request, 'retries', 0)
-        try:
-            task.request.retries = task.max_retries  # son deneme
-            with self.assertRaises(Exception):
-                task.run(self.child.pk, self.balance.pk, False)
-            self.assertEqual(mock_refund.call_count, 1)
-        finally:
-            task.request.retries = original_retries
+        job.refresh_from_db()
+        self.assertEqual(job.status, 'running')

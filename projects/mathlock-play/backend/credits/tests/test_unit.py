@@ -326,3 +326,136 @@ class GooglePlayVerifyTest(TestCase):
         # Service account JSON yok → hata döner ama uygulama çökmez
         self.assertFalse(result['valid'])
         self.assertIn('error', result)
+
+
+class BuildLevelStatsTest(TestCase):
+
+    def setUp(self):
+        self.device = Device.objects.create(
+            installation_id='level-stats-device',
+            device_token=uuid.uuid4(),
+        )
+        self.child = ChildProfile.objects.create(
+            device=self.device, name='StatsTest', education_period='sinif_2'
+        )
+
+    def test_previous_sets_included(self):
+        """_build_level_stats should include previousSets with titles and mechanics."""
+        from credits.views import _build_level_stats
+
+        levels_v1 = [
+            {
+                'id': i + 1,
+                'title': f'Seviye {i + 1}',
+                'desc': 'Test',
+                'difficulty': 1,
+                'cols': 3,
+                'rows': 3,
+                'startX': 0,
+                'startY': 0,
+                'startVal': 1,
+                'targetX': 2,
+                'targetY': 2,
+                'targetVal': None,
+                'walls': [[1, 1]] if i % 2 == 0 else [],
+                'ops': [{'x': 2, 'y': 0, 'type': '+', 'val': 3}] if i % 3 == 0 else [],
+                'commands': ['x+', 'y+'],
+                'maxCmds': 5,
+                'stars': [3, 4],
+            }
+            for i in range(12)
+        ]
+        levels_v2 = [
+            {
+                'id': i + 1,
+                'title': f'V2 Seviye {i + 1}',
+                'desc': 'Test v2',
+                'difficulty': 2,
+                'cols': 4,
+                'rows': 4,
+                'startX': 0,
+                'startY': 0,
+                'startVal': 2,
+                'targetX': 3,
+                'targetY': 3,
+                'targetVal': 10,
+                'walls': [],
+                'ops': [{'x': 1, 'y': 1, 'type': '+', 'val': 2}],
+                'commands': ['x+', 'x-', 'y+', 'y-', 'z+'],
+                'maxCmds': 8,
+                'stars': [5, 7],
+            }
+            for i in range(12)
+        ]
+
+        LevelSet.objects.create(
+            child=self.child, version=1,
+            levels_json=levels_v1,
+            completed_level_ids=[1, 2, 3]
+        )
+        LevelSet.objects.create(
+            child=self.child, version=2,
+            levels_json=levels_v2,
+            completed_level_ids=[1]
+        )
+
+        stats = _build_level_stats(self.child)
+        self.assertIn('previousSets', stats)
+        self.assertEqual(len(stats['previousSets']), 2)
+        # En son set ilk sırada (order_by -version)
+        self.assertEqual(stats['previousSets'][0]['version'], 2)
+        self.assertEqual(stats['previousSets'][1]['version'], 1)
+        self.assertIn('titles', stats['previousSets'][0])
+        self.assertIn('mechanics', stats['previousSets'][0])
+        self.assertEqual(len(stats['previousSets'][0]['titles']), 12)
+        self.assertEqual(len(stats['previousSets'][0]['mechanics']), 12)
+
+    def test_no_previous_sets_for_new_child(self):
+        """A child with no LevelSets should not have previousSets."""
+        from credits.views import _build_level_stats
+
+        stats = _build_level_stats(self.child)
+        self.assertNotIn('previousSets', stats)
+
+    def test_summarize_mechanics_fingerprint(self):
+        """_summarize_mechanics should produce consistent fingerprints."""
+        from credits.views import _summarize_mechanics
+
+        # New fingerprint-aware format
+        level_with_fp = {
+            'fingerprint': {
+                'grid': '4x4',
+                'pathShape': 'L',
+                'branching': 'medium',
+                'backtracking': False,
+                'valuePlanning': True,
+                'wallTopology': 'scattered',
+                'ops': 2,
+            },
+            'commands': ['x+', 'y+'],
+            'ops': [{'x': 1, 'y': 1, 'type': '+', 'val': 3}],
+            'walls': [[1, 0]],
+            'targetVal': 10,
+            'cols': 4,
+            'rows': 4,
+        }
+        fp = _summarize_mechanics(level_with_fp)
+        self.assertIn('grid=4x4', fp)
+        self.assertIn('pathShape=L', fp)
+        self.assertIn('ops=2', fp)
+
+        # Legacy fallback format
+        level_legacy = {
+            'commands': ['x+', 'y+'],
+            'ops': [{'x': 1, 'y': 1, 'type': '+', 'val': 3}],
+            'walls': [[1, 0]],
+            'targetVal': 10,
+            'cols': 3,
+            'rows': 3,
+        }
+        fp_legacy = _summarize_mechanics(level_legacy)
+        self.assertIn('cmds=x+,y+', fp_legacy)
+        self.assertIn('ops=yes', fp_legacy)
+        self.assertIn('walls=yes', fp_legacy)
+        self.assertIn('targetVal=yes', fp_legacy)
+        self.assertIn('grid=3x3', fp_legacy)

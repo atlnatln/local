@@ -1,14 +1,13 @@
-# Sayı Yolculuğu — AI Seviye Üretim Kuralları
+# Sayı Yolculuğu — AI Seviye Üretim Kuralları (2. Sınıf, 7-8 yaş)
 
-> Bu dosya `ai-generate-levels.sh` tarafından kimi-cli'ye (kimi-for-coding) verilir.
-> Seviye üretim algoritmasını, JSON şemasını ve doğrulama kurallarını tanımlar.
+> Bu dosya `ai-generate-levels.sh` tarafından kimi-cli'ye verilir.
+> **2. sınıf (7-8 yaş)** dönemine özel kuralları tanımlar.
 
 ---
 
 ## §1 — Misyon
 
-Sen bir eğitici bulmaca oyunu tasarımcısısın. **Sayı Yolculuğu** oyunu için
-5-12 yaş arası çocuklara uygun, adaptif zorlukta **12 seviye** üreteceksin.
+Sen bir eğitici bulmaca oyunu tasarımcısısın. **Sayı Yolculuğu** oyunu için 7-8 yaş arası çocuklara uygun, adaptif zorlukta **12 seviye** üreteceksin.
 
 Oyun mantığı:
 - Bir ızgara (grid) üzerinde bir **sayı** (player) başlangıç noktasında durur.
@@ -22,58 +21,65 @@ Hedef: çocuğun **algoritmik düşünme**, **planlama** ve **matematik** beceri
 
 ---
 
-## §2 — Görev Adımları
+## §2 — Yaş Grubuna Özgü Kısıtlamalar (KRİTİK)
 
-1. `level-stats.json` dosyasını oku (varsa). Çocuğun performansını analiz et.
-2. `levels.json` dosyasını oku (varsa). Mevcut versiyon numarasını al.
-3. §4 Adaptif Algoritma'yı uygula.
-4. **12 yeni seviye** üret (§6 şemasına uygun).
-5. Çıktı olarak **SADECE** yeni `levels.json` içeriğini yaz. Başka metin yazma.
-
----
-
-## §3 — Yaş Grupları ve Mekanikler
-
-| Yaş | Grid Boyutu | Komutlar | Duvar | Operasyon | Hedef Değer |
-|-----|-------------|----------|-------|-----------|-------------|
-| 5-6 | 1×3 → 4×4 | x+, x-, y+, y- | Az (0-3) | Yok | Yok (sadece konum) |
-| 7-8 | 3×3 → 5×5 | x±, y±, z±1 | Orta (1-5) | +N (N:1-5) | Bazen |
-| 9-10 | 4×4 → 6×6 | x±, y±, z±1 | Çok (2-8) | +N, ×N | Genellikle |
-| 11-12 | 5×5 → 8×8 | x±, y±, z±1 | Çok (3-12) | +N, -N, ×N | Her zaman |
-
-### Yaş Grubuna Göre Sayı Aralıkları
-
-**startVal (başlangıç sayısı):**
-- 5-6: 1-9
-- 7-8: 1-15
-- 9-10: 1-20
-- 11-12: 1-50
-
-**targetVal (hedef değer):**
-- 5-6: null (hedef değer zorunlu değil)
-- 7-8: null veya 1-20
-- 9-10: 5-50
-- 11-12: 10-100
-
-**Operasyon değerleri:**
-- +N: N = 1-10 (yaşa göre ayarla)
-- -N: N = 1-5 (sonuç negatif OLMAMALI)
-- ×N: N = 2-3 (9-10 yaş), N = 2-5 (11-12 yaş)
+| Parametre | 2. Sınıf Kuralı |
+|-----------|----------------|
+| Grid boyutu | Min: 3×3, Max: 5×5 |
+| Komutlar | `x+`, `x-`, `y+`, `y-`, `z+`, `z-` (tüm 6 komut) |
+| Duvar sayısı | 1-5 (zorluk arttıkça) |
+| Operasyon | `+N` (N = 1-5) |
+| `targetVal` | null veya 1-20 |
+| `startVal` aralığı | 1-15 |
+| `maxCmds` | 6-14 |
+| Optimum çözüm | 4-10 adım |
+| `fingerprint` | Her seviyede zorunlu |
 
 ---
 
-## §4 — Adaptif Algoritma
+## §3 — Komutlar
 
-### 4.1 Performans Analizi (level-stats.json varsa)
+| Komut | Açıklama |
+|-------|----------|
+| `x+`  | sağa     |
+| `x-`  | sola     |
+| `y+`  | aşağı    |
+| `y-`  | yukarı   |
+| `z+`  | değer +1 |
+| `z-`  | değer -1 |
 
-Her seviye için:
-- `completed`: tamamlandı mı?
-- `stars`: kaç yıldız? (1-3)
-- `attempts`: kaç deneme?
-- `commandsUsed`: kaç komut kullandı?
-- `timeSeconds`: ne kadar sürdü?
+---
 
-**Performans Kategorileri:**
+## §4 — Komut Semantiği (KRİTİK)
+
+Hareket komutu:
+- grid dışına çıkamaz
+- duvardan geçemez
+
+Invalid move:
+- komutu TÜKETİR
+- oyuncu yerinde kalır
+
+`z+` / `z-`:
+- konum değiştirmez
+- sadece değeri değiştirir
+
+---
+
+## §5 — Operation Türleri ve Sınırlar
+
+### +N
+- N = 1-5
+- sonuç negatif OLMAMALI
+
+### -N ve ×N
+- **YASAK** (bu sınıfta yok)
+
+---
+
+## §6 — Adaptif Difficulty
+
+### 6.1 Performans Analizi (`level-stats.json` varsa)
 
 | Kategori | Koşul | Karar |
 |----------|-------|-------|
@@ -83,64 +89,97 @@ Her seviye için:
 | ZORLU | ≥3/12 tamamlandı | Zorluk -1 (grid küçült, duvar azalt) |
 | KRİTİK | <3/12 tamamlandı | Zorluk -2, çok basit seviyeler üret |
 
-### 4.2 Seviye Dağılımı (12 seviye)
+### 6.2 Seviye Dağılımı (12 seviye)
+
+**Kural:** `lastSetEndDifficulty` varsa (önceki set tamamlanmışsa), yeni setin ilk seviyeleri önceki setin son zorluğundan başlar. Başa sarma (reset) yok.
 
 | Grup | Adet | Zorluk | Amaç |
 |------|------|--------|------|
-| A (Güven) | 5 | Kolay (mevcut-1 veya mevcut) | Motivasyon, başarı hissi |
-| B (Gelişim) | 4 | Orta (mevcut seviye) | Öğrenme, pekiştirme |
-| C (Meydan Okuma) | 3 | Zor (mevcut+1) | Gelişim, yeni mekanik tanıtma |
+| A (Isınma) | 2 | `lastSetEndDifficulty - 1` veya `lastSetEndDifficulty` | Önceki setten devam, hafif ısınma |
+| B (Gelişim) | 5 | `lastSetEndDifficulty` → `lastSetMaxDifficulty` | Öğrenme, pekiştirme |
+| C (Zorlaşma) | 4 | `lastSetMaxDifficulty` ve üzeri | Zorluk artışı |
+| D (Final) | 1 | Zirve zorluğu | En zor meydan okuma |
 
-### 4.3 İlk Set (level-stats.json yoksa)
+İlk set ise (`lastSetEndDifficulty` yok):
+| Grup | Adet | Zorluk |
+|------|------|--------|
+| A (Güven) | 3 | Kolay |
+| B (Gelişim) | 5 | Orta |
+| C (Meydan Okuma) | 4 | Zor |
 
-Yaş grubuna göre varsayılan başlangıç seti üret:
-- version = 1
-- difficultyProfile.overall = "beginner"
-- Seviye 1-4: sadece x+/y+, küçük grid, duvar yok
-- Seviye 5-8: x±/y± eklenir, birkaç duvar
-- Seviye 9-10: z± veya operasyon eklenir (yaşa bağlı)
-- Seviye 11-12: kombinasyon, daha büyük grid
+### 6.3 Psikolojik Pacing
 
-### 4.4 Sıralama (Psikolojik Tasarım)
-
-- Seviye 1-2: Çok kolay (güven inşası)
-- Seviye 3-5: Kolay-orta (başarı devam eder)
-- Seviye 6-8: Orta (gerçek öğrenme bölgesi)
-- Seviye 9-10: Orta-zor (zorlanma başlar)
-- Seviye 11: Zor (meydan okuma)
-- Seviye 12: Orta (başarıyla bitirme hissi)
-
----
-
-## §5 — Çözülebilirlik Kuralları (KRİTİK)
-
-Her seviye **kesinlikle çözülebilir** olmalıdır. Aşağıdaki kuralların tümü sağlanmalı:
-
-1. **Yol var mı?** Başlangıçtan hedefe duvarlardan kaçınarak ulaşılabilir bir yol olmalı.
-2. **Değer ulaşılabilir mi?** targetVal belirtilmişse, komutları ve operasyonları kullanarak
-   başlangıç değerinden hedef değere ulaşılabilmeli.
-3. **maxCmds yeterli mi?** Optimum çözüm maxCmds'den küçük veya eşit olmalı.
-4. **stars[0] ulaşılabilir mi?** 3-yıldız eşiği optimum çözüm uzunluğuna eşit olmalı.
-5. **stars[1] mantıklı mı?** 2-yıldız eşiği > stars[0] ve ≤ maxCmds olmalı.
-6. **Duvarlar başlangıcı/hedefi kapatmamali.**
-7. **Operasyonlar negatif sonuç üretmemeli** (5-8 yaş için).
-8. **Grid sınırları:** cols × rows ≤ 64 (performans).
-
-### Optimum Çözüm Hesaplama
-
-Seviye tasarlarken kafandan BFS (genişlik öncelikli arama) yap:
-- Durum: (x, y, değer)
-- Her durumdan mevcut komutlarla erişilebilir sonraki durumlar
-- Hedef: (targetX, targetY, targetVal veya herhangi değer)
-- En kısa yol = optimum çözüm
-
-**stars[0]** = optimum çözüm adım sayısı
-**stars[1]** = optimum + 2-4 adım (yaşa göre tolerans)
-**maxCmds** = stars[1] + 2-4 ek adım
+| Seviye | Amaç |
+|--------|------|
+| 1-2 | Önceki setten devam — hafif ısınma, çok kolay değil |
+| 3-7 | Orta zorluk — öğrenme bölgesi |
+| 8-10 | Zorlaşma başlar |
+| 11 | En zor meydan okuma |
+| 12 | Zor-orta — başarıyla bitirme hissi |
 
 ---
 
-## §6 — levels.json Şeması
+## §7 — Çözülebilirlik Kuralları (KRİTİK)
+
+Her seviye **kesinlikle çözülebilir** olmalıdır.
+
+AI `solution` alanı YAZMAYACAK. Validate script BFS ile optimum çözümü bulup otomatik dolduracak. AI sadece grid, walls, ops, target, commands, maxCmds, stars üretsin.
+
+### 7.1 BFS State Tanımı
+
+State: `(x, y, value)`
+
+### 7.2 Doğrulanması Gerekenler
+
+- **Yol:** Başlangıçtan hedefe duvarlardan kaçınarak ulaşılabilir
+- **Değer:** `targetVal` belirtilmişse, komutları ve operasyonları kullanarak başlangıç değerinden hedef değere ulaşılabilmeli
+- **maxCmds:** Optimal çözüm ≤ maxCmds olmalı
+- **stars:**
+  - `stars[0]` = optimum BFS çözüm uzunluğu (validate script hesaplar)
+  - `stars[1]` = optimal + 2-4 adım
+- **Grid:** `cols × rows <= 25` (max 5×5)
+- **Negatif değer:** `z-` komutu sonucunda değer 0'ın altına düşmemeli
+
+---
+
+## §8 — Gameplay Variety (KRİTİK)
+
+Aynı hissi veren seviyeler üretme. Sadece title değiştirmek yeterli değildir.
+
+### 8.1 Semantic Variety
+
+Şunlar farklı olmalıdır:
+- path shape
+- wall topology
+- arithmetic dependency
+- decision count
+- solution rhythm
+
+### 8.2 Cognitive Variety
+
+Farklı seviyeler farklı düşünme biçimleri istemelidir:
+- corridor navigation
+- arithmetic timing
+- wall avoidance
+- forced turns
+- shortest-route optimization
+
+---
+
+## §9 — previousSets Kuralları (KRİTİK)
+
+`previousSets` varsa aşağıdakiler **yasaktır**:
+
+1. **Aynı title** — `previousSets[].titles` içindeki herhangi bir title tekrar edilemez
+2. **Aynı gameplay hissi** — `previousSets[]` içindeki seviyelerle "aynı hissi veren" seviye üretilemez
+3. **Aynı fingerprint** — `previousSets[].mechanics` içindeki mekanik parmak izi tekrar edilemez
+4. **Aynı çözüm yapısı** — `previousSets[]` içindeki seviyelerle aynı komut dizisi + grid boyutu tekrar edilemez
+
+**Örnek:** Önceki sette "Sağa Git" (`x+`, 3×1 grid, duvar yok, ops yok) varsa, yeni sette "İleri Adım" (`x+`, 3×1 grid, duvar yok, ops yok) yapma. Farklı grid şekli, duvar veya operasyon ekle.
+
+---
+
+## §10 — JSON Şeması
 
 ```json
 {
@@ -149,15 +188,15 @@ Seviye tasarlarken kafandan BFS (genişlik öncelikli arama) yap:
   "generatedBy": "ai",
   "ageGroup": "7-8",
   "difficultyProfile": {
-    "overall": "beginner|developing|intermediate|advanced",
+    "overall": "beginner",
     "avgDifficulty": 1.5,
-    "adjustmentReason": "Türkçe açıklama"
+    "adjustmentReason": "Önceki set v{lastVersion} son zorluk={lastSetEndDifficulty}, max={lastSetMaxDifficulty}, ort={lastSetAvgDifficulty}. Set başına reset yok, devam et."
   },
   "levels": [
     {
       "id": 1,
       "title": "Kısa Türkçe başlık (2-4 kelime)",
-      "desc": "Kısa Türkçe açıklama (1 cümle)",
+      "desc": "Kısa Önceki set v{lastVersion} son zorluk={lastSetEndDifficulty}, max={lastSetMaxDifficulty}, ort={lastSetAvgDifficulty}. Set başına reset yok, devam et. (1 cümle)",
       "difficulty": 1,
       "cols": 3,
       "rows": 3,
@@ -171,78 +210,62 @@ Seviye tasarlarken kafandan BFS (genişlik öncelikli arama) yap:
       "ops": [{"x": 2, "y": 0, "type": "+", "val": 3}],
       "commands": ["x+", "y+"],
       "maxCmds": 6,
-      "stars": [4, 5]
+      "stars": [4, 5],
+      "fingerprint": {
+        "grid": "3x3",
+        "pathShape": "L",
+        "branching": "low",
+        "backtracking": false,
+        "valuePlanning": false,
+        "wallTopology": "single-center",
+        "ops": 1
+      }
     }
   ]
 }
 ```
 
-### Alan Açıklamaları
+---
 
-| Alan | Tip | Açıklama |
-|------|-----|----------|
-| id | int | 1-12 sıralı |
-| title | string | 2-4 kelime, Türkçe, çocuk dostu |
-| desc | string | 1 cümle, ne yapılacağını anlatır |
-| difficulty | int | 1-5 (1=çok kolay, 5=çok zor) |
-| cols | int | Grid sütun sayısı (1-8) |
-| rows | int | Grid satır sayısı (1-8) |
-| startX, startY | int | Başlangıç koordinatları (0-indexed) |
-| startVal | int | Başlangıç sayı değeri (>0) |
-| targetX, targetY | int | Hedef hücre koordinatları |
-| targetVal | int\|null | Hedef değer (null = sadece konum önemli) |
-| walls | array | [[x,y], ...] duvar koordinatları |
-| ops | array | [{x, y, type, val}, ...] operasyon hücreleri |
-| ops[].type | string | "+" , "-" , "×" |
-| ops[].val | int | Operasyon değeri (>0) |
-| commands | array | Kullanılabilir komutlar: "x+","x-","y+","y-","z+","z-" |
-| maxCmds | int | Maksimum komut sayısı |
-| stars | [int, int] | [3-yıldız eşiği, 2-yıldız eşiği] |
+## §11 — Yasaklar
+
+1. Çözülemez seviye üretme
+2. Negatif sayı kullanma (z- komutu sonucunda değer 0'ın altına düşmemeli)
+3. Duvarı başlangıç veya hedef noktaya koyma
+4. Operasyonu başlangıç noktasına koyma
+5. Boş `maxCmds` verme (en az optimum+1)
+6. Çok büyük grid yapma (max 5×5 = 25 hücre)
+7. Aynı title veya desc kullanma — her seviye benzersiz olsun
+8. `×0` veya `÷` operasyonu kullanma
+9. JSON dışında metin yazma. Çıktı SADECE valid JSON olmalı
+11. `fingerprint` alanı eksik olmamalıdır
 
 ---
 
-## §7 — level-stats.json Şeması (Sadece Okuma)
+## §12 — previousSets Dokümantasyonu
+
+`level-stats.json` içinde `previousSets` (varsa) şu yapıdadır:
 
 ```json
 {
-  "levelVersion": 1,
-  "ageGroup": "7-8",
-  "completedAt": 1712900000,
-  "totalLevels": 12,
-  "totalCompleted": 8,
-  "totalStars": 18,
-  "maxPossibleStars": 36,
-  "byLevel": [
+  "previousSets": [
     {
-      "levelId": 1,
-      "completed": true,
-      "stars": 3,
-      "commandsUsed": 4,
-      "commandList": ["x+", "x+", "y+", "y+"],
-      "attempts": 1,
-      "timeSeconds": 15
+      "version": 1,
+      "titles": ["İlk Adım", "Aşağı İn", ...],
+      "mechanics": ["cmds=x+,y+|grid=3x3|ops=yes|walls=yes", ...]
     }
   ]
 }
 ```
 
----
+- `titles`: Önceki setteki 12 seviyenin başlıkları
+- `mechanics`: Önceki setteki her seviyenin mekanik parmak izi
 
-## §8 — Yasaklar ve Uyarılar
-
-1. **Çözülemez seviye üretme.** Her seviyeyi kafandan çöz, çözüm adımlarını doğrula.
-2. **Negatif sayı kullanma** (5-8 yaş için). z- komutu sonucunda değer 0'ın altına düşmemeli.
-3. Duvarı başlangıç veya hedef noktaya koyma.
-4. Operasyonu başlangıç noktasına koyma.
-5. Boş maxCmds verme (en az optimum+1).
-6. Çok büyük grid yapma (max 8×8 = 64 hücre).
-7. Aynı title veya desc kullanma — her seviye benzersiz olsun.
-8. `×0` veya `÷` operasyonu kullanma (sadece +, -, × desteklenir).
-9. JSON dışında metin yazma. Çıktı SADECE valid JSON olmalı.
+Yeni set üretirken bu title ve mekanikleri ASLA tekrar etme.
 
 ---
 
-## §9 — Örnek Çıktı (7-8 yaş, version 1)
+## §13 — Örnek Çıktı (7-8 yaş, version 1, ilk 2 seviye)
 
 ```json
 {
@@ -262,7 +285,13 @@ Seviye tasarlarken kafandan BFS (genişlik öncelikli arama) yap:
       "startX": 0, "startY": 0, "startVal": 3,
       "targetX": 2, "targetY": 0, "targetVal": null,
       "walls": [], "ops": [],
-      "commands": ["x+"], "maxCmds": 4, "stars": [2, 3]
+      "commands": ["x+"],
+      "maxCmds": 4, "stars": [2, 3],
+      "fingerprint": {
+        "grid": "3x1", "pathShape": "line", "branching": "none",
+        "backtracking": false, "valuePlanning": false,
+        "wallTopology": "none", "ops": 0
+      }
     },
     {
       "id": 2, "title": "Aşağı İn", "desc": "Sayıyı aşağı götür!",
@@ -270,10 +299,23 @@ Seviye tasarlarken kafandan BFS (genişlik öncelikli arama) yap:
       "startX": 0, "startY": 0, "startVal": 5,
       "targetX": 0, "targetY": 2, "targetVal": null,
       "walls": [], "ops": [],
-      "commands": ["y+"], "maxCmds": 4, "stars": [2, 3]
+      "commands": ["y+"],
+      "maxCmds": 4, "stars": [2, 3],
+      "fingerprint": {
+        "grid": "1x3", "pathShape": "line", "branching": "none",
+        "backtracking": false, "valuePlanning": false,
+        "wallTopology": "none", "ops": 0
+      }
     }
   ]
 }
 ```
 
 *Not: Gerçek çıktıda 12 seviye olmalı.*
+
+## §17 — Üretim Talimatları (KRİTİK)
+
+- Shell tool KULLANMA — sadece ReadFile ve WriteFile ile dosyaları oku/yaz
+- Validation hatası alırsan mevcut dosyayı DÜZELTMEYE ÇALIŞMA
+- Validation hatası olursa TAMAMEN YENİ 12 seviye üret
+- Her seferinde tam 12 seviye, eksik veya fazla OLMAMALI

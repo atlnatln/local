@@ -167,7 +167,15 @@ CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localho
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TASK_TIME_LIMIT = 900  # 15 dakika
+CELERY_TASK_TIME_LIMIT = 1800  # 30 dakika (subprocess launcher için yedek)
+
+# Celery Beat — arka plan job poller
+CELERY_BEAT_SCHEDULE = {
+    'poll-generation-jobs': {
+        'task': 'credits.tasks.poll_generation_jobs',
+        'schedule': 30.0,  # 30 saniyede bir
+    },
+}
 
 # Kredi sistemi
 CREDITS_PER_PURCHASE = {

@@ -223,6 +223,57 @@ class RenewalLock(models.Model):
         return f"RenewalLock({self.content_type}) — {self.child.name} until {self.expires_at}"
 
 
+class GenerationJob(models.Model):
+    """
+    AI içerik üretim job'u — Celery task'ten bağımsız subprocess takibi.
+
+    Celery task sadece launcher: subprocess'i başlatır, PID kaydeder, hemen döner.
+    Arka plan poller (poll_generation_jobs) subprocess tamamlandığında output'u
+    okur, DB'ye yazar, status günceller.
+    """
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('running', 'Running'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+    CONTENT_TYPE_CHOICES = [
+        ('levels', 'Levels'),
+        ('questions', 'Questions'),
+    ]
+
+    child = models.ForeignKey(
+        ChildProfile, on_delete=models.CASCADE, related_name='generation_jobs'
+    )
+    content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    pid = models.IntegerField(null=True, blank=True, help_text="Subprocess PID")
+    temp_dir = models.CharField(
+        max_length=500, blank=True,
+        help_text="Geçici dizin yolu — output ve stats burada"
+    )
+    error_message = models.TextField(blank=True)
+    credit_balance_pk = models.IntegerField(null=True, blank=True)
+    is_free = models.BooleanField(default=False)
+    level_stats = models.JSONField(
+        default=dict, blank=True,
+        help_text="Seviye üretimi için child istatistikleri (levels için)"
+    )
+    education_period = models.CharField(max_length=20, blank=True, default='sinif_2')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['child', 'content_type', 'status']),
+            models.Index(fields=['status', 'created_at']),
+        ]
+
+    def __str__(self):
+        return f"GenerationJob({self.content_type}) — {self.child.name} [{self.status}]"
+
+
 class AiQueryRecord(models.Model):
     """Her AI sorgu isteği için kayıt — denetim ve analiz için."""
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='ai_queries')

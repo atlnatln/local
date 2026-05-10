@@ -45,3 +45,5 @@ proguard/
 # NDK
 obj/
 .venv-upload/
+backend/.venv/
+venv/

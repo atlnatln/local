@@ -2,16 +2,17 @@
 # ============================================================
 # Pre-Commit Hook: Wiki Ingest Guard
 # ============================================================
-# Bu hook, dokümantasyon/proje docs değişikliklerinde commit'i
-# engeller ve kullanıcıya wiki ingest talimatı gösterir.
-#
-# Kurulum: ln -s scripts/hooks/pre-commit .git/hooks/pre-commit
-# ============================================================
 
 STAGED=$(git diff --cached --name-only)
 
 # Dokümantasyon/proje docs değişti mi?
 if echo "$STAGED" | grep -qE "^(AGENTS\.md|README\.md|SCHEMA\.md|wiki/|projects/.*/README|projects/.*/AGENTS|projects/.*/deploy\.sh|infrastructure/|scripts/wiki-)"; then
+    # Wiki zaten toplanmış mı kontrol et (.pending boş veya EMPTY ise)
+    PENDING=$(cat wiki/.pending 2>/dev/null | tr -d '\n')
+    if [ "$PENDING" = "" ] || [ "$PENDING" = "EMPTY" ]; then
+        exit 0
+    fi
+
     echo ""
     echo "╔══════════════════════════════════════════════════════════════════╗"
     echo "║  ⚠️  D O K Ü M A N T A S Y O N   D E Ğ İ Ş İ K L İ Ğ İ          ║"

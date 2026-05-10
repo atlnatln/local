@@ -73,7 +73,7 @@ class MemoryGameActivity : BaseActivity() {
         } else {
             // Kilit açma modu: ebeveyn ayarlarıyla doğrudan başla
             binding.setupContainer.visibility = View.GONE
-            binding.gameScroll.visibility = View.VISIBLE
+            binding.cardGrid.visibility = View.VISIBLE
             startGame()
         }
     }
@@ -99,14 +99,14 @@ class MemoryGameActivity : BaseActivity() {
 
         binding.btnStart.setOnClickListener {
             binding.setupContainer.visibility = View.GONE
-            binding.gameScroll.visibility = View.VISIBLE
+            binding.cardGrid.visibility = View.VISIBLE
             startGame()
         }
     }
 
     private fun showSetupScreen() {
         binding.setupContainer.visibility = View.VISIBLE
-        binding.gameScroll.visibility = View.GONE
+        binding.cardGrid.visibility = View.GONE
         binding.winOverlay.visibility = View.GONE
         binding.btnRestart.visibility = View.GONE
         binding.tvRounds.visibility = View.VISIBLE
@@ -178,13 +178,28 @@ class MemoryGameActivity : BaseActivity() {
         val density = resources.displayMetrics.density
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
+        val screenHeight = displayMetrics.heightPixels
 
-        val gridPadding = (16 * density).toInt()
-        val cardMargin = (6 * density).toInt()
+        val totalCards = pairCount * 2
+        val rowCount = (totalCards + columnCount - 1) / columnCount
+
+        val gridPadding = (8 * density).toInt()
+        val cardMargin = (3 * density).toInt()
+
+        // Genişlik bazlı kart boyutu
         val availableWidth = screenWidth - gridPadding * 2
-        val cardSize = (availableWidth - cardMargin * 2 * columnCount) / columnCount
-        val finalCardSize = cardSize.coerceAtLeast((40 * density).toInt())
-        val textSize = (finalCardSize / density * 0.35f).coerceIn(12f, 28f)
+        val cardSizeByWidth = (availableWidth - cardMargin * 2 * columnCount) / columnCount
+
+        // Yükseklik bazlı kart boyutu (üst bar + restart butonu + güvenlik payı)
+        val headerHeight = (100 * density).toInt()
+        val bottomHeight = (64 * density).toInt()
+        val availableHeight = screenHeight - headerHeight - bottomHeight - gridPadding * 2
+        val cardSizeByHeight = (availableHeight - cardMargin * 2 * rowCount) / rowCount
+
+        // İkisinden küçüğünü al — kartlar tam ekrana sığsın
+        val cardSize = minOf(cardSizeByWidth, cardSizeByHeight)
+        val finalCardSize = cardSize.coerceAtLeast((32 * density).toInt())
+        val textSize = (finalCardSize / density * 0.35f).coerceIn(10f, 24f)
 
         engine?.cards?.forEachIndexed { index, card ->
             val view = inflater.inflate(R.layout.item_memory_card, grid, false)
@@ -198,10 +213,15 @@ class MemoryGameActivity : BaseActivity() {
             valueText.textSize = textSize
             container.cameraDistance = 8000 * density
 
-            // Dinamik kart boyutu
-            val lp = FrameLayout.LayoutParams(finalCardSize, finalCardSize)
-            lp.setMargins(cardMargin, cardMargin, cardMargin, cardMargin)
-            view.layoutParams = lp
+            // Dinamik kart boyutu — sağdan sola hizalama için column ters çevriliyor
+            val gridLp = GridLayout.LayoutParams(
+                GridLayout.spec(index / columnCount),
+                GridLayout.spec((columnCount - 1) - (index % columnCount))
+            )
+            gridLp.width = finalCardSize
+            gridLp.height = finalCardSize
+            gridLp.setMargins(cardMargin, cardMargin, cardMargin, cardMargin)
+            view.layoutParams = gridLp
 
             val cardLp = FrameLayout.LayoutParams(finalCardSize, finalCardSize)
             front.layoutParams = cardLp

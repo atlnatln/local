@@ -42,6 +42,7 @@ source agents/swap-helper.sh
 DRY_RUN=false
 SKIP_SYNC=false
 VPS_MODE=false
+PROCEDURAL=false
 EDUCATION_PERIOD="sinif_2"
 LOCALE="tr"
 while [[ $# -gt 0 ]]; do
@@ -49,6 +50,7 @@ while [[ $# -gt 0 ]]; do
         --dry-run)    DRY_RUN=true;  shift ;;
         --skip-sync)  SKIP_SYNC=true; shift ;;
         --vps-mode)   VPS_MODE=true; shift ;;
+        --procedural) PROCEDURAL=true; shift ;;
         --period)     EDUCATION_PERIOD="$2"; shift 2 ;;
         --data-dir)   DATA_DIR="$2"; shift 2 ;;
         --locale)     LOCALE="$2"; shift 2 ;;
@@ -102,9 +104,7 @@ if [ "$VPS_MODE" = true ]; then
     if [ -f "$VPS_DATA_PATH/level-stats.json" ]; then
         cp "$VPS_DATA_PATH/level-stats.json" "$STATS_FILE"
     fi
-    if [ -f "$VPS_DATA_PATH/levels.json" ] && [ ! -f "$LEVELS_FILE" ]; then
-        cp "$VPS_DATA_PATH/levels.json" "$LEVELS_FILE"
-    fi
+    # VPS'teki levels.json KOPYALANMAZ — her çocuk kendi setini üretir
 else
     echo -e "  📥 VPS'ten stats çekiliyor..."
     scp -q "$VPS_HOST:$VPS_DATA_PATH/level-stats.json" "$STATS_FILE" 2>/dev/null || true
@@ -121,8 +121,16 @@ case "$EDUCATION_PERIOD" in
 esac
 
 CURRENT_VERSION=0
+# Önce level-stats.json'dan lastVersion al (en güvenilir kaynak)
+if [ -f "$STATS_FILE" ]; then
+    CURRENT_VERSION=$(python3 -c "import json; d=json.load(open('$STATS_FILE')); print(d.get('lastVersion',0))" 2>/dev/null || echo "0")
+fi
+# Eğer levels.json varsa, onun version'u override et (retry senaryosu)
 if [ -f "$LEVELS_FILE" ]; then
-    CURRENT_VERSION=$(python3 -c "import json; d=json.load(open('$LEVELS_FILE')); print(d.get('version',0))" 2>/dev/null || echo "0")
+    FILE_VER=$(python3 -c "import json; d=json.load(open('$LEVELS_FILE')); print(d.get('version',0))" 2>/dev/null || echo "0")
+    if [ "$FILE_VER" -gt "$CURRENT_VERSION" ]; then
+        CURRENT_VERSION=$FILE_VER
+    fi
 fi
 NEW_VERSION=$((CURRENT_VERSION + 1))
 
@@ -171,8 +179,9 @@ PROMPT="AGENTS.md dosyasındaki tüm kuralları uygula.
 ADIMLAR:
 1. ${LEVELS_FILE} oku — mevcut version numarasını al
 2. ${STATS_FILE} oku (varsa) — oyuncunun performansını analiz et
-3. Yeni 12 seviye üret → ${LEVELS_FILE} dosyasına yaz (üzerine yaz)
-4. Analiz raporunu stdout'a yazdır
+3. ${STATS_FILE} içindeki previousSets[] oku — sadece SON 2 setin title'ları ve mekanikleri var
+4. Yeni 12 seviye üret → ${LEVELS_FILE} dosyasına yaz (üzerine yaz)
+5. Analiz raporunu stdout'a yazdır
 
 PARAMETRELER:
 - Yaş grubu: ${AGE_GROUP}
@@ -184,43 +193,68 @@ KRİTİK KURALLAR:
 - Seviye başlıkları ve açıklamaları ${LOCALE} dilinde olmalıdır.
 - Language: ${LOCALE}
 - Sadece ${LEVELS_FILE} değiştir, başka dosyaya dokunma
-- Tam 12 seviye, her biri BFS ile çözülebilir olmalı
+- Tam 12 seviye, eksik veya fazla OLMAMALI
+- Her seviye BFS ile çözülebilir olmalı
 - version = ${NEW_VERSION}
 - Geçerli JSON, UTF-8
-- İlk 3 seviye kolay, son 3 zor"
+- İlk 3 seviye kolay, son 3 zor
+- Önceki setlerdeki (previousSets) title'ları ve mekanikleri ASLA tekrar etme
+- Shell tool ASLA KULLANMA — sadece ReadFile ve WriteFile ile dosyaları oku/yaz
+- Validation hatası olursa TAMAMEN YENİ 12 seviye üret, mevcut dosyayı düzeltmeye çalışma"
 
-# Retry döngüsü
-ATTEMPT=0
-SUCCESS=false
+# ─── 3. Seviye üretimi (LLM veya Procedural) ──────────────
+if [ "$PROCEDURAL" = true ]; then
+    echo -e "\n${YELLOW}[3/5] 🎲 Procedural generator ile 12 yeni seviye üretiliyor...${NC}"
+    python3 "$PROJECT_DIR/procedural-levels-v2.py" \
+        --stats "$STATS_FILE" \
+        --output "$LEVELS_FILE" \
+        --version "$NEW_VERSION"
+    echo -e "${GREEN}[OK]${NC} Procedural üretim tamamlandı."
+else
+    # Retry döngüsü (kimi-cli)
+    ATTEMPT=0
+    SUCCESS=false
 
-while [ $ATTEMPT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
-    ATTEMPT=$((ATTEMPT + 1))
-    echo -e "\n${CYAN}[Deneme ${ATTEMPT}/${MAX_RETRIES}]${NC}"
+    while [ $ATTEMPT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
+        ATTEMPT=$((ATTEMPT + 1))
+        echo -e "\n${CYAN}[Deneme ${ATTEMPT}/${MAX_RETRIES}]${NC}"
 
-    # kimi-cli çalıştır (VPS'te ~/.local/bin/uv tool install konumu)
-    export PATH="$HOME/.local/bin:$PATH"
-    KIMI_BIN="$(command -v kimi 2>/dev/null)"
-    if [ ! -x "$KIMI_BIN" ]; then
-        echo -e "${RED}[HATA]${NC} kimi-cli bulunamadı!"
-        exit 1
-    fi
-    "$KIMI_BIN" -p "$PROMPT" --print --final-message-only --no-thinking --model kimi-code/kimi-for-coding 2>&1
+        # kimi-cli çalıştır (VPS'te ~/.local/bin/uv tool install konumu)
+        export PATH="$HOME/.local/bin:$PATH"
+        KIMI_BIN="$(command -v kimi 2>/dev/null)"
+        if [ ! -x "$KIMI_BIN" ]; then
+            echo -e "${RED}[HATA]${NC} kimi-cli bulunamadı!"
+            exit 1
+        fi
+        "$KIMI_BIN" -p "$PROMPT" --print --final-message-only --no-thinking --model kimi-code/kimi-for-coding 2>&1
 
-    # ─── 4. Doğrulama ───────────────────────────────────────
+        # ─── 4. Doğrulama ───────────────────────────────────────
+        echo -e "\n${YELLOW}[4/5] 🔍 Doğrulama çalıştırılıyor...${NC}"
+        if python3 "$VALIDATOR" --file "$LEVELS_FILE" --stats-file "$STATS_FILE"; then
+            SUCCESS=true
+            echo -e "${GREEN}[OK]${NC} Doğrulama başarılı!"
+        else
+            echo -e "${RED}[HATA]${NC} Doğrulama başarısız (deneme ${ATTEMPT}/${MAX_RETRIES})"
+            if [ $ATTEMPT -lt $MAX_RETRIES ]; then
+                echo -e "${YELLOW}[TEKRAR]${NC} kimi-cli tekrar çalıştırılacak..."
+                # Hatalı dosyayı sil — AI boş başlangıçtan tamamen yeni üretsin
+                rm -f "$LEVELS_FILE"
+            fi
+        fi
+    done
+fi
+
+# ─── 4. Doğrulama (procedural için de çalıştır) ────────────
+if [ "$PROCEDURAL" = true ]; then
     echo -e "\n${YELLOW}[4/5] 🔍 Doğrulama çalıştırılıyor...${NC}"
-    if python3 "$VALIDATOR" --file "$LEVELS_FILE"; then
+    if python3 "$VALIDATOR" --file "$LEVELS_FILE" --stats-file "$STATS_FILE"; then
         SUCCESS=true
         echo -e "${GREEN}[OK]${NC} Doğrulama başarılı!"
     else
-        echo -e "${RED}[HATA]${NC} Doğrulama başarısız (deneme ${ATTEMPT}/${MAX_RETRIES})"
-        if [ $ATTEMPT -lt $MAX_RETRIES ]; then
-            echo -e "${YELLOW}[TEKRAR]${NC} kimi-cli tekrar çalıştırılacak..."
-            if [ -f "$HISTORY_DIR/$ARCHIVE_NAME" ]; then
-                cp "$HISTORY_DIR/$ARCHIVE_NAME" "$LEVELS_FILE"
-            fi
-        fi
+        echo -e "${RED}[HATA]${NC} Procedural üretim doğrulamadan geçemedi."
+        SUCCESS=false
     fi
-done
+fi
 
 if [ "$SUCCESS" = false ]; then
     echo -e "\n${RED}╔══════════════════════════════════════════════╗${NC}"

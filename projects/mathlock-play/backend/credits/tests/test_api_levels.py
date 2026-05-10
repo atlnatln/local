@@ -293,24 +293,58 @@ class UpdateLevelProgressAutoRenewalTest(ThrottleMixin, AuthMixin, TestCase):
 
     def test_renewal_actually_creates_new_level_set(self):
         """ Renewal başarılı olursa gerçekten yeni LevelSet DB'ye yazılmalı. """
+        import json as _json
+        from pathlib import Path
+        from unittest.mock import patch as _patch, MagicMock as _MagicMock
+
         self.level_set.completed_level_ids = [1, 2, 3]
         self.level_set.save()
 
-        from credits.tasks import generate_level_set
-        fake_levels = [{'id': i, 'title': f'Seviye {i}'} for i in range(1, 4)]
+        fake_levels = [{'id': i, 'title': f'Seviye {i}'} for i in range(1, 13)]
 
-        with patch('credits.views._generate_levels_via_kimi', return_value=fake_levels):
-            def _run_and_return_mock(*args, **kwargs):
-                generate_level_set.run(*args, **kwargs)
-                return MagicMock(id='fake-job-id')
-            self.mock_generate_level_set.delay.side_effect = _run_and_return_mock
-            resp = self.client.post(self._progress_url(), {
-                'device_token': str(self.device.device_token),
-                'child_id': self.child.pk,
-                'set_id': self.level_set.pk,
-                'completed_level_ids': [1, 2, 3],
-            }, format='json')
-            self.mock_generate_level_set.delay.side_effect = None
+        # Mock'u kaldır — gerçek launcher + poller akışını test et
+        import credits.views
+        credits.views.__dict__['generate_level_set'] = self._orig_generate_level_set
+
+        from credits.tasks import poll_generation_jobs
+        from credits.models import GenerationJob
+
+        # Test ortamında Celery Redis'e bağlanmaya çalışmasın
+        from mathlock_backend.celery import app
+        orig_result_backend = app.conf.result_backend
+        orig_always_eager = app.conf.task_always_eager
+        app.conf.result_backend = 'cache+memory://'
+        app.conf.task_always_eager = True
+        try:
+            with _patch('credits.tasks.subprocess.Popen') as mock_popen:
+                mock_process = _MagicMock()
+                mock_process.pid = 55555
+                mock_popen.return_value = mock_process
+
+                resp = self.client.post(self._progress_url(), {
+                    'device_token': str(self.device.device_token),
+                    'child_id': self.child.pk,
+                    'set_id': self.level_set.pk,
+                    'completed_level_ids': [1, 2, 3],
+                }, format='json')
+
+                # Subprocess hemen bittiğini simüle et
+                job = GenerationJob.objects.filter(
+                    child=self.child, content_type='levels', status='running'
+                ).first()
+                self.assertIsNotNone(job, "GenerationJob oluşturulmalı")
+
+                tmpdir = Path(job.temp_dir)
+                (tmpdir / 'levels.json').write_text(_json.dumps({
+                    'levels': fake_levels
+                }))
+                poll_generation_jobs.run()
+        finally:
+            app.conf.result_backend = orig_result_backend
+            app.conf.task_always_eager = orig_always_eager
+
+        # Mock'u geri yükle
+        credits.views.__dict__['generate_level_set'] = self.mock_generate_level_set
 
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(resp.json()['auto_renewal_started'])

@@ -354,7 +354,7 @@ if [ "$DEPLOY_BACKEND" = true ]; then
     
     # Systemd servis şablonlarını güncelle (docs/systemd/ → /etc/systemd/system/)
     if [ "$SKIP_SYSTEMD" = false ]; then
-        for svc in mathlock-backend.service mathlock-celery.service; do
+        for svc in mathlock-backend.service mathlock-celery.service mathlock-celery-beat.service; do
             if [ -f "$PROJECT_DIR/docs/systemd/$svc" ]; then
                 scp "$PROJECT_DIR/docs/systemd/$svc" "${VPS_HOST}:/tmp/$svc" 2>/dev/null
                 ssh "$VPS_HOST" "sed -i 's|/home/akn/local/projects/mathlock-play|/home/akn/vps/projects/mathlock-play|g' /tmp/$svc && sudo cp /tmp/$svc /etc/systemd/system/$svc && rm /tmp/$svc" 2>/dev/null && \
@@ -377,6 +377,7 @@ if [ "$DEPLOY_BACKEND" = true ]; then
         sudo systemctl daemon-reload
         sudo systemctl restart mathlock-backend
         sudo systemctl restart mathlock-celery
+        sudo systemctl enable --now mathlock-celery-beat
         
         sleep 5
         

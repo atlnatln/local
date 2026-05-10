@@ -20,13 +20,16 @@ from rest_framework.throttling import AnonRateThrottle
 from django.utils.translation import gettext_lazy as _
 
 from .models import (ChildProfile, CreditBalance,
-                     Device, LevelSet, PurchaseRecord, Question, QuestionSet,
+                     Device, GenerationJob, LevelSet, PurchaseRecord, Question, QuestionSet,
                      RenewalLock, UserQuestionProgress)
 from .authentication import DeviceTokenSigner
 from .google_play import verify_purchase
 from .tasks import generate_level_set, generate_question_set
 
 logger = logging.getLogger(__name__)
+
+# Seviye üretim backend seçimi: True=procedural, False=LLM (kimi-cli)
+USE_PROCEDURAL = True
 
 # ─── Input Sanitization ─────────────────────────────────────────────────────
 
@@ -274,11 +277,64 @@ def _build_level_stats(child) -> dict:
     }
     latest_ls = LevelSet.objects.filter(child=child).order_by('-version').first()
     if latest_ls:
+        levels = latest_ls.levels_json or []
         stats['completedLevelIds'] = latest_ls.completed_level_ids or []
         stats['totalCompleted'] = len(latest_ls.completed_level_ids or [])
-        stats['totalLevels'] = len(latest_ls.levels_json or [])
+        stats['totalLevels'] = len(levels)
         stats['lastVersion'] = latest_ls.version
+
+        # Difficulty continuity: previous set's difficulty profile
+        if levels:
+            diffs = [lv.get('difficulty', 1) for lv in levels]
+            stats['lastSetEndDifficulty'] = levels[-1].get('difficulty', 1)
+            stats['lastSetMaxDifficulty'] = max(diffs)
+            stats['lastSetAvgDifficulty'] = round(sum(diffs) / len(diffs), 1)
+            # Performance on last set
+            completed = set(latest_ls.completed_level_ids or [])
+            total_stars = 0
+            star_count = 0
+            for lv in levels:
+                sid = lv.get('id')
+                if sid in completed:
+                    # We don't store per-level stars, so use a proxy.
+                    # If we had level_results we'd use them.
+                    pass
+            stats['lastSetCompletionRate'] = len(completed) / len(levels) if levels else 0
+
+        # Cross-set duplicate prevention data
+        previous_sets = LevelSet.objects.filter(
+            child=child
+        ).order_by('-version')[:2]
+        stats['previousSets'] = []
+        for ls in previous_sets:
+            pls = ls.levels_json or []
+            stats['previousSets'].append({
+                'version': ls.version,
+                'titles': [lv.get('title', '') for lv in pls],
+                'mechanics': [_summarize_mechanics(lv) for lv in pls],
+            })
     return stats
+
+
+def _summarize_mechanics(level: dict) -> str:
+    """Generate a short mechanic fingerprint for duplicate detection."""
+    fp = level.get('fingerprint')
+    if isinstance(fp, dict):
+        return (
+            f"grid={fp.get('grid', '?x?')}|"
+            f"pathShape={fp.get('pathShape', '?')}|"
+            f"branching={fp.get('branching', '?')}|"
+            f"wallTopology={fp.get('wallTopology', '?')}|"
+            f"valuePlanning={fp.get('valuePlanning', '?')}|"
+            f"ops={fp.get('ops', '?')}"
+        )
+    # Fallback to legacy format for backward compatibility
+    cmds = ','.join(sorted(level.get('commands', [])))
+    has_ops = 'yes' if level.get('ops') else 'no'
+    has_walls = 'yes' if level.get('walls') else 'no'
+    has_target_val = 'yes' if level.get('targetVal') is not None else 'no'
+    grid = f"{level.get('cols', 0)}x{level.get('rows', 0)}"
+    return f"cmds={cmds}|ops={has_ops}|walls={has_walls}|targetVal={has_target_val}|grid={grid}"
 
 
 def _refund_credit(credit_balance_pk: int, is_free: bool):
@@ -518,7 +574,7 @@ def _check_and_auto_renew_after_purchase(device_pk: int):
                 if total_lvl > 0 and done_lvl >= total_lvl:
                     success, is_free, cb_pk, _remaining = _deduct_credit_and_lock(child.pk, device, 'levels')
                     if success:
-                        task = generate_level_set.delay(child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period)
+                        task = generate_level_set.delay(child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period, use_procedural=USE_PROCEDURAL)
                         logger.info(
                             "Satın alma sonrası seviye yenileme başlatıldı (Celery): child=%s, is_free=%s, job=%s",
                             child.name, is_free, task.id,
@@ -1842,6 +1898,11 @@ def get_levels(request):
 
     completed = level_set.completed_level_ids or []
 
+    # Aktif generation job var mı? (client "hazırlanıyor" ekranı göstersin)
+    generation_in_progress = GenerationJob.objects.filter(
+        child=child, content_type='levels', status='running'
+    ).exists()
+
     return Response({
         'levels': level_set.levels_json,
         'version': level_set.version,
@@ -1850,6 +1911,7 @@ def get_levels(request):
         'total_levels': len(level_set.levels_json or []),
         'completed_count': len(completed),
         'locale': child.locale,
+        'generation_in_progress': generation_in_progress,
     })
 
 
@@ -2019,7 +2081,7 @@ def update_level_progress(request):
             if success:
                 auto_renewal_started = True
                 task = generate_level_set.delay(
-                    child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period
+                    child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period, use_procedural=USE_PROCEDURAL
                 )
                 logger.info(
                     "Otomatik seviye yenileme başlatıldı (Celery): "
@@ -2040,7 +2102,7 @@ def update_level_progress(request):
                 auto_renewal_started = True
                 credits_remaining = credits_remaining or 0
                 task = generate_level_set.delay(
-                    child.pk, 0, True, _build_level_stats(child), child.education_period
+                    child.pk, 0, True, _build_level_stats(child), child.education_period, use_procedural=USE_PROCEDURAL
                 )
                 logger.info(
                     "Otomatik seviye yenileme başlatıldı (Celery ücretsiz): "

@@ -55,6 +55,8 @@ Her kod blogu iki zorunlu bilesen icerir:
 - Yeni kaynak dosyalar icin wiki sayfasi **olusturulur**.
 - Mevcut kaynak dosyalarda degisiklik varsa sayfa **guncellenir**.
 - Hicbir sayfa **silinmez** — silme yerine arsivleme proseduru uygulanir.
+- Yeni sayfa olusturulunca `index.md` + ilgili alt index'e (`concepts-index`, `projects-index`, `decisions-index`, `analysis-index`) ekle.
+- Yeni kategori index'i olusturulunca diger tum kategori index'lerine capraz link ekle (orphan olmasin).
 
 ### 2.2 Kaynak Dosya Silindiginde (`git diff D`)
 

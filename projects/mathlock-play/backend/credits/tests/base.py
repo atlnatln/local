@@ -15,7 +15,7 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 
 from credits.models import (
-    Device, ChildProfile, CreditBalance, LevelSet, PurchaseRecord,
+    Device, ChildProfile, CreditBalance, GenerationJob, LevelSet, PurchaseRecord,
     QuestionSet, RenewalLock, Question, UserQuestionProgress,
 )
 from credits.google_play import verify_purchase
@@ -59,7 +59,7 @@ __all__ = [
     'BadSignature', 'SignatureExpired', 'AuthenticationFailed',
     'json', 'uuid', 'timedelta', 'patch', 'MagicMock',
     'TestCase', 'override_settings', 'timezone', 'APIClient',
-    'Device', 'ChildProfile', 'CreditBalance', 'LevelSet',
+    'Device', 'ChildProfile', 'CreditBalance', 'GenerationJob', 'LevelSet',
     'PurchaseRecord', 'QuestionSet', 'RenewalLock', 'Question', 'UserQuestionProgress',
     'verify_purchase', 'IntegrityError',
 ]

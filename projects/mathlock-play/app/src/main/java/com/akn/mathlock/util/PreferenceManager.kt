@@ -124,10 +124,10 @@ class PreferenceManager(context: Context) {
         get() = prefs.getInt(KEY_GUESS_REQUIRED_ROUNDS, DEFAULT_GUESS_REQUIRED_ROUNDS).coerceIn(1, 10)
         set(value) = prefs.edit().putInt(KEY_GUESS_REQUIRED_ROUNDS, value.coerceIn(1, 10)).apply()
 
-    // 0 = sınırsız, diğerleri dakika cinsinden
+    // Minimum 1 dakika, sınırsız seçeneği kaldırıldı
     var unlockDurationMinutes: Int
-        get() = prefs.getInt(KEY_UNLOCK_DURATION, 0)
-        set(value) = prefs.edit().putInt(KEY_UNLOCK_DURATION, value).apply()
+        get() = prefs.getInt(KEY_UNLOCK_DURATION, 1).coerceIn(1, 60)
+        set(value) = prefs.edit().putInt(KEY_UNLOCK_DURATION, value.coerceIn(1, 60)).apply()
 
     // "relock" veya "close"
     var unlockExpiredAction: String

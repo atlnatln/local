@@ -100,7 +100,9 @@ Her session başında:
 cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"
 ```
 
-`EMPTY` değilse → `AskUserQuestion`: "Wiki güncellemesi bekliyor: {X} proje, {Y} commit. Otomatik toplayayım mı?"
+> **`.pending` formatı:** `TARIH|SON_INGEST_COMMIT|DOSYA_ADI|DOSYA_YOLU` — örn. `2026-05-10 12:53|5a047ee3|AGENTS.md|/home/akn/local/AGENTS.md`. Buradaki hash, dosyanın kendi hash'i değil, **son wiki ingest'in yapıldığı git commit hash'i** (kısaltılmış). `git diff --name-status 5a047ee3..HEAD -- AGENTS.md` ile değişiklik tespit edilir.
+>
+> `EMPTY` değilse → `AskUserQuestion`: "Wiki güncellemesi bekliyor: {X} proje, {Y} commit. Otomatik toplayayım mı?"
 - **Evet** → `wiki topla` flow'u (ara sorma yok)
 - **Hayır** → marker'ı koru, devam et
 - **Bu session sorma** → `touch ~/.wiki-skip-session`, devam et
@@ -112,6 +114,17 @@ cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"
 ## Wiki Kullanımı
 
 `/home/akn/local/wiki` — Kimi CLI tarafından yönetilen bilgi tabanı. `wiki topla` / `wiki ingest` / `wiki güncelle` → tool-based flow başlatır.
+
+### Wiki'de Bilgi Arama
+
+Üst ajan wiki'de bilgi ararken şu yolu izler:
+
+1. **Kategorik tarama:** `index.md` → ilgili alt index (`concepts-index`, `projects-index`, `decisions-index`, `analysis-index`)
+2. **Full-text arama:** `Grep` ile anahtar kelime arama (örn. `Grep -r "render" wiki/`)
+3. **Sayfa okuma:** `ReadFile` ile hedef sayfayı aç
+4. **Gezinme:** Sayfa içindeki wikilink'lerle (`[[...]]`) ilgili sayfalara atla
+
+İlk başvuru kaynağı her zaman `index.md`'dir. Acil/kronolojik bilgi için `log.md`, tag taksonomisi için `SCHEMA.md` kullanılır.
 
 ## Wiki Ingest Flow (9 Adım)
 
@@ -125,8 +138,10 @@ Kullanıcı "wiki topla"/"wiki ingest"/"wiki güncelle" dediğinde ara sormadan 
 | 4 | Diff doluysa → değişen dosyaları analiz et (A/M/D/R) |
 | 5 | İlgili wiki sayfalarını güncelle (`wiki/projects/<repo>.md`) |
 | 6 | Çapraz referansları yenile (`index.md`, `log.md`) |
-| 7 | Lint çalıştır: `python3 scripts/wiki_lint.py /home/akn/local/wiki` |
+| 7 | Lint çalıştır: `python3 /home/akn/local/.kimi/skills/local-wiki/scripts/wiki_lint.py /home/akn/local/wiki` |
+> **Not:** `scripts/wiki_lint.py` eski konumudur; doğru yer skill altındadır.
 | 8 | Checkpoint'leri güncelle (`git rev-parse HEAD > wiki/.checkpoints/<repo>.sha`) |
+> **Not:** `.checkpoints/local.sha`, `/home/akn/local` monorepo'sunun HEAD'ini izler. `local` monorepo içindeki `anka`, `mathlock-play`, `telegram-kimi`, `sayi-yolculugu`, `infrastructure` gibi projeler aynı checkpoint dosyasını paylaşır.
 | 9 | `.pending` temizle, kullanıcıya özet rapor ver |
 
 **Kural:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Agent `.pending`'i okuduğunda AGENTS.md'ye göre karar verir.
@@ -190,7 +205,7 @@ Detaylı komutlar: `references/QUICKREF.md` | Wiki iş akışları: `references/
 
 ---
 
-> **Son güncelleme:** 2026-05-09
+> **Son güncelleme:** 2026-05-10
 > **Wiki durumu:** 7 proje ingest edildi, 8/10 lint passing
 > **VPS durumu:** ops-bot ✅, sec-agent ✅, telegram-kimi ✅, webimar ✅, mathlock-play ✅
 > **GitHub:** `github.com:atlnatln/local.git`

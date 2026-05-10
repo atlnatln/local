@@ -165,7 +165,7 @@
                     android:id="@+id/sliderUnlockDuration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:valueFrom="0"
+                    android:valueFrom="1"
                     android:valueTo="60"
                     android:stepSize="1"
                     android:layout_marginBottom="4dp" />

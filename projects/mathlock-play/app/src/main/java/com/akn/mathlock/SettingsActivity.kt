@@ -166,8 +166,8 @@ class SettingsActivity : BaseActivity() {
         binding.sliderGuessRounds.value = guessRounds.coerceIn(1f, 10f)
         binding.tvGuessRounds.text = getString(R.string.settings_guess_rounds, guessRounds.toInt())
 
-        // Kilit açma süresi
-        val duration = prefManager.unlockDurationMinutes.toFloat().coerceIn(0f, 60f)
+        // Kilit açma süresi (sınırsız kaldırıldı, minimum 1 dk)
+        val duration = prefManager.unlockDurationMinutes.toFloat().coerceIn(1f, 60f)
         binding.sliderUnlockDuration.value = duration
         binding.tvUnlockDuration.text = formatDurationLabel(duration.toInt())
         if (prefManager.unlockExpiredAction == PreferenceManager.EXPIRE_ACTION_CLOSE) {
@@ -586,8 +586,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun formatDurationLabel(minutes: Int): String {
-        return if (minutes == 0) getString(R.string.settings_unlock_duration_unlimited)
-        else getString(R.string.settings_unlock_duration_minutes, minutes)
+        return getString(R.string.settings_unlock_duration_minutes, minutes)
     }
 
     private fun hasUsageStatsPermission(): Boolean {

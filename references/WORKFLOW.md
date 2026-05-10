@@ -21,7 +21,7 @@ Kaydedilmiş SHA değerini `.checkpoints/<isim>.sha` dosyasından oku. Ardından
 cd <proje-dizini> && git diff --name-status $(cat <checkpoint-dosyasi>)..HEAD
 
 # Monorepo içinde izlenen projeler için (anka, mathlock-play, telegram-kimi, sayi-yolculugu, infrastructure):
-cd /home/akn/local && git diff --name-status $(cat wiki/.checkpoints/local.sha)..HEAD -- <proje-dizini>
+cd /home/akn/local && git diff --name-status $(cat wiki/.checkpoints/<proje>.sha)..HEAD -- <proje-dizini>
 ```
 
 Checkpoint `HEAD` içeriyorsa (ilk çalıştırma), boş ağaç (empty tree) ile karşılaştır:
@@ -45,6 +45,17 @@ Her A/M/R dosyası için:
 - Türünü belirle: config, kaynak kod, deploy script, dokümantasyon
 - Çıkar: amaç, ana fonksiyonlar/bölümler, bağımlılıklar, ilgili dosyalar
 - Hangi wiki sayfasının oluşturulması/güncellenmesi gerektiğini belirle
+
+**Dosya → Sayfa eşleştirme kılavuzu:**
+
+| Kaynak dosya/dizin | Hedef wiki sayfası | Not |
+|---|---|---|
+| `AGENTS.md` (üst) | `wiki/concepts/agents-md.md` + `wiki/projects/local.md` | Proje context + monorepo kuralları |
+| `README.md` | `wiki/projects/<repo>.md` | Proje ana sayfası |
+| `deploy.sh` | `wiki/projects/<repo>.md` (Deployment bölümü) | Deployment prosedürü |
+| `infrastructure/` | `wiki/projects/infrastructure.md` | Altyapı yapılandırması |
+| Proje kök `*.md` | `wiki/projects/<repo>.md` | Proje dokümantasyonu |
+| Proje alt `src/` | `wiki/projects/<repo>.md` alt bölümü / sub-page | Kaynak kod detayları; limit aşımında sub-page çıkar |
 
 ### Adım 5 — Wiki Sayfalarını Yaz
 Yazmadan önce, uygun şablon için `references/PAGE_TEMPLATES.md` dosyasını oku.
@@ -99,6 +110,21 @@ cd /home/akn/local && git log --oneline -5 -- <proje-yolu>
 - Diff özeti: [[ops-bot]]'a systemd servis bölümü eklendi. [[infrastructure]] içinde [[nginx]] ile çapraz bağlanti kuruldu.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 ```
+
+### Adım 9.5 — Limit Kontrolü
+Güncellenmiş sayfaların satır sayısını kontrol et:
+
+```bash
+wc -l wiki/projects/<repo>.md wiki/concepts/<konsept>.md
+```
+
+| Tip | Limit | Eylem |
+|-----|-------|-------|
+| `concept` | 350 satır | %90+ doluluk (315) → `log.md`'ye `limit-warning` girişi; %20+ aşım (420) → sub-page planla |
+| `project` | 400 satır | %90+ doluluk (360) → `log.md`'ye `limit-warning` girişi; %20+ aşım (480) → sub-page planla |
+| `decision` | 200 satır | %90+ doluluk (180) → kısalt; %20+ aşım (240) → sub-page planla |
+
+> Kural: Ingest sonrası limit aşımı varsa, kullanıcıya "X sayfası limit aşımına yaklaşıyor (N/LIMIT). Sub-page planlayayım mı?" diye sor.
 
 ### Adım 10 — Checkpoint'i Güncelle
 Başarılı ingest sonrası checkpoint SHA'sını güncelle:

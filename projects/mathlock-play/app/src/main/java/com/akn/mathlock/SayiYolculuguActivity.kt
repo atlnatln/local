@@ -11,6 +11,8 @@ import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebViewClient
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.akn.mathlock.api.ApiClient
 import com.akn.mathlock.api.RealApiClient
@@ -32,6 +34,7 @@ class SayiYolculuguActivity : BaseActivity() {
     }
 
     private lateinit var webView: WebView
+    private lateinit var progressBar: ProgressBar
     private var lockedPackage: String? = null
     private var isPracticeMode = false
     private var isTestMode = false
@@ -41,6 +44,7 @@ class SayiYolculuguActivity : BaseActivity() {
     private val completedLevelIds = mutableSetOf<Int>()
     private val apiClient: ApiClient = RealApiClient()
     private val handler = Handler(Looper.getMainLooper())
+    private var lastGenerationInProgress = false
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +59,8 @@ class SayiYolculuguActivity : BaseActivity() {
         timerExpired = intent.getBooleanExtra("timer_expired", false)
 
         webView = findViewById(R.id.webView)
+        progressBar = findViewById(R.id.progressBar)
+        webView.visibility = View.INVISIBLE
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         webView.settings.allowFileAccess = false
@@ -93,6 +99,23 @@ class SayiYolculuguActivity : BaseActivity() {
             val isNewSet = oldSetId != null && currentSetId != null && currentSetId != oldSetId
             runOnUiThread {
                 if (levels != null) {
+                    // Eğer set tamamlanmış ve yeni set üretimi devam ediyorsa,
+                    // oyunu başlatma — sadece "hazırlanıyor" göster ve polling başlat
+                    if (lastGenerationInProgress && !isTestMode && !isPracticeMode) {
+                        try {
+                            val root = JSONObject(levels)
+                            val completedCount = root.optJSONArray("completed_level_ids")?.length() ?: 0
+                            val totalLevels = root.optJSONArray("levels")?.length() ?: 0
+                            if (completedCount >= totalLevels) {
+                                Log.i(TAG, "Set tamamlanmış, generation devam ediyor → loading göster")
+                                showRenewalLoading()
+                                pollForNewSet()
+                                progressBar.visibility = View.GONE
+                                webView.visibility = View.VISIBLE
+                                return@runOnUiThread
+                            }
+                        } catch (_: Exception) {}
+                    }
                     val locale = PreferenceManager(this).appLocale
                     val payload = JSONObject(levels).apply {
                         put("locale", locale)
@@ -132,6 +155,8 @@ class SayiYolculuguActivity : BaseActivity() {
                         finish()
                     }
                 }
+                progressBar.visibility = View.GONE
+                webView.visibility = View.VISIBLE
             }
         }.start()
     }
@@ -179,6 +204,7 @@ class SayiYolculuguActivity : BaseActivity() {
     }
 
     private fun fetchLevels(): String? {
+        lastGenerationInProgress = false
         val accountManager = AccountManager(this)
         val prefManager = PreferenceManager(this)
         val accessToken = accountManager.getOrRefreshToken()
@@ -224,7 +250,8 @@ class SayiYolculuguActivity : BaseActivity() {
                             saveCompletedLevels()
                             currentSetId = serverSetId
                             saveCurrentSetId()
-                            Log.d(TAG, "[SY-FETCH] API OK set_id=$currentSetId isNewSet=$isNewSet completed=${completedLevelIds.size}")
+                            lastGenerationInProgress = root.optBoolean("generation_in_progress", false)
+                            Log.d(TAG, "[SY-FETCH] API OK set_id=$currentSetId isNewSet=$isNewSet completed=${completedLevelIds.size} generationInProgress=$lastGenerationInProgress")
                         } catch (e: Exception) {
                             Log.d(TAG, "[SY-FETCH] API parse exception: ${e.message}")
                         }

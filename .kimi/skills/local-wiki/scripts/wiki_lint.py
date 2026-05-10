@@ -587,12 +587,15 @@ def check_contradictions(wiki_root: Path, pages: List[Path], all_frontmatters: D
     return result
 
 
-def check_page_size(wiki_root: Path, pages: List[Path]) -> CheckResult:
-    """Check 7: Flag pages longer than MAX_LINES."""
+def check_page_size(wiki_root: Path, pages: List[Path], all_frontmatters: Dict[Path, Dict]) -> CheckResult:
+    """Check 7: Flag pages longer than MAX_LINES. Skip reference/archived pages."""
     result = CheckResult("Page Size")
 
     oversized = []
     for page in pages:
+        fm = all_frontmatters.get(page, {})
+        if fm.get("status") in ("reference", "archived"):
+            continue
         try:
             with open(page, "r", encoding="utf-8") as f:
                 lines = f.readlines()
@@ -884,7 +887,7 @@ def main() -> int:
     results.append(check_frontmatter(wiki_root, pages, all_frontmatters))
     results.append(check_stale_content(wiki_root, pages, all_frontmatters))
     results.append(check_contradictions(wiki_root, pages, all_frontmatters))
-    results.append(check_page_size(wiki_root, pages))
+    results.append(check_page_size(wiki_root, pages, all_frontmatters))
     results.append(check_tag_audit(wiki_root, pages, all_frontmatters))
     results.append(check_raw_existence(wiki_root, pages, all_frontmatters))
     results.append(check_log_rotation(wiki_root))
