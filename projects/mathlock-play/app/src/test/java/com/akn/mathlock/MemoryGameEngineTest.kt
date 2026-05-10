@@ -56,8 +56,8 @@ class MemoryGameEngineTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `25 cift cok fazla olmali ve exception atmali`() {
-        MemoryGameEngine(25)
+    fun `31 cift cok fazla olmali ve exception atmali`() {
+        MemoryGameEngine(31)
     }
 
     // ═══════════════════════════════════════════════════════════════════════

@@ -2827,3 +2827,22 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 246 entries
 
+
+## [2026-05-10 10:28] ingest | mathlock-play | f60cd6e9 | mathlock-play-android
+- Files: A:3 M:30+ (Android activity, service, util, layout, tests; backend API, models, tasks, migrations)
+- Pages updated: [[mathlock-play-android]]
+- Diff summary: v1.0.78 release — AppLockService derleme hatası düzeltildi (unclosed lambda). MemoryGameEngine pair limit 4-20→4-30. AccountManagerTest/StatsTrackerTest eklendi. Play Store upload script (upload-play-store.py) oluşturuldu.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+- Revert: git checkout f60cd6e9 -- wiki/
+## [2026-05-10 10:29] lint | 7/10
+- Orphan pages: 1 ([[local]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 14 (adaptive-learning, agent-instructions, alignment, analysis, api, auth, backend, curriculum, drf, games...)
+- Raw existence: 0
+- Log size: 248 entries
+

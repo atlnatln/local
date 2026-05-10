@@ -389,7 +389,6 @@ class AppLockService : Service() {
             // Fallback: sadece activity açılamazsa overlay göster
             showBlockingOverlay(lockedPackage)
         }
-        }, 500)
 
         Log.d(TAG, "Challenge tetiklendi: $lockedPackage")
     }

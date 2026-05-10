@@ -35,13 +35,17 @@ fi
 | Amaç | Kod yazma, test, build, wiki | Production çalıştırma, monitoring |
 | Servisler | `mathlock-backend`, `mathlock-celery` | `ops-bot`, `sec-agent`, `telegram-kimi`, `webimar` (Docker), `mathlock-play` |
 
-> **Kural (HER İKİ ORTAM):** Kod burada yazılır/build edilir, `deploy.sh` ile VPS'e gönderilir. Canlı ortam dosyalarını doğrudan düzenleme.
+> **Kural (HER İKİ ORTAM):** Kod burada yazılır/build edilir, `deploy.sh` ile VPS'e gönderilir. Canlı ortam dosyalarını doğrudan düzenleme.  
+> **Not:** VPS'te hem `/home/akn/local/` (git clone, geliştirme) hem `/home/akn/vps/` (deploy alanı) vardır.  
+> **Garanti:** AGENTS.md'deki `/home/akn/local/` yolları her iki makinede de çalışır.
 
 ---
 
 ## 🔴 KATI KURAL: Commit/Push ÖNCESİ Wiki TOPLANMALIDIR 🔴
 
 **İhlali kritiktir. HEM local HEM VPS'te geçerlidir.**
+
+> **Neden:** Wiki = projenin **yaşayan belleği**. Kod değişir ama wiki güncel kalmazsa sonraki agent'lar eski/yanlış bilgiyle çalışır. Bilgi kaybı, tutarsızlık, tekrarlanan hatalar.
 
 Aşağıdakilerden **herhangi biri** değiştiğinde wiki ingest zorunludur:
 - `AGENTS.md`, `README.md`, `SCHEMA.md`
@@ -52,7 +56,10 @@ Aşağıdakilerden **herhangi biri** değiştiğinde wiki ingest zorunludur:
 
 **Checklist:** `git diff` → wiki ingest → lint → `git add -A` → `git commit -m "type(scope): ..."` → `git push origin main`
 
-**Otomatik Koruma:** pre-commit/pre-push hook'lar kuruludur. Atlama (ACİL): `git commit --no-verify`
+**Otomatik Koruma:** pre-commit/pre-push hook'lar kuruludur.
+- **pre-commit:** Dokümantasyon değişikliğinde commit'i engeller, talimat gösterir
+- **pre-push:** Wiki dosyaları commit edilmemişse push'u engeller
+- Atlama (ACİL): `git commit --no-verify`
 
 ---
 
@@ -63,6 +70,8 @@ Her session başında:
 2. GitHub sync kontrolü → sonra wiki kontrolü
 
 ### Git Sync Kontrolü (KESİN Sıra: Git → Pull → Wiki)
+
+> **Context:** Kullanıcı tek kişidir ve ya local'de ya da VPS'te geliştirir. **GitHub = source of truth.** Her session'da önce GitHub'a bak, sonra wiki'ye.
 
 ```bash
 # Fetch
@@ -85,6 +94,8 @@ Her session başında:
 
 ### Proaktif Wiki Kontrolü
 
+> `.pending` GitHub üzerinden cross-machine sync sağlar (commit'lenir); `.checkpoints/*.sha` ise gitignored local cursor'dur.  
+>  
 ```bash
 cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"
 ```
@@ -98,21 +109,27 @@ cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"
 
 ---
 
+## Wiki Kullanımı
+
+`/home/akn/local/wiki` — Kimi CLI tarafından yönetilen bilgi tabanı. `wiki topla` / `wiki ingest` / `wiki güncelle` → tool-based flow başlatır.
+
 ## Wiki Ingest Flow (9 Adım)
 
 Kullanıcı "wiki topla"/"wiki ingest"/"wiki güncelle" dediğinde ara sormadan tek seferde:
 
 | Adım | İşlem |
 |------|-------|
-| 1 | Checkpoint SHA'ları oku (`.checkpoints/*.sha`) |
+| 1 | Checkpoint SHA'ları oku (`wiki/.checkpoints/*.sha`) |
 | 2 | Her repo için `git diff --name-status <checkpoint>..HEAD` |
 | 3 | Diff boşsa → `.pending` temizle, lint, log'a "no changes", bitir |
 | 4 | Diff doluysa → değişen dosyaları analiz et (A/M/D/R) |
 | 5 | İlgili wiki sayfalarını güncelle (`wiki/projects/<repo>.md`) |
 | 6 | Çapraz referansları yenile (`index.md`, `log.md`) |
 | 7 | Lint çalıştır: `python3 scripts/wiki_lint.py /home/akn/local/wiki` |
-| 8 | Checkpoint'leri güncelle (`git rev-parse HEAD > .checkpoints/<repo>.sha`) |
+| 8 | Checkpoint'leri güncelle (`git rev-parse HEAD > wiki/.checkpoints/<repo>.sha`) |
 | 9 | `.pending` temizle, kullanıcıya özet rapor ver |
+
+**Kural:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Agent `.pending`'i okuduğunda AGENTS.md'ye göre karar verir.
 
 Detaylı komutlar ve kurallar: `references/WORKFLOW.md` ve `~/.kimi/skills/local-wiki/SKILL.md`
 
@@ -147,7 +164,17 @@ Kullanıcı "push yap" dediğinde:
 └── ARCHITECTURE.md    # Detaylı mimari
 ```
 
-Detaylı komutlar: `references/QUICKREF.md` | Wiki iş akışları: `references/WORKFLOW.md` | Kod stili: `references/CONVENTIONS.md`
+Detaylı komutlar: `references/QUICKREF.md` | Wiki iş akışları: `references/WORKFLOW.md` | Wiki kuralları: `references/CONVENTIONS.md`
+
+---
+
+## Kod Stili ve Konvansiyonlar
+
+- **Dosya adlandırma:** Shell `kebab-case.sh`, Python `snake_case.py`, Django app `snake_case`, React `PascalCase.tsx`
+- **Git commit:** `type(scope): description` — örn. `feat(webimar): add endpoint`, `fix(ops-bot): timeout`, `docs(wiki): update guide`
+- **Çevre değişkenleri:** `.env` asla commit'lenmez, `.env.example` güncel tutulur, hassas veriler sadece VPS `.env`'lerinde ve yerel `~/.env`'de
+- `ops-bot` ve `webimar` için ayrı repo commit'leri, ardından `local` monorepo'ya commit
+- **Her deploy öncesi commit**
 
 ---
 
