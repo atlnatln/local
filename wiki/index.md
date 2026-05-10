@@ -85,9 +85,11 @@ Geçersiz kılınmış veya değişmiş kararlar.
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
 | [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-03 |
+| [[local]] | project | Ana monorepo — agent instruction'ları, references, wiki kuralları | 2026-05-10 |
 
 ## Recently Updated
 
+- [[local]] — AGENTS.md refactor: 499→167 satır, references/QUICKREF.md yeni, WORKFLOW.md'ye wiki filtreleme ve iddia kuralları eklendi (2026-05-10)
 - [[mathlock-play-android]] — 7 kritik bug fix (StatsTracker idempotency, AccountManager 403 re-register, CreditApiClient 503 parsing, 409 retry loop, raw device token, LockStateManager thread-safety, SecurePrefs hard fail), UI/UX iyileştirmeleri, yeni testler (AccountManagerTest, StatsTrackerTest, LockStateManagerTest), v1.0.77 (2026-05-09)
 - [[mathlock-play-backend]] — credits/auth güncellemeleri, raw+signed token dual auth, 503/409 handling, VPS deploy, yeni testler (2026-05-09)
 - [[mathlock-play]] — v1.0.77 release, recent commits güncellendi (2026-05-09)

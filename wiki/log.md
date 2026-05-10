@@ -2807,3 +2807,23 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 244 entries
 
+
+## [2026-05-10 02:10] ingest | local | 02ce0371 | 3 sayfa
+- Files: A:2 M:2
+- Pages created: [[local]]
+- Pages updated: [[index]], [[log]]
+- Diff summary: AGENTS.md refactor edildi (499→167 satır). references/QUICKREF.md oluşturuldu. WORKFLOW.md'ye wiki filtreleme ve içerik iddiası kuralları eklendi.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+- Revert: git checkout 73185046 -- wiki/
+## [2026-05-10 09:50] lint | 7/10
+- Orphan pages: 1 ([[local]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 14 (adaptive-learning, agent-instructions, alignment, analysis, api, auth, backend, curriculum, drf, games...)
+- Raw existence: 0
+- Log size: 246 entries
+
