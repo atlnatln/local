@@ -1,13 +1,17 @@
-<!-- test -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f0f1a">
 <title>Sayı Yolculuğu</title>
 <style>
-/* ── Reset & Base ─────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   Sayı Yolculuğu — Tek Dosya Oyun
+   ═══════════════════════════════════════════════════════════ */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
   --bg: #0f0f1a;
   --surface: #1a1a2e;
@@ -23,6 +27,7 @@
   --cell-size: 64px;
   --radius: 12px;
 }
+
 html { font-size: 16px; }
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -30,6 +35,10 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  overscroll-behavior: none;
 }
 
 /* ── Intro / Splash ───────────────────────────────────────── */
@@ -43,6 +52,7 @@ body {
 #splash h1 { font-size: 3rem; margin-bottom: .25rem; }
 #splash h1 span { color: var(--gold); }
 #splash p { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 2rem; }
+
 .age-select { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem; }
 .age-btn {
   padding: 12px 22px; border-radius: var(--radius); border: 2px solid var(--accent);
@@ -50,6 +60,7 @@ body {
   transition: all .2s;
 }
 .age-btn:hover, .age-btn.active { background: var(--accent); border-color: var(--primary); transform: scale(1.05); }
+
 .start-btn {
   padding: 16px 48px; border-radius: 50px; border: none;
   background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -57,6 +68,16 @@ body {
   transition: transform .2s, box-shadow .2s;
 }
 .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(233,69,96,.4); }
+
+.splash-features {
+  display: flex; gap: 16px; margin-top: 1.5rem;
+}
+.splash-features span {
+  font-size: 0.8rem; color: var(--text-dim);
+  padding: 6px 12px; border-radius: 20px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+}
 
 /* ── Game Layout ──────────────────────────────────────────── */
 #game { display: none; }
@@ -67,6 +88,7 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   padding: 12px 20px; background: var(--surface);
   border-bottom: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
 }
 .game-header .level-info { display: flex; align-items: center; gap: 12px; }
 .game-header .level-badge {
@@ -84,146 +106,9 @@ body {
 /* Main area */
 .game-main {
   flex: 1; display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 20px; padding: 16px;
+  justify-content: flex-start; gap: 16px; padding: 12px;
+  overflow-y: auto;
 }
-
-/* ── Grid ─────────────────────────────────────────────────── */
-.grid-container {
-  position: relative;
-  background: var(--surface2);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.4);
-}
-.grid {
-  display: grid;
-  gap: 4px;
-}
-.cell {
-  width: var(--cell-size); height: var(--cell-size);
-  border-radius: 8px; display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1.1rem; position: relative;
-  transition: all .3s ease;
-}
-.cell.empty { background: rgba(255,255,255,.04); }
-.cell.wall { background: #2a2a40; box-shadow: inset 0 2px 6px rgba(0,0,0,.5); }
-.cell.wall::after { content: '🧱'; font-size: 1.4rem; }
-.cell.target {
-  background: rgba(0, 214, 143, .15); border: 2px dashed var(--green);
-}
-.cell.target .target-value {
-  position: absolute; font-size: .7rem; bottom: 2px; right: 4px;
-  color: var(--green); opacity: .8;
-}
-.cell.op-plus { background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.3); }
-.cell.op-minus { background: rgba(233,69,96,.12); border: 1px solid rgba(233,69,96,.3); }
-.cell.op-times { background: rgba(245,197,24,.12); border: 1px solid rgba(245,197,24,.3); }
-
-/* Player number */
-.player {
-  position: absolute;
-  width: var(--cell-size); height: var(--cell-size);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.6rem; font-weight: 900;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  border-radius: 50%;
-  box-shadow: 0 0 20px rgba(233,69,96,.5);
-  transition: all .35s cubic-bezier(.4, 0, .2, 1);
-  z-index: 10;
-}
-.player.bump { animation: bump .3s ease; }
-@keyframes bump {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-}
-.player.success { animation: successPulse .6s ease; }
-@keyframes successPulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(0,214,143,.5); }
-  50% { box-shadow: 0 0 50px rgba(0,214,143,.9); transform: scale(1.2); }
-}
-
-/* Axis labels */
-.axis-labels-x, .axis-labels-y { display: flex; }
-.axis-labels-x {
-  justify-content: center; gap: 4px; margin-top: 6px; padding-left: 0;
-}
-.axis-labels-y {
-  flex-direction: column; gap: 4px; position: absolute; left: -24px; top: 16px;
-}
-.axis-label {
-  width: var(--cell-size); height: var(--cell-size);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .7rem; color: var(--text-dim);
-}
-.axis-labels-y .axis-label { width: 20px; }
-
-/* ── Command Panel ────────────────────────────────────────── */
-.cmd-panel {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 16px; width: 100%; max-width: 600px;
-}
-.cmd-panel h3 { font-size: .85rem; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-
-.cmd-palette {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
-  padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.cmd-btn {
-  padding: 10px 18px; border-radius: 10px; border: 2px solid transparent;
-  font-size: .95rem; font-weight: 600; cursor: pointer;
-  transition: all .15s; user-select: none;
-}
-.cmd-btn:active { transform: scale(.94); }
-.cmd-btn.x-plus { background: rgba(59,130,246,.2); color: var(--blue); border-color: rgba(59,130,246,.4); }
-.cmd-btn.x-minus { background: rgba(59,130,246,.2); color: var(--blue); border-color: rgba(59,130,246,.4); }
-.cmd-btn.y-plus { background: rgba(0,214,143,.2); color: var(--green); border-color: rgba(0,214,143,.4); }
-.cmd-btn.y-minus { background: rgba(0,214,143,.2); color: var(--green); border-color: rgba(0,214,143,.4); }
-.cmd-btn.z-plus { background: rgba(245,197,24,.2); color: var(--gold); border-color: rgba(245,197,24,.3); }
-.cmd-btn.z-minus { background: rgba(233,69,96,.2); color: var(--primary); border-color: rgba(233,69,96,.3); }
-
-.cmd-queue-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.cmd-queue-label h3 { margin: 0; }
-.cmd-queue-label .cmd-count { font-size: .8rem; color: var(--text-dim); }
-
-.cmd-queue {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  min-height: 48px; padding: 10px;
-  background: rgba(0,0,0,.2); border-radius: 8px;
-  border: 2px dashed rgba(255,255,255,.08);
-  margin-bottom: 14px;
-}
-.cmd-queue .cmd-chip {
-  padding: 6px 14px; border-radius: 8px;
-  font-size: .85rem; font-weight: 600; cursor: pointer;
-  transition: all .15s; position: relative;
-}
-.cmd-chip:hover { opacity: .7; }
-.cmd-chip.x-plus, .cmd-chip.x-minus { background: rgba(59,130,246,.25); color: var(--blue); }
-.cmd-chip.y-plus, .cmd-chip.y-minus { background: rgba(0,214,143,.25); color: var(--green); }
-.cmd-chip.z-plus { background: rgba(245,197,24,.25); color: var(--gold); }
-.cmd-chip.z-minus { background: rgba(233,69,96,.25); color: var(--primary); }
-.cmd-chip.running { animation: chipPulse .5s ease infinite; }
-@keyframes chipPulse {
-  0%, 100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
-  50% { box-shadow: 0 0 12px rgba(255,255,255,.3); }
-}
-
-.cmd-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.action-btn {
-  flex: 1; min-width: 100px; padding: 12px; border-radius: 10px; border: none;
-  font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .15s;
-}
-.action-btn:active { transform: scale(.96); }
-.btn-run { background: linear-gradient(135deg, var(--green), #00b377); color: #000; }
-.btn-run:hover { box-shadow: 0 0 20px rgba(0,214,143,.4); }
-.btn-run:disabled { opacity: .4; cursor: not-allowed; }
-.btn-clear { background: rgba(233,69,96,.2); color: var(--primary); }
-.btn-clear:hover { background: rgba(233,69,96,.35); }
-.btn-undo { background: rgba(255,255,255,.08); color: var(--text-dim); }
-.btn-undo:hover { background: rgba(255,255,255,.12); }
-.btn-reset { background: rgba(59,130,246,.2); color: var(--blue); }
-.btn-reset:hover { background: rgba(59,130,246,.35); }
 
 /* ── Goal indicator ───────────────────────────────────────── */
 .goal-bar {
@@ -238,6 +123,147 @@ body {
 .goal-bar .goal-text strong { color: var(--green); }
 .goal-bar .goal-text .goal-desc { font-size: .85rem; color: var(--text-dim); }
 
+/* ── Grid ─────────────────────────────────────────────────── */
+.grid-area {
+  flex-shrink: 0;
+}
+.grid-container {
+  position: relative;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+.grid {
+  display: grid;
+  gap: 4px;
+}
+.cell {
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.1rem; position: relative;
+  transition: all .3s ease;
+}
+.cell.empty { background: rgba(255,255,255,.04); }
+.cell.wall {
+  background: #2a2a40;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.5);
+}
+.cell.wall::after { content: '🧱'; font-size: 1.2rem; }
+.cell.target {
+  background: rgba(0, 214, 143, .15); border: 2px dashed var(--green);
+}
+.cell.target .target-value {
+  position: absolute; font-size: .65rem; bottom: 2px; right: 4px;
+  color: var(--green); opacity: .8; font-weight: 700;
+}
+.cell.op-plus { background: rgba(59,130,246,.15); border: 1px solid rgba(59,130,246,.3); color: var(--blue); }
+.cell.op-minus { background: rgba(233,69,96,.15); border: 1px solid rgba(233,69,96,.3); color: var(--primary); }
+.cell.op-times { background: rgba(245,197,24,.15); border: 1px solid rgba(245,197,24,.3); color: var(--gold); }
+.cell.bump { animation: cellBump .3s ease; }
+@keyframes cellBump {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); filter: brightness(1.5); }
+}
+
+/* Player number */
+.player {
+  position: absolute;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.6rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(233,69,96,.5);
+  transition: all .35s cubic-bezier(.4, 0, .2, 1);
+  z-index: 10;
+}
+.player.bump { animation: playerBump .3s ease; }
+@keyframes playerBump {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); filter: brightness(1.8); }
+}
+.player.success { animation: successPulse .6s ease; }
+@keyframes successPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,214,143,.5); background: linear-gradient(135deg, var(--primary), var(--accent)); }
+  50% { box-shadow: 0 0 50px rgba(0,214,143,.9); transform: scale(1.2); background: linear-gradient(135deg, var(--green), #00b377); }
+}
+
+/* ── Command Panel ────────────────────────────────────────── */
+.cmd-panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px; width: 100%; max-width: 600px;
+}
+.cmd-panel h3 { font-size: .7rem; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+.cmd-palette {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+  padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.cmd-btn {
+  padding: 10px 18px; border-radius: 10px; border: 2px solid transparent;
+  font-size: .95rem; font-weight: 600; cursor: pointer;
+  transition: all .15s; user-select: none;
+  display: flex; align-items: center; gap: 4px;
+}
+.cmd-btn:active { transform: scale(.94); }
+.cmd-btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
+.cmd-btn.x-plus, .cmd-btn.x-minus { background: rgba(59,130,246,.2); color: var(--blue); border-color: rgba(59,130,246,.4); }
+.cmd-btn.y-plus, .cmd-btn.y-minus { background: rgba(0,214,143,.2); color: var(--green); border-color: rgba(0,214,143,.4); }
+.cmd-btn.z-plus { background: rgba(245,197,24,.2); color: var(--gold); border-color: rgba(245,197,24,.3); }
+.cmd-btn.z-minus { background: rgba(233,69,96,.2); color: var(--primary); border-color: rgba(233,69,96,.3); }
+
+.cmd-queue-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cmd-queue-label h3 { margin: 0; }
+.cmd-queue-label .cmd-count { font-size: .8rem; color: var(--text-dim); }
+
+.cmd-queue {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  min-height: 48px; padding: 10px;
+  background: rgba(0,0,0,.2); border-radius: 8px;
+  border: 2px dashed rgba(255,255,255,.08);
+  margin-bottom: 14px;
+  align-content: flex-start;
+}
+.cmd-queue-empty {
+  width: 100%; text-align: center; color: #555;
+  font-size: .8rem; padding: 8px;
+}
+.cmd-queue .cmd-chip {
+  padding: 6px 14px; border-radius: 8px;
+  font-size: .85rem; font-weight: 600; cursor: pointer;
+  transition: all .15s; position: relative; border: none;
+  display: flex; align-items: center; gap: 3px;
+}
+.cmd-chip:hover { opacity: .7; transform: scale(1.05); }
+.cmd-chip.x-plus, .cmd-chip.x-minus { background: rgba(59,130,246,.25); color: var(--blue); }
+.cmd-chip.y-plus, .cmd-chip.y-minus { background: rgba(0,214,143,.25); color: var(--green); }
+.cmd-chip.z-plus { background: rgba(245,197,24,.25); color: var(--gold); }
+.cmd-chip.z-minus { background: rgba(233,69,96,.25); color: var(--primary); }
+.cmd-chip.running { animation: chipPulse .5s ease infinite; }
+.cmd-chip.done { opacity: .4; }
+@keyframes chipPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50% { box-shadow: 0 0 12px rgba(255,255,255,.3); }
+}
+
+.cmd-actions { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
+.action-btn {
+  padding: 12px 8px; border-radius: 10px; border: none;
+  font-size: .85rem; font-weight: 700; cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.action-btn:active { transform: scale(.96); }
+.action-btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
+.btn-run { background: linear-gradient(135deg, var(--green), #00b377); color: #000; }
+.btn-run:hover:not(:disabled) { box-shadow: 0 0 20px rgba(0,214,143,.4); }
+.btn-clear { background: rgba(233,69,96,.2); color: var(--primary); }
+.btn-clear:hover:not(:disabled) { background: rgba(233,69,96,.35); }
+.btn-undo { background: rgba(255,255,255,.08); color: var(--text-dim); }
+.btn-undo:hover:not(:disabled) { background: rgba(255,255,255,.12); }
+.btn-reset { background: rgba(59,130,246,.2); color: var(--blue); }
+.btn-reset:hover:not(:disabled) { background: rgba(59,130,246,.35); }
+
 /* ── Level Complete Overlay ───────────────────────────────── */
 #overlay {
   position: fixed; inset: 0; z-index: 200;
@@ -247,23 +273,32 @@ body {
 #overlay.active { display: flex; }
 .overlay-card {
   background: var(--surface);
-  border-radius: 20px; padding: 40px; text-align: center;
-  max-width: 380px; animation: popIn .4s ease;
+  border-radius: 24px; padding: 40px 32px; text-align: center;
+  max-width: 380px; width: 90%; animation: popIn .4s ease;
 }
 @keyframes popIn {
   0% { transform: scale(.7); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 .overlay-card h2 { font-size: 2rem; margin-bottom: 8px; }
-.overlay-card .overlay-stars { font-size: 2.5rem; margin-bottom: 12px; letter-spacing: 4px; }
+.overlay-card .overlay-stars { font-size: 2.5rem; margin-bottom: 12px; letter-spacing: 4px; display: flex; justify-content: center; gap: 8px; }
+.star-anim { animation: starPop .4s ease both; }
+@keyframes starPop {
+  0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+  60% { transform: scale(1.3) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
 .overlay-card p { color: var(--text-dim); margin-bottom: 24px; }
 .overlay-card .overlay-btns { display: flex; gap: 12px; justify-content: center; }
 .overlay-card .overlay-btns button {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
   padding: 12px 28px; border-radius: 12px; border: none;
-  font-size: 1rem; font-weight: 700; cursor: pointer;
+  font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .15s;
 }
 .overlay-card .btn-next { background: linear-gradient(135deg, var(--green), #00b377); color: #000; }
+.overlay-card .btn-next:hover { transform: scale(1.04); }
 .overlay-card .btn-retry { background: rgba(255,255,255,.1); color: var(--text); }
+.overlay-card .btn-retry:hover { background: rgba(255,255,255,.18); transform: scale(1.04); }
 
 /* Level select modal */
 #levelSelect {
@@ -273,36 +308,57 @@ body {
 }
 #levelSelect.active { display: flex; }
 .level-select-card {
-  background: var(--surface); border-radius: 20px; padding: 30px;
-  max-width: 500px; width: 90%; animation: popIn .4s ease;
+  background: var(--surface); border-radius: 20px; padding: 24px;
+  max-width: 420px; width: 90%; animation: popIn .4s ease;
 }
 .level-select-card h2 { margin-bottom: 20px; text-align: center; }
+.level-select-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .level-grid {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
 }
 .level-cell {
-  aspect-ratio: 1; border-radius: 12px;
+  aspect-ratio: 1; border-radius: 14px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1.2rem; cursor: pointer;
+  font-weight: 700; font-size: 1.1rem; cursor: pointer;
   background: rgba(255,255,255,.06); border: 2px solid transparent;
-  transition: all .2s;
+  transition: all .2s; color: var(--text);
 }
-.level-cell:hover { border-color: var(--accent); transform: scale(1.05); }
+.level-cell:hover:not(:disabled) { border-color: var(--accent); transform: scale(1.06); background: rgba(83,52,131,.2); }
 .level-cell.completed { border-color: var(--green); background: rgba(0,214,143,.1); }
 .level-cell.current { border-color: var(--gold); background: rgba(245,197,24,.1); }
 .level-cell.locked { opacity: .3; cursor: not-allowed; }
-.level-cell .lc-stars { font-size: .65rem; margin-top: 2px; }
+.level-cell .lc-stars { font-size: .55rem; margin-top: 2px; letter-spacing: 1px; }
 .level-select-close {
   display: block; margin: 20px auto 0; padding: 10px 30px;
   border-radius: 10px; border: 1px solid var(--text-dim); background: none;
   color: var(--text-dim); cursor: pointer; font-size: .9rem;
 }
+.level-select-close:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── Sound Toggle ─────────────────────────────────────────── */
+.sound-toggle {
+  position: fixed; bottom: 12px; right: 12px; z-index: 50;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.15); background: rgba(26,26,46,.9);
+  color: var(--text-dim); cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.sound-toggle:hover { border-color: var(--primary); color: var(--primary); }
 
 /* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 640px) {
   :root { --cell-size: 48px; }
   .cmd-btn { padding: 8px 12px; font-size: .8rem; }
-  .overlay-card { padding: 24px; }
+  .overlay-card { padding: 28px 20px; }
+  .cmd-actions { gap: 6px; }
+  .action-btn { padding: 10px 6px; font-size: .75rem; }
+  .level-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  #splash h1 { font-size: 2.2rem; }
+}
+@media (max-width: 360px) {
+  :root { --cell-size: 40px; }
+  .cmd-actions { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -322,6 +378,12 @@ body {
   </div>
 
   <button class="start-btn" id="btnStart">🚀 Başla!</button>
+
+  <div class="splash-features">
+    <span>📐 32 Bulmaca</span>
+    <span>🎯 4 Zorluk</span>
+    <span>🧠 Programlama</span>
+  </div>
 </div>
 
 <!-- ─── GAME SCREEN ───────────────────────────────────────── -->
@@ -331,7 +393,7 @@ body {
       <span class="level-badge" id="levelBadge">Seviye 1</span>
       <span class="level-title" id="levelTitle">İlk Adım</span>
     </div>
-    <div class="stars" id="starsDisplay">⭐⭐⭐</div>
+    <div class="stars" id="starsDisplay">☆☆☆</div>
     <div style="display:flex;gap:8px;">
       <button class="btn-back" id="btnLevels">📋 Seviyeler</button>
       <button class="btn-back" id="btnHome">🏠</button>
@@ -350,10 +412,11 @@ body {
     </div>
 
     <!-- Grid -->
-    <div class="grid-container">
-      <div class="grid" id="grid"></div>
-      <div class="player" id="player">3</div>
-      <!-- axis labels rendered dynamically -->
+    <div class="grid-area">
+      <div class="grid-container">
+        <div class="grid" id="grid"></div>
+        <div class="player" id="player">3</div>
+      </div>
     </div>
 
     <!-- Command Panel -->
@@ -381,7 +444,9 @@ body {
 <div id="overlay">
   <div class="overlay-card">
     <h2 id="overlayTitle">🎉 Tebrikler!</h2>
-    <div class="overlay-stars" id="overlayStars">⭐⭐⭐</div>
+    <div class="overlay-stars" id="overlayStars">
+      <span id="s1">☆</span><span id="s2">☆</span><span id="s3">☆</span>
+    </div>
     <p id="overlayMsg">Harika! Bulmacayı çözdün!</p>
     <div class="overlay-btns">
       <button class="btn-retry" id="btnRetry">🔄 Tekrar</button>
@@ -393,297 +458,83 @@ body {
 <!-- ─── LEVEL SELECT ──────────────────────────────────────── -->
 <div id="levelSelect">
   <div class="level-select-card">
-    <h2>Seviye Seç</h2>
+    <div class="level-select-header">
+      <h2>Seviye Seç</h2>
+      <button class="btn-back" id="btnCloseLevels" style="margin:0;">✕</button>
+    </div>
     <div class="level-grid" id="levelGrid"></div>
-    <button class="level-select-close" id="btnCloseLevels">Kapat</button>
+    <button class="level-select-close" id="btnCloseLevels2">Kapat</button>
   </div>
 </div>
 
+<!-- ─── SOUND TOGGLE ──────────────────────────────────────── -->
+<button class="sound-toggle" id="btnSound" title="Sesi Aç/Kapat">🔊</button>
+
 <script>
 /* ═══════════════════════════════════════════════════════════
-   Sayı Yolculuğu — Game Engine
+   Sayı Yolculuğu — Game Engine (Geliştirilmiş)
    ═══════════════════════════════════════════════════════════ */
 
 // ── Command definitions ──────────────────────────────────
 const CMDS = {
-  'x+': { label: 'x →', css: 'x-plus',  dx: 1,  dy: 0,  dz: 0 },
-  'x-': { label: '← x', css: 'x-minus', dx: -1, dy: 0,  dz: 0 },
-  'y-': { label: 'y ↑', css: 'y-minus', dx: 0,  dy: -1, dz: 0 },
-  'y+': { label: '↓ y', css: 'y-plus',  dx: 0,  dy: 1,  dz: 0 },
-  'z+': { label: 'z +1', css: 'z-plus', dx: 0,  dy: 0,  dz: 1 },
+  'x+': { label: 'x \u2192', css: 'x-plus',  dx: 1,  dy: 0,  dz: 0 },
+  'x-': { label: '\u2190 x', css: 'x-minus', dx: -1, dy: 0,  dz: 0 },
+  'y-': { label: 'y \u2191', css: 'y-minus', dx: 0,  dy: -1, dz: 0 },
+  'y+': { label: '\u2193 y', css: 'y-plus',  dx: 0,  dy: 1,  dz: 0 },
+  'z+': { label: 'z +1', css: 'z-plus',  dx: 0,  dy: 0,  dz: 1 },
   'z-': { label: 'z -1', css: 'z-minus', dx: 0,  dy: 0,  dz: -1 },
 };
 
-// ── Level data ───────────────────────────────────────────
-// Each level: { title, desc, cols, rows, startX, startY, startVal,
-//               targetX, targetY, targetVal (null = any),
-//               walls:[[x,y],...], ops:[{x,y,type,val},...],
-//               commands:['x+','y+', ...], maxCmds, stars:[s3,s2] }
-//
-// stars: [max commands for 3 stars, max for 2 stars]; above = 1 star
+const ICONS = {
+  'x+': '\u2192', 'x-': '\u2190', 'y-': '\u2191', 'y+': '\u2193', 'z+': '+', 'z-': '-'
+};
 
+// ── Level data (32 seviye) ───────────────────────────────
 const LEVELS_BY_AGE = {
 
-// ────── 5-6 Yaş: Sadece x/y hareketi, küçük grid, çok kolay ──
 '5-6': [
-  {
-    title: 'İlk Adım', desc: 'Sayıyı sağa taşı!',
-    cols: 3, rows: 1, startX: 0, startY: 0, startVal: 1,
-    targetX: 2, targetY: 0, targetVal: null,
-    walls: [], ops: [],
-    commands: ['x+'], maxCmds: 4, stars: [2, 3]
-  },
-  {
-    title: 'Aşağı İn', desc: 'Sayıyı aşağı götür!',
-    cols: 1, rows: 3, startX: 0, startY: 0, startVal: 2,
-    targetX: 0, targetY: 2, targetVal: null,
-    walls: [], ops: [],
-    commands: ['y+'], maxCmds: 4, stars: [2, 3]
-  },
-  {
-    title: 'Köşeye Git', desc: 'Sağ alta ulaş!',
-    cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3,
-    targetX: 2, targetY: 2, targetVal: null,
-    walls: [], ops: [],
-    commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5]
-  },
-  {
-    title: 'Geri Dön', desc: 'Sol tarafa git!',
-    cols: 3, rows: 1, startX: 2, startY: 0, startVal: 5,
-    targetX: 0, targetY: 0, targetVal: null,
-    walls: [], ops: [],
-    commands: ['x-'], maxCmds: 4, stars: [2, 3]
-  },
-  {
-    title: 'Yukarı Çık', desc: 'Yukarıya git!',
-    cols: 1, rows: 3, startX: 0, startY: 2, startVal: 4,
-    targetX: 0, targetY: 0, targetVal: null,
-    walls: [], ops: [],
-    commands: ['y-'], maxCmds: 4, stars: [2, 3]
-  },
-  {
-    title: 'L Yolu', desc: 'L şeklinde ilerle!',
-    cols: 3, rows: 3, startX: 0, startY: 0, startVal: 6,
-    targetX: 2, targetY: 2, targetVal: null,
-    walls: [[1,0],[2,0],[2,1]], ops: [],
-    commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5]
-  },
-  {
-    title: 'Zigzag', desc: 'Duvarlardan kaç!',
-    cols: 4, rows: 3, startX: 0, startY: 0, startVal: 7,
-    targetX: 3, targetY: 2, targetVal: null,
-    walls: [[1,0],[2,1]], ops: [],
-    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [5, 7]
-  },
-  {
-    title: 'Kestirme', desc: 'En kısa yoldan git!',
-    cols: 4, rows: 4, startX: 0, startY: 0, startVal: 8,
-    targetX: 3, targetY: 3, targetVal: null,
-    walls: [[1,1],[2,2]], ops: [],
-    commands: ['x+', 'y+', 'x-', 'y-'], maxCmds: 10, stars: [6, 8]
-  },
+  { title: '\u0130lk Ad\u0131m', desc: 'Say\u0131y\u0131 sa\u011fa ta\u015f\u0131!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 1, targetX: 2, targetY: 0, targetVal: null, walls: [], ops: [], commands: ['x+'], maxCmds: 4, stars: [2, 3] },
+  { title: 'A\u015fa\u011f\u0131 \u0130n', desc: 'Say\u0131y\u0131 a\u015fa\u011f\u0131 g\u00f6t\u00fcr!', cols: 1, rows: 3, startX: 0, startY: 0, startVal: 2, targetX: 0, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['y+'], maxCmds: 4, stars: [2, 3] },
+  { title: 'K\u00f6\u015feye Git', desc: 'Sa\u011f alta ula\u015f!', cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5] },
+  { title: 'Geri D\u00f6n', desc: 'Sol tarafa git!', cols: 3, rows: 1, startX: 2, startY: 0, startVal: 5, targetX: 0, targetY: 0, targetVal: null, walls: [], ops: [], commands: ['x-'], maxCmds: 4, stars: [2, 3] },
+  { title: 'Yukar\u0131 \u00c7\u0131k', desc: 'Yukar\u0131ya git!', cols: 1, rows: 3, startX: 0, startY: 2, startVal: 4, targetX: 0, targetY: 0, targetVal: null, walls: [], ops: [], commands: ['y-'], maxCmds: 4, stars: [2, 3] },
+  { title: 'L Yolu', desc: 'L \u015feklinde ilerle!', cols: 3, rows: 3, startX: 0, startY: 0, startVal: 6, targetX: 2, targetY: 2, targetVal: null, walls: [[1,0],[2,0],[2,1]], ops: [], commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5] },
+  { title: 'Zigzag', desc: 'Duvarlardan ka\u00e7!', cols: 4, rows: 3, startX: 0, startY: 0, startVal: 7, targetX: 3, targetY: 2, targetVal: null, walls: [[1,0],[2,1]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [5, 7] },
+  { title: 'Kestirme', desc: 'En k\u0131sa yoldan git!', cols: 4, rows: 4, startX: 0, startY: 0, startVal: 8, targetX: 3, targetY: 3, targetVal: null, walls: [[1,1],[2,2]], ops: [], commands: ['x+', 'y+', 'x-', 'y-'], maxCmds: 10, stars: [6, 8] },
 ],
 
-// ────── 7-8 Yaş: x/y + z ile değer değiştirme ──────────
 '7-8': [
-  {
-    title: 'Sayı Taşı', desc: 'Sayıyı hedefe götür!',
-    cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3,
-    targetX: 2, targetY: 2, targetVal: null,
-    walls: [], ops: [],
-    commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5]
-  },
-  {
-    title: 'Duvar Aşma', desc: 'Duvarın etrafından dolaş!',
-    cols: 4, rows: 3, startX: 0, startY: 0, startVal: 5,
-    targetX: 3, targetY: 0, targetVal: null,
-    walls: [[2,0],[2,1]], ops: [],
-    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [6, 7]
-  },
-  {
-    title: 'Değer Değiştir', desc: 'Sayını 5 yap ve hedefe götür!',
-    cols: 3, rows: 1, startX: 0, startY: 0, startVal: 3,
-    targetX: 2, targetY: 0, targetVal: 5,
-    walls: [], ops: [],
-    commands: ['x+', 'z+', 'z-'], maxCmds: 6, stars: [4, 5]
-  },
-  {
-    title: 'Toplama Yolu', desc: 'Sayıyı büyüt ve hedefe ulaş!',
-    cols: 4, rows: 1, startX: 0, startY: 0, startVal: 1,
-    targetX: 3, targetY: 0, targetVal: 4,
-    walls: [], ops: [],
-    commands: ['x+', 'z+'], maxCmds: 8, stars: [6, 7]
-  },
-  {
-    title: 'Çıkarma Yolu', desc: 'Sayıyı küçült!',
-    cols: 3, rows: 1, startX: 0, startY: 0, startVal: 8,
-    targetX: 2, targetY: 0, targetVal: 5,
-    walls: [], ops: [],
-    commands: ['x+', 'z-'], maxCmds: 6, stars: [5, 6]
-  },
-  {
-    title: 'Toplama Hücreleri', desc: 'Özel hücreler sayını değiştirir!',
-    cols: 4, rows: 3, startX: 0, startY: 0, startVal: 2,
-    targetX: 3, targetY: 2, targetVal: 5,
-    walls: [[1,1]], ops: [{x:2,y:0,type:'+',val:1},{x:3,y:1,type:'+',val:2}],
-    commands: ['x+', 'y+', 'y-'], maxCmds: 8, stars: [5, 7]
-  },
-  {
-    title: 'Labirent', desc: 'Duvarların arasından geç!',
-    cols: 5, rows: 4, startX: 0, startY: 0, startVal: 7,
-    targetX: 4, targetY: 3, targetVal: null,
-    walls: [[1,0],[1,1],[3,2],[3,3],[2,2]], ops: [],
-    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 12, stars: [7, 10]
-  },
-  {
-    title: 'Karma Bulmaca', desc: 'Hem taşı hem değiştir!',
-    cols: 4, rows: 4, startX: 0, startY: 0, startVal: 2,
-    targetX: 3, targetY: 3, targetVal: 6,
-    walls: [[1,1],[2,2]], ops: [{x:1,y:0,type:'+',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 12, stars: [8, 10]
-  },
-  {
-    title: 'Büyük Macera', desc: 'Her şeyi kullan!',
-    cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1,
-    targetX: 4, targetY: 4, targetVal: 10,
-    walls: [[2,0],[0,2],[3,3]], ops: [{x:1,y:1,type:'+',val:3},{x:3,y:2,type:'+',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 16, stars: [10, 14]
-  },
+  { title: 'Say\u0131 Ta\u015f\u0131', desc: 'Say\u0131y\u0131 hedefe g\u00f6t\u00fcr!', cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5] },
+  { title: 'Duvar A\u015fma', desc: 'Duvar\u0131n etraf\u0131ndan dola\u015f!', cols: 4, rows: 3, startX: 0, startY: 0, startVal: 5, targetX: 3, targetY: 0, targetVal: null, walls: [[2,0],[2,1]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [6, 7] },
+  { title: 'De\u011fer De\u011fi\u015ftir', desc: 'Say\u0131n\u0131 5 yap ve hedefe g\u00f6t\u00fcr!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 0, targetVal: 5, walls: [], ops: [], commands: ['x+', 'z+', 'z-'], maxCmds: 6, stars: [4, 5] },
+  { title: 'Toplama Yolu', desc: 'Say\u0131y\u0131 b\u00fcy\u00fct ve hedefe ula\u015f!', cols: 4, rows: 1, startX: 0, startY: 0, startVal: 1, targetX: 3, targetY: 0, targetVal: 4, walls: [], ops: [], commands: ['x+', 'z+'], maxCmds: 8, stars: [6, 7] },
+  { title: '\u00c7\u0131karma Yolu', desc: 'Say\u0131y\u0131 k\u00fc\u00e7\u00fclt!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 8, targetX: 2, targetY: 0, targetVal: 5, walls: [], ops: [], commands: ['x+', 'z-'], maxCmds: 6, stars: [5, 6] },
+  { title: 'Toplama H\u00fccreleri', desc: '\u00d6zel h\u00fccreler say\u0131n\u0131 de\u011fi\u015ftirir!', cols: 4, rows: 3, startX: 0, startY: 0, startVal: 2, targetX: 3, targetY: 2, targetVal: 5, walls: [[1,1]], ops: [{x:2,y:0,type:'+',val:1},{x:3,y:1,type:'+',val:2}], commands: ['x+', 'y+', 'y-'], maxCmds: 8, stars: [5, 7] },
+  { title: 'Labirent', desc: 'Duvarlar\u0131n aras\u0131ndan ge\u00e7!', cols: 5, rows: 4, startX: 0, startY: 0, startVal: 7, targetX: 4, targetY: 3, targetVal: null, walls: [[1,0],[1,1],[3,2],[3,3],[2,2]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 12, stars: [7, 10] },
+  { title: 'Karma Bulmaca', desc: 'Hem ta\u015f\u0131 hem de\u011fi\u015ftir!', cols: 4, rows: 4, startX: 0, startY: 0, startVal: 2, targetX: 3, targetY: 3, targetVal: 6, walls: [[1,1],[2,2]], ops: [{x:1,y:0,type:'+',val:2}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 12, stars: [8, 10] },
+  { title: 'B\u00fcy\u00fck Macera', desc: 'Her \u015feyi kullan!', cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1, targetX: 4, targetY: 4, targetVal: 10, walls: [[2,0],[0,2],[3,3]], ops: [{x:1,y:1,type:'+',val:3},{x:3,y:2,type:'+',val:2}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 16, stars: [10, 14] },
 ],
 
-// ────── 9-10 Yaş: Daha büyük grid, çarpma hücreleri ────
 '9-10': [
-  {
-    title: 'Çarpma Kapısı', desc: 'x2 hücresinden geçerek hedefe ulaş!',
-    cols: 5, rows: 3, startX: 0, startY: 1, startVal: 3,
-    targetX: 4, targetY: 1, targetVal: 6,
-    walls: [[2,0],[2,2]], ops: [{x:2,y:1,type:'×',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [4, 6]
-  },
-  {
-    title: 'Sayı Fabrikası', desc: 'Doğru değerle bitir!',
-    cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1,
-    targetX: 4, targetY: 4, targetVal: 12,
-    walls: [[1,1],[3,1],[1,3],[3,3]],
-    ops: [{x:2,y:0,type:'+',val:2},{x:4,y:2,type:'×',val:2},{x:2,y:4,type:'+',val:3}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [8, 12]
-  },
-  {
-    title: 'Çift Duvar', desc: 'Labirentin derinliklerine in!',
-    cols: 6, rows: 5, startX: 0, startY: 0, startVal: 5,
-    targetX: 5, targetY: 4, targetVal: null,
-    walls: [[1,0],[1,1],[1,2],[3,2],[3,3],[3,4],[5,0],[5,1]],
-    ops: [],
-    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 15, stars: [9, 13]
-  },
-  {
-    title: 'Hesap Makinesi', desc: 'Topla, çık, ilerle!',
-    cols: 5, rows: 4, startX: 0, startY: 3, startVal: 2,
-    targetX: 4, targetY: 0, targetVal: 10,
-    walls: [[2,1],[3,2]],
-    ops: [{x:1,y:3,type:'+',val:3},{x:3,y:0,type:'×',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [8, 12]
-  },
-  {
-    title: 'Karar Noktası', desc: 'Hangi yoldan gideceksin?',
-    cols: 5, rows: 5, startX: 2, startY: 0, startVal: 4,
-    targetX: 2, targetY: 4, targetVal: 8,
-    walls: [[0,1],[4,1],[1,2],[3,2],[0,3],[4,3]],
-    ops: [{x:2,y:1,type:'+',val:1},{x:2,y:3,type:'×',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 12, stars: [6, 10]
-  },
-  {
-    title: 'Spiral', desc: 'Spiral yoldan geç!',
-    cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1,
-    targetX: 2, targetY: 2, targetVal: null,
-    walls: [[1,0],[1,1],[1,2],[1,3],[3,1],[3,2],[3,3],[3,4],[2,4],[0,2]],
-    ops: [],
-    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 16, stars: [12, 14]
-  },
-  {
-    title: 'Değer Avcısı', desc: 'Tam değerle bitir!',
-    cols: 6, rows: 4, startX: 0, startY: 0, startVal: 1,
-    targetX: 5, targetY: 3, targetVal: 15,
-    walls: [[2,0],[4,1],[1,2],[3,3]],
-    ops: [{x:1,y:0,type:'×',val:3},{x:5,y:1,type:'+',val:5},{x:3,y:2,type:'×',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 18, stars: [10, 15]
-  },
-  {
-    title: 'Usta Seviye', desc: 'Tüm becerilerin gerekli!',
-    cols: 6, rows: 6, startX: 0, startY: 0, startVal: 2,
-    targetX: 5, targetY: 5, targetVal: 20,
-    walls: [[1,0],[3,0],[4,0],[1,2],[2,2],[4,2],[4,3],[0,4],[1,4],[3,4]],
-    ops: [{x:2,y:0,type:'+',val:3},{x:5,y:2,type:'×',val:2},{x:2,y:4,type:'+',val:5}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [12, 17]
-  },
+  { title: '\u00c7arpma Kap\u0131s\u0131', desc: 'x2 h\u00fccresinden ge\u00e7erek hedefe ula\u015f!', cols: 5, rows: 3, startX: 0, startY: 1, startVal: 3, targetX: 4, targetY: 1, targetVal: 6, walls: [[2,0],[2,2]], ops: [{x:2,y:1,type:'\u00d7',val:2}], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [4, 6] },
+  { title: 'Say\u0131 Fabrikas\u0131', desc: 'Do\u011fru de\u011ferle bitir!', cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1, targetX: 4, targetY: 4, targetVal: 12, walls: [[1,1],[3,1],[1,3],[3,3]], ops: [{x:2,y:0,type:'+',val:2},{x:4,y:2,type:'\u00d7',val:2},{x:2,y:4,type:'+',val:3}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [8, 12] },
+  { title: '\u00c7ift Duvar', desc: 'Labirentin derinliklerine in!', cols: 6, rows: 5, startX: 0, startY: 0, startVal: 5, targetX: 5, targetY: 4, targetVal: null, walls: [[1,0],[1,1],[1,2],[3,2],[3,3],[3,4],[5,0],[5,1]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 15, stars: [9, 13] },
+  { title: 'Hesap Makinesi', desc: 'Topla, \u00e7\u0131k, ilerle!', cols: 5, rows: 4, startX: 0, startY: 3, startVal: 2, targetX: 4, targetY: 0, targetVal: 10, walls: [[2,1],[3,2]], ops: [{x:1,y:3,type:'+',val:3},{x:3,y:0,type:'\u00d7',val:2}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [8, 12] },
+  { title: 'Karar Noktas\u0131', desc: 'Hangi yoldan gideceksin?', cols: 5, rows: 5, startX: 2, startY: 0, startVal: 4, targetX: 2, targetY: 4, targetVal: 8, walls: [[0,1],[4,1],[1,2],[3,2],[0,3],[4,3]], ops: [{x:2,y:1,type:'+',val:1},{x:2,y:3,type:'\u00d7',val:2}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 12, stars: [6, 10] },
+  { title: 'Spiral', desc: 'Spiral yoldan ge\u00e7!', cols: 5, rows: 5, startX: 0, startY: 0, startVal: 1, targetX: 2, targetY: 2, targetVal: null, walls: [[1,0],[1,1],[1,2],[1,3],[3,1],[3,2],[3,3],[3,4],[2,4],[0,2]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 16, stars: [12, 14] },
+  { title: 'De\u011fer Avc\u0131s\u0131', desc: 'Tam de\u011ferle bitir!', cols: 6, rows: 4, startX: 0, startY: 0, startVal: 1, targetX: 5, targetY: 3, targetVal: 15, walls: [[2,0],[4,1],[1,2],[3,3]], ops: [{x:1,y:0,type:'\u00d7',val:3},{x:5,y:1,type:'+',val:5},{x:3,y:2,type:'\u00d7',val:2}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 18, stars: [10, 15] },
+  { title: 'Usta Seviye', desc: 'T\u00fcm becerilerin gerekli!', cols: 6, rows: 6, startX: 0, startY: 0, startVal: 2, targetX: 5, targetY: 5, targetVal: 20, walls: [[1,0],[3,0],[4,0],[1,2],[2,2],[4,2],[4,3],[0,4],[1,4],[3,4]], ops: [{x:2,y:0,type:'+',val:3},{x:5,y:2,type:'\u00d7',val:2},{x:2,y:4,type:'+',val:5}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [12, 17] },
 ],
 
-// ────── 11-12 Yaş: Büyük grid, karmaşık ─────────────────
 '11-12': [
-  {
-    title: 'Mühendis Köprüsü', desc: 'Karmaşık yoldan geç!',
-    cols: 7, rows: 5, startX: 0, startY: 0, startVal: 3,
-    targetX: 6, targetY: 4, targetVal: null,
-    walls: [[1,0],[1,1],[3,1],[3,2],[3,3],[5,2],[5,3],[5,4]],
-    ops: [],
-    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 16, stars: [11, 14]
-  },
-  {
-    title: 'Formül Oluştur', desc: 'Sayını tam 24 yap!',
-    cols: 6, rows: 5, startX: 0, startY: 2, startVal: 2,
-    targetX: 5, targetY: 2, targetVal: 24,
-    walls: [[1,1],[2,0],[4,3],[4,4]],
-    ops: [{x:1,y:2,type:'×',val:3},{x:3,y:2,type:'×',val:2},{x:5,y:0,type:'+',val:5}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [7, 11]
-  },
-  {
-    title: 'Çoklu İşlem', desc: 'Her adım önemli!',
-    cols: 7, rows: 5, startX: 0, startY: 0, startVal: 1,
-    targetX: 6, targetY: 4, targetVal: 30,
-    walls: [[2,0],[2,1],[4,2],[4,3],[6,0],[6,1]],
-    ops: [{x:1,y:0,type:'×',val:2},{x:3,y:1,type:'+',val:4},{x:5,y:3,type:'×',val:3}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 18, stars: [10, 15]
-  },
-  {
-    title: 'Mega Labirent', desc: 'Büyük labirentten çık!',
-    cols: 7, rows: 7, startX: 0, startY: 0, startVal: 5,
-    targetX: 6, targetY: 6, targetVal: null,
-    walls: [[1,0],[1,1],[3,0],[5,0],[5,1],[5,2],[1,3],[2,3],[3,3],[3,4],[1,5],[1,6],[3,6],[5,4],[5,5]],
-    ops: [],
-    commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 24, stars: [12, 20]
-  },
-  {
-    title: 'Denklem Yolu', desc: 'Sayıyı 50 yap!',
-    cols: 7, rows: 6, startX: 0, startY: 0, startVal: 2,
-    targetX: 6, targetY: 5, targetVal: 50,
-    walls: [[2,1],[4,0],[4,1],[0,3],[1,3],[5,3],[6,3],[2,4]],
-    ops: [{x:1,y:0,type:'×',val:5},{x:3,y:2,type:'+',val:10},{x:6,y:2,type:'×',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [10, 16]
-  },
-  {
-    title: 'Strateji Oyunu', desc: 'Doğru rota çok önemli!',
-    cols: 7, rows: 7, startX: 3, startY: 0, startVal: 1,
-    targetX: 3, targetY: 6, targetVal: 36,
-    walls: [[1,1],[5,1],[0,3],[2,3],[4,3],[6,3],[1,5],[5,5]],
-    ops: [{x:3,y:1,type:'×',val:3},{x:1,y:3,type:'+',val:6},{x:5,y:3,type:'×',val:2},{x:3,y:5,type:'+',val:3}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [10, 16]
-  },
-  {
-    title: 'Hacker Challenge', desc: 'En az komutla bitir!',
-    cols: 8, rows: 6, startX: 0, startY: 0, startVal: 1,
-    targetX: 7, targetY: 5, targetVal: 100,
-    walls: [[2,0],[2,1],[4,1],[4,2],[6,2],[6,3],[0,3],[0,4],[2,4],[2,5]],
-    ops: [{x:1,y:0,type:'×',val:5},{x:3,y:2,type:'×',val:2},{x:5,y:3,type:'+',val:10},{x:7,y:4,type:'×',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 24, stars: [12, 20]
-  },
-  {
-    title: 'Büyük Final', desc: 'Tüm bilgilerini kullan!',
-    cols: 8, rows: 8, startX: 0, startY: 0, startVal: 1,
-    targetX: 7, targetY: 7, targetVal: 64,
-    walls: [[1,0],[1,1],[3,0],[5,1],[5,2],[7,0],[7,1],[0,3],[2,3],[2,4],[4,3],[4,4],[6,4],[6,5],[0,6],[1,6],[3,6],[3,7],[5,6]],
-    ops: [{x:2,y:0,type:'×',val:2},{x:6,y:2,type:'×',val:2},{x:1,y:4,type:'×',val:2},{x:5,y:5,type:'×',val:2},{x:2,y:7,type:'×',val:2}],
-    commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 28, stars: [14, 22]
-  },
+  { title: 'M\u00fchendis K\u00f6pr\u00fcs\u00fc', desc: 'Karma\u015f\u0131k yoldan ge\u00e7!', cols: 7, rows: 5, startX: 0, startY: 0, startVal: 3, targetX: 6, targetY: 4, targetVal: null, walls: [[1,0],[1,1],[3,1],[3,2],[3,3],[5,2],[5,3],[5,4]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 16, stars: [11, 14] },
+  { title: 'Form\u00fcl Olu\u015ftur', desc: 'Say\u0131n\u0131 tam 24 yap!', cols: 6, rows: 5, startX: 0, startY: 2, startVal: 2, targetX: 5, targetY: 2, targetVal: 24, walls: [[1,1],[2,0],[4,3],[4,4]], ops: [{x:1,y:2,type:'\u00d7',val:3},{x:3,y:2,type:'\u00d7',val:2},{x:5,y:0,type:'+',val:5}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 14, stars: [7, 11] },
+  { title: '\u00c7oklu \u0130\u015flem', desc: 'Her ad\u0131m \u00f6nemli!', cols: 7, rows: 5, startX: 0, startY: 0, startVal: 1, targetX: 6, targetY: 4, targetVal: 30, walls: [[2,0],[2,1],[4,2],[4,3],[6,0],[6,1]], ops: [{x:1,y:0,type:'\u00d7',val:2},{x:3,y:1,type:'+',val:4},{x:5,y:3,type:'\u00d7',val:3}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 18, stars: [10, 15] },
+  { title: 'Mega Labirent', desc: 'B\u00fcy\u00fck labirentten \u00e7\u0131k!', cols: 7, rows: 7, startX: 0, startY: 0, startVal: 5, targetX: 6, targetY: 6, targetVal: null, walls: [[1,0],[1,1],[3,0],[5,0],[5,1],[5,2],[1,3],[2,3],[3,3],[3,4],[1,5],[1,6],[3,6],[5,4],[5,5]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 24, stars: [12, 20] },
+  { title: 'Denklem Yolu', desc: 'Say\u0131y\u0131 50 yap!', cols: 7, rows: 6, startX: 0, startY: 0, startVal: 2, targetX: 6, targetY: 5, targetVal: 50, walls: [[2,1],[4,0],[4,1],[0,3],[1,3],[5,3],[6,3],[2,4]], ops: [{x:1,y:0,type:'\u00d7',val:5},{x:3,y:2,type:'+',val:10},{x:6,y:2,type:'\u00d7',val:2}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [10, 16] },
+  { title: 'Strateji Oyunu', desc: 'Do\u011fru rota \u00e7ok \u00f6nemli!', cols: 7, rows: 7, startX: 3, startY: 0, startVal: 1, targetX: 3, targetY: 6, targetVal: 36, walls: [[1,1],[5,1],[0,3],[2,3],[4,3],[6,3],[1,5],[5,5]], ops: [{x:3,y:1,type:'\u00d7',val:3},{x:1,y:3,type:'+',val:6},{x:5,y:3,type:'\u00d7',val:2},{x:3,y:5,type:'+',val:3}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 20, stars: [10, 16] },
+  { title: 'Hacker Challenge', desc: 'En az komutla bitir!', cols: 8, rows: 6, startX: 0, startY: 0, startVal: 1, targetX: 7, targetY: 5, targetVal: 100, walls: [[2,0],[2,1],[4,1],[4,2],[6,2],[6,3],[0,3],[0,4],[2,4],[2,5]], ops: [{x:1,y:0,type:'\u00d7',val:5},{x:3,y:2,type:'\u00d7',val:2},{x:5,y:3,type:'+',val:10},{x:7,y:4,type:'\u00d7',val:2}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 24, stars: [12, 20] },
+  { title: 'B\u00fcy\u00fck Final', desc: 'T\u00fcm bilgilerini kullan!', cols: 8, rows: 8, startX: 0, startY: 0, startVal: 1, targetX: 7, targetY: 7, targetVal: 64, walls: [[1,0],[1,1],[3,0],[5,1],[5,2],[7,0],[7,1],[0,3],[2,3],[2,4],[4,3],[4,4],[6,4],[6,5],[0,6],[1,6],[3,6],[3,7],[5,6]], ops: [{x:2,y:0,type:'\u00d7',val:2},{x:6,y:2,type:'\u00d7',val:2},{x:1,y:4,type:'\u00d7',val:2},{x:5,y:5,type:'\u00d7',val:2},{x:2,y:7,type:'\u00d7',val:2}], commands: ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'], maxCmds: 28, stars: [14, 22] },
 ],
 };
 
@@ -691,12 +542,12 @@ const LEVELS_BY_AGE = {
 let state = {
   ageGroup: '7-8',
   levelIdx: 0,
-  playerX: 0,
-  playerY: 0,
-  playerVal: 0,
-  queue: [],      // command ids
+  playerX: 0, playerY: 0, playerVal: 0,
+  queue: [],
   running: false,
-  progress: {},   // { '7-8': { 0: {completed:true, stars:3}, ... } }
+  currentStep: -1,
+  progress: {},
+  soundOn: true,
 };
 
 // ── DOM refs ─────────────────────────────────────────────
@@ -711,9 +562,41 @@ const cmdCount = $('cmdCount');
 const overlay = $('overlay');
 const levelSelect = $('levelSelect');
 
+// ── Audio Context ────────────────────────────────────────
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function ensureAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playTone(freq, duration, type = 'sine', vol = 0.15) {
+  if (!state.soundOn || !audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+function playMove()    { playTone(440,  0.12, 'sine',   0.1); }
+function playOp()      { playTone(660,  0.2,  'triangle', 0.12); }
+function playBump()    { playTone(180,  0.25, 'sawtooth', 0.08); }
+function playWin()     { playTone(523, 0.15); setTimeout(()=>playTone(659,0.15),150); setTimeout(()=>playTone(784,0.3),300); }
+function playFail()    { playTone(330, 0.3, 'sawtooth', 0.08); setTimeout(()=>playTone(280,0.4),200); }
+function playDrop()    { playTone(600, 0.08, 'sine', 0.08); }
+function playRemove()  { playTone(400, 0.08, 'sine', 0.08); }
+function playRun()     { playTone(500, 0.1); setTimeout(()=>playTone(700,0.1),100); }
+
 // ── Helpers ──────────────────────────────────────────────
 function getLevels() { return LEVELS_BY_AGE[state.ageGroup] || []; }
-function getLevel() { return getLevels()[state.levelIdx]; }
+function getLevel()  { return getLevels()[state.levelIdx]; }
 
 function loadProgress() {
   try { state.progress = JSON.parse(localStorage.getItem('sy_progress') || '{}'); } catch { state.progress = {}; }
@@ -732,6 +615,7 @@ document.querySelectorAll('.age-btn').forEach(btn => {
 });
 
 $('btnStart').addEventListener('click', () => {
+  ensureAudio();
   loadProgress();
   state.levelIdx = 0;
   splash.classList.add('hidden');
@@ -746,44 +630,58 @@ $('btnHome').addEventListener('click', () => {
   splash.classList.remove('hidden');
 });
 
+$('btnSound').addEventListener('click', () => {
+  state.soundOn = !state.soundOn;
+  $('btnSound').textContent = state.soundOn ? '🔊' : '🔇';
+});
+
 // ── Level loading ────────────────────────────────────────
-function loadLevel() {
+function loadLevel(idx) {
+  if (idx !== undefined) state.levelIdx = idx;
   const lv = getLevel();
   if (!lv) return;
 
-  // Reset state
   state.playerX = lv.startX;
   state.playerY = lv.startY;
   state.playerVal = lv.startVal;
   state.queue = [];
   state.running = false;
+  state.currentStep = -1;
 
-  // Header
-  $('levelBadge').textContent = `Seviye ${state.levelIdx + 1}`;
+  $('levelBadge').textContent = 'Seviye ' + (state.levelIdx + 1);
   $('levelTitle').textContent = lv.title;
   updateStarsDisplay(0);
 
-  // Goal
   $('goalDesc').textContent = lv.desc;
-  const valText = lv.targetVal != null ? ` = ${lv.targetVal}` : '';
-  $('goalDetail').textContent = `${lv.startVal}${valText} → 🎯`;
-  $('moveCounter').textContent = `0 / ${lv.maxCmds}`;
+  const valText = lv.targetVal != null ? ' = ' + lv.targetVal : '';
+  $('goalDetail').textContent = lv.startVal + valText + ' \u2192 hedef';
+  $('moveCounter').textContent = '0 / ' + lv.maxCmds;
 
-  // Grid
   buildGrid(lv);
   updatePlayerPos(false);
   buildPalette(lv);
   renderQueue();
   $('btnRun').disabled = false;
+  playerEl.classList.remove('success');
+}
+
+function calcCellSize(lv) {
+  const max = Math.max(lv.cols, lv.rows);
+  if (max <= 3) return 72;
+  if (max <= 5) return 56;
+  if (max <= 7) return 44;
+  return 36;
 }
 
 function buildGrid(lv) {
   gridEl.innerHTML = '';
-  gridEl.style.gridTemplateColumns = `repeat(${lv.cols}, var(--cell-size))`;
+  const cellSize = calcCellSize(lv);
+  gridEl.style.gridTemplateColumns = 'repeat(' + lv.cols + ', ' + cellSize + 'px)';
 
-  const wallSet = new Set(lv.walls.map(w => `${w[0]},${w[1]}`));
+  const wallSet = new Set();
+  lv.walls.forEach(w => wallSet.add(w[0] + ',' + w[1]));
   const opMap = {};
-  lv.ops.forEach(o => { opMap[`${o.x},${o.y}`] = o; });
+  lv.ops.forEach(o => { opMap[o.x + ',' + o.y] = o; });
 
   for (let r = 0; r < lv.rows; r++) {
     for (let c = 0; c < lv.cols; c++) {
@@ -791,8 +689,10 @@ function buildGrid(lv) {
       cell.className = 'cell';
       cell.dataset.x = c;
       cell.dataset.y = r;
+      cell.style.width = cellSize + 'px';
+      cell.style.height = cellSize + 'px';
 
-      const key = `${c},${r}`;
+      const key = c + ',' + r;
 
       if (wallSet.has(key)) {
         cell.classList.add('wall');
@@ -801,15 +701,16 @@ function buildGrid(lv) {
         if (lv.targetVal != null) {
           const tv = document.createElement('span');
           tv.className = 'target-value';
-          tv.textContent = `= ${lv.targetVal}`;
+          tv.textContent = '= ' + lv.targetVal;
           cell.appendChild(tv);
         }
-        cell.innerHTML = '🎯' + cell.innerHTML;
+        cell.appendChild(document.createTextNode('\ud83c\udfaf'));
       } else if (opMap[key]) {
         const op = opMap[key];
-        if (op.type === '+') { cell.classList.add('op-plus'); cell.textContent = `+${op.val}`; }
-        else if (op.type === '-') { cell.classList.add('op-minus'); cell.textContent = `-${op.val}`; }
-        else if (op.type === '×') { cell.classList.add('op-times'); cell.textContent = `×${op.val}`; }
+        if (op.type === '+') cell.classList.add('op-plus');
+        else if (op.type === '-') cell.classList.add('op-minus');
+        else if (op.type === '\u00d7') cell.classList.add('op-times');
+        cell.textContent = op.type + op.val;
       } else {
         cell.classList.add('empty');
       }
@@ -817,23 +718,28 @@ function buildGrid(lv) {
       gridEl.appendChild(cell);
     }
   }
+
+  const gap = 4;
+  playerEl.style.width = cellSize + 'px';
+  playerEl.style.height = cellSize + 'px';
+  playerEl.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
 }
 
-function updatePlayerPos(animate = true) {
+function updatePlayerPos(animate) {
   const lv = getLevel();
+  const cellSize = calcCellSize(lv);
   const gap = 4;
-  const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
-  const left = 16 + state.playerX * (cellSize + gap);
-  const top = 16 + state.playerY * (cellSize + gap);
+  const left = state.playerX * (cellSize + gap);
+  const top = state.playerY * (cellSize + gap);
 
-  playerEl.style.left = left + 'px';
-  playerEl.style.top = top + 'px';
+  playerEl.style.transform = 'translate(' + left + 'px, ' + top + 'px)';
   playerEl.textContent = state.playerVal;
 
   if (animate) {
     playerEl.classList.remove('bump');
     void playerEl.offsetWidth;
     playerEl.classList.add('bump');
+    setTimeout(() => playerEl.classList.remove('bump'), 300);
   }
 }
 
@@ -841,9 +747,10 @@ function buildPalette(lv) {
   cmdPalette.innerHTML = '';
   lv.commands.forEach(cmdId => {
     const cmd = CMDS[cmdId];
+    if (!cmd) return;
     const btn = document.createElement('button');
-    btn.className = `cmd-btn ${cmd.css}`;
-    btn.textContent = cmd.label;
+    btn.className = 'cmd-btn ' + cmd.css;
+    btn.innerHTML = '<span>' + (ICONS[cmdId] || '') + '</span> ' + cmd.label;
     btn.addEventListener('click', () => addCommand(cmdId));
     cmdPalette.appendChild(btn);
   });
@@ -854,26 +761,36 @@ function addCommand(cmdId) {
   const lv = getLevel();
   if (state.running || state.queue.length >= lv.maxCmds) return;
   state.queue.push(cmdId);
+  playDrop();
   renderQueue();
 }
 
 function renderQueue() {
   const lv = getLevel();
   cmdQueue.innerHTML = '';
-  state.queue.forEach((cmdId, i) => {
-    const cmd = CMDS[cmdId];
-    const chip = document.createElement('span');
-    chip.className = `cmd-chip ${cmd.css}`;
-    chip.textContent = cmd.label;
-    chip.dataset.index = i;
-    chip.addEventListener('click', () => {
-      if (state.running) return;
-      state.queue.splice(i, 1);
-      renderQueue();
+  if (state.queue.length === 0) {
+    cmdQueue.innerHTML = '<div class="cmd-queue-empty">Komutlar\u0131 buraya ekle...</div>';
+  } else {
+    state.queue.forEach((cmdId, i) => {
+      const cmd = CMDS[cmdId];
+      if (!cmd) return;
+      const chip = document.createElement('button');
+      chip.className = 'cmd-chip ' + cmd.css;
+      if (state.running && state.currentStep === i) chip.classList.add('running');
+      if (state.running && state.currentStep > i) chip.classList.add('done');
+      chip.innerHTML = '<span>' + (ICONS[cmdId] || '') + '</span> ' + cmd.label;
+      chip.dataset.index = i;
+      if (!state.running) {
+        chip.addEventListener('click', () => {
+          state.queue.splice(i, 1);
+          playRemove();
+          renderQueue();
+        });
+      }
+      cmdQueue.appendChild(chip);
     });
-    cmdQueue.appendChild(chip);
-  });
-  cmdCount.textContent = `${state.queue.length} / ${lv.maxCmds}`;
+  }
+  cmdCount.textContent = state.queue.length + ' / ' + lv.maxCmds;
 }
 
 // ── Execution ────────────────────────────────────────────
@@ -884,94 +801,112 @@ $('btnReset').addEventListener('click', () => { if (!state.running) loadLevel();
 
 async function runProgram() {
   if (state.running || state.queue.length === 0) return;
+  ensureAudio();
+  playRun();
   state.running = true;
   $('btnRun').disabled = true;
 
-  // Reset player position
   const lv = getLevel();
   state.playerX = lv.startX;
   state.playerY = lv.startY;
   state.playerVal = lv.startVal;
+  state.currentStep = -1;
   updatePlayerPos(false);
+  playerEl.classList.remove('success');
 
-  const chips = cmdQueue.querySelectorAll('.cmd-chip');
+  await sleep(200);
+
+  let px = lv.startX, py = lv.startY, pval = lv.startVal;
 
   for (let i = 0; i < state.queue.length; i++) {
+    if (!state.running) break;
+
     const cmdId = state.queue[i];
     const cmd = CMDS[cmdId];
-    chips[i].classList.add('running');
+    if (!cmd) continue;
 
-    const nx = state.playerX + cmd.dx;
-    const ny = state.playerY + cmd.dy;
+    state.currentStep = i;
+    renderQueue();
 
-    // Z operations don't move
+    // Z operations - value only
     if (cmd.dz !== 0) {
-      state.playerVal += cmd.dz;
-      updatePlayerPos(true);
-      await sleep(350);
-      chips[i].classList.remove('running');
+      pval += cmd.dz;
+      state.playerVal = pval;
+      playerEl.textContent = pval;
+      playMove();
+      await sleep(400);
       continue;
     }
 
-    // Check bounds
+    const nx = px + cmd.dx;
+    const ny = py + cmd.dy;
+
+    // Bounds check
     if (nx < 0 || nx >= lv.cols || ny < 0 || ny >= lv.rows) {
-      // hit boundary — brief shake
-      playerEl.style.animation = 'none';
-      void playerEl.offsetWidth;
-      chips[i].classList.remove('running');
-      await sleep(250);
+      playerEl.classList.add('bump');
+      playBump();
+      await sleep(200);
+      playerEl.classList.remove('bump');
+      await sleep(150);
       continue;
     }
 
-    // Check walls
+    // Wall check
     const isWall = lv.walls.some(w => w[0] === nx && w[1] === ny);
     if (isWall) {
-      chips[i].classList.remove('running');
-      await sleep(250);
+      playerEl.classList.add('bump');
+      playBump();
+      await sleep(200);
+      playerEl.classList.remove('bump');
+      await sleep(150);
       continue;
     }
 
     // Move
-    state.playerX = nx;
-    state.playerY = ny;
+    px = nx; py = ny;
+    state.playerX = px;
+    state.playerY = py;
 
-    // Check operation cell
+    // Operator cell
     const op = lv.ops.find(o => o.x === nx && o.y === ny);
     if (op) {
-      if (op.type === '+') state.playerVal += op.val;
-      else if (op.type === '-') state.playerVal -= op.val;
-      else if (op.type === '×') state.playerVal *= op.val;
+      if (op.type === '+') pval += op.val;
+      else if (op.type === '-') pval -= op.val;
+      else if (op.type === '\u00d7') pval *= op.val;
+      state.playerVal = pval;
+      playOp();
+    } else {
+      playMove();
     }
 
     updatePlayerPos(true);
-    await sleep(350);
-    chips[i].classList.remove('running');
+    await sleep(400);
   }
 
-  // Check win
+  state.currentStep = -1;
+  renderQueue();
   await sleep(200);
-  checkWin();
+  checkWin(px, py, pval);
 }
 
-function checkWin() {
+function checkWin(px, py, pval) {
   const lv = getLevel();
-  const posOk = state.playerX === lv.targetX && state.playerY === lv.targetY;
-  const valOk = lv.targetVal == null || state.playerVal === lv.targetVal;
+  const posOk = px === lv.targetX && py === lv.targetY;
+  const valOk = lv.targetVal == null || pval === lv.targetVal;
 
   if (posOk && valOk) {
-    // Calculate stars
     const usedCmds = state.queue.length;
     let stars = 1;
     if (usedCmds <= lv.stars[0]) stars = 3;
     else if (usedCmds <= lv.stars[1]) stars = 2;
 
+    playWin();
     playerEl.classList.add('success');
     setTimeout(() => {
       playerEl.classList.remove('success');
       showWinOverlay(stars);
     }, 600);
 
-    // Save progress
     const prog = state.progress[state.ageGroup] || {};
     const prev = prog[state.levelIdx];
     if (!prev || prev.stars < stars) {
@@ -980,12 +915,18 @@ function checkWin() {
       saveProgress();
     }
   } else {
-    // Fail
-    $('overlayTitle').textContent = '😕 Hedefine ulaşamadın';
-    $('overlayStars').textContent = '';
-    $('overlayMsg').textContent = posOk && !valOk
-      ? `Sayın ${state.playerVal} — ama hedef ${lv.targetVal} olmalıydı.`
-      : 'Doğru konuma ulaşamadın. Tekrar dene!';
+    playFail();
+    $('overlayTitle').textContent = '\ud83d� Hedefine ula\u015famad\u0131n';
+    $('overlayTitle').style.color = '#e94560';
+    document.getElementById('s1').textContent = '\u2606';
+    document.getElementById('s2').textContent = '\u2606';
+    document.getElementById('s3').textContent = '\u2606';
+    document.getElementById('s1').className = '';
+    document.getElementById('s2').className = '';
+    document.getElementById('s3').className = '';
+    $('overlayMsg').textContent = (posOk && !valOk)
+      ? 'Say\u0131n ' + pval + ' \u2014 ama hedef ' + lv.targetVal + ' olmal\u0131yd\u0131.'
+      : 'Do\u011fru konuma ula\u015famad\u0131n. Tekrar dene!';
     $('btnNext').style.display = 'none';
     overlay.classList.add('active');
   }
@@ -996,13 +937,24 @@ function checkWin() {
 
 function showWinOverlay(stars) {
   const levels = getLevels();
-  $('overlayTitle').textContent = '🎉 Tebrikler!';
-  $('overlayStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-  const msgs = [
-    'İyi iş! Devam et! 💪',
-    'Harika! Çok iyi gidiyorsun! 🌟',
-    'Mükemmel! Tam puan! 🏆'
-  ];
+  $('overlayTitle').textContent = '\ud83c\udf89 Tebrikler!';
+  $('overlayTitle').style.color = '#00d68f';
+
+  const s1 = document.getElementById('s1');
+  const s2 = document.getElementById('s2');
+  const s3 = document.getElementById('s3');
+
+  s1.textContent = stars >= 1 ? '\u2605' : '\u2606';
+  s2.textContent = stars >= 2 ? '\u2605' : '\u2606';
+  s3.textContent = stars >= 3 ? '\u2605' : '\u2606';
+  s1.className = stars >= 1 ? 'star-anim' : '';
+  s2.className = stars >= 2 ? 'star-anim' : '';
+  s3.className = stars >= 3 ? 'star-anim' : '';
+  s1.style.animationDelay = '0s';
+  s2.style.animationDelay = '0.15s';
+  s3.style.animationDelay = '0.3s';
+
+  const msgs = ['\u0130yi i\u015f! Devam et! \ud83d\udcaa', 'Harika! \u00c7ok iyi gidiyorsun! \ud83c\udf1f', 'M\u00fckemmel! Tam puan! \ud83c\udfc6'];
   $('overlayMsg').textContent = msgs[stars - 1];
   $('btnNext').style.display = state.levelIdx < levels.length - 1 ? '' : 'none';
   overlay.classList.add('active');
@@ -1024,12 +976,15 @@ $('btnNext').addEventListener('click', () => {
 function updateStarsDisplay(stars) {
   const prog = (state.progress[state.ageGroup] || {})[state.levelIdx];
   const s = prog ? prog.stars : 0;
-  $('starsDisplay').textContent = '⭐'.repeat(s) + '☆'.repeat(3 - s);
+  let txt = '';
+  for (let i = 0; i < 3; i++) txt += (i < s) ? '\u2605' : '\u2606';
+  $('starsDisplay').textContent = txt;
 }
 
 // ── Level Select ─────────────────────────────────────────
 $('btnLevels').addEventListener('click', showLevelSelect);
 $('btnCloseLevels').addEventListener('click', () => levelSelect.classList.remove('active'));
+$('btnCloseLevels2').addEventListener('click', () => levelSelect.classList.remove('active'));
 
 function showLevelSelect() {
   const levels = getLevels();
@@ -1038,7 +993,7 @@ function showLevelSelect() {
   grid.innerHTML = '';
 
   levels.forEach((lv, i) => {
-    const cell = document.createElement('div');
+    const cell = document.createElement('button');
     cell.className = 'level-cell';
 
     const unlocked = i === 0 || (prog[i - 1] && prog[i - 1].completed);
@@ -1046,9 +1001,21 @@ function showLevelSelect() {
     if (prog[i] && prog[i].completed) cell.classList.add('completed');
     if (i === state.levelIdx) cell.classList.add('current');
 
-    cell.innerHTML = `<span>${i + 1}</span>`;
-    if (prog[i]) {
-      cell.innerHTML += `<span class="lc-stars">${'⭐'.repeat(prog[i].stars)}${'☆'.repeat(3 - prog[i].stars)}</span>`;
+    if (!unlocked) {
+      cell.innerHTML = '\ud83d\udd12';
+    } else {
+      const num = document.createElement('span');
+      num.className = 'level-num';
+      num.textContent = i + 1;
+      cell.appendChild(num);
+      if (prog[i]) {
+        const stars = document.createElement('span');
+        stars.className = 'lc-stars';
+        let txt = '';
+        for (let s = 0; s < 3; s++) txt += (s < prog[i].stars) ? '\u2605' : '\u2606';
+        stars.textContent = txt;
+        cell.appendChild(stars);
+      }
     }
 
     if (unlocked) {
