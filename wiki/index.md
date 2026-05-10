@@ -109,6 +109,8 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 
 ## Recently Updated
 
+- [[sayi-yolculugu]] — Standalone HTML5 oyunu güncellendi: ~41 KB → ~48 KB, mobil optimizasyon (viewport, theme-color, touch highlight, overscroll-behavior), splash features, goal bar (2026-05-11)
+- [[mathlock-play]] — Experimental-web dizini eklendi: React + Vite + Tailwind deneme oyun frontend'i; repo durumu güncellendi (2026-05-11)
 - [[local]] — AGENTS.md refactor: 499→167 satır, references/QUICKREF.md yeni, WORKFLOW.md'ye wiki filtreleme ve iddia kuralları eklendi (2026-05-10)
 - [[mathlock-play-android]] — 7 kritik bug fix (StatsTracker idempotency, AccountManager 403 re-register, CreditApiClient 503 parsing, 409 retry loop, raw device token, LockStateManager thread-safety, SecurePrefs hard fail), UI/UX iyileştirmeleri, yeni testler (AccountManagerTest, StatsTrackerTest, LockStateManagerTest), v1.0.77 (2026-05-09)
 - [[mathlock-play-backend]] — credits/auth güncellemeleri, raw+signed token dual auth, 503/409 handling, VPS deploy, yeni testler (2026-05-09)
@@ -117,8 +119,6 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 - [[proactive-wiki]] — Auto-sync davranışı eklendi: `docs(wiki):` sonsuz döngü koruması, `.pending` cross-machine sync, `git commit --amend` yerine ayrı commit stratejisi (2026-05-07)
 - [[ops-bot]] — `.gitignore` güncellendi: `.venv/`, `venv/`, `data/sec-agent-*.json` eklendi (2026-05-06)
 - [[webimar]] — `.gitignore` güncellendi, `deploy.sh`'ta VPS domain check `-k` flag'i eklendi (2026-05-06)
-- [[mathlock-play]] — `.env.example` güncellendi: DB config ayrıldı, Celery/Redis eklendi, Google Play path güncellendi (2026-05-06)
-- [[git-workflow]] — GitHub Sync + Cross-Machine Development bölümü eklendi, anka referansları kaldırıldı (2026-05-06)
 - [[ops-bot]] — VPS senkronizasyonu: router.py silindi, orchestrator.py + agents/ dizini eklendi, eski ACP client/executor bot/'a geri taşındı, routing master'a bırakıldı (2026-05-05)
 - [[ops-bot]] — ACP SDK migration tamamlandı: bot/acp_sdk_client.py + bot/acp_sdk_executor.py eklendi, eski ACP client/executor arşivlendi, file I/O sandboxing, terminal execution, markdown sanitize, tests/sdk/ (10 unit test) (2026-05-05)
 - [[ops-bot]] — ACP fix'leri: tool_call_count reset, /iptal process kill, boş yanıt guard, /durum komutu, structured logging, get_diagnostics, reader loop EOF cleanup (2026-05-04)

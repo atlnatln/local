@@ -1,7 +1,7 @@
 ---
 title: "Sayı Yolculuğu"
 created: "2026-05-01"
-updated: "2026-05-03"
+updated: "2026-05-11"
 type: project
 tags: [sayi-yolculugu, html5, javascript, android, webview, education]
 related:
@@ -21,19 +21,21 @@ sources:
 
 ## Standalone HTML5 Oyunu
 
-`projects/sayi-yolculugu/index.html` (~41 KB) — CSS, JavaScript ve oyun mantığı tek dosyada.
+`projects/sayi-yolculugu/index.html` (~48 KB) — CSS, JavaScript ve oyun mantığı tek dosyada.
 
 | Bileşen | Teknoloji |
 |---------|-----------|
 | Runtime | HTML5, CSS3, Vanilla JavaScript |
 | Deploy | Statik dosya (nginx üzerinden servis edilir) |
-| Boyut | ~41 KB tek dosya |
+| Boyut | ~48 KB tek dosya |
 
 ### Özellikler
 
-- Yaş grubu seçimi (splash ekranı)
+- Yaş grubu seçimi (splash ekranı) + splash features etiketleri
 - Responsive tasarım (mobil uyumlu)
-- Koyu tema (dark mode)
+- Koyu tema (dark mode) + `theme-color` meta tag
+- Mobil optimizasyon: `maximum-scale=1.0`, `user-scalable=no`, touch highlight kaldırma, `overscroll-behavior: none`
+- Goal bar (seviye hedef göstergesi)
 - Skor ve ilerleme takibi
 
 ### Deploy

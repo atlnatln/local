@@ -164,3 +164,23 @@ tags: [meta, log]
 - Celery Worker SIGTERM sorununa kalıcı çözüm (subprocess fire-and-forget)
 - Android: SayiYolculuguActivity.kt generation_in_progress flag desteği
 - 177 test, tümü OK
+
+## [2026-05-11 01:22] ingest | sayi-yolculugu, mathlock-play
+- sayi-yolculugu/index.html güncellendi: ~41 KB → ~48 KB
+- Mobil optimizasyonlar: viewport max-scale, theme-color, touch highlight, overscroll-behavior
+- Splash features ve goal bar eklendi
+- mathlock-play/experimental-web/ eklendi: React + Vite + Tailwind deneme oyun frontend'i
+- mathlock-play repo durumu güncellendi (local monorepo + ayrı repo dual tracked)
+- Checkpoint'ler güncellendi, .pending temizlendi
+## [2026-05-11 01:28] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 6
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 16 entries
+
