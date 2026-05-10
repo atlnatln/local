@@ -3,7 +3,7 @@ title: "MathLock Play — Android"
 created: 2026-05-07
 updated: 2026-05-10
 type: project
-tags: [mathlock-play, android, kotlin, games, auth]
+tags: [mathlock-play, android, kotlin, security]
 related:
   - mathlock-play
   - mathlock-play-backend

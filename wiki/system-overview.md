@@ -19,7 +19,7 @@ related:
 |-------|----------|
 | [[ops-bot]] | Telegram operations bot — Python, systemd, sec-agent |
 | [[webimar]] | Tarım İmar — Django + Next.js + React |
-| [[anka|Anka]] | ~~Anka Data — B2B veri servisi~~ *(Arşivlendi, 2026-05-06)* |
+| Anka (Arşiv) | ~~Anka Data — B2B veri servisi~~ *(Arşivlendi, 2026-05-06)* |
 | [[mathlock-play]] | MathLock Play — Android math game + Django backend |
 | [[telegram-kimi]] | Telegram Kimi Bridge — Python, systemd, ACP |
 | [[sayi-yolculugu]] | HTML5 matematik eğitim oyunu |
@@ -35,6 +35,7 @@ related:
 ## Git Yapısı
 
 - Ayrı git repo: `ops-bot`, `webimar`
+- Monorepo kökü: [[local]]
 - Monorepo içinde: `mathlock-play`, `telegram-kimi`, `sayi-yolculugu`, `infrastructure`
 
 > **Not:** Bu sayfa ingest işlemleriyle otomatik güncellenecektir.

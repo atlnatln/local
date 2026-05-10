@@ -3,7 +3,7 @@ title: "MEB 2024 Müfredatı ile Teknik Sistem Uyum Analizi ve Çözüm Çerçev
 created: "2026-05-08"
 updated: "2026-05-08"
 type: concept
-tags: [mathlock-play, meb, curriculum, alignment, analysis]
+tags: [mathlock-play, meb, curriculum, concept]
 related:
   - mathlock-play
   - mathlock-play-ai

@@ -25,31 +25,6 @@ tags: [meta, log]
 - Pages archived: —
 - Diff summary: Full ingest of ops-bot project. Created project page with stack, agent system, services, deploy flow, and sec-agent architecture.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
-## [2026-05-01 19:23] lint | 3/10
-- Orphan pages: 4 ([[ops-bot-deploy-script]], [[ops-bot-readme]], [[ops-bot-systemd-service]], [[system-overview]])
-- Broken links: 16
-- Missing from index: 3
-- Frontmatter errors: 3
-- Stale pages: 1
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 1 (python)
-- Raw existence: 0
-- Log size: 2 entries
-
-## [2026-05-01 19:24] lint | 5/10
-- Orphan pages: 4 ([[ops-bot-deploy-script]], [[ops-bot-readme]], [[ops-bot-systemd-service]], [[system-overview]])
-- Broken links: 7
-- Missing from index: 3
-- Frontmatter errors: 3
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 3 entries
-
-
 ## [2026-05-01 19:30] ingest | webimar | 2eb3dfa | 1
 - Files: A:0 M:0 D:0 (checkpoint = HEAD, full scan)
 - Pages created: [[webimar]]
@@ -70,90 +45,6 @@ tags: [meta, log]
 - Pages created: [[infrastructure]]
 - Diff summary: Full ingest of infrastructure. Shared VPS reverse proxy, SSL, and Docker network.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
-## [2026-05-01 19:27] lint | 4/10
-- Orphan pages: 9 ([[anka-readme]], [[infrastructure-docker-compose]], [[infrastructure-setup-script]], [[mathlock-play-readme]], [[ops-bot-deploy-script]]...)
-- Broken links: 7
-- Missing from index: 8
-- Frontmatter errors: 8
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 2
-- Unknown tags: 1 (kotlin)
-- Raw existence: 0
-- Log size: 8 entries
-
-## [2026-05-01 19:27] lint | 5/10
-- Orphan pages: 9 ([[anka-readme]], [[infrastructure-docker-compose]], [[infrastructure-setup-script]], [[mathlock-play-readme]], [[ops-bot-deploy-script]]...)
-- Broken links: 6
-- Missing from index: 8
-- Frontmatter errors: 8
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 2
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 9 entries
-
-## [2026-05-01 19:28] lint | 4/10
-- Orphan pages: 9 ([[anka-readme]], [[infrastructure-docker-compose]], [[infrastructure-setup-script]], [[mathlock-play-readme]], [[ops-bot-deploy-script]]...)
-- Broken links: 6
-- Missing from index: 8
-- Frontmatter errors: 8
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 1 (raw)
-- Raw existence: 0
-- Log size: 10 entries
-
-## [2026-05-01 19:28] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 11 entries
-
-## [2026-05-01 20:51] lint | 5/10
-- Orphan pages: 1 ([[README]])
-- Broken links: 3
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 1 (guide)
-- Raw existence: 0
-- Log size: 12 entries
-
-## [2026-05-01 20:52] lint | 8/10
-- Orphan pages: 1 ([[README]])
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 13 entries
-
-## [2026-05-01 20:53] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 14 entries
-
 ## [2026-05-01 21:57] ingest | local | f33ae5a9 | 4
 - Files: A:1 M:3 D:0
 - Pages created: [[proactive-wiki]]
@@ -171,91 +62,6 @@ tags: [meta, log]
 - Diff summary: AGENTS.md ve wiki-post-commit.sh raw arşivine eklendi. proactive-wiki sources alanı güncellendi. .gitignore'da wiki/.pending eklendi.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 - Revert: git checkout 4db9944234eda3c61604b1ccb595388adf5aa59a -- wiki/
-## [2026-05-01 22:11] lint | 7/10
-- Orphan pages: 1 ([[proactive-wiki]])
-- Broken links: 2
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 3 (automation, git-hook, local-wiki)
-- Raw existence: 0
-- Log size: 17 entries
-
-## [2026-05-01 22:13] lint | 7/10
-- Orphan pages: 1 ([[proactive-wiki]])
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 4 (automation, git, git-hook, local-wiki)
-- Raw existence: 0
-- Log size: 18 entries
-
-## [2026-05-01 22:14] lint | 6/10
-- Orphan pages: 0
-- Broken links: 4
-- Missing from index: 0
-- Frontmatter errors: 1
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 4 (automation, git, git-hook, local-wiki)
-- Raw existence: 0
-- Log size: 19 entries
-
-## [2026-05-01 22:15] lint | 7/10
-- Orphan pages: 0
-- Broken links: 4
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 4 (automation, git, git-hook, local-wiki)
-- Raw existence: 0
-- Log size: 20 entries
-
-## [2026-05-01 22:15] lint | 8/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 4 (automation, git, git-hook, local-wiki)
-- Raw existence: 0
-- Log size: 21 entries
-
-## [2026-05-01 22:16] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 4 (automation, git, git-hook, local-wiki)
-- Raw existence: 0
-- Log size: 22 entries
-
-## [2026-05-01 22:16] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 23 entries
-
-
 ## [2026-05-01 22:06] ingest | telegram-kimi | first-ingest | telegram-kimi-wiki-olusturuldu
 
 - Project: telegram-kimi
@@ -263,19 +69,6 @@ tags: [meta, log]
 - Pages created: [[telegram-kimi]]
 - Raw sources: raw/articles/telegram-kimi-readme.md, raw/articles/telegram-kimi-plan.md
 - Checkpoint: local (monorepo, e8ddf291)
-## [2026-05-01 22:34] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 25 entries
-
-
 ## [2026-05-01 22:08] ingest | sayi-yolculugu | first-ingest | sayi-yolculugu-wiki-olusturuldu
 
 - Project: sayi-yolculugu
@@ -283,81 +76,18 @@ tags: [meta, log]
 - Pages created: [[sayi-yolculugu]]
 - Raw sources: raw/articles/sayi-yolculugu-index.html
 - Checkpoint: local (monorepo, e8ddf291)
-## [2026-05-01 22:37] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 27 entries
-
-## [2026-05-01 22:39] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 28 entries
-
-
 ## [2026-05-01 22:12] cleanup | konsept-silme | placeholder-temizligi | eksik-sayfalar-kaldirildi
 
 - Removed from index: [[django-nextjs-pattern]], [[ssl-certbot]], [[multi-web-project-system]]
 - Removed related references: infrastructure.md, ops-bot.md, webimar.md, deployment.md
 - Updated: projects/index.md (stale data corrected)
 - Reason: Content already covered by infrastructure.md and project pages; YAGNI
-## [2026-05-01 22:53] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 30 entries
-
-## [2026-05-01 22:53] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 31 entries
-
-
 ## [2026-05-01 22:15] concept | monitoring | yeni-konsept | monitoring-wiki-olusturuldu
 
 - Concept: [[monitoring]]
 - Type: new-concept
 - Coverage: Prometheus, nginx health check, sec-agent metrics, systemd timers, alert kanalları
 - Sources: raw/articles/infrastructure-docker-compose.md
-## [2026-05-01 22:56] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 33 entries
-
-
 ## [2026-05-01 22:20] concept | infrastructure-detaylari | yeni-konseptler | nginx-ssl-log-olusturuldu
 
 - Concepts created: [[nginx-routing]], [[ssl-automation]], [[log-management]]
@@ -365,182 +95,12 @@ tags: [meta, log]
 - Updated: [[infrastructure]] (cross-link'ler eklendi)
 - Updated: [[index.md]] (yeni konseptler listeye eklendi)
 - Sources: infrastructure/nginx/conf.d/, infrastructure/renew-ssl.sh, infrastructure/ssl-cron-setup.sh, infrastructure/docker-compose.yml
-## [2026-05-01 23:03] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 2 (certbot, logging)
-- Raw existence: 3
-- Log size: 35 entries
-
-## [2026-05-01 23:04] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 36 entries
-
-
 ## [2026-05-01 22:25] restructure | index-organizasyon | genelden-ozele | index-yeniden-siralandi
 
 - index.md yeniden organize edildi: System → Infrastructure & Platform → Concepts → Decisions → Projects
 - infrastructure Projects listesinden cikarildi, Infrastructure & Platform bolumune kondu
 - README.md'ye "Wiki Organizasyon Kurallari" eklendi (genelden ozele siralama, sayfa tipleri, checklist)
 - Updated: README.md, index.md
-## [2026-05-01 23:17] lint | 8/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 38 entries
-
-## [2026-05-01 23:17] lint | 8/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 39 entries
-
-## [2026-05-01 23:18] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 40 entries
-
-## [2026-05-01 23:18] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 41 entries
-
-## [2026-05-01 23:19] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 42 entries
-
-## [2026-05-01 23:19] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 43 entries
-
-## [2026-05-01 23:19] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 44 entries
-
-## [2026-05-01 23:20] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 45 entries
-
-## [2026-05-01 23:20] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 46 entries
-
-## [2026-05-01 23:20] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 47 entries
-
-## [2026-05-01 23:20] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 48 entries
-
-## [2026-05-01 23:21] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 49 entries
-
-
 ## [2026-05-01 22:30] docs | agents-md | guncelleme | AGENTS.md-yenilendi
 
 - AGENTS.md footer guncellendi: 5 proje -> 7 proje, mathlock -> mathlock-play
@@ -553,19 +113,6 @@ tags: [meta, log]
 - AGENTS.md proje yapisi agaci kisaltildi (292 -> 258 satir)
 - Detaylar wiki/system-overview.md ve wiki/projects/'e yonlendirildi
 - Bilgi ciftlenmesi azaltiliyor, kontrol korunuyor
-## [2026-05-01 23:49] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 52 entries
-
-
 ## [2026-05-01 23:00] infra | hooks | kurulum | kimi-cli-hooks-aktif
 
 - Hooks configured in ~/.kimi/config.toml:
@@ -589,30 +136,6 @@ tags: [meta, log]
 - Project-level: /home/akn/local/.kimi/skills/local-wiki/ (primary)
 - Scope note added to project-level SKILL.md
 - Priority: Project > User (kimi-cli resolves project-level first when in /home/akn/local)
-## [2026-05-02 00:30] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 56 entries
-
-## [2026-05-02 01:04] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 57 entries
-
 ## [2026-05-02 01:01] ingest | all | n/a | 0 sayfa
 - Files: A:0 M:0 D:0
 - Pages created: (none)
@@ -621,46 +144,6 @@ tags: [meta, log]
 - Diff özeti: Checkpoint'ler zaten güncel (ops-bot: ab281619, webimar: 2eb3dfa2). `.pending` marker'ı temizlendi. Gerçek bir değişiklik tespit edilmedi.
 - Lint: 10/10 passing
 
-## [2026-05-02 01:27] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 59 entries
-
-[2026-05-02T01:27:26+03:00] INGEST: No changes detected (all diffs empty). Pending cleared.
-## [2026-05-02 01:28] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 60 entries
-
-[2026-05-02T01:28:04+03:00] INGEST: No changes detected (all diffs empty). Pending cleared.
-## [2026-05-02 01:33] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 61 entries
-
-[2026-05-02T01:33:43+03:00] INGEST: 1 project updated (ops-bot). 1 file changed (agent.py). Lint 10/10. Checkpoints refreshed.
-
 ## [2026-05-02 02:48] ingest | local + webimar + mathlock-play | 3 projects
 - **webimar** (`2eb3dfa` → `416474ac`): Security hardening — settings.py defaults tightened, CORS http origins removed, DEFAULT_PERMISSION_CLASSES flipped to IsAuthenticated, .env files cleaned from git
 - **mathlock-play** (new commits): Crash prevention — ProGuard rules, WebView memory leak fixes, Handler polling leak fix, BootReceiver try/catch, Firebase Crashlytics 18.6.4 integration
@@ -668,110 +151,12 @@ tags: [meta, log]
 - Pages updated: [[webimar]], [[mathlock-play]]
 - Pages created: —
 - Checkpoints refreshed: local, webimar
-## [2026-05-02 02:54] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 63 entries
-
-## [2026-05-02 03:25] lint | 9/10
-- Orphan pages: 0
-- Broken links: 2
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 64 entries
-
-## [2026-05-02 03:25] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 65 entries
-
-## [2026-05-02 03:35] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 66 entries
-
-
 ## [2026-05-02 03:30] decision | adr-001 | infrastructure
 - Type: new-adr
 - Page: [[adr-001-monorepo-hybrid-structure]]
 - Status: Active
 - Scope: infrastructure, git-workflow
 - Summary: Monorepo + ayrı repo karışık yapısı kararı. Büyük projeler (ops-bot, webimar) ayrı repo; küçük projeler ve altyapı tek monorepo altında.
-## [2026-05-02 03:48] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 68 entries
-
-## [2026-05-02 03:48] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 69 entries
-
-## [2026-05-02 03:54] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 70 entries
-
-## [2026-05-02 12:08] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 71 entries
-
-
 ## [2026-05-02 12:09] ingest | local | e2a6cc7 | 26
 - Files: A:9 M:16 D:0 (wiki docs + telegram-kimi code)
 - Pages created: [[sayi-yolculugu]], [[telegram-kimi]], [[git-workflow]], [[log-management]], [[monitoring]], [[nginx-routing]], [[ssl-automation]]
@@ -779,44 +164,6 @@ tags: [meta, log]
 - Pages archived: —
 - Diff summary: Incremental ingest. telegram-kimi bot.py and PLAN.md updated (local/ssh-tt mode, photo support). Wiki concepts and project pages synced from monorepo.
 - Lint: 10/10 passing
-## [2026-05-02 12:08] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 73 entries
-
-2026-05-02 — concept: [[security-ai-reporting]] eklendi. sec-agent günlük rapor → kimi-cli AI analizi → Telegram bildirim akışı dökümante edildi. (projects/ops-bot.md, index.md güncellendi)
-## [2026-05-02 14:13] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 2
-- Log size: 74 entries
-
-## [2026-05-02 14:14] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 75 entries
-
-
 ## [2026-05-02 19:31] update | ops-bot | vps-deploy-dizini | runtime
 - Sayfa: [[ops-bot]]
 - Değişiklik: VPS Dizin Yapısı ve Troubleshooting bölümleri eklendi
@@ -824,38 +171,12 @@ tags: [meta, log]
 - Çözüm: Eski `local/ops-bot/data/` dosyaları `vps/ops-bot/data/` altına kopyalandı; `/home/akn/local/ops-bot` symlink olarak `/home/akn/vps/ops-bot`'a bağlandı
 - Servis: `ops-bot.service` `active (running)` — Telegram token doğrulandı, Application started
 - Kaynak: `systemd/ops-bot.service` incelemesi + VPS shell komutları + deploy script davranışı
-## [2026-05-02 19:35] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 77 entries
-
-
 ## [2026-05-02 19:35] create | sec-agent | yeni-proje-sayfasi
 - Sayfa: [[sec-agent]] oluşturuldu
 - Sayfa: [[ops-bot]] güncellendi (Security bölümü kısaltıldı, sec-agent wikilink eklendi)
 - Sayfa: [[index]] güncellendi (sec-agent Projects tablosuna eklendi)
 - İçerik: Pipeline mimarisi, VPS dizin yapısı (deploy vs /opt), components, guardrails, systemd servisleri, resource limits, operations, troubleshooting
 - Kaynak: VPS `/opt/sec-agent/` incelemesi, yerel `ops-bot/sec-agent/` yapısı, `move-sec-agent-to-opt.sh`, systemd unit dosyaları
-## [2026-05-02 19:42] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 79 entries
-
-
 ## [2026-05-02 19:45] update | sec-agent | normal-kullanici-false-positive
 - Sayfa: [[sec-agent]] güncellendi
 - Değişiklik: Configuration tablosuna scoring ve thresholds satırları eklendi; Troubleshooting bölümüne "Normal kullanıcı yüksek skorla engellendi" case'i eklendi
@@ -867,19 +188,6 @@ tags: [meta, log]
   - UFW + iptables'dan 188.132.132.225 kaldırıldı
 - Sebep: 62,398 event atanmış normal kullanıcı, tüm flag'ler false iken skor 9750+ olmuştu. scorer.py high_volume mantığı event sayısına bakıyordu, flag'e değil.
 - Kaynak: VPS `/opt/sec-agent/` incelemesi, events.jsonl analizi, engine/scorer.py kod incelemesi
-## [2026-05-02 19:50] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 81 entries
-
-
 ## [2026-05-02 19:50] update | sec-agent | whitelist-yaklasimi-kaldirildi
 - Sayfa: [[sec-agent]] güncellendi
 - Değişiklik: Troubleshooting bölümünde "Bloklanmaması gereken IP engellendi" case'i yeniden yazıldı
@@ -887,74 +195,12 @@ tags: [meta, log]
 - Normal kullanıcı case'inde "Whitelist'e ekle" adımı kaldırıldı; yerine "Aktif block'u kaldır + config düzelt" önerisi kondu
 - Runtime: `config/ignore.yaml`'dan 188.132.132.225/32 kaldırıldı (VPS + yerel repo)
 - Kaynak: Kullanıcı geri bildirimi — IP bazlı workaround yerine sistematik düzeltme prensibi
-## [2026-05-02 19:53] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 83 entries
-
-
 ## [2026-05-02 19:55] update | adr-002 | host-duzeyi-kimi-cli
 - Sayfa: [[adr-002-sec-agent-daily-report-agent-router]] güncellendi
 - Değişiklik: Yürütme modeline "kimi-cli host düzeyinde çalışır" kısıtlaması eklendi
 - Consequences/Riskler bölümlerine host düzeyinde çalışmanın etkileri eklendi
 - VPS doğrulaması: `/home/akn/.local/bin/kimi` ve `/home/akn/.local/bin/kimi-cli` symlink'leri mevcut
 - Kaynak: Kullanıcı geri bildirimi — kimi-cli'nin container/izole ortam yerine host düzeyinde çalışması zorunluluğu
-## [2026-05-02 20:02] lint | 7/10
-- Orphan pages: 1 ([[adr-002-sec-agent-daily-report-agent-router]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 2 (ai, sec-agent)
-- Raw existence: 0
-- Log size: 85 entries
-
-## [2026-05-02 20:02] lint | 7/10
-- Orphan pages: 1 ([[adr-002-sec-agent-daily-report-agent-router]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 2 (ai, sec-agent)
-- Raw existence: 0
-- Log size: 86 entries
-
-## [2026-05-02 20:02] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 2 (ai, sec-agent)
-- Raw existence: 0
-- Log size: 87 entries
-
-## [2026-05-02 20:44] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 2 (ai, sec-agent)
-- Raw existence: 0
-- Log size: 88 entries
-
-
 ## [2026-05-02 20:40] update | sec-agent | scorer-guard-dinamik-ip-prensipleri
 - Sayfa: [[sec-agent]] güncellendi
 - Değişiklikler:
@@ -970,18 +216,6 @@ tags: [meta, log]
   - `config/agent.yaml`: decay.points_per_hour 100
   - `188.132.132.225` skoru manuel sıfırlandı (sec_agent.db + ip_state.json)
 - Kaynak: VPS `engine/scorer.py` kod incelemesi, config dosya analizi, runtime testleri
-## [2026-05-02 23:52] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 2 (ai, sec-agent)
-- Raw existence: 0
-- Log size: 90 entries
-
 ## [2026-05-02 23:46] kimi-cli docs ingest
 - Kimi Code CLI docs 23 sayfa okundu: https://www.kimi.com/code/docs/en/kimi-code-cli/
 - Yeni sayfalar oluşturuldu:
@@ -990,258 +224,6 @@ tags: [meta, log]
   - `raw/articles/kimi-code-cli-docs.md` — Kaynak URL listesi
 - `index.md` Concepts bölümüne 2 yeni giriş eklendi
 - Projelerde kullanım tablosu: local monorepo, ops-bot, mathlock-play, telegram-kimi
-
-## [2026-05-02 23:52] lint | 9/10
-- Yeni sayfalar eklendi: concepts/kimi-code-cli.md, concepts/kimi-code-cli-reference.md
-- Tag taxonomy güncellendi: kimi-cli, tool, agent, reference, ai, sec-agent
-- Lint: 9/10 passing, 1 warning (sec-agent.md oversized — pre-existing)
-
-## [2026-05-02 23:59] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 6 (agent, ai, kimi-cli, reference, sec-agent, tool)
-- Raw existence: 0
-- Log size: 93 entries
-
-## [2026-05-02 23:59] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 2 (ai, sec-agent)
-- Raw existence: 0
-- Log size: 94 entries
-
-## [2026-05-02 23:59] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 95 entries
-
-## [2026-05-03 00:00] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 96 entries
-
-2026-05-03 00:28 | wiki | ops-bot Phase 1 files created (uncommitted) — checkpoint already current
-2026-05-03 00:46 | wiki | ops-bot V2 deployed — 6 phase POC complete (48 files, +7953 lines) | checkpoint=28ea20e2
-## [2026-05-03 01:30] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 97 entries
-
-## [2026-05-03 02:30] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 2
-- Unknown tags: 1 (acp)
-- Raw existence: 0
-- Log size: 98 entries
-
-
-## 2026-05-03 — Ops-Bot V2 Routing & Timeout Fixes
-
-- Timeout sorunları çözüldü: ACP prompt 60s sınırı kaldırıldı, HTTP timeout 30s, embedding router aktifleştirildi
-- Türkçe routing desteği: Tüm agent descriptor'lara `keywords_tr` eklendi
-- LLM fallback prompt'u Türkçe query eşleştirmesiyle zenginleştirildi
-- Tool call event handler'ları eklendi (`tool_call`, `tool_call_update`)
-- Agent spec YAML'dan `tools: []` kaldırıldı (extend: default ile çalışıyor)
-- `.env.production`'a `OPS_BOT_EMBEDDING_ROUTER=true` eklendi
-## [2026-05-03 03:12] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 2
-- Unknown tags: 1 (acp)
-- Raw existence: 0
-- Log size: 99 entries
-
-
-## 2026-05-03 13:45 — Ingest: ops-bot
-
-- **Trigger:** Auto-prompt (user "Evet, otomatik topla")
-- **Projects:** ops-bot (1 project)
-- **Commits:** b4f50d8, 2809ba3, 6ebd0f2 (3 commits since e36f158)
-- **Files changed:** 6 files
-  - `agents/descriptors/ops-security-agent.yaml` — keywords_tr updated (+hack, sızma, güvenlik açığı; -brute force)
-  - `bot/acp_client.py` — risky command permission rejection
-  - `bot/acp_executor.py` — tool call limit (15), timeout caps (90/120/180), reset_session/reset_all_sessions, always build agent spec
-  - `bot/memory.py` — rolling summary removed, only last 1 message in context
-  - `bot/router.py` — single-brain: explicit @agent only, else general/master
-  - `bot/telegram.py` — /iptal now clears all sessions + memory, tracks last_agent
-- **Wiki pages updated:** `projects/ops-bot.md`
-  - Stack: embedding router marked DEPRECATED
-  - Entry points: router.py, memory.py descriptions updated
-  - Agent selection: single-brain architecture documented
-  - ACP Executor: tool call guard, timeout table, single master agent note
-  - New section: Güvenlik Kontrolleri (risky command filter)
-  - New section: Komutlar (/iptal, /end)
-  - Recent Commits refreshed
-- **Checkpoints updated:** ops-bot → b4f50d80de6d17dfcec3b31c7ffe04b3bf50378b
-- **Lint:** Pending
-## [2026-05-03 13:49] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 2
-- Unknown tags: 1 (acp)
-- Raw existence: 0
-- Log size: 100 entries
-
-## [2026-05-03 14:03] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 1 (acp)
-- Raw existence: 3
-- Log size: 101 entries
-
-## [2026-05-03 14:04] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 1 (acp)
-- Raw existence: 0
-- Log size: 102 entries
-
-
-## 2026-05-03 13:50 — Ingest: kimi-cli docs
-
-- **Trigger:** User request (fetch + update)
-- **Source URLs:**
-  - https://www.kimi.com/code/docs/en/kimi-code-cli/configuration/overrides-and-precedence.html
-  - https://www.kimi.com/code/docs/en/kimi-code-cli/customization/skills.html
-  - https://www.kimi.com/code/docs/en/kimi-code-cli/customization/sub-agents.html
-- **Wiki pages updated:**
-  - `concepts/kimi-code-cli.md` — Güncellendi: CLI parameters, env vars, config priority, skill discovery/creation/flow skills, custom agents, system prompt variables, subagent types, agent tool parameters
-  - `concepts/kimi-code-cli-reference.md` — **Silindi** (kullanıcı slash commands/keyboard shortcuts bilgilerini wiki'den çıkarmak istedi)
-- **Wiki pages updated (follow-up):**
-  - `index.md` — `kimi-code-cli-reference` çıkarıldı
-  - `concepts/kimi-code-cli.md` — Raw URL sources kaldırıldı, "Kaynaklar" bölümü eklendi
-- **Lint:** 8/10 passing (2 warnings: page size, tag audit)
-
-## 2026-05-03 14:25 — Ingest: ops-bot tek evren dönüşümü
-
-- **Trigger:** User request (plan modu onaylı)
-- **Project:** ops-bot
-- **Commits:** 2c685d6 (tek evren dönüşümü)
-- **Files changed:** 47 files, +395 -2280 lines
-- **Actions:**
-  - Deleted: `agents/descriptors/` (11 YAML), `descriptor_loader.py`, `manager.py`, `process.py`, `state.py`, `migrate_v1_to_v2.py`, `router/hybrid.py`, `router/embedding.py`
-  - Created skills: `nginx-routing/SKILL.md`, `postgres-query/SKILL.md`, `security-reporting/SKILL.md` (YAML frontmatter)
-  - Updated skills: `docker-troubleshooting/SKILL.md` (frontmatter eklendi)
-  - Updated subagents: 9 YAML (`version: 1` integer, `tools` listesi, `system_prompt_args`)
-  - Updated prompts: 9 MD (`${ALLOWED_COMMANDS}`, `${FORBIDDEN_PATTERNS}`)
-  - Updated master: `agent.yaml` (`version: 1`, `system_prompt_args`), `system.md` (`${KIMI_NOW}`, `${KIMI_WORK_DIR}`, `${KIMI_SKILLS}`)
-  - Simplified bot: `config.py`, `router.py`, `acp_executor.py`, `memory.py`, `telegram.py`
-- **Wiki pages updated:** `projects/ops-bot.md` (19 edits)
-- **Checkpoints updated:** ops-bot → 2c685d6
-- **Lint:** Pending
-## [2026-05-03 14:36] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 1 (acp)
-- Raw existence: 0
-- Log size: 103 entries
-
-
-## 2026-05-03 14:45 — Wiki + AGENTS.md güncellemesi
-
-- **Trigger:** User request (fetch 6 URLs + wiki update + AGENTS.md)
-- **Source URLs:**
-  - https://agents.md
-  - https://github.com/MoonshotAI/kimi-cli/blob/main/docs/AGENTS.md
-  - https://github.com/MoonshotAI/kimi-cli/blob/main/docs/en/customization/agents.md
-  - https://github.com/MoonshotAI/kimi-cli/blob/main/src/kimi_cli/agents/default/system.md
-  - https://github.com/MoonshotAI/kimi-cli/blob/main/docs/en/customization/skills.md
-- **Wiki pages created:**
-  - `concepts/agents-md.md` — AGENTS.md formatı, konum, hiyerarşi, kimi-cli entegrasyonu, best practices
-- **Wiki pages updated:**
-  - `index.md` — agents-md eklendi
-  - `concepts/kimi-code-cli.md` — `${KIMI_AGENTS_MD}` açıklaması zenginleştirildi
-  - `projects/ops-bot.md` — AGENTS.md kaynak referansı eklendi
-- **Ops-Bot files created:**
-  - `ops-bot/AGENTS.md` — Proje context'i: stack, mimari, kod stili, güvenlik, deploy checklist
-  - `ops-bot/.gitignore` — AGENTS.md ignore kaldırıldı
-- **Commits:**
-  - ops-bot: `7219f80` feat(ops-bot): add AGENTS.md
-  - local: `644ef93` docs(wiki): add agents-md concept page
-- **Lint:** 8/10 passing (2 warnings: page size, tag audit)
-## [2026-05-03 15:08] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
-- Raw existence: 4
-- Log size: 104 entries
-
-## [2026-05-03 15:26] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
-- Raw existence: 4
-- Log size: 105 entries
-
 
 ## [2026-05-03 15:45] ingest | ops-bot | 47a2a6d | 8
 - Files: A:1 M:6 D:1 (README, .env.example, AGENTS.md, CHANGELOG.md, requirements.txt, agent-transformation-plan, bot.py, orchestrator)
@@ -1254,19 +236,6 @@ tags: [meta, log]
 - Diff summary: Security prompt unified (explain+observe → single ops-security-agent.md, ~40KB data recovery). Deploy script fixed to include bot/, agents/, tests/, docs/. Test suite added (30 tests, pytest-asyncio). Raw archive updated with 8 new source snapshots.
 - Lint: 7/10 passing, 3 warnings (pre-existing: page size ×3, unknown tags ×4, raw existence ×4)
 - Revert: git checkout 644ef939 -- wiki/
-## [2026-05-03 16:11] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
-- Raw existence: 4
-- Log size: 108 entries
-
-
 ## [2026-05-03 17:04] ingest | ops-bot | d23644e | 6
 - Files: A:2 M:4 D:0
 - Pages created: —
@@ -1274,19 +243,6 @@ tags: [meta, log]
 - Pages archived: —
 - Diff summary: ops-bot test suite expanded to 57 tests. New files: `tests/test_acp_executor.py` (17 tests), `tests/test_telegram_messages.py` (10 tests). Fixes: `_clean_output` applied to all executor return paths; router caching and logging improved; mock/patch issues resolved in test imports.
 - Lint: pending
-## [2026-05-03 17:13] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
-- Raw existence: 4
-- Log size: 110 entries
-
-
 ## [2026-05-03 18:20] ingest | ops-bot + telegram-kimi | 3304d40 | 8
 - Files (ops-bot): A:1 M:6 D:0
 - Files (local): A:0 M:1 D:0 (`projects/telegram-kimi/bot.py`)
@@ -1297,31 +253,6 @@ tags: [meta, log]
   - ops-bot: ACP protocol fix for kimi-cli 1.40 (`ApprovalRequest`/`ToolCallRequest`), word-boundary risky command matching, `/iptal` footer, context usage deferred, deploy script `*.md` include fix, 7 new `test_acp_client.py` tests
   - telegram-kimi: SSH command refactored (`script -q -c` → direct `ssh`), `_context_footer` switched to ACP `usage_update` values (also broken in 1.40)
 - Lint: pending
-## [2026-05-03 18:22] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
-- Raw existence: 4
-- Log size: 112 entries
-
-## [2026-05-03 18:22] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3 (pre-existing: kimi-code-cli.md, ops-bot.md, sec-agent.md)
-- Unknown tags: 4 (pre-existing: acp, agents, coding-conventions, configuration)
-- Raw existence: 4 (pre-existing: agents-md raw URLs + ops-bot/AGENTS.md path mapping)
-- Log size: 112 entries
-
-
 ## [2026-05-03 18:52] refactor | robotopia-extraction | mathlock-play → robotopia-android
 
 - **MathLock Play'den çıkarılanlar:**
@@ -1352,31 +283,6 @@ tags: [meta, log]
   - `decisions/adr-003-robotopia-extraction.md` oluşturuldu
   - `index.md` güncellendi (yeni proje + ADR + recently updated)
 - Log size: 113 entries
-## [2026-05-03 18:54] lint | 6/10
-- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 6 (acp, agents, coding-conventions, configuration, robotopia-android, webview)
-- Raw existence: 5
-- Log size: 115 entries
-
-## [2026-05-03 18:54] lint | 6/10
-- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
-- Raw existence: 4
-- Log size: 116 entries
-
-
 ## [2026-05-03 19:15] update | sayi-yolculugu | wiki-genisleme | detayli-dokumantasyon
 
 - **Wiki sayfası genişletildi:** `wiki/projects/sayi-yolculugu.md`
@@ -1396,19 +302,6 @@ tags: [meta, log]
   - `ai-generate-levels.sh` entry point'i listeye eklendi
   - `related` alanına `sayi-yolculugu` eklendi
 - Log size: 114 entries
-## [2026-05-03 19:02] lint | 6/10
-- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 4 (acp, agents, coding-conventions, configuration)
-- Raw existence: 4
-- Log size: 118 entries
-
-
 ## [2026-05-03 20:00] ingest | local | mathlock-play | yeni-oyun + bug-fix
 - **Sayı Hafızası (Memory Game) eklendi:**
   - ADR: `wiki/decisions/adr-004-memory-game-integration.md`
@@ -1424,18 +317,6 @@ tags: [meta, log]
   - Fallback levels'te `completed_level_ids` inject edilmiyordu → `injectCompletedIds()` eklendi
 - **Güncellenen wiki sayfaları:** `wiki/projects/mathlock-play.md`
 - Log size: 119 entries
-## [2026-05-03 20:13] lint | 5/10
-- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 3
-- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
-- Raw existence: 4
-- Log size: 120 entries
-
 ## [2026-05-03 21:33] ingest | mathlock-play | fc45d056 | 1 sayfa
 - Files: A:0 M:0 D:0 (checkpoint = HEAD, manual update from session context)
 - Pages created: —
@@ -1443,67 +324,6 @@ tags: [meta, log]
 - Pages archived: —
 - Diff summary: Auth mekanizması (DeviceTokenAuthentication + DeviceTokenSigner), backend test suite yapısı (169 test / 10 modül, AuthMixin/ThrottleMixin), Sayı Yolculuğu Activity auth fix (403 → setAuthToken) eklendi.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
-
-## [2026-05-03 21:31] lint | 4/10
-- Orphan pages: 1 ([[adr-003-robotopia-extraction]])
-- Broken links: 1
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
-- Raw existence: 4
-- Log size: 122 entries
-
-## [2026-05-03 21:32] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
-- Raw existence: 4
-- Log size: 123 entries
-
-## [2026-05-03 22:34] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
-- Raw existence: 4
-- Log size: 124 entries
-
-## [2026-05-03 22:49] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
-- Raw existence: 4
-- Log size: 125 entries
-
-## [2026-05-03 23:18] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 5 (acp, agents, coding-conventions, configuration, memory-game)
-- Raw existence: 4
-- Log size: 126 entries
-
 
 ## [2026-05-03 23:17] ingest | 7/10
 - mathlock-play: version bump 1.0.73→1.0.74 (build.gradle.kts)
@@ -1529,31 +349,6 @@ tags: [meta, log]
 - Key finding: --agent-file flag works in ACP mode, agent spec loads correctly
 - SDK modules reviewed: acp.schema, acp.client, acp.contrib (SessionAccumulator, ToolCallTracker, PermissionBroker)
 - Diff summary: ACP SDK feasibility proven. agentFile blocker resolved via --agent-file CLI flag.
-## [2026-05-04 23:02] lint | 5/10
-- Orphan pages: 1 ([[adr-005-ops-bot-acp-sdk-migration]])
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
-- Raw existence: 5
-- Log size: 131 entries
-
-## [2026-05-04 23:13] lint | 6/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
-- Raw existence: 5
-- Log size: 132 entries
-
-
 ## [2026-05-04 23:11] ingest | ops-bot | 0d6008b | 1 sayfa
 - Files: M:4 (bot/acp_client.py, bot/acp_executor.py, bot/telegram.py, tests/test_acp_executor.py)
 - Pages updated: [[ops-bot]]
@@ -1566,49 +361,12 @@ tags: [meta, log]
 - Diff summary: ACP SDK migration tamamlandi — bot/acp_sdk_client.py + bot/acp_sdk_executor.py eklendi, eski ACP client/executor arsivlendi, OpsBotAcpClient file I/O sandboxing + terminal execution eklendi, telegram.py markdown sanitize + context footer guncellendi, tests/sdk/ eklendi (10 unit test), pytest.ini --ignore=tests/sdk.
 - Lint: see next entry
 - Revert: git checkout 31c9a1db -- wiki/
-## [2026-05-05 21:16] lint | 6/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
-- Raw existence: 5
-- Log size: 135 entries
-
-## [2026-05-05 21:16] lint | 6/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
-- Raw existence: 4
-- Log size: 136 entries
-
-
 ## [2026-05-05 21:22] ingest | ops-bot | d6ddb0f | 1 sayfa
 - Files: R:4 A:19 M:5 D:1
 - Pages updated: [[ops-bot]]
 - Diff summary: VPS senkronizasyonu — bot/router.py silindi, bot/orchestrator.py + agents/ dizini eklendi, eski ACP client/executor archive/legacy'den bot/'a geri tasindi, telegram.py routing kaldirdi, mimari guncellendi.
 - Lint: see next entry
 - Revert: git checkout c836b86 -- wiki/
-## [2026-05-05 21:25] lint | 6/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
-- Raw existence: 4
-- Log size: 138 entries
-
 ## [2026-05-05 21:40] ingest | webimar | 29c2c8a | 1 sayfa
 - Files: A:4 M:20
 - Pages updated: [[webimar]]
@@ -1622,94 +380,6 @@ tags: [meta, log]
 - Diff summary: middleware_token_abuse.py set() → list() cache fix eklendi. Her API isteğinde 500 atan JSON serialization hatası giderildi.
 - Lint: see next entry
 - Revert: git checkout b74b3ac -- wiki/
-
-## [2026-05-05 22:18] lint | 6/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
-- Raw existence: 4
-- Log size: 141 entries
-
-## [2026-05-05 21:46] lint | 6/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
-- Raw existence: 4
-- Log size: 141 entries
-
-## [2026-05-05 22:16] lint | 6/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 10 (acp, agents, cli, coding-conventions, configuration, json-rpc, memory-game, protocol, refactor, sdk)
-- Raw existence: 4
-- Log size: 143 entries
-
-2026-05-05 23:37 | adr | adr-006 | github-sync-cross-machine-dev | karar alındı
-2026-05-05 23:37 | cleanup | stale-raw-agents | security-leak-removed | sudo-password-jst-temizlendi
-2026-05-05 23:37 | cleanup | checkpoint | eksik-checkpointler-eklendi | sec-agent, infrastructure
-## [2026-05-05 23:40] lint | 5/10
-- Orphan pages: 1 ([[adr-006-github-sync-cross-machine-dev]])
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 6
-- Log size: 144 entries
-
-## [2026-05-05 23:41] lint | 5/10
-- Orphan pages: 1 ([[adr-006-github-sync-cross-machine-dev]])
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 4
-- Log size: 145 entries
-
-## [2026-05-05 23:41] lint | 5/10
-- Orphan pages: 1 ([[adr-006-github-sync-cross-machine-dev]])
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 4
-- Log size: 146 entries
-
-## [2026-05-06 00:19] lint | 5/10
-- Orphan pages: 1 ([[adr-006-github-sync-cross-machine-dev]])
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 4
-- Log size: 147 entries
-
 
 ## [2026-05-06 00:42] archive | anka | pasife-alindi
 - Anka projesi hem local'de hem VPS'de pasife alındı
@@ -1729,156 +399,12 @@ tags: [meta, log]
 - Diff summary: Anka projesi tamamen arşivlendi (`projects/anka/` silindi). MathLock Play `.env.example` yapılandırması güncellendi (DB config ayrıldı, Celery/Redis eklendi). AGENTS.md'ye GitHub Sync + Cross-Machine Development bölümü eklendi. `.gitignore` genişletildi.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 - Revert: git checkout 0b893b02 -- wiki/
-## [2026-05-06 19:43] lint | 5/10
-- Orphan pages: 0
-- Broken links: 2
-- Missing from index: 2
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 4
-- Log size: 150 entries
-
-## [2026-05-06 19:44] lint | 5/10
-- Orphan pages: 0
-- Broken links: 4
-- Missing from index: 2
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 4
-- Log size: 151 entries
-
-## [2026-05-06 19:45] lint | 5/10
-- Orphan pages: 0
-- Broken links: 4
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 4
-- Log size: 152 entries
-
-## [2026-05-06 19:46] lint | 5/10
-- Orphan pages: 0
-- Broken links: 4
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 4
-- Log size: 153 entries
-
 ## [2026-05-06 21:11] ingest | 3 projects
 - **local:** `AGENTS.md` (ortam tespiti bölümü eklendi), `projects/mathlock-play/deploy.sh` (VPS uyumluluğu)
 - **ops-bot:** `deploy.sh` (VPS uyumluluğu, SSH multiplexing / local cp ayrımı)
 - **webimar:** `deploy.sh` (VPS uyumluluğu, docker save atlaması), `docker-compose.prod.yml` (`image:` tag'leri)
 - **Pages updated:** `projects/mathlock-play.md`, `projects/ops-bot.md`, `projects/webimar.md`
 - **Note:** `is_vps()` fonksiyonu tüm deploy script'lerine eklendi. Aynı komutlar hem local'den hem VPS'ten çalışabilir.
-
-## [2026-05-06 22:05] lint | 5/10
-- Orphan pages: 0
-- Broken links: 4
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 13 (acp, agents, cli, coding-conventions, configuration, github, json-rpc, memory-game, protocol, refactor...)
-- Raw existence: 4
-- Log size: 155 entries
-
-## [2026-05-06 22:08] lint | 7/10
-- Orphan pages: 0
-- Broken links: 3
-- Missing from index: 2
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 156 entries
-
-## [2026-05-06 22:08] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 157 entries
-
-## [2026-05-06 22:09] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 158 entries
-
-## [2026-05-06 22:09] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 159 entries
-
-## [2026-05-06 22:10] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 160 entries
-
-## [2026-05-06 22:14] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 161 entries
-
-## [2026-05-06 22:15] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 162 entries
 
 ## [2026-05-06 22:10] lint-fix | 10/10
 - Orphan pages: 0
@@ -1893,84 +419,12 @@ tags: [meta, log]
 - Log size: entries
 - **Note:** Lint script upgraded: `status: archived` support in index completeness, type-aware page size limits (`project`: 400, `concept`: 350, `reference` exempt), SCHEMA.md updated with Page Size Policy
 
-## [2026-05-06 22:17] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 164 entries
-
-## [2026-05-06 22:35] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 165 entries
-
-## [2026-05-06 22:36] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 166 entries
-
-## [2026-05-06 22:38] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 167 entries
-
 ## [2026-05-06 22:38] ingest | AGENTS.md + weekly maintenance
 - **AGENTS.md:** Ortam tespiti uyarısı eklendi (VPS/Local ayrımı için is_vps() talimatı)
 - **concepts/agents-md.md:** "Ortam Tespiti (Çoklu Makine)" bölümü eklendi
 - **concepts/deployment.md:** "Haftalık Wiki Bakımı" bölümü eklendi (scripts/wiki-weekly-maintenance.sh)
 - **Pages updated:** concepts/agents-md.md, concepts/deployment.md
 - **Note:** Deploy öncesi wiki ingest kuralına uygun olarak toplandı
-
-## [2026-05-06 22:47] lint | 9/10
-- Orphan pages: 0
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 169 entries
-
-## [2026-05-06 22:48] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 170 entries
 
 ## [2026-05-06 22:50] ingest | AGENTS.md wiki rule + hooks
 - **AGENTS.md:** "KATI KURAL: Commit/Push ÖNCESİ Wiki TOPLANMALIDIR" bölümü eklendi
@@ -1979,49 +433,12 @@ tags: [meta, log]
 - **Pages updated:** concepts/agents-md.md, AGENTS.md
 - **Note:** Bu ingest kural ihlali sonrası yapılan düzeltme ve koruma önlemidir
 
-## [2026-05-06 22:50] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 172 entries
-
 ## [2026-05-06 23:05] ingest | AGENTS.md dynamic environment detection
 - **AGENTS.md:** "SEN NEREDESIN?" bölümü eklendi — agent kendisi ortam tespiti yapar
 - **AGENTS.md:** Ortam ayrımı tablosu "LOCAL'deysem / VPS'teysem" olarak yeniden yazıldı
 - **concepts/agents-md.md:** "Coklu Makine Destegi (VPS / Local)" bölümü eklendi
 - **Pages updated:** concepts/agents-md.md, AGENTS.md
 - **Note:** Agent'in AGENTS.md'yi okudugunda once komutu calistirip ciktiya gore davranmasi saglandi
-
-## [2026-05-06 23:11] lint | 9/10
-- Orphan pages: 0
-- Broken links: 2
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 174 entries
-
-## [2026-05-06 23:12] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 175 entries
-
 
 ## [2026-05-06 23:21] ingest | local + ops-bot + webimar | 3 proje
 
@@ -2030,37 +447,11 @@ tags: [meta, log]
 - **webimar** (`cdb21b89` → `5b6a274`): `.gitignore` güncellendi — `__pycache__` izleme durduruldu, `deploy.sh`'ta domain check VPS modunda `-k` flag'i ve `000` fallback eklendi
 - Pages updated: [[agents-md]], [[ops-bot]], [[webimar]], [[index]]
 - Checkpoints refreshed: local, ops-bot, webimar
-## [2026-05-06 23:25] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 177 entries
-
-
 ## [2026-05-07 00:06] ingest | ops-bot | deploy path fix
 
 - **ops-bot** (`d05f0b6` → `8618166`): `systemd/ops-bot.service` ve `.env.production` path'leri `local` → `vps` düzeltildi; deploy akışı tek dizin (vps) üzerinden çalışır hale getirildi
 - Pages updated: [[ops-bot]]
 - Checkpoints refreshed: ops-bot
-## [2026-05-07 00:21] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 179 entries
-
-
 ## [2026-05-06 23:45] ingest | webimar | disable su tahsis checks
 
 - **webimar** (`5b6a274` → `33b6574`): 11 tarımsal yapı türü için YAS kapalı alanında su tahsis belgesi zorunluluğu geçici olarak kaldırıldı
@@ -2070,31 +461,6 @@ tags: [meta, log]
   - `evcil_hayvan.py`, `hara.py`, `ana_modul.py` (yıkama tesisi)
 - Pages updated: [[webimar]]
 - Checkpoints refreshed: webimar
-## [2026-05-07 00:42] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 181 entries
-
-## [2026-05-07 12:54] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 182 entries
-
-
 ## [2026-05-07 12:52] ingest | ops-bot | 2956c27 | 3 sayfa
 - Files: M:3
 - Pages updated: [[ops-bot]], [[sec-agent]], [[security-ai-reporting]]
@@ -2104,96 +470,20 @@ tags: [meta, log]
 - Files: M:1
 - Pages updated: [[ops-bot]]
 - Diff summary: acp_sdk_client.py git read-only komutlarına (log, status, diff) izin verdi, yazma komutları (push, commit, reset) reject listesine alındı.
-## [2026-05-07 13:18] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 185 entries
-
-
 ## [2026-05-07 13:22] cleanup | ops-bot | — | 1 sayfa
 - Files: D:1 (VPS)
 - Pages updated: [[ops-bot]]
 - Diff summary: Eski `logs/router_debug.jsonl` silindi (router.py kaldırıldığı için artık güncellenmiyordu).
-## [2026-05-07 13:25] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 187 entries
-
-
 ## [2026-05-07 13:30] cleanup | ops-bot | 8ceee1c | 2 sayfa
 - Files: M:1 (local), D:2 (VPS)
 - Pages updated: [[ops-bot]]
 - Diff summary: `docs/CURRENT_SYSTEM.md` Mayıs 2026ya güncellendi, `agent_state.db` ve `router_debug.jsonl` legacy temizliği yapıldı.
-## [2026-05-07 13:31] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 189 entries
-
-
 ## [2026-05-07 18:45] checkpoint-sync | all | cross-machine sync
 - Ops-bot: 8618166 → 8ceee1c (3 commit pulled from GitHub)
 - Webimar: 5b6a274 → 33b6574 (1 commit pulled from GitHub)
 - Local: d6d0f9c (1 commit ahead, post-commit fix + SSH remote switch)
 - Reason: VPS'ten geliştirme sonrası cross-machine sync
 - Actions: SSH remotes activated, redundant github remote removed, pre-commit hook disabled
-## [2026-05-07 18:46] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 191 entries
-
-## [2026-05-07 18:59] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 192 entries
-
-## [2026-05-07 19:11] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 193 entries
-
-
 ## [2026-05-08 10:15] ingest | local + webimar | hizli checkpoint sync
 - Checkpoint'ler senkronize edildi:
   - local: d648d303 → 0b42e9b2
@@ -2205,50 +495,12 @@ tags: [meta, log]
   - scripts/wiki-weekly-maintenance.sh (ff-only pull duzeltmesi)
 - AGENTS.md guncellendi: Session basi git kontrolu, auto-sync.sh referansi
 - Detayli wiki sayfa guncellemeleri sonraki session'a birakildi
-## [2026-05-07 19:25] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 195 entries
-
-
 ## [2026-05-07 19:45] ingest | local | 903450e8 | 1 sayfa
 - Files: A:0 M:1 D:0
 - Pages updated: [[proactive-wiki]]
 - Diff summary: [[proactive-wiki]]'ye auto-sync davranışı, cross-machine sync, `docs(wiki):` sonsuz döngü koruması eklendi. `wiki/.pending` artık `.gitignore`'da değil.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 - Revert: git checkout 0b42e9b2d72ee0d852a02d38628429714c45c0aa -- wiki/
-## [2026-05-07 19:55] lint | 10/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 197 entries
-
-## [2026-05-07 21:00] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 198 entries
-
-
 ## [2026-05-07 21:00] ingest | mathlock-play | manual | 1 sayfa
 - Files: A:0 M:1 D:0
 - Pages updated: [[mathlock-play]]
@@ -2256,19 +508,6 @@ tags: [meta, log]
 - Android: MemoryGameActivity restartGame() kart değeri fix, ChallengePickerActivity/MainActivity ebeveyn desen desteği, SettingsActivity kart yapısı yeniden düzenlendi, MathQuestionGenerator yaş uygun soru üretimi.
 - Backend: Question.education_period alanı, load_questions.py --period parametresi, get_questions endpoint filtrelemesi.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
-## [2026-05-07 21:04] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 200 entries
-
-
 ## [2026-05-07 23:10] ingest | mathlock-play | manual | 1 sayfa
 - Files: A:0 M:11 D:0
 - Pages updated: [[mathlock-play]]
@@ -2283,127 +522,10 @@ tags: [meta, log]
   - 4. sınıf: rapor şablonları yaş grubuna özgü hale getirildi
   - 5 curriculum JSON dosyası tip isimleriyle güncellendi
   - Kopyala-yapıştır rapor şablonu hataları giderildi
-## [2026-05-07 23:15] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1 ([[anka]] — unrelated)
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4 (mathlock-play 464L — expected after content expansion)
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 202 entries
-## [2026-05-07 23:03] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 203 entries
-
-## [2026-05-07 23:08] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 204 entries
-
-
 ## [2026-05-07 23:25] ingest | mathlock-play | manual | 1 sayfa
 - Files: A:0 M:1 D:0
 - Pages updated: [[mathlock-play]]
 - Diff summary: Batch 0 Üretim Algoritması bölümü eklendi: `generate_age_questions.py` yapısı, zorluk hesaplama heuristic'i, ID_RANGES offset tablosu, yaş grubu başına işlem dağılımı, Android `MathQuestionGenerator.kt` fallback üretim mantığı, hint ekleme mekanizması.
-## [2026-05-07 23:26] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1 ([[anka]] — unrelated)
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4 (mathlock-play 522L — expected after content expansion)
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 204 entries
-## [2026-05-07 23:22] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 0
-- Raw existence: 0
-- Log size: 207 entries
-
-
-## 2026-05-07 — MathLock-Play MEB Müfredat Uyum Düzeltmeleri
-
-**Değişen kaynaklar:**
-- `projects/mathlock-play/scripts/generate_age_questions.py` — 1. sınıf onluktan bozmasız çıkarma kontrolü eklendi (`b <= a % 10`)
-- `projects/mathlock-play/app/src/main/java/com/akn/mathlock/util/MathQuestionGenerator.kt` — `generateGrade1()` onluktan bozma kontrolü eklendi
-- `projects/mathlock-play/backend/credits/models.py` — `question_type` help text Türkçe karakterli tiplerle güncellendi
-- `projects/mathlock-play/data/questions-*.json` — Batch 0 regenerate edildi (sinif_1 çarpma temizlendi, sinif_2 kare temizlendi)
-- `projects/mathlock-play/agents/questions-*.agents.md` — 5 yaş grubu agents.md'leri MEB müfredat uyumuna göre revize edilmişti
-
-**Wiki güncellemeleri:**
-- `wiki/projects/mathlock-play.md` — Tip standardizasyonu, MEB uyumu tablosu, batch 0 üretim algoritması güncellendi
-
-**Lint:** 9/10 passing (1 warning: mathlock-play.md 528 satır > 400 limit)
-
-**Kalan teknik borç:**
-- AI pipeline (Batch 1+) ID formatı yapılandırılmadı (`{Yıl}G{Sınıf}-B{Batch}-{SıraNo}` önerisi beklemede)
-- `generate_age_questions.py` zorluk skalası 1-3, agents.md 1-5 arası (bilinen uyumsuzluk, wiki'ye not düşüldü)
-## [2026-05-07 23:34] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 9 (adaptive-learning, api, auth, backend, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 208 entries
-
-
-## 2026-05-07 — MathLock-Play Wiki Sayfa Bölme
-
-**Değişiklik:** `wiki/projects/mathlock-play.md` (528 satır) 4 sayfaya bölündü:
-
-| Yeni Sayfa | Satır | İçerik |
-|-----------|-------|--------|
-| `mathlock-play.md` | ~140 | Ana sayfa: stack, entry points, env vars, servisler, deploy, alt sayfa linkleri |
-| `mathlock-play-ai.md` | ~210 | AI pipeline, adaptif algoritma, MEB uyumu, batch 0/1+, tip standardizasyonu |
-| `mathlock-play-android.md` | ~230 | Android oyunları, crash prevention, auth fix'leri, Sayı Yolculuğu düzeltmeleri |
-| `mathlock-play-backend.md` | ~190 | Backend auth, test suite (169 test), child_id mismatch fix'leri |
-
-**Etki:** Page Size uyarısı giderildi. Lint: 9/10 passing (1 tag audit warning).
-
-**Güncellenen index'ler:** `wiki/index.md`, `wiki/projects/index.md`
-## [2026-05-07 23:44] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 9 (adaptive-learning, api, auth, backend, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 209 entries
-
-
 ## [2026-05-07 23:44] ingest | mathlock-play | a85334a | 3 sayfa
 - Dosyalar: M:10 (agents/curriculum/sinif_3.json, agents/questions-sinif-2.agents.md, StatsDashboardActivity.kt, PerformanceReportActivity.kt, generate_age_questions.py, data/questions-*.json × 5)
 - Pages created: —
@@ -2412,30 +534,6 @@ tags: [meta, log]
 - Diff özeti: MEB uyum düzeltmeleri eklendi: curriculum/sinif_3.json non-üniter kesir fix, generate_age_questions.py grade1 çıkarma=0 fix, questions-sinif-2.agents.md zorluk 5 toplama 100'e genişletildi. Android TYPE_LABELS Türkçe karakter standardizasyonu tamamlandı.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 - Revert: git checkout a85334a^ -- wiki/
-
-## [2026-05-07 23:44] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 9 (adaptive-learning, api, auth, backend, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 211 entries
-## [2026-05-07 23:45] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 9 (adaptive-learning, api, auth, backend, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 212 entries
-
 
 ## [2026-05-07 23:55] decision | adr-007 | mathlock-play | meb-curriculum-compliance-implantation
 - Type: new-adr
@@ -2449,114 +547,6 @@ tags: [meta, log]
   4. interactionMode (tap-to-count, pattern-select, tap-to-choose, text-input)
 - Files changed: generate_age_questions.py, validate-questions.py, backend/credits/models.py, agents/questions-*.agents.md (6 dosya)
 - Wiki: index.md güncellendi, log.md güncellendi
-## [2026-05-08 00:46] lint | 7/10
-- Orphan pages: 1 ([[adr-007-mathlock-meb-curriculum-compliance-implantation]])
-- Broken links: 1
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 214 entries
-
-## [2026-05-08 00:47] lint | 8/10
-- Orphan pages: 1 ([[adr-007-mathlock-meb-curriculum-compliance-implantation]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 215 entries
-
-## [2026-05-08 00:47] lint | 8/10
-- Orphan pages: 1 ([[adr-007-mathlock-meb-curriculum-compliance-implantation]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 216 entries
-
-## [2026-05-08 00:48] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 217 entries
-
-## [2026-05-08 00:52] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 218 entries
-
-## [2026-05-08 09:22] lint | 9/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 0
-- Unknown tags: 10 (adaptive-learning, api, auth, backend, curriculum, drf, games, meb, pipeline, tests)
-- Raw existence: 0
-- Log size: 219 entries
-
-## [2026-05-08 10:33] lint | 5/10
-- Orphan pages: 1 ([[meb-2024-curriculum-technical-alignment]])
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 1
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 220 entries
-
-## [2026-05-08 10:34] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 221 entries
-
-## [2026-05-08 11:49] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 222 entries
-
 ## [2026-05-08 11:50] ingest | mathlock-play-meb-analysis
 - Yeni: analysis/meb-2024-curriculum-technical-alignment.md (MEB 2024 uyum analizi, 5 bölüm)
 - Güncelleme: index.md (analysis sayfası eklendi)
@@ -2582,55 +572,6 @@ tags: [meta, log]
 - Güncelleme: `webimar-react/src/modules/BagEvi/utils/calculator.ts` — success mesajlarına max 30 m² taban / 60 m² toplam alan notu eklendi
 - Sayfa güncellemeleri: `projects/webimar.md`
 
-## [2026-05-08 14:31] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 224 entries
-
-## [2026-05-08 15:22] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 4
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 225 entries
-
-## [2026-05-09 10:44] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 226 entries
-
-## [2026-05-09 10:45] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 227 entries
-
-
 ## [2026-05-09 11:00] ingest | system-audit | hook-fix | checkpoint-sync
 
 - AGENTS.md güncellendi (tarih: 2026-05-09, lint: 8/10, GitHub push: verified)
@@ -2639,43 +580,6 @@ tags: [meta, log]
 - `scripts/setup-vps-dev.sh` felaket senaryosuna hazır: git hooks + kimi-cli hooks otomatik kurulum
 - `wiki/concepts/agents-md.md` updated: 2026-05-09
 - Pages updated: [[agents-md]], [[git-workflow]], [[proactive-wiki]]
-
-## [2026-05-09 11:06] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 229 entries
-
-## [2026-05-09 12:08] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 230 entries
-
-## [2026-05-09 12:23] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 231 entries
-
 
 ## [2026-05-09 12:14] ingest | local | f4230fd | 1
 - Files: A:0 M:1 D:0
@@ -2692,19 +596,6 @@ tags: [meta, log]
 - Pages archived: (none)
 - Diff summary: Parent auth bottom sheet kaldırıldı — doğrudan BiometricPrompt. AndroidManifest.xml'e USE_BIOMETRIC + USE_FINGERPRINT eklendi. AGENTS.md wiki filtreleme kuralı eklendi. v1.0.76 release build.
 - Lint: 8/10 passing (2 warnings: pre-existing)
-## [2026-05-09 13:46] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 234 entries
-
-
 ## [2026-05-09 15:01] ingest | mathlock-play | 681346a3 | 3
 - Files: A:3 M:4 D:0
 - Pages created: (none)
@@ -2712,102 +603,14 @@ tags: [meta, log]
 - Pages archived: (none)
 - Diff summary: 7 critical Android bug fixes (StatsTracker idempotency, AccountManager 403 re-register, CreditApiClient 503 parsing, 409 retry loop, raw device token, LockStateManager thread-safety, SecurePrefs hard fail). UI/UX improvements (ChallengePickerActivity BIOMETRIC_STRONG or DEVICE_CREDENTIAL, btnNext sizing, parent card styling). New tests: AccountManagerTest, StatsTrackerTest, LockStateManagerTest. Conscrypt test fix. Backend credits/auth updates + VPS deploy. v1.0.77.
 - Lint: pending
-## [2026-05-09 16:04] lint | 7/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 1
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 6
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 236 entries
-
-## [2026-05-09 16:50] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 237 entries
-
-
-## [2026-05-09 16:47] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 238 entries
-- Note: Post-pull cleanup, checkpoints synced, .pending cleared
-
 ## [2026-05-09 18:54] ingest | mathlock-play | c603c9ee | mathlock-play-android
 - Dosyalar: M:4
 - Pages updated: [[mathlock-play-android]]
 - Diff özeti: ChildProfilesActivity, StatsDashboardActivity, PerformanceReportActivity ve AccountActivity'e `Authorization: Device <signed_token>` header eklendi. AccountActivity email kaydında `getOrRegister()` çağrısı eklendi. Backend `DeviceTokenAuthentication` imzalı token beklediği için raw UUID ile `403 Forbidden` dönüyordu.
-## [2026-05-09 18:56] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 240 entries
-
-
 ## [2026-05-09 19:15] ingest | mathlock-play | 33e003a2 | mathlock-play-android
 - Dosyalar: M:11
 - Pages updated: [[mathlock-play-android]]
 - Diff özeti: Memory Game preview + dynamic card size, AppLockService overlay bypass, MathChallenge set/batch display, SayiYolculugu cache fix, Settings preview slider.
-## [2026-05-09 23:58] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 242 entries
-
-## [2026-05-10 02:06] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 243 entries
-
-## [2026-05-10 02:07] lint | 8/10
-- Orphan pages: 0
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 12 (adaptive-learning, alignment, analysis, api, auth, backend, curriculum, drf, games, meb...)
-- Raw existence: 0
-- Log size: 244 entries
-
-
 ## [2026-05-10 02:10] ingest | local | 02ce0371 | 3 sayfa
 - Files: A:2 M:2
 - Pages created: [[local]]
@@ -2815,37 +618,12 @@ tags: [meta, log]
 - Diff summary: AGENTS.md refactor edildi (499→167 satır). references/QUICKREF.md oluşturuldu. WORKFLOW.md'ye wiki filtreleme ve içerik iddiası kuralları eklendi.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 - Revert: git checkout 73185046 -- wiki/
-## [2026-05-10 09:50] lint | 7/10
-- Orphan pages: 1 ([[local]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 14 (adaptive-learning, agent-instructions, alignment, analysis, api, auth, backend, curriculum, drf, games...)
-- Raw existence: 0
-- Log size: 246 entries
-
-
 ## [2026-05-10 10:28] ingest | mathlock-play | f60cd6e9 | mathlock-play-android
 - Files: A:3 M:30+ (Android activity, service, util, layout, tests; backend API, models, tasks, migrations)
 - Pages updated: [[mathlock-play-android]]
 - Diff summary: v1.0.78 release — AppLockService derleme hatası düzeltildi (unclosed lambda). MemoryGameEngine pair limit 4-20→4-30. AccountManagerTest/StatsTrackerTest eklendi. Play Store upload script (upload-play-store.py) oluşturuldu.
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 - Revert: git checkout f60cd6e9 -- wiki/
-## [2026-05-10 10:29] lint | 7/10
-- Orphan pages: 1 ([[local]])
-- Broken links: 0
-- Missing from index: 0
-- Frontmatter errors: 0
-- Stale pages: 0
-- Contradictions: 0
-- Oversized pages: 1
-- Unknown tags: 14 (adaptive-learning, agent-instructions, alignment, analysis, api, auth, backend, curriculum, drf, games...)
-- Raw existence: 0
-- Log size: 248 entries
-
 ## [2026-05-10 11:37] ingest | local | 7853108 | 4 sayfa
 - Files: A:1 M:10 D:3
 - Pages created: 
@@ -2855,15 +633,159 @@ tags: [meta, log]
 - Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
 - Revert: git checkout e5ae1fc1 -- wiki/
 
-## [2026-05-10 11:44] lint | 6/10
-- Orphan pages: 1 ([[local]])
+## [2026-05-10 13:38] lint | 4/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 11
+- Missing from index: 2
+- Frontmatter errors: 1
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 16 (adaptive-learning, agent-instructions, alignment, analysis, api, archive, auth, backend, curriculum, drf...)
+- Raw existence: 0
+- Log size: 79 entries
+
+## [2026-05-10 13:41] lint | 5/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 11
+- Missing from index: 12
+- Frontmatter errors: 1
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 80 entries
+
+## [2026-05-10 13:43] lint | 5/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 2
+- Missing from index: 12
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 1 (agent-instructions)
+- Raw existence: 0
+- Log size: 81 entries
+
+## [2026-05-10 13:44] lint | 5/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 2
+- Missing from index: 12
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 1 (agent-instructions)
+- Raw existence: 0
+- Log size: 82 entries
+
+## [2026-05-10 13:44] lint | 6/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 2
+- Missing from index: 12
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 83 entries
+
+## [2026-05-10 13:45] lint | 6/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 2
+- Missing from index: 12
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 84 entries
+
+## [2026-05-10 13:45] lint | 6/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 1
+- Missing from index: 12
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 85 entries
+
+## [2026-05-10 13:46] lint | 6/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 1
+- Missing from index: 12
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 86 entries
+
+## [2026-05-10 13:48] lint | 7/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 0
+- Missing from index: 12
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 87 entries
+
+## [2026-05-10 13:50] lint | 6/10
+- Orphan pages: 2 ([[AGENTS]], [[local]])
+- Broken links: 3
+- Missing from index: 11
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 88 entries
+
+## [2026-05-10 13:54] lint | 5/10
+- Orphan pages: 3 ([[concepts-index]], [[decisions-index]], [[projects-index]])
+- Broken links: 1
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 2 (index, projects)
+- Raw existence: 0
+- Log size: 89 entries
+
+## [2026-05-10 13:55] lint | 7/10
+- Orphan pages: 0
 - Broken links: 0
 - Missing from index: 1
 - Frontmatter errors: 0
 - Stale pages: 0
 - Contradictions: 0
-- Oversized pages: 6
-- Unknown tags: 14 (adaptive-learning, agent-instructions, alignment, analysis, api, auth, backend, curriculum, drf, games...)
+- Oversized pages: 7
+- Unknown tags: 1 (project)
 - Raw existence: 0
-- Log size: 250 entries
+- Log size: 90 entries
+
+## [2026-05-10 13:56] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 91 entries
 

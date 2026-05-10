@@ -3,7 +3,7 @@ title: "local Monorepo"
 created: "2026-05-10"
 updated: "2026-05-10"
 type: project
-tags: [monorepo, meta, agent-instructions]
+tags: [meta]
 related:
   - system-overview
   - infrastructure

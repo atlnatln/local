@@ -3,7 +3,7 @@ title: "MathLock Play — AI Soru Pipeline"
 created: 2026-05-07
 updated: 2026-05-08
 type: project
-tags: [mathlock-play, ai, pipeline, adaptive-learning, meb]
+tags: [mathlock-play, ai, education, meb]
 related:
   - mathlock-play
   - mathlock-play-android

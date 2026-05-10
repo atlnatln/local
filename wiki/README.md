@@ -180,6 +180,10 @@ Kaynak: `/home/akn/local/scripts/wiki-post-commit.sh`
 
 ---
 
+## Bakım ve Büyüme Kuralları
+
+Wiki sürdürülebilir büyüme kuralları: [[AGENTS]]
+
 ## Sonraki Adımlar
 
 `wiki durum` ile başla, değişiklik yap, commit at, proaktif prompt bekle. Haftalık: `wiki topla && wiki kontrol`.

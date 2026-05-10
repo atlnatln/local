@@ -60,7 +60,7 @@ Project tags bind a note to a specific codebase or service.
 Technology tags describe the toolchain a note touches.
 
 ### Concepts
-`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging` `agent` `ai` `acp` `agents` `memory-game` `protocol`
+`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging` `agent` `ai` `acp` `agents` `memory-game` `protocol` `curriculum` `meb`
 
 Domain tags classify the subject matter independent of any project.
 

@@ -70,7 +70,7 @@ docker compose -f docker-compose.prod.yml up -d
 | Proje | Deploy Komutu | Not |
 |-------|---------------|-----|
 | [[ops-bot]] | `cd ops-bot && ./deploy.sh` | Python systemd, tarball + VPS upload |
-| ~~[[anka|Anka]]~~ | `cd projects/anka && ./deploy.sh` | ~~Docker Compose deploy~~ *(Arşivlendi)* |
+| ~~Anka~~ | `cd projects/anka && ./deploy.sh` | ~~Docker Compose deploy~~ *(Arşivlendi)* |
 | [[mathlock-play]] | Backend: `pip install -r requirements.txt && sudo systemctl restart mathlock-backend mathlock-celery` | Android: `./gradlew bundleRelease` |
 | [[infrastructure]] | `cd infrastructure && sudo ./setup.sh --ssl` | nginx, SSL yenileme |
 

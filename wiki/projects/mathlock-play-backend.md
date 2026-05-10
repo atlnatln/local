@@ -3,7 +3,7 @@ title: "MathLock Play — Backend"
 created: 2026-05-07
 updated: 2026-05-09
 type: project
-tags: [mathlock-play, backend, django, drf, api, tests]
+tags: [mathlock-play, django]
 related:
   - mathlock-play
   - mathlock-play-android

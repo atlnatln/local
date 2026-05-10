@@ -131,7 +131,8 @@ Kullanıcı "wiki topla"/"wiki ingest"/"wiki güncelle" dediğinde ara sormadan 
 
 **Kural:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Agent `.pending`'i okuduğunda AGENTS.md'ye göre karar verir.
 
-Detaylı komutlar ve kurallar: `references/WORKFLOW.md` ve `~/.kimi/skills/local-wiki/SKILL.md`
+Detaylı komutlar ve kurallar: `references/WORKFLOW.md` ve `~/.kimi/skills/local-wiki/SKILL.md`  
+Wiki bakım, büyüme kontrolü ve ortam bazlı yetki kuralları: `wiki/AGENTS.md`
 
 ---
 
