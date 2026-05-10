@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play — Backend"
 created: 2026-05-07
-updated: 2026-05-09
+updated: 2026-05-10
 type: project
 tags: [mathlock-play, django]
 related:
@@ -242,3 +242,82 @@ sudo systemctl restart mathlock-backend mathlock-celery
 > Son test durumu: 169+ test, tümü OK.
 >
 > **Repo Durumu:** MathLock Play artık `github.com/atlnatln/mathlock-play` adresinde ayrı repo olarak yönetiliyor. Backend kodu monorepo'dan çıkarıldı, `projects/mathlock-play/` `.gitignore`'a alındı.
+
+## AI Üretim Mimarisi (v2 — Async Launcher + Poller)
+
+2026-05-10'da Celery Worker SIGTERM sorununa kalıcı çözüm olarak mimari değişikliği yapıldı.
+
+### Problem
+Celery task `generate_level_set` senkron olarak `kimi-cli` çalıştırıyordu. Task 5–15 dk bloklanıyor, bu sürede worker SIGTERM alıyordu. Sonuç: yeni set hiçbir zaman oluşturulmuyordu.
+
+### Çözüm: Fire-and-Forget Launcher + Periodic Poller
+
+```
+update_level_progress()
+  └─ generate_level_set.delay()      ──► Celery task (5 sn)
+        └─ subprocess.Popen()        ──► kimi-cli arka planda
+              ├─ PID kaydet → GenerationJob (status='running')
+              └─ Task hemen döner
+
+poll_generation_jobs() (her 30 sn)
+  └─ GenerationJob.objects.filter(status='running')
+        ├─ PID hâlâ çalışıyor? → atla
+        └─ PID bitti?
+              ├─ output/levels.json oku → LevelSet oluştur
+              └─ output yoksa → kredi iade et, status='failed'
+```
+
+### Yeni Model: `GenerationJob`
+
+| Alan | Açıklama |
+|------|----------|
+| `child` | FK → ChildProfile |
+| `content_type` | `'levels'` \| `'questions'` |
+| `status` | `'pending'` → `'running'` → `'completed'` \| `'failed'` |
+| `pid` | Subprocess PID |
+| `temp_dir` | Geçici dizin (output JSON burada) |
+| `credit_balance_pk` | Kredi iadesi için |
+| `is_free` | Ücretsiz yenileme mi |
+
+### Dosya Değişiklikleri
+
+| Dosya | Değişiklik |
+|-------|------------|
+| `credits/models.py` | `GenerationJob` modeli eklendi |
+| `credits/tasks.py` | `generate_level_set` / `generate_question_set` → launcher. `poll_generation_jobs` → poller |
+| `credits/views.py` | `get_levels` response'a `generation_in_progress` flag'i eklendi |
+| `mathlock_backend/settings.py` | `CELERY_BEAT_SCHEDULE` (30s), `CELERY_TASK_TIME_LIMIT=1800` |
+| `SayiYolculuguActivity.kt` | `generation_in_progress` flag'i işleniyor, set tamamlanmışsa "hazırlanıyor" ekranı |
+
+### Test Durumu
+
+177 test, tümü OK. Yeni testler:
+- `test_generate_level_set_creates_job`
+- `test_poll_generations_completes_level_job`
+- `test_poll_generations_refunds_on_failure`
+- `test_poll_generations_skips_running_process`
+- `test_renewal_actually_creates_new_level_set` (güncellendi)
+
+### Deploy Adımları
+
+```bash
+cd /home/akn/local/projects/mathlock-play/backend
+.venv/bin/python manage.py migrate
+cd /home/akn/vps/projects/mathlock-play/backend
+.venv/bin/python manage.py migrate
+sudo systemctl restart mathlock-backend mathlock-celery
+# Beat scheduler çalışmıyorsa:
+sudo systemctl enable --now mathlock-celery-beat
+```
+
+> **Not:** `mathlock-celery-beat.service` yeni eklenmelidir (Celery beat için). Eğer yoksa systemd servis dosyası oluşturulmalı.
+
+---
+
+## Çözülen Sorunlar
+
+### Celery Worker SIGTERM (2026-05-10) ✅ ÇÖZÜLDÜ
+
+**Kök neden:** Celery task senkron `kimi-cli` çalıştırıyordu, worker uzun süre bloklanıyordu.
+**Çözüm:** Async launcher + poller mimarisine geçildi (yukarıda detaylı).
+**Servis:** `mathlock-celery.service` + `mathlock-celery-beat.service`

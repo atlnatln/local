@@ -25,11 +25,14 @@ related:
 | [[git-workflow]] | concept | Monorepo git stratejisi, commit konvansiyonları ve kurallar |
 | [[proactive-wiki]] | concept | Git commit sonrası otomatik wiki güncelleme önerisi (Auto-Prompt) |
 | [[security-ai-reporting]] | concept | Günlük güvenlik raporunun AI yorumlaması ve Telegram bildirimi |
-| [[kimi-code-cli]] | concept | Terminal tabanlı AI kodlama asistanı — kurulum, modlar, customisation |
+| [[kimi-code-cli]] | concept | Terminal tabanlı AI kodlama asistanı — kurulum, konfigürasyon, çalışma modları |
+| [[kimi-code-cli-skills]] | concept | Kimi CLI skills sistemi — keşif, oluşturma, flow skill'leri |
+| [[kimi-code-cli-agents]] | concept | Kimi CLI agent sistemi — built-in agent'lar, custom YAML, sub-agent lifecycle |
 | [[agents-md]] | concept | AI agent'lar için proje context dosyası — format, konum, best practices |
 | [[acp-protocol]] | concept | Agent Client Protocol — client ↔ AI agent JSON-RPC stdio protokolü |
-| [[meb-2024-curriculum-technical-alignment]] | concept | MEB 2024 müfredatı ile teknik sistem uyum analizi ve çözüm çerçevesi |
+| [[wiki-growth-protocol]] | concept | Wiki kontrollü büyüme — limit yönetimi, sub-page, arşivleme, log zincirleme |
+| [[meb-2024-curriculum-technical-alignment]] | analysis | MEB 2024 müfredatı ile teknik sistem uyum analizi ve çözüm çerçevesi |
 
 ---
 
-Diğer kataloglar: [[decisions-index|Mimari Kararlar Kataloğu]], [[projects-index|Projeler Kataloğu]]
+Diğer kataloglar: [[analysis-index|Analizler Kataloğu]], [[decisions-index|Mimari Kararlar Kataloğu]], [[projects-index|Projeler Kataloğu]]

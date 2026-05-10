@@ -21,6 +21,7 @@ Master content catalog for `local-wiki`. All pages are reachable via wikilink.
 | [[SCHEMA]] | index | Wiki yapı tanımı, etiket taksonomisi ve frontmatter şeması |
 | [[AGENTS]] | index | Wiki bakım kılavuzu — büyüme kuralları, lint, arşivleme |
 | [[agents-md]] | concept | AGENTS.md kalıbı — agent instruction dosyası deseni |
+| [[wiki-growth-protocol]] | concept | Wiki kontrollü büyüme — limit yönetimi, sub-page, arşivleme, log zincirleme |
 | [[system-overview]] | concept | VPS genel mimarisi ve proje haritası |
 
 ## Infrastructure & Platform
@@ -41,9 +42,13 @@ Ortak altyapı ve platform servisleri. Diğer tüm projelere hizmet eden katman.
 
 Derinlemesine teknik analiz ve uyum raporları.
 
+Tüm analizler: [[analysis-index|Analizler Kataloğu]]
+
 | Sayfa | Tip | Açıklama |
 |-------|-----|----------|
-| [[meb-2024-curriculum-technical-alignment]] | analysis | MEB 2024 müfredatı ile MathLock Play teknik uyum analizi |
+| [[meb-2024-curriculum-technical-alignment]] | analysis | MEB 2024 ↔ MathLock Play uyum — zorluk skalası, farklılaştırma, raporlama |
+| [[meb-2024-curriculum-render]] | analysis | MEB render uyumu — emoji/örüntü, çok modlu input, parse pipeline |
+| [[meb-2024-curriculum-ontoloji]] | analysis | MEB veri ontolojisi — tip isimlendirme, URI şema, yapılandırılmış ID |
 
 ## Concepts
 
@@ -57,7 +62,9 @@ Tüm konseptler: [[concepts-index|Konseptler Kataloğu]]
 | [[agents-md]] | concept | AGENTS.md kalıbı — agent instruction dosyası deseni |
 | [[deployment]] | concept | Deploy pipeline, rollback, VPS senkronizasyonu |
 | [[git-workflow]] | concept | GitHub Sync + Cross-Machine Development akışı |
-| [[kimi-code-cli]] | concept | Kimi CLI kullanım kılavuzu ve konfigürasyon |
+| [[kimi-code-cli]] | concept | Kimi CLI — kurulum, konfigürasyon, çalışma modları, data locations |
+| [[kimi-code-cli-skills]] | concept | Kimi CLI skills sistemi — discovery, creation, flow |
+| [[kimi-code-cli-agents]] | concept | Kimi CLI agent ve sub-agent sistemi |
 | [[log-management]] | concept | nginx log rotasyonu ve merkezi log yönetimi |
 | [[monitoring]] | concept | VPS servis izleme, Prometheus, Grafana, health check, alert |
 | [[nginx-routing]] | concept | Domain-based routing, rate limiting, SSL termination |
@@ -93,6 +100,7 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 | [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) — **ayrı repo** | 2026-05-10 |
 | [[mathlock-play-ai]] | project | MathLock AI soru pipeline'ı | 2026-05-07 |
 | [[mathlock-play-android]] | project | MathLock Android detayları | 2026-05-10 |
+| [[mathlock-play-android-releases]] | project | MathLock Android release notları ve bug fix'ler | 2026-05-10 |
 | [[mathlock-play-backend]] | project | MathLock backend detayları | 2026-05-10 |
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
@@ -132,7 +140,8 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 
 ## Log
 
-- [[log]] — Tüm işlemlerin kronolojik kaydı
+- [[log]] — Tüm işlemlerin kronolojik kaydı (aktif)
+- [[log-2026-H1]] — 2026 H1 arşivi (893 giriş, 2025-05-01 — 2026-05-10)
 - [[log-lint-archive]] — Lint sonuçları arşivi
 
 ## Archived Pages

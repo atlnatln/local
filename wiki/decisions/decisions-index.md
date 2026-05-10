@@ -32,4 +32,4 @@ Geçersiz kılınmış veya değişmiş kararlar. Henüz arşivlenmiş karar yok
 
 ---
 
-Diğer kataloglar: [[concepts-index|Konseptler Kataloğu]], [[projects-index|Projeler Kataloğu]]
+Diğer kataloglar: [[analysis-index|Analizler Kataloğu]], [[concepts-index|Konseptler Kataloğu]], [[projects-index|Projeler Kataloğu]]

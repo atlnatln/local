@@ -1,7 +1,7 @@
 ---
 title: "Projeler"
 created: 2025-05-01
-updated: 2026-05-06
+updated: 2026-05-10
 type: index
 tags: [meta]
 related:
@@ -28,4 +28,4 @@ related:
 
 ---
 
-Diğer kataloglar: [[concepts-index|Konseptler Kataloğu]], [[decisions-index|Mimari Kararlar Kataloğu]]
+Diğer kataloglar: [[analysis-index|Analizler Kataloğu]], [[concepts-index|Konseptler Kataloğu]], [[decisions-index|Mimari Kararlar Kataloğu]]
