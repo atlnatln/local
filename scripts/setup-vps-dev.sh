@@ -39,7 +39,7 @@ fi
 
 # 5. Python venv'leri
 echo "[5/12] Python venv'leri kuruluyor..."
-for proj in projects/mathlock-play/backend projects/telegram-kimi; do
+for proj in projects/telegram-kimi; do
     if [ -f "$proj/requirements.txt" ]; then
         echo "  → $proj"
         python3 -m venv "$proj/.venv" 2>/dev/null || true

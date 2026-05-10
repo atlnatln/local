@@ -6,8 +6,9 @@
 # Eğer wiki dosyaları staged veya unstaged durumdaysa push'u engeller.
 # ============================================================
 
-STAGED=$(git diff --cached --name-only)
-UNSTAGED=$(git diff --name-only)
+# wiki/.pending post-commit hook tarafından otomatik güncellenir — push kontrolünde ignore et
+STAGED=$(git diff --cached --name-only | grep -v "^wiki/.pending$")
+UNSTAGED=$(git diff --name-only | grep -v "^wiki/.pending$")
 
 if echo "$STAGED" | grep -q "^wiki/" || echo "$UNSTAGED" | grep -q "^wiki/"; then
     echo ""

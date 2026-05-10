@@ -22,24 +22,9 @@ git pull origin main
 |-------|-------|
 | **Ops-Bot** | `cd /home/akn/local/ops-bot && ./deploy.sh` (package) veya `./deploy.sh --mode git` |
 | **Webimar** | `cd /home/akn/local/projects/webimar && ./deploy.sh --skip-github` (~10 dk) |
-| **MathLock Backend** | `cd /home/akn/local/projects/mathlock-play/backend && pip install -r requirements.txt && sudo systemctl restart mathlock-backend mathlock-celery` |
-| **MathLock Android** | `cd /home/akn/local/projects/mathlock-play && ./gradlew bundleRelease` (AAB) / `assembleDebug` (APK) |
+| **MathLock Play** | Ayrı repo: `github.com/atlnatln/mathlock-play` |
 
-### MathLock Play Store Upload (Google Play API)
 
-```bash
-# 1. Version güncelle: app/build.gradle.kts → versionCode++, versionName++
-# 2. Release AAB build
-cd /home/akn/local/projects/mathlock-play && ./gradlew bundleRelease
-# 3. Google Play API ile upload (internal track)
-python3 scripts/upload-play-store.py
-```
-
-**Gereksinimler:**
-- Service account: `/home/akn/secrets/mathlock-play/google-service-account.json`
-- Keystore: `../keystore.jks` (şifreler `local.properties`'te)
-- **Draft app** → `status: "draft"` kullan (review başlatılmamışsa)
-- **Yayınlanmış app** → `status: "completed"` kullan
 | **Infrastructure** | `cd /home/akn/local/infrastructure && sudo ./setup.sh --ssl` |
 
 ---

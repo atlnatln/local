@@ -33,7 +33,7 @@ fi
 | Çalışma Dizini | `/home/akn/local` | `/home/akn/vps` (deploy alanı) |
 | SSH | `ssh akn@89.252.152.222` | — |
 | Amaç | Kod yazma, test, build, wiki | Production çalıştırma, monitoring |
-| Servisler | `mathlock-backend`, `mathlock-celery` | `ops-bot`, `sec-agent`, `telegram-kimi`, `webimar` (Docker), `mathlock-play` |
+| Servisler | `mathlock-backend`, `mathlock-celery` | `ops-bot`, `sec-agent`, `telegram-kimi`, `webimar` (Docker) |
 
 > **Kural (HER İKİ ORTAM):** Kod burada yazılır/build edilir, `deploy.sh` ile VPS'e gönderilir. Canlı ortam dosyalarını doğrudan düzenleme.  
 > **Not:** VPS'te hem `/home/akn/local/` (git clone, geliştirme) hem `/home/akn/vps/` (deploy alanı) vardır.  
@@ -145,7 +145,7 @@ Kullanıcı "push yap" dediğinde:
 4. `git add -A && git commit -m "..." && git push origin main`
 5. `ops-bot/` veya `webimar/` dirty ise: **"Nested repo'ları da unutma!"**
 
-**Nested Repo Hatırlatması:** `ops-bot/` ve `projects/webimar/` root repo'da `.gitignore`'dadır. Ayrı GitHub repo'larıdır. Kendi dizinlerinde ayrı commit + push yapılmalı.
+**Nested Repo Hatırlatması:** `ops-bot/`, `projects/webimar/` ve `mathlock-play` (aynı dizinde ama ayrı repo) root repo'da `.gitignore`'dadır. Ayrı GitHub repo'larıdır. Kendi dizinlerinde ayrı commit + push yapılmalı.
 
 ---
 
@@ -157,12 +157,13 @@ Kullanıcı "push yap" dediğinde:
 ├── ops-bot/           # Telegram bot (Python, systemd, ayrı repo)
 ├── projects/
 │   ├── webimar/       # Django + Next.js + React (ayrı repo)
-│   ├── mathlock-play/ # Android + Django
 │   └── telegram-kimi/ # Telegram Kimi bot
 ├── scripts/           # Yardımcı script'ler
 ├── wiki/              # LLM Wiki
 └── ARCHITECTURE.md    # Detaylı mimari
 ```
+
+> **Ayrı repo'lar:** `ops-bot` → `github.com/atlnatln/ops-bot` | `webimar` → `github.com/atlnatln/webimar` | `mathlock-play` → `github.com/atlnatln/mathlock-play`
 
 Detaylı komutlar: `references/QUICKREF.md` | Wiki iş akışları: `references/WORKFLOW.md` | Wiki kuralları: `references/CONVENTIONS.md`
 
