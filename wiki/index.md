@@ -109,11 +109,11 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 
 ## Recently Updated
 
-- [[sayi-yolculugu]] — Standalone HTML5 oyunu güncellendi: ~41 KB → ~48 KB, mobil optimizasyon (viewport, theme-color, touch highlight, overscroll-behavior), splash features, goal bar (2026-05-11)
-- [[mathlock-play]] — Experimental-web dizini eklendi: React + Vite + Tailwind deneme oyun frontend'i; repo durumu güncellendi (2026-05-11)
+- [[mathlock-play-backend]] — Switchable backend AI↔Procedural, `_generate_level_set_procedural` + dispatcher, `GenerationJob.generator`, `LEVEL_GENERATOR` setting, enriched stats (`questionAccuracy`, `strongTopics`, `weakTopics`, `completionRate`), migration 0015 (2026-05-11)
+- [[mathlock-play-android]] — WebView `game.html`'e `/` (bölme) ve `^` (kare) operatör desteği; bölme bounce mantığı (2026-05-11)
+- [[sayi-yolculugu]] — `/` ve `^` operatör desteği eklendi; bölme hücresine tam bölünmezse bounce davranışı (2026-05-11)
+- [[mathlock-play]] — `procedural-levels.py` / `procedural-levels-v2.py` eklendi; switchable backend mimarisi yansıtıldı; recent commits güncellendi (2026-05-11)
 - [[local]] — AGENTS.md refactor: 499→167 satır, references/QUICKREF.md yeni, WORKFLOW.md'ye wiki filtreleme ve iddia kuralları eklendi (2026-05-10)
-- [[mathlock-play-android]] — 7 kritik bug fix (StatsTracker idempotency, AccountManager 403 re-register, CreditApiClient 503 parsing, 409 retry loop, raw device token, LockStateManager thread-safety, SecurePrefs hard fail), UI/UX iyileştirmeleri, yeni testler (AccountManagerTest, StatsTrackerTest, LockStateManagerTest), v1.0.77 (2026-05-09)
-- [[mathlock-play-backend]] — credits/auth güncellemeleri, raw+signed token dual auth, 503/409 handling, VPS deploy, yeni testler (2026-05-09)
 - [[mathlock-play]] — v1.0.77 release, recent commits güncellendi (2026-05-09)
 - [[mathlock-play-ai]] — MEB uyum düzeltmeleri: curriculum JSON non-üniter kesir fix, generate script çıkarma=0 fix, zorluk 5 toplama 100'e genişletildi, Android TYPE_LABELS standardizasyonu tamamlandı (2026-05-07)
 - [[proactive-wiki]] — Auto-sync davranışı eklendi: `docs(wiki):` sonsuz döngü koruması, `.pending` cross-machine sync, `git commit --amend` yerine ayrı commit stratejisi (2026-05-07)

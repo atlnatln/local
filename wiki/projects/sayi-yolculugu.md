@@ -37,6 +37,7 @@ sources:
 - Mobil optimizasyon: `maximum-scale=1.0`, `user-scalable=no`, touch highlight kaldırma, `overscroll-behavior: none`
 - Goal bar (seviye hedef göstergesi)
 - Skor ve ilerleme takibi
+- **Yeni operatörler (2026-05-11):** `/` (bölme) ve `^` (kare alma) hücreleri. Bölme hücresine girmeden önce sayının tam bölünüp bölünmediği kontrol edilir; bölünmüyorsa duvar çarpması gibi bounce davranışı gösterilir. Kare alma tek seferlik uygulanır.
 
 ### Deploy
 
@@ -150,4 +151,6 @@ override fun onDestroy() {
 
 ## Recent Commits
 
-- (monorepo içinde izleniyor)
+- `3a030f21` feat(sayi-yolculugu): `/` ve `^` operatör desteği, bölme bounce mantığı (2026-05-11)
+- `e5ae1fc1` fix(mathlock-play): v1.0.78 — compile fix, test limit, Play Store upload script (2026-05-10)
+- `681346a3` fix(mathlock-play): 7 critical bug fixes, UI/UX improvements, new tests, v1.0.77 (2026-05-09)

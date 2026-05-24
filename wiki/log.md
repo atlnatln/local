@@ -184,3 +184,52 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 16 entries
 
+## [2026-05-11 21:20] ingest | mathlock-play, sayi-yolculugu | 3a030f21
+- mathlock-play: Switchable backend AI↔Procedural, `tasks.py` dispatcher, `_generate_level_set_procedural`, `GenerationJob.generator`, `LEVEL_GENERATOR` setting, enriched stats
+- mathlock-play-android: WebView `game.html`'e `/` ve `^` operatör desteği, bölme bounce mantığı
+- sayi-yolculugu: Standalone `index.html`'e `/` ve `^` operatör desteği, bölme bounce mantığı
+- Pages updated: [[mathlock-play]], [[mathlock-play-backend]], [[mathlock-play-android]], [[sayi-yolculugu]]
+- Index güncellendi, checkpoint'ler güncellenecek
+
+## [2026-05-11 21:24] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 18 entries
+
+## [2026-05-24 16:17] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 6
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 19 entries
+
+
+## [2026-05-24 16:15] ingest | all | —
+- Files: A:0 M:0 D:0
+- Diff summary: No changes since last checkpoint across all tracked projects.
+- Status: up-to-date
+- Lint: 9/10 (1 page-size warning)
+## [2026-05-24 18:20] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 6
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 21 entries
+

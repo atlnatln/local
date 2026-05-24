@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play"
 created: 2026-05-01
-updated: 2026-05-11
+updated: 2026-05-24
 type: project
 tags: [mathlock-play, android, django, kotlin, python, systemd]
 related:
@@ -55,6 +55,9 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | `projects/mathlock-play/deploy.sh` | Build + data sync |
 | `projects/mathlock-play/ai-generate.sh` | AI soru üretim pipeline'ı |
 | `projects/mathlock-play/ai-generate-levels.sh` | AI bulmaca seviye üretim pipeline'ı (Sayı Yolculuğu) |
+| `projects/mathlock-play/procedural_levels/` | Procedural seviye üretimi v2 — modüler paket (BFS solver, 13+ desen, 5 op, zorluk planlama) |
+| `projects/mathlock-play/procedural-levels.py` | Procedural seviye üretimi (v1 — eski, devre dışı) |
+| `projects/mathlock-play/procedural-levels-v2.py` | Procedural seviye üretimi (v2 — eski tek dosya, backup) |
 | `projects/mathlock-play/experimental-web/` | React + Vite + Tailwind deneme oyun frontend'i |
 | `projects/mathlock-play/scripts/validate-questions.py` | Dönem bazlı soru seti doğrulama aracı (tip/zorluk/duplicate/code) |
 | `projects/mathlock-play/scripts/upload-play-store.py` | Google Play Store internal track'e AAB upload script'i |
@@ -115,6 +118,28 @@ cd projects/mathlock-play
 
 > **Repo Durumu:** `projects/mathlock-play/` hem local monorepo'da tracked hem de `github.com/atlnatln/mathlock-play` adresinde ayrı repo olarak yönetiliyor. `.gitignore`'a alınmasına rağmen tracked dosyalar kalmıştır; iki repo arası senkronizasyona dikkat edilmelidir.
 
+## Procedural Levels v2 (2026-05-24)
+
+`procedural_levels/` paketi ile tamamen yeniden yazıldı. Eski `procedural-levels-v2.py` yerine `python3 -m procedural_levels` çalıştırılıyor.
+
+| Bileşen | Görev |
+|---------|-------|
+| `core/types.py` | `Level`, `LevelSet`, `Wall`, `Command`, `Theme` veri modelleri |
+| `core/rng.py` | Deterministik seed bazlı Rng |
+| `solver/bfs.py` | State-space BFS — çözülebilirlik, min adım, çözüm yolu |
+| `solver/connectivity.py` | UnionFind + flood-fill (bağlılık koruma) |
+| `mechanics/operators.py` | `place_ops()` — çözüm yoluna bias'lı op yerleştirme |
+| `mechanics/walls/` | 13+ desen (`none`, `single`, `barrier`, `scattered`, `maze`, `pattern`, `directional`) |
+| `generator/pipeline.py` | `generate_level()`, `generate_set()` — yapısal üretim |
+| `generator/difficulty.py` | `build_difficulty_plan()` — 12 seviyelik zorluk eğrisi |
+| `generator/fingerprint.py` | Mekanik fingerprint + duplicate önleme |
+| `generator/themes.py` | Tema seçimi + başlık/açıklama üretimi |
+| `tests/` | 18 test (pytest) — pipeline + wall connectivity |
+
+**Bilinen sınırlamalar:**
+- Directional wall desenleri (`directional-single`, `directional-cross`) `registry.py`'de devre dışı (game.html desteği eklendi ancak açılmadı).
+- `game.html` artık hem `[x,y]` hem `{"x":..., "y":..., "type":"directional", "blocks":[...]}` formatını destekliyor.
+
 ## Related Decisions
 
 - [[adr-007-mathlock-meb-curriculum-compliance-implantation]] — MEB 2024 müfredat uyum implantasyonu
@@ -122,9 +147,9 @@ cd projects/mathlock-play
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `3a030f21` feat(mathlock-play): switchable backend AI↔Procedural, `/` `^` op support, enriched stats (2026-05-11)
 - `9888d554` docs(wiki): ingest mathlock-play async generation + pending updates (2026-05-10)
 - `e5ae1fc1` fix(mathlock-play): v1.0.78 — compile fix, test limit, Play Store upload script (2026-05-10) — v1.0.78
 - `681346a3` fix(mathlock-play): 7 critical bug fixes, UI/UX improvements, new tests, v1.0.77 (2026-05-09) — v1.0.77
 - `73d9abcb` fix(mathlock-play): revert parent auth to direct biometric prompt, add USE_BIOMETRIC permission (2026-05-09) — v1.0.76
 - `5977e94b` feat(mathlock-play): auto-increment version in generate_age_questions.py, sync data to vps (2026-05-08)
-- `d1b7aa29` feat(mathlock-play): grade4 missing-number variety, remove CreditPackage model (2026-05-08)

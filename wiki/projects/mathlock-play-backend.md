@@ -243,6 +243,52 @@ sudo systemctl restart mathlock-backend mathlock-celery
 >
 > **Repo Durumu:** MathLock Play artık `github.com/atlnatln/mathlock-play` adresinde ayrı repo olarak yönetiliyor. Backend kodu monorepo'dan çıkarıldı, `projects/mathlock-play/` `.gitignore`'a alındı.
 
+## Switchable Level Generator (AI ↔ Procedural) (2026-05-11)
+
+Seviye üretim backend'i artık iki generator arasında geçiş yapabilir. Default: **Procedural** (hızlı, deterministik, dış bağımlılık yok).
+
+### Mimari
+
+```
+generate_level_set (dispatcher)
+  ├─ LEVEL_GENERATOR=procedural → _generate_level_set_procedural()
+  │     └─ python3 procedural-levels-v2.py --stats ... --output ... --version ... --seed ...
+  └─ LEVEL_GENERATOR=ai         → _generate_level_set_ai()
+        └─ bash ai-generate-levels.sh --vps-mode ...
+```
+
+### `procedural-levels-v2.py`
+
+LLM kullanmadan procedural seviye üretimi:
+- BFS ile çözülebilirlik garantisi
+- 5 zorluk seviyesi, 13 duvar deseni, 5 operatör (`+`, `-`, `×`, `/`, `^`)
+- 4 özel mekanik: kilit, teleport, restart, legendary seviyeler
+- Cross-set duplicate prevention (fingerprint + title tracking)
+- JSON çıktı: 12 seviye + metadata + ASCII harita
+
+### Backend Değişiklikleri
+
+| Dosya | Değişiklik |
+|-------|------------|
+| `credits/tasks.py` | `generate_level_set` dispatcher yapıldı; `_generate_level_set_procedural` ve `_generate_level_set_ai` ayrıldı |
+| `credits/models.py` | `GenerationJob.generator` alanı eklendi (`ai` / `procedural`) |
+| `mathlock_backend/settings.py` | `LEVEL_GENERATOR` ortam değişkeni eklendi |
+| `credits/views.py` | `_build_level_stats` zenginleştirildi; `USE_PROCEDURAL` sabiti kaldırıldı |
+
+### Zenginleştirilmiş Stats (`_build_level_stats`)
+
+`level-stats.json` artık şunları da içeriyor:
+- `questionAccuracy`: Çocuğun genel doğruluk oranı (`child.accuracy`)
+- `strongTopics` / `weakTopics`: `stats_json.byType` analizinden çıkarılan konular (≥5 gösterim, ≥%80 doğru = güçlü; <%50 = zayıf)
+- `completionRate`: Son setin tamamlama oranı
+- `currentDifficulty`: `child.current_difficulty`
+
+### Migration
+
+`0015_generationjob_generator.py` — `GenerationJob` tablosuna `generator` alanı ekler.
+
+---
+
 ## AI Üretim Mimarisi (v2 — Async Launcher + Poller)
 
 2026-05-10'da Celery Worker SIGTERM sorununa kalıcı çözüm olarak mimari değişikliği yapıldı.

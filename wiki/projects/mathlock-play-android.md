@@ -77,6 +77,14 @@ Ebeveyn ayarlarına erişim için cihazın kendi güvenlik yöntemi kullanılır
 > Robotopia (Blockly kodlama) artık bu projede değil. Bkz. [[robotopia-android]] ve [[adr-003-robotopia-extraction]].
 
 
+## WebView Game Engine — Yeni Operatörler (2026-05-11)
+
+`app/src/main/assets/sayi-yolculugu/game.html`'e `/` (bölme) ve `^` (kare alma) operatör hücreleri eklendi.
+
+- **Bölme (`/`):** Oyuncu değeri hücredeki değere tam bölünmüyorsa hücreye girilmez; oyuncu eski konumunda kalır ve bump animasyonu oynatılır.
+- **Kare (`^`):** Oyuncu değeri kendisiyle çarpılır (`val *= val`).
+- Yeni CSS stilleri: `.cell-op-divide` (turuncu), `.cell-op-square` (mor).
+
 ## Bug Fixes (2026-05-10)
 
 ### MemoryGame Kart Hizalaması
