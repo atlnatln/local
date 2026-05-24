@@ -233,3 +233,50 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 21 entries
 
+
+## [2026-05-24 19:30] refactor | mathlock-play procedural_questions v2
+- `procedural_questions/` paketi oluşturuldu — 11 tip × 5 zorluk, 6 generator sınıfı
+- `core/types.py`: genişletilmiş `Question` dataclass (options, explanation, topic_code, interaction_mode)
+- `core/rng.py`: deterministik seed bazlı `Rng` (procedural_levels'den kopya)
+- `core/config.py`: tüm dönem zorluk config'leri, ID offset'leri, tip oranları
+- `core/curriculum.py`: MEB kazanım mapping (synthetic topic codes)
+- `generators/`: `Arithmetic`, `Ordering`, `MissingNumber`, `Fraction`, `Pattern`, `Problem`
+- `pipeline/`: `StatsAnalyzer`, `AdaptiveDistributor`, `QuestionSetBuilder`, `themes`
+- `validators/math.py`: matematiksel doğrulama
+- `tests/`: 192 pytest testi (155 generator + 12 pipeline + 25 integration)
+- `backend/credits/tasks.py`: `python3 -m procedural_questions` + `PYTHONPATH`
+- `deploy.sh`: `procedural_questions/` rsync eklendi
+- Eski `procedural-questions-v2.py` → `.backup`
+## [2026-05-24 19:30] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 6
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 23 entries
+
+
+## [2026-05-24 20:45] ingest | mathlock-play
+- Crash Report Telegram sistemi deploy edildi (VPS)
+- Yeni dosyalar: `reporting/telegram.py`, `queries.py`, `thresholds.py`, `formatters.py`, `crash_report_telegram.py`
+- `.env.example`: `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` eklendi
+- VPS crontab: günlük 06:00 + anlık her 5 dk
+- `.venv` yeniden oluşturuldu (shebang bozulması nedeniyle)
+- Test: daily + realtime bildirimleri Telegram'a ulaştı
+- `models.py`: CrashReport modeli eklendi (önceki commit'te eksik kalmıştı)
+## [2026-05-24 20:56] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 25 entries
+

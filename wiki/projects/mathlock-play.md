@@ -34,7 +34,8 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | Cache/Queue | Redis (Docker) |
 | AI Pipeline | [[kimi-code-cli|kimi-cli]] (`kimi-for-coding`) |
 | Deploy | systemd servisleri (host-based) |
-| Crash Reporting | Firebase Crashlytics 18.6.4 |
+| Crash Reporting (ACRA) | Firebase Crashlytics 18.6.4 |
+| Crash Report Telegram | Django mgmt command + VPS crontab |
 
 ## Alt Sayfalar
 
@@ -59,6 +60,7 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | `projects/mathlock-play/procedural-levels.py` | Procedural seviye üretimi (v1 — eski, devre dışı) |
 | `projects/mathlock-play/procedural-levels-v2.py` | Procedural seviye üretimi (v2 — eski tek dosya, backup) |
 | `projects/mathlock-play/experimental-web/` | React + Vite + Tailwind deneme oyun frontend'i |
+| `projects/mathlock-play/procedural_questions/` | Procedural soru üretimi v2 — modüler paket (11 tip, 5 zorluk, deterministik RNG, adaptif dağıtım) |
 | `projects/mathlock-play/scripts/validate-questions.py` | Dönem bazlı soru seti doğrulama aracı (tip/zorluk/duplicate/code) |
 | `projects/mathlock-play/scripts/upload-play-store.py` | Google Play Store internal track'e AAB upload script'i |
 
@@ -79,8 +81,10 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` | ❌ | IAP doğrulama için JSON dosya yolu |
 | `CELERY_BROKER_URL` | ❌ | `redis://localhost:6379/0` |
 | `CELERY_RESULT_BACKEND` | ❌ | `redis://localhost:6379/0` |
+| `TELEGRAM_BOT_TOKEN` | ❌ | Crash Report Telegram bildirimleri |
+| `TELEGRAM_CHAT_ID` | ❌ | Crash Report Telegram bildirimleri |
 
-> **Not:** Eski tek `MATHLOCK_DB_PASSWORD` değişkeni ayrı `DB_*` değişkenlerine bölündü. `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` path'i `/home/akn/secrets/mathlock-play/...` olarak güncellendi.
+> **Not:** Eski tek `MATHLOCK_DB_PASSWORD` değişkeni ayrı `DB_*` değişkenlerine bölündü. `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` path'i `/home/akn/secrets/mathlock-play/...` olarak güncellendi. Telegram değişkenleri ops-bot `.env` ile aynı değerleri kullanır.
 
 ## Servisler (VPS)
 
@@ -90,6 +94,8 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | `mathlock-celery.service` | systemd | Celery worker |
 | `mathlock_db` | Docker | PostgreSQL |
 | `mathlock_redis` | Docker | Redis |
+| `crash-report-daily` | crontab | Günlük özet (06:00) |
+| `crash-report-realtime` | crontab | Anlık kontrol (her 5 dk) |
 
 ## Deploy
 
@@ -140,13 +146,62 @@ cd projects/mathlock-play
 - Directional wall desenleri (`directional-single`, `directional-cross`) `registry.py`'de devre dışı (game.html desteği eklendi ancak açılmadı).
 - `game.html` artık hem `[x,y]` hem `{"x":..., "y":..., "type":"directional", "blocks":[...]}` formatını destekliyor.
 
+## Procedural Questions v2 (2026-05-24)
+
+`procedural_questions/` paketi ile `procedural-questions-v2.py` monolitik dosyası modüler yapıya taşındı. Backend `tasks.py` artık `python3 -m procedural_questions` çalıştırıyor.
+
+| Bileşen | Görev |
+|---------|-------|
+| `core/types.py` | `Question`, `QuestionSet`, `QuestionType`, `DifficultyConfig`, `PeriodConfig` veri modelleri |
+| `core/rng.py` | Deterministik seed bazlı `Rng` (procedural_levels'den kopya) |
+| `core/config.py` | Tüm dönem (okul_oncesi … sinif_4) zorluk config'leri, ID offset'leri, tip oranları |
+| `core/curriculum.py` | MEB kazanım mapping (synthetic topic codes) |
+| `generators/` | 6 generator sınıfı: `Arithmetic`, `Ordering`, `MissingNumber`, `Fraction`, `Pattern`, `Problem` |
+| `generators/registry.py` | `get_generator()` / `allowed_types()` — tip → sınıf haritası |
+| `pipeline/analyzer.py` | `StatsAnalyzer` — performans kategorisi (USTA…KRITIK) + zorluk ayarı |
+| `pipeline/distributor.py` | `AdaptiveDistributor` — A/B/C grup dağılımı |
+| `pipeline/builder.py` | `QuestionSetBuilder` — psikolojik sıralama + dedup + ID atama |
+| `pipeline/themes.py` | Hint ve topic (konu anlatımı) üretimi |
+| `validators/math.py` | Matematiksel doğrulama (toplama, çıkarma, çarpma, bölme, sıralama, kesir, eksik_sayı) |
+| `tests/` | 192 test (pytest) — generator (155), pipeline (12), integration (25) |
+
+**Backend entegrasyonu:**
+- `backend/credits/tasks.py`: `sys.executable -m procedural_questions` + `PYTHONPATH`
+- `deploy.sh`: `procedural_questions/` rsync eklendi
+- Eski `procedural-questions-v2.py` → `procedural-questions-v2.py.backup`
+
 ## Related Decisions
 
 - [[adr-007-mathlock-meb-curriculum-compliance-implantation]] — MEB 2024 müfredat uyum implantasyonu
 
+## Crash Report Telegram Notifications (2026-05-24)
+
+ACRA çökme raporlarını Telegram üzerinden günlük özet + anlık kritik bildirim olarak gönderen sistem.
+
+| Bileşen | Dosya | Görev |
+|---------|-------|-------|
+| `reporting/telegram.py` | `backend/credits/reporting/telegram.py` | Telegram `sendMessage` helper (4096 karakter limit, truncate) |
+| `reporting/queries.py` | `backend/credits/reporting/queries.py` | ORM sorguları — daily summary, realtime candidates, type stats |
+| `reporting/thresholds.py` | `backend/credits/reporting/thresholds.py` | Anlık bildirim kuralları (kritik sınıf, spike, yeni tip) |
+| `reporting/formatters.py` | `backend/credits/reporting/formatters.py` | Günlük ve anlık rapor metin formatlayıcı |
+| Management Command | `backend/credits/management/commands/crash_report_telegram.py` | Entry point — `--mode daily|realtime`, `--dry-run`, `--hours`, `--minutes` |
+
+**Threshold kuralları:**
+- `java.lang.NullPointerException`, `OutOfMemoryError`, `SQLiteException` → her zaman bildir
+- Aynı crash tipi saatte ≥5 kez → spike bildirimi
+- İlk kez görülen crash tipi → yeni tip bildirimi
+- `is_resolved=True` olanlar atlanır
+
+**VPS crontab:**
+```bash
+0 6 * * *   cd /home/akn/vps/projects/mathlock-play/backend && .venv/bin/python manage.py crash_report_telegram --mode daily
+*/5 * * * * cd /home/akn/vps/projects/mathlock-play/backend && .venv/bin/python manage.py crash_report_telegram --mode realtime
+```
+
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `6973b89` feat(backend): crash report telegram daily & realtime notifications (2026-05-24)
 - `3a030f21` feat(mathlock-play): switchable backend AI↔Procedural, `/` `^` op support, enriched stats (2026-05-11)
 - `9888d554` docs(wiki): ingest mathlock-play async generation + pending updates (2026-05-10)
 - `e5ae1fc1` fix(mathlock-play): v1.0.78 — compile fix, test limit, Play Store upload script (2026-05-10) — v1.0.78
