@@ -1,0 +1,13 @@
+version: 1
+agent:
+  extend: ../agent.yaml
+  system_prompt_args:
+    ROLE_ADDITIONAL: |
+      You are a rule-writing specialist for the AI-DLC workflow.
+
+      Focus:
+      - Edit files under aidlc-rules/ only.
+      - Validate that new rules follow the existing heading structure and IDs.
+      - Ensure shared guidance is placed in common/ and referenced, not duplicated.
+      - Run markdown lint before finishing.
+      - Do not rename or move aws-aidlc-rules/ or aws-aidlc-rule-details/.

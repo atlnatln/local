@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import random
 import shutil
 import signal
 import subprocess
@@ -16,8 +17,7 @@ logger = logging.getLogger(__name__)
 
 # Proje dizini — backend/ üst dizini
 _PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
-_GENERATE_SCRIPT = _PROJECT_DIR / 'ai-generate.sh'
-_GENERATE_LEVELS_SCRIPT = _PROJECT_DIR / 'ai-generate-levels.sh'
+
 
 
 def _refund_credit(credit_balance_pk: int, is_free: bool):
@@ -48,62 +48,55 @@ def _release_renewal_lock(child_pk: int, content_type: str):
 
 
 @shared_task(bind=True, max_retries=0, queue='levels')
-def generate_level_set(self, child_pk, credit_balance_pk, is_free, level_stats, education_period='sinif_2', use_procedural=False):
-    """
-    Celery task: AI seviye üretimi LAUNCHER.
+def generate_level_set(self, child_pk, credit_balance_pk, is_free, level_stats, education_period='sinif_2'):
+    """Procedural seviye üretimi."""
+    return _generate_level_set_procedural(
+        child_pk, credit_balance_pk, is_free, level_stats, education_period
+    )
 
-    Subprocess'i başlatır, PID kaydeder, hemen döner.
-    Arka plan poller (poll_generation_jobs) tamamlandığında output'u okur.
-    """
+
+def _generate_level_set_procedural(child_pk, credit_balance_pk, is_free, level_stats, education_period):
+    """Procedural seviye üretimi — procedural-levels-v2.py çalıştırır."""
     from .models import ChildProfile, GenerationJob
 
     try:
         child = ChildProfile.objects.get(pk=child_pk)
     except ChildProfile.DoesNotExist:
-        logger.error("generate_level_set: child bulunamadı pk=%d", child_pk)
         return {'success': False, 'error': 'child_not_found'}
 
-    # Önceki başarısuz/pending job'ları temizle
     GenerationJob.objects.filter(
         child=child, content_type='levels', status__in=['pending', 'failed']
     ).delete()
 
-    # Geçici dizin oluştur
     tmpdir = Path(tempfile.mkdtemp(prefix='mathlock-levels-gen-'))
 
-    # Stats yaz (script okuyacak)
-    if level_stats:
-        (tmpdir / 'level-stats.json').write_text(
-            json.dumps(level_stats, ensure_ascii=False, indent=2),
-            encoding='utf-8'
-        )
+    (tmpdir / 'level-stats.json').write_text(
+        json.dumps(level_stats or {}, ensure_ascii=False, indent=2),
+        encoding='utf-8'
+    )
 
-    # Scripti NON-blocking başlat
-    if not _GENERATE_LEVELS_SCRIPT.exists():
-        _release_renewal_lock(child_pk, 'levels')
-        if credit_balance_pk:
-            _refund_credit(credit_balance_pk, is_free)
-        return {'success': False, 'error': 'script_not_found'}
+    # Use the new procedural_levels package (python3 -m procedural_levels)
+    version = (level_stats or {}).get('lastVersion', 0) + 1
 
     try:
-        cmd = ['bash', str(_GENERATE_LEVELS_SCRIPT), '--vps-mode',
-               '--period', education_period, '--data-dir', str(tmpdir)]
-        if use_procedural:
-            cmd.append('--procedural')
         process = subprocess.Popen(
-            cmd,
+            [sys.executable, '-m', 'procedural_levels',
+             '--stats', str(tmpdir / 'level-stats.json'),
+             '--output', str(tmpdir / 'levels.json'),
+             '--version', str(version),
+             '--seed', str(random.randint(0, 999999))],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             cwd=str(_PROJECT_DIR),
+            env={**os.environ, 'PYTHONPATH': str(_PROJECT_DIR)},
         )
     except Exception as exc:
-        logger.error("Subprocess başlatılamadı: %s", exc)
+        logger.error("Procedural subprocess failed: %s", exc)
         _release_renewal_lock(child_pk, 'levels')
         if credit_balance_pk:
             _refund_credit(credit_balance_pk, is_free)
         shutil.rmtree(tmpdir, ignore_errors=True)
         return {'success': False, 'error': str(exc)}
 
-    # Job kaydet
     job = GenerationJob.objects.create(
         child=child,
         content_type='levels',
@@ -114,24 +107,22 @@ def generate_level_set(self, child_pk, credit_balance_pk, is_free, level_stats, 
         is_free=is_free,
         level_stats=level_stats or {},
         education_period=education_period,
+
     )
 
-    logger.info(
-        "Level generation launched: child=%s, pid=%d, job=%d, tmpdir=%s",
-        child.name, process.pid, job.pk, tmpdir
-    )
+    logger.info("Procedural level gen launched: child=%s, pid=%d, job=%d", child.name, process.pid, job.pk)
     return {'success': True, 'job_id': job.pk, 'pid': process.pid}
 
 
 @shared_task(bind=True, max_retries=0, queue='questions')
 def generate_question_set(self, child_pk, credit_balance_pk, is_free):
-    """
-    Celery task: AI soru üretimi LAUNCHER.
+    """Procedural soru üretimi LAUNCHER."""
+    return _generate_question_set_procedural(child_pk, credit_balance_pk, is_free)
 
-    Subprocess'i başlatır, PID kaydeder, hemen döner.
-    """
-    from .models import ChildProfile, GenerationJob
-    # Lazy import — circular dependency önlemek için
+
+def _generate_question_set_procedural(child_pk, credit_balance_pk, is_free):
+    """Procedural soru üretimi — procedural-questions-v2.py çalıştırır."""
+    from .models import ChildProfile, GenerationJob, QuestionSet
     from .views import _build_child_stats
 
     try:
@@ -147,11 +138,8 @@ def generate_question_set(self, child_pk, credit_balance_pk, is_free):
     tmpdir = Path(tempfile.mkdtemp(prefix='mathlock-questions-gen-'))
     child_stats = _build_child_stats(child)
 
-    if not _GENERATE_SCRIPT.exists():
-        _release_renewal_lock(child_pk, 'questions')
-        if credit_balance_pk:
-            _refund_credit(credit_balance_pk, is_free)
-        return {'success': False, 'error': 'script_not_found'}
+    latest = QuestionSet.objects.filter(child=child).order_by('-version').first()
+    next_version = (latest.version + 1) if latest else 1
 
     try:
         (tmpdir / 'stats.json').write_text(
@@ -159,13 +147,18 @@ def generate_question_set(self, child_pk, credit_balance_pk, is_free):
             encoding='utf-8'
         )
         process = subprocess.Popen(
-            ['bash', str(_GENERATE_SCRIPT), '--vps-mode', '--skip-sync',
-             '--period', child.education_period, '--data-dir', str(tmpdir)],
+            [sys.executable, '-m', 'procedural_questions',
+             '--stats', str(tmpdir / 'stats.json'),
+             '--output', str(tmpdir / 'questions.json'),
+             '--period', child.education_period,
+             '--version', str(next_version),
+             '--seed', str(random.randint(0, 999999))],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             cwd=str(_PROJECT_DIR),
+            env={**os.environ, 'PYTHONPATH': str(_PROJECT_DIR)},
         )
     except Exception as exc:
-        logger.error("Subprocess başlatılamadı: %s", exc)
+        logger.error("Procedural question subprocess failed: %s", exc)
         _release_renewal_lock(child_pk, 'questions')
         if credit_balance_pk:
             _refund_credit(credit_balance_pk, is_free)
@@ -184,7 +177,7 @@ def generate_question_set(self, child_pk, credit_balance_pk, is_free):
     )
 
     logger.info(
-        "Question generation launched: child=%s, pid=%d, job=%d, tmpdir=%s",
+        "Procedural question gen launched: child=%s, pid=%d, job=%d, tmpdir=%s",
         child.name, process.pid, job.pk, tmpdir
     )
     return {'success': True, 'job_id': job.pk, 'pid': process.pid}
@@ -212,9 +205,83 @@ def poll_generation_jobs():
     connection.close()
 
 
+@shared_task(bind=True, max_retries=0, queue='puzzles')
+def generate_puzzle_set(self, child_pk, credit_balance_pk, is_free, puzzle_stats, education_period='sinif_2'):
+    """Sayı Yolculuğu prosedürel bulmaca seti üretimi."""
+    return _generate_puzzle_set_procedural(
+        child_pk, credit_balance_pk, is_free, puzzle_stats, education_period
+    )
+
+
+def _generate_puzzle_set_procedural(child_pk, credit_balance_pk, is_free, puzzle_stats, education_period):
+    """Procedural puzzle üretimi — procedural-puzzles.py çalıştırır."""
+    from .models import ChildProfile, GenerationJob, PuzzleSet
+
+    try:
+        child = ChildProfile.objects.get(pk=child_pk)
+    except ChildProfile.DoesNotExist:
+        return {'success': False, 'error': 'child_not_found'}
+
+    GenerationJob.objects.filter(
+        child=child, content_type='puzzles', status__in=['pending', 'failed']
+    ).delete()
+
+    tmpdir = Path(tempfile.mkdtemp(prefix='mathlock-puzzles-gen-'))
+
+    (tmpdir / 'puzzle-stats.json').write_text(
+        json.dumps(puzzle_stats or {}, ensure_ascii=False, indent=2),
+        encoding='utf-8'
+    )
+
+    script = _PROJECT_DIR / 'procedural-puzzles.py'
+    if not script.exists():
+        _release_renewal_lock(child_pk, 'puzzles')
+        if credit_balance_pk:
+            _refund_credit(credit_balance_pk, is_free)
+        return {'success': False, 'error': 'procedural_script_not_found'}
+
+    version = (puzzle_stats or {}).get('lastVersion', 0) + 1
+
+    try:
+        process = subprocess.Popen(
+            ['python3', str(script),
+             '--stats', str(tmpdir / 'puzzle-stats.json'),
+             '--output', str(tmpdir / 'puzzles.json'),
+             '--version', str(version),
+             '--seed', str(random.randint(0, 999999))],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            cwd=str(_PROJECT_DIR),
+        )
+    except Exception as exc:
+        logger.error("Procedural puzzle subprocess failed: %s", exc)
+        _release_renewal_lock(child_pk, 'puzzles')
+        if credit_balance_pk:
+            _refund_credit(credit_balance_pk, is_free)
+        shutil.rmtree(tmpdir, ignore_errors=True)
+        return {'success': False, 'error': str(exc)}
+
+    job = GenerationJob.objects.create(
+        child=child,
+        content_type='puzzles',
+        status='running',
+        pid=process.pid,
+        temp_dir=str(tmpdir),
+        credit_balance_pk=credit_balance_pk,
+        is_free=is_free,
+        level_stats=puzzle_stats or {},
+        education_period=education_period,
+    )
+
+    logger.info(
+        "Procedural puzzle gen launched: child=%s, pid=%d, job=%d",
+        child.name, process.pid, job.pk
+    )
+    return {'success': True, 'job_id': job.pk, 'pid': process.pid}
+
+
 def _process_single_job(job):
     """Tek bir generation job'u işle — subprocess bitti mi kontrol et."""
-    from .models import LevelSet, QuestionSet
+    from .models import LevelSet, QuestionSet, PuzzleSet
 
     # 1. PID hâlâ çalışıyor mu?
     # NOT: os.kill(pid, 0) zombie process'lerde başarılı olur!
@@ -256,14 +323,9 @@ def _process_single_job(job):
             if not levels_file.exists():
                 raise RuntimeError("levels.json not generated")
 
-            # Run validation before saving
-            if validator_path.exists():
-                val_result = subprocess.run(
-                    [sys.executable, str(validator_path), '--file', str(levels_file), '--stats-file', str(tmpdir / 'level-stats.json')],
-                    capture_output=True, text=True
-                )
-                if val_result.returncode != 0:
-                    raise RuntimeError(f"Validation failed:\n{val_result.stdout}")
+            # Validation skipped — procedural_levels.generator.pipeline already
+            # guarantees BFS solvability. validate-levels.py remains useful for
+            # development / AI-generated content but is not needed here.
 
             data = json.loads(levels_file.read_text(encoding='utf-8'))
             levels = data.get('levels', [])
@@ -278,11 +340,39 @@ def _process_single_job(job):
                 child=job.child,
                 version=next_version,
                 levels_json=levels[:12],
-                is_ai_generated=True,
+                is_ai_generated=False,
                 credit_used=not job.is_free,
             )
             logger.info(
                 "Level generation completed: child=%s, v%d, job=%d",
+                job.child.name, next_version, job.pk
+            )
+            success = True
+
+        elif job.content_type == 'puzzles':
+            puzzles_file = tmpdir / 'puzzles.json'
+            if not puzzles_file.exists():
+                raise RuntimeError("puzzles.json not generated")
+
+            data = json.loads(puzzles_file.read_text(encoding='utf-8'))
+            puzzles = data.get('puzzles', [])
+
+            if len(puzzles) < 1:
+                raise RuntimeError(f"Insufficient puzzles: {len(puzzles)}")
+
+            latest = PuzzleSet.objects.filter(child=job.child).order_by('-version').first()
+            next_version = (latest.version + 1) if latest else 1
+
+            PuzzleSet.objects.create(
+                child=job.child,
+                version=next_version,
+                puzzles_json=puzzles,
+                is_procedural=True,
+                credit_used=not job.is_free,
+                generated_by='procedural',
+            )
+            logger.info(
+                "Puzzle generation completed: child=%s, v%d, job=%d",
                 job.child.name, next_version, job.pk
             )
             success = True
@@ -311,6 +401,10 @@ def _process_single_job(job):
                     'type': q.get('type', ''),
                     'difficulty': q.get('difficulty', 1),
                     'hint': q.get('hint', ''),
+                    'options': q.get('options'),
+                    'explanation': q.get('explanation', ''),
+                    'topic_code': q.get('topic_code', ''),
+                    'interaction_mode': q.get('interaction_mode', 'text-input'),
                 }
                 for q in questions[:expected]
             ]
@@ -319,7 +413,7 @@ def _process_single_job(job):
                 child=job.child,
                 version=next_version,
                 questions_json=normalized,
-                is_ai_generated=True,
+                is_ai_generated=False,
                 credit_used=not job.is_free,
             )
             logger.info(

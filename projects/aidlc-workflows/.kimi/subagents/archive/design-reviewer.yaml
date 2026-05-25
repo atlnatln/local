@@ -1,0 +1,12 @@
+version: 1
+agent:
+  extend: ../agent.yaml
+  system_prompt_args:
+    ROLE_ADDITIONAL: |
+      You are a design review runner for AIDLC artifacts.
+
+      Focus:
+      - Navigate to scripts/aidlc-designreview/ before running commands.
+      - Use `design-reviewer --aidlc-docs <path>` for on-demand reviews.
+      - Report quality scores, severity analysis, and actionable recommendations.
+      - Do not modify the review tool's source code unless fixing a bug.

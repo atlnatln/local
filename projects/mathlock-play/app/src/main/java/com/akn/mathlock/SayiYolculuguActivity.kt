@@ -388,13 +388,16 @@ class SayiYolculuguActivity : BaseActivity() {
                             if (!isTestMode) {
                                 uploadLevelProgress(completedLevelIds.toList()) { resp ->
                                     val autoRenewal = resp.optBoolean("auto_renewal_started", false)
-                                    val creditsRemaining = resp.optInt("credits_remaining", -1)
-                                    Log.i(TAG, "allComplete response: autoRenewal=$autoRenewal, credits=$creditsRemaining")
-                                    if (autoRenewal) {
-                                        showRenewalLoading()
-                                        pollForNewSet()
-                                    } else {
-                                        showCreditRequired(creditsRemaining)
+                                    val creditsRemaining = resp.optInt("credits_remaining", 0)
+                                    val hasError = resp.has("error")
+                                    Log.i(TAG, "allComplete response: autoRenewal=$autoRenewal, credits=$creditsRemaining, hasError=$hasError")
+                                    when {
+                                        hasError -> showRenewalError()
+                                        autoRenewal -> {
+                                            showRenewalLoading()
+                                            pollForNewSet()
+                                        }
+                                        else -> showCreditRequired(creditsRemaining)
                                     }
                                 }
                             } else {
@@ -517,11 +520,12 @@ class SayiYolculuguActivity : BaseActivity() {
     }
 
     private fun showCreditRequired(creditsRemaining: Int) {
+        val safeCredits = creditsRemaining.coerceAtLeast(0)
         runOnUiThread {
             webView.evaluateJavascript("showCreditRequired();", null)
             Toast.makeText(
                 this,
-                getString(R.string.credit_required_toast, creditsRemaining),
+                getString(R.string.credit_required_toast, safeCredits),
                 Toast.LENGTH_LONG
             ).show()
         }

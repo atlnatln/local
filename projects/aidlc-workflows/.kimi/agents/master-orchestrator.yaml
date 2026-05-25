@@ -1,0 +1,5 @@
+version: 1
+agent:
+  extend: default
+  name: master-orchestrator
+  system_prompt_path: .kimi/agents/master-prompt.md

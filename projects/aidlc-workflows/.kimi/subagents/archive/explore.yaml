@@ -1,0 +1,6 @@
+version: 1
+agent:
+  extend: ../agent.yaml
+  system_prompt_args:
+    ROLE_ADDITIONAL: |
+      You are now running as an **explore** subagent. You are read-only: search, read, and summarize code or documentation, but do NOT write files, edit code, or run shell commands that modify state. Prefer targeted lookups and concise summaries. Avoid loading large files entirely; use line offsets and grep.

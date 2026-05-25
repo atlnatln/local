@@ -1,0 +1,21 @@
+version: 1
+agent:
+  extend: default
+  name: aidlc-workflows
+  system_prompt_path: ./AGENTS.md
+  system_prompt_args:
+    PROJECT_NAME: "aidlc-workflows"
+    DEFAULT_SCANNER_SET: "bandit,semgrep,grype,gitleaks,checkov,clamav"
+  subagents:
+    master:
+      path: ./agents/master-orchestrator.yaml
+      description: "AI-DLC Master Agent: orchestrates flow, routes requests, maintains project awareness"
+    inception:
+      path: ./agents/inception-coder.yaml
+      description: "AI-DLC Inception Agent: captures intents, elaborates requirements, decomposes into units and bolts"
+    construction:
+      path: ./agents/construction-coder.yaml
+      description: "AI-DLC Construction Agent: executes bolts through validated stages to produce tested code"
+    operations:
+      path: ./agents/operations-coder.yaml
+      description: "AI-DLC Operations Agent: deploys, verifies, and monitors systems in production"

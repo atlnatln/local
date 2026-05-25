@@ -125,6 +125,7 @@ REST_FRAMEWORK = {
         'anon': '60/minute',
         'register': '10/minute',
         'purchase': '20/minute',
+        'crash_report': '10/hour',
     },
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }

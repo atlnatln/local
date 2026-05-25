@@ -97,9 +97,9 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 | [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67+ test) | 2026-05-07 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-07 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-05 |
-| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) — **ayrı repo** | 2026-05-10 |
+| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) — **ayrı repo** | 2026-05-25 |
 | [[mathlock-play-ai]] | project | MathLock AI soru pipeline'ı | 2026-05-07 |
-| [[mathlock-play-android]] | project | MathLock Android detayları | 2026-05-10 |
+| [[mathlock-play-android]] | project | MathLock Android detayları | 2026-05-25 |
 | [[mathlock-play-android-releases]] | project | MathLock Android release notları ve bug fix'ler | 2026-05-10 |
 | [[mathlock-play-backend]] | project | MathLock backend detayları | 2026-05-10 |
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
@@ -109,10 +109,11 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 
 ## Recently Updated
 
+- [[mathlock-play]] — Google Play Store dağıtım süreci eklendi (`upload-play-store.py`, `upload-to-play-store.py`, AAB→APK, dahili test); v1.0.94 release notes (2026-05-25)
+- [[mathlock-play-android]] — Sayı Yolculuğu set bitiminde kredi hatası (-1 gösterme) fix dökümantasyonu; `optInt` default 0, `hasError` handler, `coerceAtLeast(0)` (2026-05-25)
 - [[mathlock-play-backend]] — Switchable backend AI↔Procedural, `_generate_level_set_procedural` + dispatcher, `GenerationJob.generator`, `LEVEL_GENERATOR` setting, enriched stats (`questionAccuracy`, `strongTopics`, `weakTopics`, `completionRate`), migration 0015 (2026-05-11)
 - [[mathlock-play-android]] — WebView `game.html`'e `/` (bölme) ve `^` (kare) operatör desteği; bölme bounce mantığı (2026-05-11)
 - [[sayi-yolculugu]] — `/` ve `^` operatör desteği eklendi; bölme hücresine tam bölünmezse bounce davranışı (2026-05-11)
-- [[mathlock-play]] — `procedural-levels.py` / `procedural-levels-v2.py` eklendi; switchable backend mimarisi yansıtıldı; recent commits güncellendi (2026-05-11)
 - [[local]] — AGENTS.md refactor: 499→167 satır, references/QUICKREF.md yeni, WORKFLOW.md'ye wiki filtreleme ve iddia kuralları eklendi (2026-05-10)
 - [[mathlock-play]] — v1.0.77 release, recent commits güncellendi (2026-05-09)
 - [[mathlock-play-ai]] — MEB uyum düzeltmeleri: curriculum JSON non-üniter kesir fix, generate script çıkarma=0 fix, zorluk 5 toplama 100'e genişletildi, Android TYPE_LABELS standardizasyonu tamamlandı (2026-05-07)

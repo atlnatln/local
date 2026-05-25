@@ -60,7 +60,10 @@ def bfs_solvable(level):
 
     wall_set = set()
     for w in level.get("walls", []):
-        wall_set.add((w[0], w[1]))
+        if isinstance(w, list) and len(w) >= 2:
+            wall_set.add((w[0], w[1]))
+        elif isinstance(w, dict):
+            wall_set.add((w["x"], w["y"]))
 
     op_map = {}
     for o in ops:
@@ -179,13 +182,16 @@ def validate_level(lv, idx, age_group):
         if cmd not in VALID_COMMANDS:
             err(f"{prefix}: geçersiz komut '{cmd}'")
 
-    # Walls check
+    # Walls check (supports both [x, y] legacy and {"x":x,"y":y} formats)
     wall_set = set()
     for w in lv["walls"]:
-        if not isinstance(w, list) or len(w) != 2:
+        if isinstance(w, list) and len(w) >= 2:
+            wx, wy = w[0], w[1]
+        elif isinstance(w, dict):
+            wx, wy = w["x"], w["y"]
+        else:
             err(f"{prefix}: geçersiz duvar formatı: {w}")
             continue
-        wx, wy = w[0], w[1]
         if wx < 0 or wx >= cols or wy < 0 or wy >= rows:
             err(f"{prefix}: duvar ({wx},{wy}) grid dışında")
         wall_set.add((wx, wy))

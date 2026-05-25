@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play — Android"
 created: 2026-05-07
-updated: 2026-05-10
+updated: 2026-05-25
 type: project
 tags: [mathlock-play, android, kotlin, security]
 related:
@@ -85,7 +85,30 @@ Ebeveyn ayarlarına erişim için cihazın kendi güvenlik yöntemi kullanılır
 - **Kare (`^`):** Oyuncu değeri kendisiyle çarpılır (`val *= val`).
 - Yeni CSS stilleri: `.cell-op-divide` (turuncu), `.cell-op-square` (mor).
 
-## Bug Fixes (2026-05-10)
+## Bug Fixes (2026-05-25)
+
+### Sayı Yolculuğu Set Bitiminde Kredi Hatası (-1)
+
+**Sorun:** Sayı Yolculuğu 12 seviyelik set bitiminde `/levels/progress/` isteği HTTP hatası veya exception verdiğinde, Android callback `auto_renewal_started=false` ile çağrılıyordu. `credits_remaining` alanı response'da olmadığı için `optInt("credits_remaining", -1)` default olarak **-1** döndürüyordu. Kullanıcıya "Yeni seviyelere geçmek için kredi gerekli (kalan: -1)" mesajı gösteriliyordu — gerçekte backend'de kredi olmasına rağmen.
+
+**Kök Neden:**
+- `uploadLevelProgress()` içinde HTTP hatası durumunda callback `auto_renewal_started=false` ile çağrılıyordu
+- `showCreditRequired(creditsRemaining)` fonksiyonu negatif değerleri kontrol etmiyordu
+- `optInt` default değeri `-1` idi
+
+**Çözüm (`v1.0.94`):**
+```kotlin
+// SayiYolculuguActivity.kt — allComplete handler
+val creditsRemaining = resp.optInt("credits_remaining", 0)  // -1 → 0
+val hasError = resp.has("error")
+when {
+    hasError -> showRenewalError()                           // ağ/backend hatası
+    autoRenewal -> { showRenewalLoading(); pollForNewSet() } // normal akış
+    else -> showCreditRequired(creditsRemaining)             // kredi gerçekten yoksa
+}
+```
+- `showCreditRequired()` içinde `creditsRemaining.coerceAtLeast(0)` ile negatif değerler 0'a çekildi
+- `uploadLevelProgress()` hata durumunda artık `showRenewalError()` tetikleniyor ("Yeni seviyeler hazırlanırken hata oluştu")
 
 ### MemoryGame Kart Hizalaması
 

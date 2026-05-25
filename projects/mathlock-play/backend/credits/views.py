@@ -1,12 +1,13 @@
 import json
 import logging
+import random
 import re
 import subprocess
 import threading
 import uuid
 import tempfile
 import shutil
-from datetime import timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 from django.conf import settings
@@ -18,18 +19,22 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
-from .models import (ChildProfile, CreditBalance,
+from .models import (ChildProfile, CreditBalance, CrashReport,
                      Device, GenerationJob, LevelSet, PurchaseRecord, Question, QuestionSet,
+                     PuzzleSet, PuzzleProgress,
                      RenewalLock, UserQuestionProgress)
 from .authentication import DeviceTokenSigner
 from .google_play import verify_purchase
-from .tasks import generate_level_set, generate_question_set
+from .tasks import generate_level_set, generate_question_set, generate_puzzle_set
 
 logger = logging.getLogger(__name__)
 
-# Seviye üretim backend seçimi: True=procedural, False=LLM (kimi-cli)
-USE_PROCEDURAL = True
+# Procedural motor anahtarı — settings.py'den override edilebilir
+USE_PROCEDURAL = getattr(settings, 'USE_PROCEDURAL', True)
+
+
 
 # ─── Input Sanitization ─────────────────────────────────────────────────────
 
@@ -49,22 +54,18 @@ def _sanitize_child_name(name: str) -> str:
 # NOT: Container'da BASE_DIR=/app olduğunda parent=/ olur.
 # Mount yapısına göre adaptif: önce parent dizini dene (lokal), yoksa BASE_DIR (container).
 _PROJECT_DIR = Path(settings.BASE_DIR).parent
-if not (_PROJECT_DIR / 'ai-generate.sh').exists():
+if not (_PROJECT_DIR / 'procedural-questions-v2.py').exists():
     _PROJECT_DIR = Path(settings.BASE_DIR)
 
 _DATA_DIR = _PROJECT_DIR / 'data'
 if not _DATA_DIR.exists():
     _DATA_DIR = Path(settings.BASE_DIR) / 'data'
 
-_GENERATE_SCRIPT = _PROJECT_DIR / 'ai-generate.sh'
-_GENERATE_TIMEOUT = 1200  # saniye
+_GENERATE_TIMEOUT = 120  # saniye — procedural üretim çok hızlı
 
-# Bulmaca seviye scripti
-_GENERATE_LEVELS_SCRIPT = _PROJECT_DIR / 'ai-generate-levels.sh'
-_LEVELS_FILE = _DATA_DIR / 'levels.json'
 _LEVELS_COUNT = 12  # Her sette 12 seviye
 
-# Yenileme kilidi TTL: 20 dakika (AI üretimi 10 dk + tampon)
+# Yenileme kilidi TTL: 20 dakika (procedural üretim + tampon)
 _RENEWAL_LOCK_TTL = 20 * 60  # saniye
 
 # Satın alma doğrulama: test token prefix (sadece DEBUG=True iken geçerli)
@@ -82,16 +83,16 @@ _QUESTION_COUNTS = {
 _VALID_EDUCATION_PERIODS = set(_QUESTION_COUNTS.keys())
 
 
-def _generate_via_kimi(child_stats: dict, education_period: str = 'sinif_2') -> list:
+def _generate_questions_procedural(child_stats: dict, education_period: str = 'sinif_2') -> list:
     """
-    ai-generate.sh + AGENTS.md ile kimi-cli kullanarak soru üret.
+    procedural-questions-v2.py ile prosedürel soru üret.
 
     Her çocuk için izole geçici dizin kullanır — eşzamanlı üretimlerde dosya çakışması olmaz.
 
     Akış:
       1. Geçici dizin oluştur (/tmp/mathlock-gen-<uuid>/)
       2. child_stats → tmpdir/stats.json yaz
-      3. ai-generate.sh --vps-mode --skip-sync --period <dönem> --data-dir tmpdir çalıştır
+      3. procedural-questions-v2.py --stats ... --period ... çalıştır
       4. tmpdir/questions.json oku
       5. Geçici dizini temizle
 
@@ -101,37 +102,38 @@ def _generate_via_kimi(child_stats: dict, education_period: str = 'sinif_2') -> 
         education_period = 'sinif_2'
 
     expected_count = _QUESTION_COUNTS[education_period]
+    script = _PROJECT_DIR / 'procedural-questions-v2.py'
 
     tmpdir = Path(tempfile.mkdtemp(prefix='mathlock-gen-'))
     try:
-        # Stats'ı geçici dizine yaz (ai-generate.sh bunu okur)
         (tmpdir / 'stats.json').write_text(
             json.dumps(child_stats, ensure_ascii=False, indent=2),
             encoding='utf-8'
         )
 
-        # ai-generate.sh çalıştır
-        if not _GENERATE_SCRIPT.exists():
-            raise RuntimeError(_('ai_generate_script_not_found'))
+        if not script.exists():
+            raise RuntimeError(_('procedural_script_not_found'))
 
         try:
             result = subprocess.run(
-                ['bash', str(_GENERATE_SCRIPT), '--vps-mode', '--skip-sync',
-                 '--period', education_period, '--data-dir', str(tmpdir)],
+                ['python3', str(script),
+                 '--stats', str(tmpdir / 'stats.json'),
+                 '--output', str(tmpdir / 'questions.json'),
+                 '--period', education_period,
+                 '--seed', str(random.randint(0, 999999))],
                 capture_output=True, text=True,
                 timeout=_GENERATE_TIMEOUT,
                 cwd=str(_PROJECT_DIR),
             )
         except subprocess.TimeoutExpired:
-            logger.error("ai-generate.sh %d saniye zaman aşımı", _GENERATE_TIMEOUT)
+            logger.error("procedural-questions-v2.py %d saniye zaman aşımı", _GENERATE_TIMEOUT)
             raise RuntimeError(_('question_generation_timeout'))
 
         if result.returncode != 0:
-            logger.error("ai-generate.sh başarısız (rc=%d): %s",
+            logger.error("procedural-questions-v2.py başarısız (rc=%d): %s",
                          result.returncode, result.stderr[-500:] if result.stderr else "")
             raise RuntimeError(_('question_generation_failed'))
 
-        # Üretilen soruları oku
         questions_file = tmpdir / 'questions.json'
         if not questions_file.exists():
             raise RuntimeError(_('questions_json_not_generated'))
@@ -143,11 +145,10 @@ def _generate_via_kimi(child_stats: dict, education_period: str = 'sinif_2') -> 
             raise RuntimeError(_('insufficient_questions').format(got=len(questions), expected=expected_count))
 
         logger.info(
-            "kimi-cli soru üretimi başarılı: v%s, %d soru, dönem=%s",
+            "Procedural soru üretimi başarılı: v%s, %d soru, dönem=%s",
             data.get('version', '?'), len(questions), education_period
         )
 
-        # AGENTS.md formatından QuestionSet formatına dönüştür
         return [
             {
                 'text': q['text'],
@@ -158,73 +159,6 @@ def _generate_via_kimi(child_stats: dict, education_period: str = 'sinif_2') -> 
             }
             for q in questions[:expected_count]
         ]
-    finally:
-        shutil.rmtree(tmpdir, ignore_errors=True)
-
-
-# ─── Seviye Üretimi (ai-generate-levels.sh) ──────────────────────────────────
-
-def _generate_levels_via_kimi(level_stats: dict = None, education_period: str = 'sinif_2') -> list:
-    """
-    ai-generate-levels.sh --vps-mode --period <dönem> ile 12 yeni bulmaca seviyesi üret.
-
-    Her çocuk için izole geçici dizin kullanır — eşzamanlı üretimlerde dosya çakışması olmaz.
-
-    Akış:
-      1. Geçici dizin oluştur
-      2. level_stats → tmpdir/level-stats.json yaz
-      3. ai-generate-levels.sh --vps-mode --period <dönem> --data-dir tmpdir çalıştır
-      4. tmpdir/levels.json oku → seviyeleri döndür
-      5. Geçici dizini temizle
-
-    Hata durumunda RuntimeError fırlatır.
-    """
-    if education_period not in _VALID_EDUCATION_PERIODS:
-        education_period = 'sinif_2'
-
-    if not _GENERATE_LEVELS_SCRIPT.exists():
-        raise RuntimeError(_('ai_generate_levels_script_not_found'))
-
-    tmpdir = Path(tempfile.mkdtemp(prefix='mathlock-levels-gen-'))
-    try:
-        # Stats'ı geçici dizine yaz (script okuyacak)
-        if level_stats:
-            (tmpdir / 'level-stats.json').write_text(
-                json.dumps(level_stats, ensure_ascii=False, indent=2),
-                encoding='utf-8'
-            )
-
-        try:
-            result = subprocess.run(
-                ['bash', str(_GENERATE_LEVELS_SCRIPT), '--vps-mode',
-                 '--period', education_period, '--data-dir', str(tmpdir)],
-                capture_output=True, text=True,
-                timeout=_GENERATE_TIMEOUT,
-                cwd=str(_PROJECT_DIR),
-            )
-        except subprocess.TimeoutExpired:
-            logger.error("ai-generate-levels.sh %d saniye zaman aşımı", _GENERATE_TIMEOUT)
-            raise RuntimeError(_('level_generation_timeout'))
-
-        if result.returncode != 0:
-            logger.error("ai-generate-levels.sh başarısız (rc=%d): %s",
-                         result.returncode, result.stderr[-500:] if result.stderr else "")
-            raise RuntimeError(_('level_generation_failed'))
-
-        levels_file = tmpdir / 'levels.json'
-        if not levels_file.exists():
-            raise RuntimeError(_('levels_json_not_generated'))
-
-        data = json.loads(levels_file.read_text(encoding='utf-8'))
-        levels = data.get('levels', [])
-
-        if len(levels) < _LEVELS_COUNT:
-            raise RuntimeError(_('insufficient_levels').format(got=len(levels), expected=_LEVELS_COUNT))
-
-        logger.info(
-            "Seviye üretimi başarılı: v%s, %d seviye", data.get('version', '?'), len(levels)
-        )
-        return levels[:_LEVELS_COUNT]
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
 
@@ -274,7 +208,27 @@ def _build_level_stats(child) -> dict:
     stats: dict = {
         'childName': child.name,
         'educationPeriod': child.education_period,
+        'questionAccuracy': round(child.accuracy, 3),
+        'currentDifficulty': child.current_difficulty,
     }
+
+    # Soru performansından güçlü/zayıf konular
+    by_type = (child.stats_json or {}).get('byType', {})
+    strong, weak = [], []
+    for tip, data in by_type.items():
+        shown = data.get('shown', 0)
+        correct = data.get('correct', 0)
+        if shown >= 5:
+            acc = correct / shown * 100
+            if acc >= 80:
+                strong.append(tip)
+            elif acc < 50:
+                weak.append(tip)
+    if strong:
+        stats['strongTopics'] = strong
+    if weak:
+        stats['weakTopics'] = weak
+
     latest_ls = LevelSet.objects.filter(child=child).order_by('-version').first()
     if latest_ls:
         levels = latest_ls.levels_json or []
@@ -289,17 +243,9 @@ def _build_level_stats(child) -> dict:
             stats['lastSetEndDifficulty'] = levels[-1].get('difficulty', 1)
             stats['lastSetMaxDifficulty'] = max(diffs)
             stats['lastSetAvgDifficulty'] = round(sum(diffs) / len(diffs), 1)
-            # Performance on last set
             completed = set(latest_ls.completed_level_ids or [])
-            total_stars = 0
-            star_count = 0
-            for lv in levels:
-                sid = lv.get('id')
-                if sid in completed:
-                    # We don't store per-level stars, so use a proxy.
-                    # If we had level_results we'd use them.
-                    pass
-            stats['lastSetCompletionRate'] = len(completed) / len(levels) if levels else 0
+            stats['completionRate'] = len(completed) / len(levels) if levels else 0
+            stats['lastSetCompletionRate'] = stats['completionRate']
 
         # Cross-set duplicate prevention data
         previous_sets = LevelSet.objects.filter(
@@ -312,6 +258,75 @@ def _build_level_stats(child) -> dict:
                 'version': ls.version,
                 'titles': [lv.get('title', '') for lv in pls],
                 'mechanics': [_summarize_mechanics(lv) for lv in pls],
+            })
+    return stats
+
+
+def _build_puzzle_stats(child) -> dict:
+    """Çocuğa özel bulmaca üretimi için DB'den puzzle istatistiklerini topla."""
+    stats: dict = {
+        'childName': child.name,
+        'educationPeriod': child.education_period,
+        'questionAccuracy': round(child.accuracy, 3),
+        'currentDifficulty': child.current_difficulty,
+    }
+
+    # Soru performansından güçlü/zayıf konular (level stats ile aynı)
+    by_type = (child.stats_json or {}).get('byType', {})
+    strong, weak = [], []
+    for tip, data in by_type.items():
+        shown = data.get('shown', 0)
+        correct = data.get('correct', 0)
+        if shown >= 5:
+            acc = correct / shown * 100
+            if acc >= 80:
+                strong.append(tip)
+            elif acc < 50:
+                weak.append(tip)
+    if strong:
+        stats['strongTopics'] = strong
+    if weak:
+        stats['weakTopics'] = weak
+
+    # Puzzle ilerleme istatistikleri
+    progress_qs = PuzzleProgress.objects.filter(child=child)
+    total_completed = progress_qs.filter(completed=True).count()
+    total_attempted = progress_qs.count()
+    avg_stars = 0.0
+    if total_attempted > 0:
+        stars_sum = sum(p.stars for p in progress_qs)
+        avg_stars = round(stars_sum / total_attempted, 2)
+
+    stats['totalCompleted'] = total_completed
+    stats['totalAttempted'] = total_attempted
+    stats['averageStars'] = avg_stars
+    stats['completionRate'] = round(total_completed / total_attempted, 2) if total_attempted > 0 else 0.0
+
+    # Son puzzle set bilgisi
+    latest_ps = PuzzleSet.objects.filter(child=child).order_by('-version').first()
+    if latest_ps:
+        puzzles = latest_ps.puzzles_json or []
+        stats['lastVersion'] = latest_ps.version
+        stats['totalLevels'] = len(puzzles)
+
+        # Difficulty continuity
+        if puzzles:
+            diffs = [pz.get('difficulty', 1) for pz in puzzles]
+            stats['lastSetEndDifficulty'] = puzzles[-1].get('difficulty', 1)
+            stats['lastSetMaxDifficulty'] = max(diffs)
+            stats['lastSetAvgDifficulty'] = round(sum(diffs) / len(diffs), 1)
+
+        # Önceki setlerden duplicate prevention
+        previous_sets = PuzzleSet.objects.filter(
+            child=child
+        ).order_by('-version')[:2]
+        stats['previousSets'] = []
+        for ps in previous_sets:
+            pps = ps.puzzles_json or []
+            stats['previousSets'].append({
+                'version': ps.version,
+                'titles': [pz.get('title', '') for pz in pps],
+                'mechanics': [_summarize_mechanics(pz) for pz in pps],
             })
     return stats
 
@@ -574,7 +589,7 @@ def _check_and_auto_renew_after_purchase(device_pk: int):
                 if total_lvl > 0 and done_lvl >= total_lvl:
                     success, is_free, cb_pk, _remaining = _deduct_credit_and_lock(child.pk, device, 'levels')
                     if success:
-                        task = generate_level_set.delay(child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period, use_procedural=USE_PROCEDURAL)
+                        task = generate_level_set.delay(child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period)
                         logger.info(
                             "Satın alma sonrası seviye yenileme başlatıldı (Celery): child=%s, is_free=%s, job=%s",
                             child.name, is_free, task.id,
@@ -599,6 +614,10 @@ class RegisterThrottle(AnonRateThrottle):
 
 class PurchaseThrottle(AnonRateThrottle):
     scope = 'purchase'
+
+
+class CrashReportThrottle(AnonRateThrottle):
+    scope = 'crash_report'
 
 
 # ─── Cihaz Kayıt ────────────────────────────────────────────────────────────
@@ -989,9 +1008,9 @@ def use_credit(request):
                     'credits_remaining': 0,
                 }, status=status.HTTP_402_PAYMENT_REQUIRED)
 
-    # ─── kimi-cli + AGENTS.md ile kişiye özel soru üret ──────────────────
+    # ─── Procedural ile kişiye özel soru üret ────────────────────────────
     try:
-        questions = _generate_via_kimi(child.stats_json or {}, child.education_period)
+        questions = _generate_questions_procedural(child.stats_json or {}, child.education_period)
     except Exception as exc:
         logger.error("Soru üretimi hatası: %s", exc)
         # Krediyi iade et
@@ -1018,7 +1037,7 @@ def use_credit(request):
             child=child,
             version=next_version,
             questions_json=questions,
-            is_ai_generated=True,
+            is_ai_generated=False,
             credit_used=not is_free,
         )
     except Exception as exc:
@@ -1039,7 +1058,7 @@ def use_credit(request):
         )
 
     logger.info(
-        "kimi-cli soru seti: child=%s, v%d, %d soru, is_free=%s",
+        "Procedural soru seti: child=%s, v%d, %d soru, is_free=%s",
         child.name, next_version, len(questions), is_free
     )
 
@@ -2081,7 +2100,7 @@ def update_level_progress(request):
             if success:
                 auto_renewal_started = True
                 task = generate_level_set.delay(
-                    child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period, use_procedural=USE_PROCEDURAL
+                    child.pk, cb_pk, is_free, _build_level_stats(child), child.education_period
                 )
                 logger.info(
                     "Otomatik seviye yenileme başlatıldı (Celery): "
@@ -2102,7 +2121,7 @@ def update_level_progress(request):
                 auto_renewal_started = True
                 credits_remaining = credits_remaining or 0
                 task = generate_level_set.delay(
-                    child.pk, 0, True, _build_level_stats(child), child.education_period, use_procedural=USE_PROCEDURAL
+                    child.pk, 0, True, _build_level_stats(child), child.education_period
                 )
                 logger.info(
                     "Otomatik seviye yenileme başlatıldı (Celery ücretsiz): "
@@ -2128,3 +2147,466 @@ def update_level_progress(request):
         **(({'credits_remaining': credits_remaining}) if auto_renewal_started else {}),
     })
 
+
+# ─── Sayı Yolculuğu (Puzzle) API ────────────────────────────────────────────
+
+@api_view(['POST'])
+def get_puzzles(request):
+    """
+    Sayı Yolculuğu bulmaca setlerini listele.
+    PuzzleSet yoksa otomatik üretim başlatır (async Celery).
+
+    POST /api/mathlock/puzzles/
+    Body: { "child_name": "Çocuk" }
+    Response:
+      - Varset: { "puzzle_sets": [...], "progress": {...}, "child_id": ... }
+      - Yoksa: { "generation_in_progress": true, "job_id": "..." }
+    """
+    device = request.user
+    child_name = _sanitize_child_name(request.data.get('child_name', _('default_child_name')))
+
+    try:
+        child = ChildProfile.objects.get(device=device, name=child_name)
+    except ChildProfile.DoesNotExist:
+        return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    sets = PuzzleSet.objects.filter(child=child).order_by('-version')
+
+    if not sets.exists():
+        # Halihazırda running bir puzzle generation job var mı?
+        from .models import GenerationJob
+        running_job = GenerationJob.objects.filter(
+            child=child, content_type='puzzles', status='running'
+        ).first()
+        if running_job:
+            return Response({
+                'generation_in_progress': True,
+                'job_id': str(running_job.pk),
+            })
+
+        # Yeni puzzle seti üret
+        puzzle_stats = _build_puzzle_stats(child)
+        task = generate_puzzle_set.delay(
+            child.pk, 0, True, puzzle_stats, child.education_period
+        )
+        return Response({
+            'generation_in_progress': True,
+            'job_id': task.id,
+        })
+
+    # Progress bilgisini de ekle
+    progress_map = {}
+    for p in PuzzleProgress.objects.filter(child=child):
+        v = str(p.puzzle_set_version)
+        if v not in progress_map:
+            progress_map[v] = {}
+        progress_map[v][str(p.level_index)] = {
+            'completed': p.completed,
+            'stars': p.stars,
+            'attempts': p.attempts,
+            'best_cmd_count': p.best_cmd_count,
+        }
+
+    return Response({
+        'puzzle_sets': [
+            {
+                'version': s.version,
+                'puzzles': s.puzzles_json,
+                'is_procedural': s.is_procedural,
+                'generated_by': s.generated_by,
+                'created_at': s.created_at.isoformat(),
+            }
+            for s in sets
+        ],
+        'progress': progress_map,
+        'child_id': child.id,
+    })
+
+
+@api_view(['POST'])
+def save_puzzle_progress(request):
+    """
+    Tek bir bulmaca seviyesinin ilerlemesini kaydet.
+
+    POST /api/mathlock/puzzles/progress/
+    Body: {
+        "child_name": "Çocuk",
+        "puzzle_set_version": 1,
+        "level_index": 0,
+        "completed": true,
+        "stars": 3,
+        "cmd_count": 4
+    }
+    """
+    device = request.user
+    child_name = _sanitize_child_name(request.data.get('child_name', _('default_child_name')))
+    data = request.data
+
+    try:
+        child = ChildProfile.objects.get(device=device, name=child_name)
+    except ChildProfile.DoesNotExist:
+        return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    version = data.get('puzzle_set_version', 1)
+    level_index = data.get('level_index', 0)
+    completed = bool(data.get('completed', False))
+    stars = min(int(data.get('stars', 0)), 3)
+    cmd_count = data.get('cmd_count')
+
+    progress, created = PuzzleProgress.objects.get_or_create(
+        child=child,
+        puzzle_set_version=version,
+        level_index=level_index,
+        defaults={
+            'completed': completed,
+            'stars': stars,
+            'best_cmd_count': cmd_count,
+            'completed_at': timezone.now() if completed else None,
+        }
+    )
+
+    if not created:
+        # Conflict: sunucu kazansın ama stars maksimumu koru
+        progress.stars = max(progress.stars, stars)
+        progress.attempts += 1
+        if completed and not progress.completed:
+            progress.completed = True
+            progress.completed_at = timezone.now()
+        if cmd_count is not None:
+            if progress.best_cmd_count is None or cmd_count < progress.best_cmd_count:
+                progress.best_cmd_count = cmd_count
+        progress.save(update_fields=['stars', 'attempts', 'completed', 'completed_at', 'best_cmd_count', 'updated_at'])
+    else:
+        if not completed:
+            progress.attempts = 1
+            progress.save(update_fields=['attempts'])
+
+    return Response({
+        'success': True,
+        'progress': {
+            'level_index': progress.level_index,
+            'completed': progress.completed,
+            'stars': progress.stars,
+            'attempts': progress.attempts,
+            'best_cmd_count': progress.best_cmd_count,
+        },
+    })
+
+
+@api_view(['POST'])
+def sync_puzzle_progress(request):
+    """
+    Cihazdaki tüm ilerlemeyi sunucuya senkronize et.
+
+    POST /api/mathlock/puzzles/progress/sync/
+    Body: {
+        "child_name": "Çocuk",
+        "progress": {
+            "1": {  // puzzle_set_version
+                "0": {"completed": true, "stars": 3},
+                "1": {"completed": true, "stars": 2}
+            }
+        }
+    }
+    Response: { "synced": 5, "conflicts": 2, "server_progress": {...} }
+    """
+    device = request.user
+    child_name = _sanitize_child_name(request.data.get('child_name', _('default_child_name')))
+    client_progress = request.data.get('progress', {})
+
+    try:
+        child = ChildProfile.objects.get(device=device, name=child_name)
+    except ChildProfile.DoesNotExist:
+        return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    synced = 0
+    conflicts = 0
+
+    with transaction.atomic():
+        for version_str, levels in client_progress.items():
+            version = int(version_str)
+            for level_index_str, lvl_data in levels.items():
+                level_index = int(level_index_str)
+                completed = bool(lvl_data.get('completed', False))
+                stars = min(int(lvl_data.get('stars', 0)), 3)
+                cmd_count = lvl_data.get('cmd_count')
+
+                progress, created = PuzzleProgress.objects.get_or_create(
+                    child=child,
+                    puzzle_set_version=version,
+                    level_index=level_index,
+                    defaults={
+                        'completed': completed,
+                        'stars': stars,
+                        'best_cmd_count': cmd_count,
+                        'completed_at': timezone.now() if completed else None,
+                    }
+                )
+
+                if not created:
+                    if stars > progress.stars or completed != progress.completed:
+                        conflicts += 1
+                    progress.stars = max(progress.stars, stars)
+                    progress.attempts += 1
+                    if completed and not progress.completed:
+                        progress.completed = True
+                        progress.completed_at = timezone.now()
+                    if cmd_count is not None:
+                        if progress.best_cmd_count is None or cmd_count < progress.best_cmd_count:
+                            progress.best_cmd_count = cmd_count
+                    progress.save(update_fields=['stars', 'attempts', 'completed', 'completed_at', 'best_cmd_count', 'updated_at'])
+                else:
+                    if not completed:
+                        progress.attempts = 1
+                        progress.save(update_fields=['attempts'])
+
+                synced += 1
+
+    # Tüm sunucu ilerlemesini döndür
+    server_progress = {}
+    for p in PuzzleProgress.objects.filter(child=child):
+        v = str(p.puzzle_set_version)
+        if v not in server_progress:
+            server_progress[v] = {}
+        server_progress[v][str(p.level_index)] = {
+            'completed': p.completed,
+            'stars': p.stars,
+            'attempts': p.attempts,
+            'best_cmd_count': p.best_cmd_count,
+        }
+
+    return Response({
+        'success': True,
+        'synced': synced,
+        'conflicts': conflicts,
+        'server_progress': server_progress,
+    })
+
+
+@api_view(['POST'])
+def upload_puzzle_analytics(request):
+    """
+    Batch puzzle analytics olaylarını al ve kaydet.
+
+    POST /api/mathlock/puzzles/analytics/
+    Body: {
+        "child_name": "Çocuk",
+        "events": [
+            {"event_type": "level_start", "payload": {"level_index": 0}, "timestamp": "..."}
+        ]
+    }
+    """
+    device = request.user
+    child_name = _sanitize_child_name(request.data.get('child_name', _('default_child_name')))
+    events = request.data.get('events', [])
+
+    try:
+        child = ChildProfile.objects.get(device=device, name=child_name)
+    except ChildProfile.DoesNotExist:
+        return Response({'error': _('child_profile_not_found').format(child_name=child_name)},
+                        status=status.HTTP_404_NOT_FOUND)
+
+    created = []
+    for ev in events:
+        payload = ev.get('payload', {})
+        if 'timestamp' in ev:
+            payload['client_timestamp'] = ev['timestamp']
+        created.append(PuzzleAnalyticsEvent(
+            device=device,
+            child=child,
+            event_type=ev.get('event_type', 'unknown')[:30],
+            payload_json=payload,
+        ))
+
+    if created:
+        PuzzleAnalyticsEvent.objects.bulk_create(created)
+
+    return Response({
+        'success': True,
+        'saved': len(created),
+    })
+
+
+@api_view(['POST'])
+def get_daily_challenge(request):
+    """
+    Günlük challenge bulmacası üret.
+    Aynı gün herkes aynı seed'ten aynı seviyeyi görür.
+
+    POST /api/mathlock/puzzles/daily/
+    Body: { "date": "2026-05-24" }  // opsiyonel, varsayılan bugün
+    """
+    request_date = request.data.get('date')
+    if request_date:
+        try:
+            year, month, day = request_date.split('-')
+            challenge_date = date(int(year), int(month), int(day))
+        except (ValueError, TypeError):
+            return Response({'error': 'invalid_date_format'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        challenge_date = date.today()
+
+    seed = int(challenge_date.strftime('%Y%m%d'))
+
+    # Procedural üret — seed sabit olduğu için aynı gün aynı puzzle döner
+    import subprocess as sp
+    import tempfile as tf
+    from pathlib import Path
+
+    tmpdir = Path(tf.mkdtemp(prefix='mathlock-daily-'))
+    script = Path(__file__).resolve().parent.parent.parent / 'procedural-puzzles.py'
+    puzzle = None
+    try:
+        result = sp.run(
+            ['python3', str(script),
+             '--output', str(tmpdir / 'puzzles.json'),
+             '--version', str(seed),
+             '--seed', str(seed),
+             '--count', '1'],
+            capture_output=True, text=True, timeout=30,
+            cwd=str(Path(__file__).resolve().parent.parent.parent),
+        )
+        if result.returncode == 0:
+            data = json.loads((tmpdir / 'puzzles.json').read_text(encoding='utf-8'))
+            puzzles = data.get('puzzles', [])
+            if puzzles:
+                puzzle = puzzles[0]
+    except Exception as exc:
+        logger.error("Daily challenge generation failed: %s", exc)
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+    if puzzle is None:
+        return Response({'error': 'generation_failed'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+    return Response({
+        'date': challenge_date.isoformat(),
+        'seed': seed,
+        'puzzle': puzzle,
+    })
+
+
+@api_view(['GET'])
+def get_leaderboard(request):
+    """
+    Skor tablosu.
+
+    GET /api/mathlock/puzzles/leaderboard/?period=daily|weekly|all
+    """
+    period = request.query_params.get('period', 'all')
+    from django.utils import timezone
+
+    if period == 'daily':
+        since = timezone.now() - timedelta(days=1)
+    elif period == 'weekly':
+        since = timezone.now() - timedelta(weeks=1)
+    else:
+        since = None
+
+    qs = PuzzleProgress.objects.all()
+    if since:
+        qs = qs.filter(updated_at__gte=since)
+
+    # Her çocuk için toplam skor hesapla
+    scores = {}
+    for p in qs.select_related('child'):
+        child = p.child
+        if child is None:
+            continue
+        cid = child.id
+        if cid not in scores:
+            scores[cid] = {
+                'child_name': child.name,
+                'total_stars': 0,
+                'total_completed': 0,
+                'best_cmd_sum': 0,
+            }
+        scores[cid]['total_stars'] += p.stars
+        if p.completed:
+            scores[cid]['total_completed'] += 1
+        if p.best_cmd_count:
+            scores[cid]['best_cmd_sum'] += p.best_cmd_count
+
+    entries = []
+    for cid, data in scores.items():
+        # Skor formülü: stars * 100 + completed * 50
+        score = data['total_stars'] * 100 + data['total_completed'] * 50
+        entries.append({
+            'child_name': data['child_name'],
+            'total_stars': data['total_stars'],
+            'total_completed': data['total_completed'],
+            'score': score,
+        })
+
+    entries.sort(key=lambda x: x['score'], reverse=True)
+
+    return Response({
+        'period': period,
+        'entries': entries[:50],  # İlk 50
+    })
+
+
+
+# ─── Crash Report (ACRA) ────────────────────────────────────────────────────
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@throttle_classes([CrashReportThrottle])
+@csrf_exempt
+def report_crash(request):
+    """
+    ACRA'dan gelen çökme raporlarını kaydet.
+
+    POST /api/mathlock/crash-reports/
+    Body: ACRA JSON report
+    Response: { "success": true, "id": 123 }
+    """
+    data = request.data
+
+    # ACRA'nın standart alanlarını maple
+    device_id = data.get('CUSTOM_DATA', {}).get('device_id_hash', '')
+    if not device_id:
+        device_id = data.get('INSTALLATION_ID', '')
+
+    crash_type = data.get('EXCEPTION_CLASSNAME', '')
+    stack_trace = data.get('STACK_TRACE', '')
+
+    # Aynı crash_type + device_id + stack_trace fingerprint varsa occurrence_count artır
+    # (Basit grouping: son 24 saat içinde aynı crash_type + device_id varsa count artır)
+    from django.utils import timezone
+    from datetime import timedelta
+
+    existing = CrashReport.objects.filter(
+        crash_type=crash_type,
+        device_id=device_id,
+        created_at__gte=timezone.now() - timedelta(hours=24)
+    ).first()
+
+    if existing:
+        existing.occurrence_count += 1
+        existing.save(update_fields=['occurrence_count'])
+        return Response({'success': True, 'id': existing.id, 'grouped': True})
+
+    report = CrashReport.objects.create(
+        device_id=device_id,
+        device_fingerprint=data.get('DEVICE_ID', ''),
+        app_version_code=int(data.get('APP_VERSION_CODE', 0)),
+        app_version_name=data.get('APP_VERSION_NAME', ''),
+        android_version=data.get('ANDROID_VERSION', ''),
+        sdk_version=int(data.get('SDK_VERSION', 0)),
+        device_model=data.get('PHONE_MODEL', ''),
+        device_manufacturer=data.get('BRAND', ''),
+        stack_trace=stack_trace,
+        crash_type=crash_type,
+        crash_message=data.get('EXCEPTION_MESSAGE', ''),
+        thread_name=data.get('THREAD_DETAILS', ''),
+        custom_data=data.get('CUSTOM_DATA', {}),
+    )
+
+    logger.info("Crash report received: %s on %s v%s",
+                crash_type, report.device_model, report.app_version_name)
+
+    return Response({'success': True, 'id': report.id})

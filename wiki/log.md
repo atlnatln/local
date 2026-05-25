@@ -280,3 +280,83 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 25 entries
 
+## [2026-05-24 23:42] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 26 entries
+
+## [2026-05-24 23:49] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 27 entries
+
+## [2026-05-24 23:55] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 28 entries
+
+## [2026-05-24 23:57] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 29 entries
+
+## [2026-05-25 15:32] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 30 entries
+
+## [2026-05-25 15:32] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 7
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 31 entries
+
+
+## [2026-05-25 15:02] ingest | mathlock-play
+- SayiYolculuguActivity.kt: kredi hatası (-1 gösterme) düzeltildi, v1.0.94 release
+- mathlock-play.md: Google Play Store dağıtım süreci (upload scripts, ADB, dahili test) eklendi
+- mathlock-play-android.md: Sayı Yolculuğu set bitiminde kredi hatası fix dökümantasyonu eklendi
+- mathlock-play.sha: 6973b89 → 90f892e
+- local.sha: 60c781e → 5e5ae3f
+- Lint: 9/10 passing, 0 failure

@@ -1,7 +1,7 @@
 ---
 title: "Wiki Agent Instructions"
 created: "2026-05-10"
-updated: "2026-05-10"
+updated: "2026-05-24"
 type: index
 tags: [meta]
 related: []
@@ -51,154 +51,153 @@ Manifesto sana "ne yapman gerektiğini" söyler. Bu cetvel "hangi ölçüde" yap
 
 ---
 
-## KIRMIZI ALARM -- Su An Acil Durumlar
+## KIRMIZI ALARM -- Limit Aşımı ve Erken Uyarı
 
-> Bu bolum, "wiki bakim" komutu calistiginda kontrol edilir. Agent'in session basinda veya baska zamanlarda otomatik kontrol etmesi beklenmez.
+Lint `Page Size` kontrolü otomatik raporlar. Manuel alarm tablosuna gerek yok.
 
-| # | Sorun | Neden Acil | Mudahale Suresi |
-|---|-------|-----------|----------------|
-| 1 | `analysis/meb-2024-curriculum...` **525 satir** (limit 350) | %50 limit asimi. Her MEB guncellemesinde buyur | **Hemen sub-page'e bol** |
-| 2 | `concepts/kimi-code-cli` **418 satir** (limit 350) | %20 limit asimi. Her kimi-cli versiyonunda buyur | **Hemen sub-page'e bol** |
-| 3 | `projects/mathlock-play-android` **348 satir** | 2 hafta icinde 400 limiti | Sub-page planla |
-| 4 | `projects/ops-bot` **346 satir** | 3 hafta icinde 400 limiti | Sub-page planla |
+| Seviye | Koşul | Eylem |
+|--------|-------|-------|
+| 🟢 Normal | < limit %90 | İzleme |
+| 🟡 Uyarı | >= limit %90 | Sub-page planla |
+| 🔴 Alarm | >= limit | Hemen böl veya indir |
+| 🚨 Kritik | >= limit %120 | Acil müdahale |
 
-**Alarm tetiklendiginde:** Kullaniciya "Wiki'de acil durum var: X sayfasi limit asimi. Hemen mudahale edelim mi?" diye sor.
+**Kural:** Dosya şişmişse düzenlenir/indirilir. Büyüme hızı tahmini yapılmaz.
 
 ---
 
-## Wiki Saglik ve Bakim Protokolu
+## Wiki Sağlık ve Bakım Protokolü
 
 ### Manuel Tetik
 
-Bu mekanizma **otomatik degil**.
-Kullanici "wiki bakim" / "wiki saglik" / "haftalik bakim" dediginde calisir.
+Bu mekanizma **otomatik değil**.
+Kullanıcı "wiki bakım" / "wiki sağlık" / "haftalık bakım" dediğinde çalışır.
 
-Agent session basinda wiki saglik durumunu otomatik kontrol **etmez**.
-Sadece kullanici acikca istediginde lint calistirir, rapor uretir, duzeltme yapar.
+Agent session başında wiki sağlık durumunu otomatik kontrol **etmez**.
+Sadece kullanıcı açıkça istediğinde lint çalıştırir, rapor üretir, düzeltme yapar.
 
-Kullanici "wiki durum nedir" / "wiki ne durumda" dediginde ise salt okunur ozet rapor verilir (degisiklik yapilmaz).
+Kullanıcı "wiki durum nedir" / "wiki ne durumda" dediğinde ise salt okunur özet rapor verilir (değişiklik yapılmaz).
 
-> **Not:** `wiki topla` / `wiki ingest` komutlari bu dosyaya ait degildir. Ingest islemleri icin ust dizin `AGENTS.md`'ye bakin.
+> **Not:** `wiki topla` / `wiki ingest` komutları bu dosyaya ait değildir. Ingest işlemleri için üst dizin `AGENTS.md`'ye bakın.
 
 ---
 
-## `wiki bakim` Komutu
+## `wiki bakım` Komutu
 
-Kullanici "wiki bakim" / "wiki saglik" / "haftalik bakim" dediginde tek seferde:
+Kullanıcı "wiki bakım" / "wiki sağlık" / "haftalık bakım" dediğinde tek seferde:
 
-| Adim | Islem |
+| Adım | İşlem |
 |------|-------|
-| 1 | Git sync kontrolu (fetch + behind/ahead) |
-| 2 | Kirmizi Alarm kontrolu (acil durum varsa once onlari raporla) |
-| 3 | Lint calistir -> sonucu analiz et |
-| 3b| wiki/AGENTS.md degisikligi varsa ATLA (bu instruction dosyasi, ingest kapsaminda degil) |
-| 4 | **Kontrollu buyume kurallarini uygula** (bu bolumun altindaki 6 kural) |
-| 5 | Otomatik duzeltme (fix'lenebilen warning'ler) |
-| 6 | `.weekly-report` uret |
-| 7 | Degisiklik varsa `git add -A && git commit --no-verify -m "chore(wiki): weekly maintenance"` |
+| 1 | Git sync kontrolü (fetch + behind/ahead) |
+| 2 | Lint Page Size kontrolü (limit aşımı varsa önce raporla) |
+| 3 | Lint çalıştır -> sonucu analiz et |
+| 3b| wiki/AGENTS.md değişikliği varsa ATLA (bu instruction dosyası, ingest kapsamında değil) |
+| 4 | **Kontrollü büyüme kurallarını uygula** (bu bölümün altındaki 6 kural) |
+| 5 | Otomatik düzeltme (fix'lenebilen warning'ler) |
+| 6 | `.weekly-report` üret |
+| 7 | Değişiklik varsa `git add -A && git commit --no-verify -m "chore(wiki): weekly maintenance"` |
 | 8 | Push |
 
 ---
 
-## Kontrollu Buyume Protokolu
+## Kontrollü Büyüme Protokolü
 
-> Detayli rehber: [[wiki-growth-protocol|Kontrollu Buyume Protokolu →]]
+> Detaylı rehber: [[wiki-growth-protocol|Kontrollü Büyüme Protokolü →]]
 
-## Otomatik Duzeltme Yetenekleri
+## Otomatik Düzeltme Yetenekleri
 
-Agent su lint sorunlarini otomatik fix'leyebilir:
+Agent şu lint sorunlarını otomatik fix'leyebilir:
 
 - **Orphan pages** -> `index.md`'ye wikilink ekle
-- **Missing from index** -> Ilgili kategoriye ekle
-- **Tag audit** -> Bilinmeyen tag'leri `SCHEMA.md`'ye oner veya sayfadan kaldir
-- **Oversized** -> TOC ekle, bolum cikarma onerisi ver
+- **Missing from index** -> İlgili kategoriye ekle
+- **Tag audit** -> Bilinmeyen tag'leri `SCHEMA.md`'ye öner veya sayfadan kaldır
+- **Oversized** -> TOC ekle, bölüm çıkarma önerisi ver
 
-Manuel mudahale gerektirenler:
+Manuel müdahale gerektirenler:
 
-- **Broken wikilinks** -> Kaynak sayfayi incele, hedefi duzelt veya arsivle
-- **Contradictions** -> `contested: true` isaretle, kullaniciya sor
+- **Broken wikilinks** -> Kaynak sayfayı incele, hedefi düzelt veya arşivle
+- **Contradictions** -> `contested: true` işaretle, kullanıcıya sor
 - **Stale content** -> Manuel review gerekir
 
 ---
 
-## Rapor Formatu (`.weekly-report`)
+## Rapor Formatı (`.weekly-report`)
 
-Agent tarafindan uretilen rapor sablonu:
+Agent tarafından üretilen rapor sablonu:
 
 ```
-Wiki Haftalik Bakim Raporu
+Wiki Haftalık Bakım Raporu
 Tarih: {YYYY-MM-DD HH:MM}
 Makine: LOCAL
 
 --- Lint ---
-Sonuc: {X}/{Y}
+Sonuç: {X}/{Y}
 Warning: {N}
 Failure: {N}
-Durum: {emoji} {Mukemmel|Kontrol gerekli}
+Durum: {emoji} {Mükemmel|Kontrol gerekli}
 
---- Buyume Metrikleri ---
+--- Büyüme Metrikleri ---
 Toplam sayfa: {N}
 Yeni sayfa (bu hafta): {N}
-Log giris sayisi: {N}
+Log giriş sayısı: {N}
 Log zincir durumu: {Aktif|Arsivlendi}
 
 --- Alarm ---
-{Kirmizi alarm varsa listele, yoksa "Yok"}
+{Kırmızı alarm varsa listele, yoksa "Yok"}
 
 --- Otomatik Fix'ler ---
-- [FIXED] Orphan: Sayfa-Adi -> index.md'e eklendi
+- [FIXED] Orphan: Sayfa-Adı -> index.md'e eklendi
 - [FIXED] Tag: unknown-tag -> SCHEMA.md'ye eklendi
-- [SKIPPED] Broken: Eski-Sayfa -> hedef bulunamadi
-- [PLANNED] Oversized: meb-2024-curriculum... -> sub-page bolunmesi gerekli
+- [SKIPPED] Broken: Eski-Sayfa -> hedef bulunamadı
+- [PLANNED] Oversized: meb-2024-curriculum... -> sub-page bölünmesi gerekli
 
---- Sonraki Adimlar ---
+--- Sonraki Adımlar ---
 - ...
 ```
 
 ---
 
-## Bakim Checklist
+## Bakım Checklist
 
-### Acil Mudahale (Her `wiki bakim`'da)
-- [ ] Kirmizi Alarm kontrolu -- limit asimi varsa once sub-page planla
-- [ ] log.md giris sayisi 500+ mi? -> Zincirle
-- [ ] Lint sonuclarini log.md'den log-lint-archive.md'ye tasiyarak temizle
+### Acil Müdahale (Her `wiki bakım`'da)
+- [ ] Lint Page Size kontrolü -- limit aşımı varsa önce sub-page planla
+- [ ] log.md giriş sayısı 500+ mi? -> Zincirle
+- [ ] Lint sonuçlarını log.md'den log-lint-archive.md'ye taşıyarak temizle
 
-### Haftalik (Pazar veya kullanici istediginde)
-- [ ] Lint calistir, sonucu analiz et
-- [ ] Kontrollu buyume kurallarini kontrol et (oversized, log zinciri, tag audit)
-- [ ] Gereksiz girisleri kaldir
-- [ ] `.weekly-report` uret
-- [ ] Bakim degisikliklerini commit: `chore(wiki): weekly maintenance`
-- [ ] `.weekly-report`'u ayri commit'le: `docs(wiki): weekly report`
+### Haftalık (Pazar veya kullanıcı istediğinde)
+- [ ] Lint çalıştır, sonucu analiz et
+- [ ] Kontrollü büyüme kurallarını kontrol et (oversized, log zinciri, tag audit)
+- [ ] Gereksiz girişleri kaldır
+- [ ] `.weekly-report` üret
+- [ ] Bakım değişikliklerini commit: `chore(wiki): weekly maintenance`
+- [ ] `.weekly-report`'u ayrı commit'le: `docs(wiki): weekly report`
 - [ ] Push
 
-### Aylik (Ayin ilk haftasi)
-- [ ] Raw/ dizini temizligi (6+ ay eski)
-- [ ] Stale sayfa kontrolu (3 ay+ guncellenmemis)
-- [ ] Index kategori yapisi kontrolu (50+ sayfa mi?)
-- [ ] Arsivde 12+ ay kalan sayfalari tam silme degerlendirmesi
+### Aylık (Ayın ilk haftası)
+- [ ] Raw/ dizini temizliği (6+ ay eski)
+- [ ] Stale sayfa kontrolü (3 ay+ güncellenmemiş)
+- [ ] Index kategori yapisi kontrolü (50+ sayfa mı?)
+- [ ] Arsivde 12+ ay kalan sayfaları tam silme değerlendirmesi
 
 ---
 
-## Wiki Editor Davranis Kurallari
+## Wiki Editor Davranış Kuralları
 
-- Her wiki sayfasi degisikliginde `updated:` frontmatter'ini guncelle
-- Yeni sayfa olustururken `references/CONVENTIONS.md` ve `references/PAGE_TEMPLATES.md`'ye uy
+- Her wiki sayfası değişikliğinde `updated:` frontmatter'ini güncelle
+- Yeni sayfa oluştururken `references/CONVENTIONS.md` ve `references/PAGE_TEMPLATES.md`'ye uy
 - Wikilink kullan, URL kullanma
-- Kod bloklarinda `// file: path/to/file.ext` yorumu zorunlu
-- Sayfa limitlerine dikkat et: project 400, concept 350, decision 200 satir
-- **Limit asiliyorsa sayfayi uzatma, yeni sayfa ac** -- yatay buyume
-- **Yeni tag kullanmadan once SCHEMA.md kontrolu yap** -- gatekeeper kurali
-- **Acele etmeden, adim adim ve kararli ilerle**; once dosyayi tam oku, sonra bol, sonra lint calistir
-- Kullanici wiki kapasitesini veya yapilacaklari sordugunda once Kirmizi Alarmlara ve limit asimlarina bak
-- Sub-page cikarma sonrasi mutlaka lint calistir; tek kullanimlik tag'leri temizle
+- Kod bloklarında `// file: path/to/file.ext` yorumu zorunlu
+- Sayfa limitlerine dikkat et: project 400, concept 350, decision 200 satır
+- **Limit aşılıyorsa sayfayı uzatma, yeni sayfa aç** -- yatay büyüme
+- **Yeni tag kullanmadan önce SCHEMA.md kontrolü yap** -- gatekeeper kuralı
+- **Acele etmeden, adım adım ve kararlı ilerle**; önce dosyayı tam oku, sonra böl, sonra lint çalıştır
+- Kullanıcı wiki kapasitesini veya yapılacakları sorduğunda önce lint Page Size sonuçlarına ve limit aşımlarına bak
+- Sub-page çıkarma sonrası mutlaka lint çalıştır; tek kullanımlık tag'leri temizle
 
 ---
 
-> Son guncelleme: 2026-05-10
-> Aktif mekanizma: kimi-cli proaktif bakim (scripts/wiki-weekly-maintenance.sh kaldirildi)
-> Buyume modeli: Kontrollu yatay buyume (dikey sisme yasak)
-> Sorumluluk: Sadece wiki bakimi ve temizligi. Ingest (`wiki topla`) ust dizin AGENTS.md'ye aittir.
-> Log arsivi ornegi: [[log-2026-H1]]
-> Acil durumlar: mathlock-play-android (348/400), ops-bot (346/400), sec-agent (343/400)
+> Son güncelleme: 2026-05-24
+> Aktif mekanizma: kimi-cli proaktif bakım
+> Büyüme modeli: Kontrollü yatay büyüme (dikey sisme yasak)
+> Sorumluluk: Sadece wiki bakımi ve temizliği. Ingest (`wiki topla`) üst dizin AGENTS.md'ye aittir.
+> Log arsivi örneği: [[log-2026-H1]]

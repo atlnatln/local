@@ -1,0 +1,73 @@
+/* ═══════════════════════════════════════════════════════════
+   Sayı Yolculuğu — Base Styles
+   ═══════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f0f1a;
+  --surface: #1a1a2e;
+  --surface2: #16213e;
+  --primary: #e94560;
+  --secondary: #0f3460;
+  --accent: #533483;
+  --gold: #f5c518;
+  --green: #00d68f;
+  --blue: #3b82f6;
+  --text: #e8e8e8;
+  --text-dim: #8888aa;
+  --cell-size: 64px;
+  --radius: 12px;
+  --anim-speed: 1;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+/* High contrast override */
+body.high-contrast {
+  --bg: #000000;
+  --surface: #1a1a1a;
+  --surface2: #222222;
+  --primary: #ff3333;
+  --accent: #aa66ff;
+  --gold: #ffcc00;
+  --green: #00ff66;
+  --blue: #3399ff;
+  --text: #ffffff;
+  --text-dim: #cccccc;
+}
+
+/* Font sizes */
+html.font-small  { font-size: 14px; }
+html.font-medium { font-size: 16px; }
+html.font-large  { font-size: 18px; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :root { --anim-speed: 0; }
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+body.reduced-motion,
+body.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Focus indicator */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

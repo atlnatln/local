@@ -1,88 +1,83 @@
 {
   "toplama": {
-    "title": "➕ Toplama Nasıl Yapılır?",
-    "explanation": "Toplama, iki veya daha fazla sayıyı bir araya getirmektir. Örneğin 3 elma ile 2 elmayı birleştirirsen, 5 elma olur. Parmakları kullanarak veya sayı satırı çizerek pratik yapabilirsin. Toplama, tüm matematik için çok önemli!",
-    "example": "🍎🍎🍎 + 🍎🍎 = 🍎🍎🍎🍎🍎 (3 + 2 = 5)\n\nAdım 1: Büyük sayıdan başla (3)\nAdım 2: Küçük sayı kadar saymaya devam et (4, 5)\nAdım 3: Sonuç (5)",
+    "title": "Toplama Nasıl Yapılır? ➕",
+    "explanation": "Sayıları bir araya getirmek demek. 3 elma + 2 elma = 5 elma.",
+    "example": "🍎🍎🍎 + 🍎🍎 = 🍎🍎🍎🍎🍎",
     "tips": [
-      "Büyük sayıdan başla, küçük sayıyı saymaya devam et",
-      "Parmakları kullan, her saydığında biri kıvır",
-      "Tekrar et: her gün biraz pratik çok yardımcı olur",
-      "Yakın yuvarlak sayıdan başlayabilirsin (12+8 yerine 10+10+2)"
+      "Büyük sayıdan başla",
+      "Parmaklarınla say",
+      "Nesneler düşün"
     ]
   },
   "çıkarma": {
-    "title": "➖ Çıkarma Nasıl Yapılır?",
-    "explanation": "Çıkarma, bir sayıdan başka bir sayıyı ayırmaktır. Örneğin 7 şekeriniz varsa ve 3 tanesini yersen, 4 tane kalır. Geri saymayı ve parmak kullanmayı öğren. Çıkarma sonucu hiç negatif olmaz.",
-    "example": "🍬🍬🍬🍬🍬🍬🍬 - 🍬🍬🍬 = 🍬🍬🍬🍬 (7 - 3 = 4)\n\nAdım 1: Başlangıç sayısını söyle (7)\nAdım 2: Geri doğru say (6, 5, 4)\nAdım 3: Kaç kez sayıldı? (3 kez)\nAdım 4: Kalan (4)",
+    "title": "Çıkarma Nasıl Yapılır? ➖",
+    "explanation": "Bir sayıdan diğerini eksiltmek demek. 5 elmadan 2'sini yersen 3 kalır.",
+    "example": "🍎🍎🍎🍎🍎 - 🍎🍎 = 🍎🍎🍎",
     "tips": [
-      "Büyük sayıdan başla, geriye doğru say",
-      "Çıkarılan sayı kadar parmağı kıvır",
-      "Çıkarma sonucu hiçbir zaman negatif olmaz",
-      "Kontrol et: kalan + çıkan = başlangıç (4 + 3 = 7) ✓"
+      "Büyük sayıdan küçüğü çıkar",
+      "Sayı doğrusunda geri git",
+      "Nesneler düşün"
     ]
   },
   "çarpma": {
-    "title": "✖️ Çarpma Nasıl Yapılır?",
-    "explanation": "Çarpma, aynı sayıyı birkaç kez toplamanın kısayoludur. 3 x 2, '3'ü iki kez topla' anlamına gelir: 3 + 3 = 6. Gruplarla düşün: 2 tabakta 3 elma varsa, toplam 6 elma olur!",
-    "example": "👦👦👦 x 2 = 👦👦👦👦👦👦 (3 x 2 = 3 + 3 = 6)\n\nAdım 1: İlk sayıyı söyle (3)\nAdım 2: Kaç kez var? (2 kez)\nAdım 3: Tekrar topla (3 + 3)\nAdım 4: Sonuç (6)\n\nÖrnek: 2 x 3 tabağında 3 elma varsa, 2 tabakta 6 elma olur!",
+    "title": "Çarpma Nasıl Yapılır? ✖️",
+    "explanation": "Aynı sayıyı tekrar tekrar toplamak demek. 3 × 4 = 3 + 3 + 3 + 3 = 12.",
+    "example": "🍎🍎🍎  +  🍎🍎🍎  +  🍎🍎🍎  +  🍎🍎🍎  = 12 elma",
     "tips": [
-      "Toplama ile düşün: 4 x 2 = 4 + 4 = 8",
-      "Nesnelerle gruplama yap: kaç grup, her grupta kaç?",
-      "Çarpım tablosunu şarkıyla veya oyunlarla pekiştir",
-      "10 ile çarpmak kolay: 5 x 10 = 50 (sona 0 ekle!)"
+      "Çarpım tablosunu ezberle",
+      "Toplama ile bağlantı kur",
+      "Parçalara ayır"
     ]
   },
   "bölme": {
-    "title": "➗ Bölme Nasıl Yapılır?",
-    "explanation": "Bölme, bir sayıyı eşit parçalara ayırmaktır. 8 şeker 2 çocuğa paylaştırırsan, her çocuğa 4 şeker düşer. Bölme, çarpmanın tersidir. Çarpım tablosunu hatırlayarak bölmeyi çözebilirsin.",
-    "example": "Basit (2'ye bölme):\n8 ÷ 2 = 4 (8 tane şeker, 2 çocuğa, her biri 4)\n🍬🍬🍬🍬 | 🍬🍬🍬🍬\n\nHangi sayı 2 ile çarpılınca 8 olur? → 4 x 2 = 8, cevap 4",
+    "title": "Bölme Nasıl Yapılır? ➗",
+    "explanation": "Eşit gruplara ayırmak demek. 12 elmayı 4 kişiye eşit verirsen herkese 3 düşer.",
+    "example": "🍎🍎🍎 | 🍎🍎🍎 | 🍎🍎🍎 | 🍎🍎🍎  →  12 ÷ 4 = 3",
     "tips": [
-      "Çarpma tablosunu ters çevir: 2 x ? = 8 → ? = 4",
-      "Eşit ikiye bölersen, yarısını bul",
-      "Bölme sıfıra asla yapılamaz",
-      "Tam bölünüyorsa, kalan olmaz!"
+      "Çarpma tersini düşün",
+      "Eşit paylaştır",
+      "Bölümü çarpma ile doğrula"
     ]
   },
   "sıralama": {
-    "title": "📊 Sıralama Nasıl Yapılır?",
-    "explanation": "Sıralama, sayıları küçükten büyüğe veya büyükten küçüğe düzene koymaktır. Sayı satırını kafanda canlandırarak soruları çöz. Hangi sayı daha sağda ise daha büyüktür!",
-    "example": "5, 12, 3 sayılarını küçükten büyüğe sırala:\n📍——5——12——3——\n\nAdım 1: En küçüğü bul (3)\nAdım 2: Sonraki küçüğü bul (5)\nAdım 3: En büyüğü bul (12)\nSonuç: 3, 5, 12 ✓",
+    "title": "Sayıları Sıralama 🔢",
+    "explanation": "Sayıları küçükten büyüğe veya büyükten küçüğe dizmek demek.",
+    "example": "3, 7, 2, 5 → Küçükten büyüğe: 2, 3, 5, 7",
     "tips": [
-      "Sayı satırını kafanda veya kağıda çiz",
-      "En küçük sayı başa, en büyük sona gelir",
-      "İki sayıyı karşılaştırırken: hangisi daha fazla nesnedir?",
-      "Örneğin: 7 mi 12 mi? → Şekilde 12 daha sağda → 12 büyük"
+      "Basamak sayısına bak",
+      "Soldan sağa karşılaştır",
+      "İlk basamak farklıysa orada karar ver"
     ]
   },
   "eksik_sayı": {
-    "title": "❓ Eksik Sayı Nasıl Bulunur?",
-    "explanation": "Eksik sayı, denklemde kayıp olan rakamı bulma oyunudur. Ters işlem kullan: toplama yapıyorsan çıkarma yap! Örneğin ? + 3 = 7 ise, 7 - 3 = 4 bulursun.",
-    "example": "Örnek 1: ? + 3 = 7\n  Ters işlem: 7 - 3 = 4\n  Cevap: 4 (çünkü 4 + 3 = 7 ✓)\n\nÖrnek 2: 8 - ? = 5\n  Ters işlem: 8 - 5 = 3\n  Cevap: 3 (çünkü 8 - 3 = 5 ✓)",
+    "title": "Eksik Sayıyı Bulma ❓",
+    "explanation": "İşlemde bilinmeyen sayıyı bulmak için ters işlem yaparız.",
+    "example": "? + 4 = 9  →  9 - 4 = 5  →  Cevap: 5",
     "tips": [
-      "Sonuç ve bilinen sayıyı kullan",
-      "Toplama için: eksik = sonuç - bilinen",
-      "Çıkarma için: eksik = başlangıç - sonuç",
-      "Cevapı kontrol et: yerine koyup denklemi doğru mu?"
+      "Ters işlem düşün",
+      "Sonuçtan bilineni çıkar",
+      "Doğru cevabı yerine yaz, kontrol et"
     ]
   },
   "kesir": {
-    "title": "🍕 Kesir Nedir?",
-    "explanation": "Bir bütünü eşit parçalara böldüğümüzde her parça bir kesirdir. Örneğin bir pizzayı 4 eşit parçaya bölersen, her parça 1/4 (çeyrek) pizzadır.",
-    "example": "🍕🍕🍕🍕 → 4 parça → 1 dilim = 1/4 pizza\n\nAdım 1: Bütünü parçalara böl (4 parça)\nAdım 2: Kaç parça aldık? (1 parça)\nAdım 3: Cevap 1/4",
+    "title": "Kesirler 🍕",
+    "explanation": "Bir bütünü eşit parçalara bölmek demek. Yarım = 1/2, çeyrek = 1/4.",
+    "example": "Bir pizzayı 4 eşit dilim bölersen, her dilim 1/4'dür.",
     "tips": [
-      "Payda = kaç parçaya bölündü",
+      "Payda = kaç parça",
       "Pay = kaç parça alındı",
-      "Sayıyı paydaya böl, sonucu pay ile çarp"
+      "Tam sayıya çevirmek için bölersin"
     ]
   },
   "problem": {
-    "title": "🧩 Problem Çözme",
-    "explanation": "Problemi oku, ne istendiğini bul, doğru işlemi seç. Günlük hayattan örneklerle düşün.",
-    "example": "Ali'nin 20 TL'si var, 8 TL harcadı. Kaç TL kaldı?\n\nAdım 1: Ne verilmiş? (20 TL)\nAdım 2: Ne olmuş? (8 TL harcandı)\nAdım 3: İşlem seç: çıkarma → 20 - 8 = 12",
+    "title": "Problem Çözme 🧩",
+    "explanation": "Günlük hayattan matematiksel soruları okuyup, doğru işlemi seçerek çözmek.",
+    "example": "Ali'nin 5 elması var, 3 tane daha aldı. Toplam = 5 + 3 = 8 elma.",
     "tips": [
-      "Problemi 2 kere oku",
-      "Ne verilmiş, ne isteniyor bul",
-      "Doğru işlemi seç (+, -, x, ÷)"
+      "Önce verilenleri yaz",
+      "Ne istendiğini anla",
+      "Adım adım çöz",
+      "Sonucu kontrol et"
     ]
   }
 }

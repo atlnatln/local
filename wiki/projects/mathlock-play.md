@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play"
 created: 2026-05-01
-updated: 2026-05-24
+updated: 2026-05-25
 type: project
 tags: [mathlock-play, android, django, kotlin, python, systemd]
 related:
@@ -62,7 +62,8 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | `projects/mathlock-play/experimental-web/` | React + Vite + Tailwind deneme oyun frontend'i |
 | `projects/mathlock-play/procedural_questions/` | Procedural soru üretimi v2 — modüler paket (11 tip, 5 zorluk, deterministik RNG, adaptif dağıtım) |
 | `projects/mathlock-play/scripts/validate-questions.py` | Dönem bazlı soru seti doğrulama aracı (tip/zorluk/duplicate/code) |
-| `projects/mathlock-play/scripts/upload-play-store.py` | Google Play Store internal track'e AAB upload script'i |
+| `projects/mathlock-play/scripts/upload-play-store.py` | Google Play Store internal track'e AAB upload script'i (draft) |
+| `projects/mathlock-play/scripts/upload-to-play-store.py` | Google Play Store internal track'e AAB/APK upload script'i (completed) |
 
 ## Environment Variables
 
@@ -116,6 +117,75 @@ cd projects/mathlock-play
 | ADB kurulum | ✅ Telefona yükler | ⏭️ Atlanır (USB yok) |
 | Backend sync | `rsync` ile uzak sunucuya | `cp` ile yerel hedefe |
 | Systemd restart | `ssh` ile uzaktan | Doğrudan `systemctl` |
+
+## Google Play Store Dağıtımı
+
+MathLock Play Google Play Store üzerinden dağıtılır. OTA yok — tüm güncellemeler Play Store kanalıyla yapılır.
+
+### Gereksinimler
+
+- Google Cloud Service Account (JSON key)
+- Play Console'da servis hesabına **Release Manager** veya **Admin** rolü
+- Keystore: `projects/mathlock-play/keystore.jks` (release imzası)
+
+### Adım Adım Süreç
+
+**1. Release AAB Derleme**
+```bash
+cd projects/mathlock-play
+./deploy.sh --release
+# Çıktı: app/build/outputs/bundle/release/app-release.aab
+```
+
+**2. Play Store'a Upload (Script ile)**
+
+```bash
+# Draft olarak yükle (manuel yayınlama gerektirir)
+python3 scripts/upload-play-store.py \
+  app/build/outputs/bundle/release/app-release.aab
+
+# Veya doğrudan "completed" olarak yükle (dahili teste anında düşer)
+python3 scripts/upload-to-play-store.py \
+  --aab app/build/outputs/bundle/release/app-release.aab \
+  --service-account /home/akn/secrets/mathlock-play/google-service-account.json \
+  --status completed \
+  --release-name "Sürüm notu"
+```
+
+| Script | Varsayılan Status | Kullanım |
+|--------|-------------------|----------|
+| `upload-play-store.py` | `draft` | Manuel review gerektirir, Console'dan "Yayınla" yapılması gerekir |
+| `upload-to-play-store.py` | `completed` | Dahili teste otomatik düşer, telefon hemen güncelleyebilir |
+
+**3. Dahili Test Kullanıcısı Olarak İndirme**
+- Google Play Store uygulamasını aç
+- MathLock Play sayfasına git
+- "Güncelle" butonu görünür (internal track `completed` release'leri için)
+- Veya: Profil → Uygulamalar ve cihazlar → Güncellemeleri yönet
+
+### Script Parametreleri (`upload-to-play-store.py`)
+
+| Parametre | Varsayılan | Açıklama |
+|-----------|------------|----------|
+| `--aab` | — | AAB dosya yolu |
+| `--apk` | — | APK dosya yolu (alternatif) |
+| `--track` | `internal` | `internal`, `alpha`, `beta`, `production` |
+| `--status` | `completed` | `draft`, `inProgress`, `halted`, `completed` |
+| `--release-name` | `""` | Sürüm notu (tr-TR dilinde gösterilir) |
+| `--service-account` | `backend/google-service-account.json` | Servis hesabı JSON key |
+
+### ADB ile Direkt Kurulum (Debug/Test)
+
+Release AAB aynı keystore ile imzalandığı için `bundletool` ile APK üretilip ADB ile kurulabilir. Ancak debug APK (`app-debug.apk`) farklı imza kullanır — Play Store imzasıyla uyumlu değildir, üzerine yazamaz.
+
+```bash
+# Debug APK (farklı imza — Play Store sürümünün üzerine yazamaz)
+./deploy.sh --adb
+
+# Release AAB → APK dönüşümü (bundletool gerekli)
+bundletool build-apks --bundle=app-release.aab --output=app-release.apks --ks=keystore.jks
+bundletool install-apks --apks=app-release.apks
+```
 
 ## Dependencies
 
@@ -201,6 +271,7 @@ ACRA çökme raporlarını Telegram üzerinden günlük özet + anlık kritik bi
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `90f892e` fix(mathlock-play): SayiYolculugu kredi hatasi (-1 gosterme), versiyon 1.0.94 (2026-05-25) — v1.0.94
 - `6973b89` feat(backend): crash report telegram daily & realtime notifications (2026-05-24)
 - `3a030f21` feat(mathlock-play): switchable backend AI↔Procedural, `/` `^` op support, enriched stats (2026-05-11)
 - `9888d554` docs(wiki): ingest mathlock-play async generation + pending updates (2026-05-10)

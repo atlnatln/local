@@ -22,5 +22,11 @@
     @com.google.gson.annotations.SerializedName <fields>;
 }
 
+# ── ACRA ──
+-keep class org.acra.** { *; }
+-keepclassmembers class org.acra.** { *; }
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+
 # ── R8 gereksiz class'ları silmesin ──
 -keepattributes Signature, Exceptions, InnerClasses, EnclosingMethod

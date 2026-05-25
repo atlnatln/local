@@ -341,3 +341,103 @@ class UserQuestionProgress(models.Model):
         status = "✅" if self.solved else "⬜"
         child_name = self.child.name if self.child else "?"
         return f"{status} Q{self.question.question_id} — {child_name}"
+
+
+class PuzzleSet(models.Model):
+    """Sayı Yolculuğu — çocuk için üretilmiş bulmaca seti."""
+    child = models.ForeignKey(ChildProfile, on_delete=models.CASCADE, related_name='puzzle_sets')
+    version = models.PositiveIntegerField()
+    puzzles_json = models.JSONField(help_text="Bulmaca dizisi: [{title, desc, cols, rows, ...}]")
+    is_procedural = models.BooleanField(default=False)
+    credit_used = models.BooleanField(default=True, help_text="Bu set için kredi harcandı mı")
+    generated_by = models.CharField(
+        max_length=20, default='procedural',
+        choices=[
+            ('procedural', 'Procedural'),
+            ('editor', 'Editor'),
+            ('daily', 'Daily Challenge'),
+            ('fallback', 'Fallback'),
+        ],
+        help_text="Bu setin üretim kaynağı"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-version']
+        unique_together = ('child', 'version')
+
+    def __str__(self):
+        return f"🧩 v{self.version} ({self.child.name}) — {len(self.puzzles_json or [])} puzzle"
+
+
+class PuzzleProgress(models.Model):
+    """Sayı Yolculuğu — tek bulmaca başına ilerleme kaydı."""
+    child = models.ForeignKey(ChildProfile, on_delete=models.CASCADE, related_name='puzzle_progress')
+    puzzle_set_version = models.PositiveIntegerField()
+    level_index = models.PositiveIntegerField()
+    completed = models.BooleanField(default=False)
+    stars = models.PositiveSmallIntegerField(default=0)
+    attempts = models.PositiveIntegerField(default=0)
+    best_cmd_count = models.PositiveIntegerField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('child', 'puzzle_set_version', 'level_index')
+        indexes = [
+            models.Index(fields=['child', 'puzzle_set_version']),
+        ]
+
+    def __str__(self):
+        mark = "✅" if self.completed else "⬜"
+        return f"{mark} Puzzle v{self.puzzle_set_version}-{self.level_index} ({self.child.name}) — {self.stars}⭐"
+
+
+class PuzzleAnalyticsEvent(models.Model):
+    """Sayı Yolculuğu — bulmaca oyun içi analitik olayları."""
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='puzzle_analytics')
+    child = models.ForeignKey(ChildProfile, on_delete=models.CASCADE, null=True, blank=True, related_name='puzzle_analytics')
+    event_type = models.CharField(max_length=30)  # level_start, level_complete, hint_used, ...
+    payload_json = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+    synced_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [models.Index(fields=['device', 'event_type', 'created_at'])]
+
+    def __str__(self):
+        return f"📊 {self.event_type} ({self.device.installation_id[:12]}...)"
+
+
+class CrashReport(models.Model):
+    """ACRA tarafından gönderilen çökme raporları."""
+    device_id = models.CharField(max_length=100, db_index=True,
+                                 help_text="Cihaz benzersiz ID (hashed)")
+    device_fingerprint = models.CharField(max_length=100, blank=True,
+                                          help_text="ACRA device fingerprint (hashed)")
+    app_version_code = models.IntegerField()
+    app_version_name = models.CharField(max_length=20)
+    android_version = models.CharField(max_length=20)
+    sdk_version = models.IntegerField()
+    device_model = models.CharField(max_length=100)
+    device_manufacturer = models.CharField(max_length=50, blank=True)
+    stack_trace = models.TextField()
+    crash_type = models.CharField(max_length=100, blank=True,
+                                  help_text="Exception class adı")
+    crash_message = models.TextField(blank=True)
+    thread_name = models.CharField(max_length=100, blank=True)
+    custom_data = models.JSONField(default=dict, blank=True,
+                                   help_text="ACRA CUSTOM_DATA alanı")
+    is_resolved = models.BooleanField(default=False)
+    occurrence_count = models.IntegerField(default=1)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['crash_type', '-created_at']),
+            models.Index(fields=['app_version_code', '-created_at']),
+        ]
+
+    def __str__(self):
+        return f"[{self.crash_type}] {self.device_model} v{self.app_version_name}"

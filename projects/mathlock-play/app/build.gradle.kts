@@ -3,8 +3,6 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
 }
 
 val localProperties = Properties().apply {
@@ -22,8 +20,8 @@ android {
         applicationId = "com.akn.mathlock.play"
         minSdk = 26
         targetSdk = 35
-        versionCode = 82
-        versionName = "1.0.82"
+        versionCode = 94
+        versionName = "1.0.94"
     }
 
     signingConfigs {
@@ -85,8 +83,9 @@ dependencies {
     // Grafik kütüphanesi (Dashboard)
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
-    // Firebase Crashlytics (Kotlin 1.9 uyumlu explicit version)
-    implementation("com.google.firebase:firebase-crashlytics:18.6.4")
+    // ACRA — Crash reporting
+    implementation("ch.acra:acra-http:5.11.3")
+    implementation("ch.acra:acra-core:5.11.3")
 
     // Encrypted SharedPreferences
     implementation("androidx.security:security-crypto:1.1.0-alpha06")

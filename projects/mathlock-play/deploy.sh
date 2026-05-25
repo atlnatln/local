@@ -326,12 +326,26 @@ if [ "$DEPLOY_BACKEND" = true ]; then
     fi
     
     # AI pipeline dosyaları (kök dizinden)
-    for f in ai-generate.sh ai-generate-levels.sh validate-questions.py validate-levels.py AGENTS.md docker-compose.yml; do
+    for f in ai-generate.sh ai-generate-levels.sh validate-questions.py validate-levels.py procedural-levels-v2.py procedural-questions-v2.py procedural-puzzles.py AGENTS.md docker-compose.yml; do
         if [ -f "$PROJECT_DIR/$f" ]; then
             scp "$PROJECT_DIR/$f" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/$f" 2>/dev/null && \
                 log_success "$f sync edildi" || log_warning "$f sync başarısız"
         fi
     done
+
+    # Procedural levels package
+    if [ -d "$PROJECT_DIR/procedural_levels" ]; then
+        rsync -avz -I --exclude='__pycache__' --exclude='*.pyc' \
+            "$PROJECT_DIR/procedural_levels/" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/procedural_levels/" 2>/dev/null && \
+            log_success "procedural_levels/ sync edildi" || log_warning "procedural_levels/ sync başarısız"
+    fi
+
+    # Procedural questions package
+    if [ -d "$PROJECT_DIR/procedural_questions" ]; then
+        rsync -avz -I --exclude='__pycache__' --exclude='*.pyc' \
+            "$PROJECT_DIR/procedural_questions/" "${VPS_HOST}:/home/akn/vps/projects/mathlock-play/procedural_questions/" 2>/dev/null && \
+            log_success "procedural_questions/ sync edildi" || log_warning "procedural_questions/ sync başarısız"
+    fi
     
     # Fallback level dosyaları (data/ altından)
     for f in data/fallback-levels.tr.json data/fallback-levels.en.json; do

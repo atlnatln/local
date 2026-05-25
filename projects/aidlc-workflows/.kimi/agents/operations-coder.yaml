@@ -1,0 +1,7 @@
+version: 1
+agent:
+  extend: default
+  name: operations-coder
+  system_prompt_path: .kimi/agents/operations-prompt.md
+  exclude_tools:
+    - "kimi_cli.tools.agent:Agent"

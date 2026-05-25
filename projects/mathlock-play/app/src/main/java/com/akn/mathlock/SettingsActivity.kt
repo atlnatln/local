@@ -269,6 +269,13 @@ class SettingsActivity : BaseActivity() {
             startActivity(intent)
         }
 
+        // ACRA test crash — sadece debug build'inde (btnTestMath'e uzun bas)
+        if (BuildConfig.DEBUG) {
+            binding.btnTestMath.setOnLongClickListener {
+                throw RuntimeException("Test crash for ACRA integration")
+            }
+        }
+
         binding.btnTestGuess.setOnClickListener {
             val intent = Intent(this, NumberGuessActivity::class.java).apply {
                 putExtra("test_mode", true)

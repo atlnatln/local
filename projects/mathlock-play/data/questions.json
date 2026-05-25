@@ -1,513 +1,496 @@
 {
-  "version": 5,
-  "generatedAt": "2026-05-08T09:30:37.933788+00:00",
-  "generatedBy": "mathlock-generator",
-  "educationPeriod": "sinif_2",
+  "version": 1,
+  "generatedAt": "2026-05-23T21:43:59Z",
+  "generatedBy": "procedural",
+  "educationPeriod": "sinif_4",
   "difficultyProfile": {
-    "overall": "intermediate",
-    "avgDifficulty": 2.6,
-    "adjustmentReason": "Yaş uygun ilk set — sinif_2"
+    "overall": "beginner",
+    "avgDifficulty": 1.8,
+    "adjustmentReason": "İlk set — çocuğun seviyesi henüz bilinmiyor"
   },
   "questions": [
     {
-      "id": 1,
-      "code": "2025G2-B1-0001",
-      "text": "? + 2 = 33",
+      "id": 5001,
+      "text": "87 + 1 = ?",
+      "answer": 88,
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Nesneler düşün"
+    },
+    {
+      "id": 5002,
+      "text": "27 + 4 = ?",
       "answer": 31,
-      "type": "eksik_sayı",
-      "difficulty": 2,
-      "hint": "Sonuçtan bilinen sayıyı çıkar",
-      "interactionMode": "text-input"
+      "type": "toplama",
+      "difficulty": 1,
+      "hint": "Nesneler düşün"
     },
     {
-      "id": 2,
-      "code": "2025G2-B1-0002",
-      "text": "17 + 22 = ?",
-      "answer": 39,
+      "id": 5003,
+      "text": "125 + 199 = ?",
+      "answer": 324,
       "type": "toplama",
       "difficulty": 2,
-      "hint": "Sayıları kafanda sırala, topla",
-      "interactionMode": "text-input"
+      "hint": "Sayı doğrusunda ilerle"
     },
     {
-      "id": 3,
-      "code": "2025G2-B1-0003",
-      "text": "89 - 51 = ?",
-      "answer": 38,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 4,
-      "code": "2025G2-B1-0004",
-      "text": "42 + 6 = ?",
-      "answer": 48,
-      "type": "toplama",
+      "id": 5004,
+      "text": "16'nin 4'te biri kaçtır?",
+      "answer": 4,
+      "type": "kesir",
       "difficulty": 2,
-      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
-      "interactionMode": "text-input"
+      "hint": "Bölümü bul"
     },
     {
-      "id": 5,
-      "code": "2025G2-B1-0005",
-      "text": "63 ÷ 7 = ?",
+      "id": 5005,
+      "text": "72 ÷ 8 = ?",
       "answer": 9,
       "type": "bölme",
-      "difficulty": 3,
-      "hint": "Çarpma tablosunu tersten düşün",
-      "interactionMode": "text-input"
+      "difficulty": 1,
+      "hint": "Eşit gruplara ayır"
     },
     {
-      "id": 6,
-      "code": "2025G2-B1-0006",
-      "text": "58 - 21 = ?",
+      "id": 5006,
+      "text": "Hangisi büyük: 82, 65?",
+      "answer": 82,
+      "type": "sıralama",
+      "difficulty": 1,
+      "hint": "Sağdaki daha büyük"
+    },
+    {
+      "id": 5007,
+      "text": "1616 + 189 = ?",
+      "answer": 1805,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Tahmin et, sonra kontrol et"
+    },
+    {
+      "id": 5008,
+      "text": "57 - 20 = ?",
       "answer": 37,
       "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
+      "difficulty": 1,
+      "hint": "Parmaklarınla say"
     },
     {
-      "id": 7,
-      "code": "2025G2-B1-0007",
-      "text": "81 ÷ 9 = ?",
-      "answer": 9,
-      "type": "bölme",
+      "id": 5009,
+      "text": "1736 - 370 = ?",
+      "answer": 1366,
+      "type": "çıkarma",
       "difficulty": 3,
-      "hint": "Çarpma tablosunu tersten düşün",
-      "interactionMode": "text-input"
+      "hint": "Onluk ve birlik ayrı çıkar"
     },
     {
-      "id": 8,
-      "code": "2025G2-B1-0008",
-      "text": "4 ÷ 2 = ?",
-      "answer": 2,
-      "type": "bölme",
-      "difficulty": 3,
-      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 9,
-      "code": "2025G2-B1-0009",
-      "text": "16 + 41 = ?",
-      "answer": 57,
+      "id": 5010,
+      "text": "85 + 9 = ?",
+      "answer": 94,
       "type": "toplama",
-      "difficulty": 2,
-      "hint": "Sayıları kafanda sırala, topla",
-      "interactionMode": "text-input"
+      "difficulty": 1,
+      "hint": "Parmaklarınla saymayı dene"
     },
     {
-      "id": 10,
-      "code": "2025G2-B1-0010",
-      "text": "6 × 5 = ?",
-      "answer": 30,
+      "id": 5011,
+      "text": "2 × 5 = ?",
+      "answer": 10,
       "type": "çarpma",
-      "difficulty": 3,
-      "hint": "10 ile çarpınca sona 0 eklenir",
-      "interactionMode": "text-input"
+      "difficulty": 1,
+      "hint": "Aynı sayıyı tekrarla"
     },
     {
-      "id": 11,
-      "code": "2025G2-B1-0011",
-      "text": "48 + 6 = ?",
-      "answer": 54,
+      "id": 5012,
+      "text": "93 + 18 = ?",
+      "answer": 111,
       "type": "toplama",
-      "difficulty": 2,
-      "hint": "Sayıları kafanda sırala, topla",
-      "interactionMode": "text-input"
+      "difficulty": 1,
+      "hint": "Büyük sayıdan başla"
     },
     {
-      "id": 12,
-      "code": "2025G2-B1-0012",
-      "text": "16 ÷ 8 = ?",
-      "answer": 2,
-      "type": "bölme",
-      "difficulty": 3,
-      "hint": "Çarpma tablosunu tersten düşün",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 13,
-      "code": "2025G2-B1-0013",
-      "text": "91 - 13 = ?",
-      "answer": 78,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 14,
-      "code": "2025G2-B1-0014",
-      "text": "9 × 4 = ?",
-      "answer": 36,
-      "type": "çarpma",
-      "difficulty": 3,
-      "hint": "10 ile çarpınca sona 0 eklenir",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 15,
-      "code": "2025G2-B1-0015",
-      "text": "45 + 20 = ?",
-      "answer": 65,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 16,
-      "code": "2025G2-B1-0016",
-      "text": "2 + 3 = ?",
-      "answer": 5,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Sayıları kafanda sırala, topla",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 17,
-      "code": "2025G2-B1-0017",
-      "text": "51 - 4 = ?",
-      "answer": 47,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Sayı doğrusunda geriye git",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 18,
-      "code": "2025G2-B1-0018",
-      "text": "? - 24 = 12",
-      "answer": 36,
-      "type": "eksik_sayı",
-      "difficulty": 2,
-      "hint": "Sonuçtan bilinen sayıyı çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 19,
-      "code": "2025G2-B1-0019",
-      "text": "65 - 19 = ?",
-      "answer": 46,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 20,
-      "code": "2025G2-B1-0020",
-      "text": "16 + 34 = ?",
-      "answer": 50,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 21,
-      "code": "2025G2-B1-0021",
-      "text": "62 - 37 = ?",
-      "answer": 25,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 22,
-      "code": "2025G2-B1-0022",
-      "text": "44 + 12 = ?",
-      "answer": 56,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Sayıları kafanda sırala, topla",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 23,
-      "code": "2025G2-B1-0023",
-      "text": "31 - 6 = ?",
-      "answer": 25,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 24,
-      "code": "2025G2-B1-0024",
-      "text": "20 - 13 = ?",
+      "id": 5013,
+      "text": "Bir otobüste 17 yolcu var. İlk durakta 27 kişi indi, 17 kişi bindi. Kaç yolcu var?",
       "answer": 7,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Sayı doğrusunda geriye git",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 25,
-      "code": "2025G2-B1-0025",
-      "text": "89 - 88 = ?",
-      "answer": 1,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 26,
-      "code": "2025G2-B1-0026",
-      "text": "16 + 32 = ?",
-      "answer": 48,
-      "type": "toplama",
+      "type": "problem",
       "difficulty": 2,
-      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
-      "interactionMode": "text-input"
+      "hint": "İşlemi seç"
     },
     {
-      "id": 27,
-      "code": "2025G2-B1-0027",
-      "text": "38 + 10 = ?",
-      "answer": 48,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 28,
-      "code": "2025G2-B1-0028",
-      "text": "39 - 30 = ?",
-      "answer": 9,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 29,
-      "code": "2025G2-B1-0029",
-      "text": "91 - 33 = ?",
-      "answer": 58,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Sayı doğrusunda geriye git",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 30,
-      "code": "2025G2-B1-0030",
-      "text": "30 + 17 = ?",
-      "answer": 47,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 31,
-      "code": "2025G2-B1-0031",
-      "text": "2 × 9 = ?",
-      "answer": 18,
+      "id": 5014,
+      "text": "7 × 5 = ?",
+      "answer": 35,
       "type": "çarpma",
-      "difficulty": 3,
-      "hint": "Toplama ile düşün: 3 × 2 = 3 + 3",
-      "interactionMode": "text-input"
+      "difficulty": 1,
+      "hint": "2 veya 3 katı"
     },
     {
-      "id": 32,
-      "code": "2025G2-B1-0032",
-      "text": "19 + 44 = ?",
-      "answer": 63,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Büyük sayıdan başla, küçük sayıyı parmakla say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 33,
-      "code": "2025G2-B1-0033",
-      "text": "79 - 21 = ?",
-      "answer": 58,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 34,
-      "code": "2025G2-B1-0034",
-      "text": "19 - 15 = ?",
+      "id": 5015,
+      "text": "14 × ? = 56",
       "answer": 4,
+      "type": "eksik_sayı",
+      "difficulty": 4,
+      "hint": "Bölme tersi çarpma"
+    },
+    {
+      "id": 5016,
+      "text": "58 ÷ 2 = ?",
+      "answer": 29,
+      "type": "bölme",
+      "difficulty": 2,
+      "hint": "Çarpma tablosunu kullan"
+    },
+    {
+      "id": 5017,
+      "text": "Ali'nin 39 TL'si var. Babası 9 TL verdi. Kalem almaya 2 TL harcadı. Kaç TL'si kaldı?",
+      "answer": 46,
+      "type": "problem",
+      "difficulty": 2,
+      "hint": "Verilenleri yaz"
+    },
+    {
+      "id": 5018,
+      "text": "Hangisi büyük: 48, 98?",
+      "answer": 98,
+      "type": "sıralama",
+      "difficulty": 1,
+      "hint": "Sayıları sesli oku"
+    },
+    {
+      "id": 5019,
+      "text": "33 × 4 = ?",
+      "answer": 132,
+      "type": "çarpma",
+      "difficulty": 2,
+      "hint": "Bölmeyi tersine çevir"
+    },
+    {
+      "id": 5020,
+      "text": "Her biri 16 TL olan 4 kitap alındı. 3 TL'lik kalem de alındı. Toplam kaç TL?",
+      "answer": 67,
+      "type": "problem",
+      "difficulty": 3,
+      "hint": "Önce topla/çıkar"
+    },
+    {
+      "id": 5021,
+      "text": "135 ÷ 15 = ?",
+      "answer": 9,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Tahmin et, çarp kontrol"
+    },
+    {
+      "id": 5022,
+      "text": "35'nin 2/5'ü kaçtır?",
+      "answer": 14,
+      "type": "kesir",
+      "difficulty": 3,
+      "hint": "Bölümü kontrol et"
+    },
+    {
+      "id": 5023,
+      "text": "476 ÷ 14 = ?",
+      "answer": 34,
+      "type": "bölme",
+      "difficulty": 3,
+      "hint": "Bölünen = bölen × bölüm"
+    },
+    {
+      "id": 5024,
+      "text": "826 + 814 = ?",
+      "answer": 1640,
+      "type": "toplama",
+      "difficulty": 3,
+      "hint": "Onlukları ayrı topla"
+    },
+    {
+      "id": 5025,
+      "text": "1598 - 227 = ?",
+      "answer": 1371,
       "type": "çıkarma",
       "difficulty": 3,
-      "hint": "Sayı doğrusunda geriye git",
-      "interactionMode": "text-input"
+      "hint": "Tersini düşün: toplama?"
     },
     {
-      "id": 35,
-      "code": "2025G2-B1-0035",
-      "text": "7 × 6 = ?",
-      "answer": 42,
+      "id": 5026,
+      "text": "706 - 489 = ?",
+      "answer": 217,
+      "type": "çıkarma",
+      "difficulty": 3,
+      "hint": "Tersini düşün: toplama?"
+    },
+    {
+      "id": 5027,
+      "text": "61 × 14 = ?",
+      "answer": 854,
       "type": "çarpma",
       "difficulty": 3,
-      "hint": "Çarpım tablosunu hatırla",
-      "interactionMode": "text-input"
+      "hint": "Çarpım tablosu 6-9"
     },
     {
-      "id": 36,
-      "code": "2025G2-B1-0036",
-      "text": "41 + 28 = ?",
-      "answer": 69,
+      "id": 5028,
+      "text": "27 × 5 = ?",
+      "answer": 135,
+      "type": "çarpma",
+      "difficulty": 2,
+      "hint": "Sırayla çarp"
+    },
+    {
+      "id": 5029,
+      "text": "6 ÷ 2 = ?",
+      "answer": 3,
+      "type": "bölme",
+      "difficulty": 1,
+      "hint": "Eşit gruplara ayır"
+    },
+    {
+      "id": 5030,
+      "text": "6 × 8 = ?",
+      "answer": 48,
+      "type": "çarpma",
+      "difficulty": 1,
+      "hint": "2 veya 3 katı"
+    },
+    {
+      "id": 5031,
+      "text": "4'nin 2'te biri kaçtır?",
+      "answer": 2,
+      "type": "kesir",
+      "difficulty": 1,
+      "hint": "Bölünebilirliğe bak"
+    },
+    {
+      "id": 5032,
+      "text": "18'nin 2'te biri kaçtır?",
+      "answer": 9,
+      "type": "kesir",
+      "difficulty": 1,
+      "hint": "Bölünebilirliğe bak"
+    },
+    {
+      "id": 5033,
+      "text": "20'nin 2'te biri kaçtır?",
+      "answer": 10,
+      "type": "kesir",
+      "difficulty": 1,
+      "hint": "Yarısı = ikiye böl"
+    },
+    {
+      "id": 5034,
+      "text": "32 ÷ 4 = ?",
+      "answer": 8,
+      "type": "bölme",
+      "difficulty": 1,
+      "hint": "Eşit gruplara ayır"
+    },
+    {
+      "id": 5035,
+      "text": "Ali'nin 16 TL'si var. Babası 4 TL verdi. Kalem almaya 12 TL harcadı. Kaç TL'si kaldı?",
+      "answer": 8,
+      "type": "problem",
+      "difficulty": 2,
+      "hint": "Verilenleri yaz"
+    },
+    {
+      "id": 5036,
+      "text": "44 × 5 = ?",
+      "answer": 220,
+      "type": "çarpma",
+      "difficulty": 2,
+      "hint": "Çarpım tablosunu hatırla"
+    },
+    {
+      "id": 5037,
+      "text": "821 - 27 = ?",
+      "answer": 794,
+      "type": "çıkarma",
+      "difficulty": 2,
+      "hint": "Sayı doğrusunda geri git"
+    },
+    {
+      "id": 5038,
+      "text": "18 ÷ 9 = ?",
+      "answer": 2,
+      "type": "bölme",
+      "difficulty": 2,
+      "hint": "Ters çarpma"
+    },
+    {
+      "id": 5039,
+      "text": "68 - 4 = ?",
+      "answer": 64,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Parmaklarınla say"
+    },
+    {
+      "id": 5040,
+      "text": "87 ÷ 3 = ?",
+      "answer": 29,
+      "type": "bölme",
+      "difficulty": 2,
+      "hint": "Ters çarpma"
+    },
+    {
+      "id": 5041,
+      "text": "27 × 3 = ?",
+      "answer": 81,
+      "type": "çarpma",
+      "difficulty": 2,
+      "hint": "Sırayla çarp"
+    },
+    {
+      "id": 5042,
+      "text": "891 - 84 = ?",
+      "answer": 807,
+      "type": "çıkarma",
+      "difficulty": 2,
+      "hint": "Sayı doğrusunda geri git"
+    },
+    {
+      "id": 5043,
+      "text": "Bir sınıfta 10 kız ve 17 erkek öğrenci var. Toplam kaç öğrenci var?",
+      "answer": 27,
+      "type": "problem",
+      "difficulty": 1,
+      "hint": "Önce verilenleri bul"
+    },
+    {
+      "id": 5044,
+      "text": "En küçüğü hangisi: 544, 798, 945?",
+      "answer": 544,
+      "type": "sıralama",
+      "difficulty": 2,
+      "hint": "Küçükten büyüğe sırala"
+    },
+    {
+      "id": 5045,
+      "text": "16'nin 2'te biri kaçtır?",
+      "answer": 8,
+      "type": "kesir",
+      "difficulty": 1,
+      "hint": "Bölünebilirliğe bak"
+    },
+    {
+      "id": 5046,
+      "text": "130 + 33 = ?",
+      "answer": 163,
       "type": "toplama",
       "difficulty": 2,
-      "hint": "Sayıları kafanda sırala, topla",
-      "interactionMode": "text-input"
+      "hint": "Önce birler basamağını topla"
     },
     {
-      "id": 37,
-      "code": "2025G2-B1-0037",
-      "text": "98 - 33 = ?",
-      "answer": 65,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Sayı doğrusunda geriye git",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 38,
-      "code": "2025G2-B1-0038",
-      "text": "9 × 6 = ?",
-      "answer": 54,
+      "id": 5047,
+      "text": "39 × 4 = ?",
+      "answer": 156,
       "type": "çarpma",
-      "difficulty": 3,
-      "hint": "Çarpım tablosunu hatırla",
-      "interactionMode": "text-input"
+      "difficulty": 2,
+      "hint": "Bölmeyi tersine çevir"
     },
     {
-      "id": 39,
-      "code": "2025G2-B1-0039",
-      "text": "? + 7 = 38",
-      "answer": 31,
+      "id": 5048,
+      "text": "30 ÷ 5 = ?",
+      "answer": 6,
+      "type": "bölme",
+      "difficulty": 2,
+      "hint": "Ters çarpma"
+    },
+    {
+      "id": 5049,
+      "text": "39 - 7 = ?",
+      "answer": 32,
+      "type": "çıkarma",
+      "difficulty": 1,
+      "hint": "Parmaklarınla say"
+    },
+    {
+      "id": 5050,
+      "text": "112 + ? = 117",
+      "answer": 5,
       "type": "eksik_sayı",
       "difficulty": 2,
-      "hint": "Sonuçtan bilinen sayıyı çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 40,
-      "code": "2025G2-B1-0040",
-      "text": "23 - 8 = ?",
-      "answer": 15,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 41,
-      "code": "2025G2-B1-0041",
-      "text": "25 + 37 = ?",
-      "answer": 62,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Önce onlukları topla, sonra birlikleri ekle",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 42,
-      "code": "2025G2-B1-0042",
-      "text": "55 - 37 = ?",
-      "answer": 18,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 43,
-      "code": "2025G2-B1-0043",
-      "text": "47 - 45 = ?",
-      "answer": 2,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Sayı doğrusunda geriye git",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 44,
-      "code": "2025G2-B1-0044",
-      "text": "6 ÷ 6 = ?",
-      "answer": 1,
-      "type": "bölme",
-      "difficulty": 3,
-      "hint": "Hangi sayı ile çarpınca bu sonucu bulursun?",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 45,
-      "code": "2025G2-B1-0045",
-      "text": "40 ÷ 8 = ?",
-      "answer": 5,
-      "type": "bölme",
-      "difficulty": 3,
-      "hint": "Eşit parçalara bölersen her tarafa kaç düşer?",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 46,
-      "code": "2025G2-B1-0046",
-      "text": "11 - 10 = ?",
-      "answer": 1,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Onluklardan onlukları, birliklerden birlikleri çıkar",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 47,
-      "code": "2025G2-B1-0047",
-      "text": "97 - 96 = ?",
-      "answer": 1,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 48,
-      "code": "2025G2-B1-0048",
-      "text": "16 - 15 = ?",
-      "answer": 1,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 49,
-      "code": "2025G2-B1-0049",
-      "text": "87 - 64 = ?",
-      "answer": 23,
-      "type": "çıkarma",
-      "difficulty": 3,
-      "hint": "Büyük sayıdan geriye doğru say",
-      "interactionMode": "text-input"
-    },
-    {
-      "id": 50,
-      "code": "2025G2-B1-0050",
-      "text": "19 + 50 = ?",
-      "answer": 69,
-      "type": "toplama",
-      "difficulty": 2,
-      "hint": "Sayıları kafanda sırala, topla",
-      "interactionMode": "text-input"
+      "hint": "Farkı bul"
     }
-  ]
+  ],
+  "topics": {
+    "toplama": {
+      "title": "Toplama Nasıl Yapılır? ➕",
+      "explanation": "Sayıları bir araya getirmek demek. 3 elma + 2 elma = 5 elma.",
+      "example": "🍎🍎🍎 + 🍎🍎 = 🍎🍎🍎🍎🍎",
+      "tips": [
+        "Büyük sayıdan başla",
+        "Parmaklarınla say",
+        "Nesneler düşün"
+      ]
+    },
+    "çıkarma": {
+      "title": "Çıkarma Nasıl Yapılır? ➖",
+      "explanation": "Bir sayıdan diğerini eksiltmek demek. 5 elmadan 2'sini yersen 3 kalır.",
+      "example": "🍎🍎🍎🍎🍎 - 🍎🍎 = 🍎🍎🍎",
+      "tips": [
+        "Büyük sayıdan küçüğü çıkar",
+        "Sayı doğrusunda geri git",
+        "Nesneler düşün"
+      ]
+    },
+    "çarpma": {
+      "title": "Çarpma Nasıl Yapılır? ✖️",
+      "explanation": "Aynı sayıyı tekrar tekrar toplamak demek. 3 × 4 = 3 + 3 + 3 + 3 = 12.",
+      "example": "🍎🍎🍎  +  🍎🍎🍎  +  🍎🍎🍎  +  🍎🍎🍎  = 12 elma",
+      "tips": [
+        "Çarpım tablosunu ezberle",
+        "Toplama ile bağlantı kur",
+        "Parçalara ayır"
+      ]
+    },
+    "bölme": {
+      "title": "Bölme Nasıl Yapılır? ➗",
+      "explanation": "Eşit gruplara ayırmak demek. 12 elmayı 4 kişiye eşit verirsen herkese 3 düşer.",
+      "example": "🍎🍎🍎 | 🍎🍎🍎 | 🍎🍎🍎 | 🍎🍎🍎  →  12 ÷ 4 = 3",
+      "tips": [
+        "Çarpma tersini düşün",
+        "Eşit paylaştır",
+        "Bölümü çarpma ile doğrula"
+      ]
+    },
+    "sıralama": {
+      "title": "Sayıları Sıralama 🔢",
+      "explanation": "Sayıları küçükten büyüğe veya büyükten küçüğe dizmek demek.",
+      "example": "3, 7, 2, 5 → Küçükten büyüğe: 2, 3, 5, 7",
+      "tips": [
+        "Basamak sayısına bak",
+        "Soldan sağa karşılaştır",
+        "İlk basamak farklıysa orada karar ver"
+      ]
+    },
+    "eksik_sayı": {
+      "title": "Eksik Sayıyı Bulma ❓",
+      "explanation": "İşlemde bilinmeyen sayıyı bulmak için ters işlem yaparız.",
+      "example": "? + 4 = 9  →  9 - 4 = 5  →  Cevap: 5",
+      "tips": [
+        "Ters işlem düşün",
+        "Sonuçtan bilineni çıkar",
+        "Doğru cevabı yerine yaz, kontrol et"
+      ]
+    },
+    "kesir": {
+      "title": "Kesirler 🍕",
+      "explanation": "Bir bütünü eşit parçalara bölmek demek. Yarım = 1/2, çeyrek = 1/4.",
+      "example": "Bir pizzayı 4 eşit dilim bölersen, her dilim 1/4'dür.",
+      "tips": [
+        "Payda = kaç parça",
+        "Pay = kaç parça alındı",
+        "Tam sayıya çevirmek için bölersin"
+      ]
+    },
+    "problem": {
+      "title": "Problem Çözme 🧩",
+      "explanation": "Günlük hayattan matematiksel soruları okuyup, doğru işlemi seçerek çözmek.",
+      "example": "Ali'nin 5 elması var, 3 tane daha aldı. Toplam = 5 + 3 = 8 elma.",
+      "tips": [
+        "Önce verilenleri yaz",
+        "Ne istendiğini anla",
+        "Adım adım çöz",
+        "Sonucu kontrol et"
+      ]
+    }
+  }
 }

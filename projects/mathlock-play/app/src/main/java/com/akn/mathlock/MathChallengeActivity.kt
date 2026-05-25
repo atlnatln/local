@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import com.akn.mathlock.databinding.ActivityMathChallengeBinding
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.AccountManager
-import com.akn.mathlock.util.MathQuestionGenerator
+
 import com.akn.mathlock.util.PreferenceManager
 import com.akn.mathlock.util.QuestionManager
 import com.akn.mathlock.util.StatsTracker
@@ -46,22 +46,8 @@ class MathChallengeActivity : BaseActivity() {
     // Bu kilit açma oturumunda kaç doğru cevap verildi / kaç gerekli
     private var sessionSolvedCount = 0
     private var requiredCount = 1
-    // Hangi mod çalışıyor: true=JSON, false=fallback
-    // questionManager.isJsonMode KULLANILMAZ — JSON cache varken set bitmişse
-    // isSetComplete()=true olup startFallbackMode() çağrılır ama _isJsonMode
-    // hâlâ true kalır; bu durumda checkJsonAnswer() çalışır ve currentJsonQuestion
-    // null olduğundan hemen döner → kullanıcı soruyu çözemez.
-    private var isJsonModeActive = false
-
     // Test modunda soru ilerlemesi için lokal index (questionManager.currentIndex ilerlemez)
     private var testModeIndex = 0
-
-    // Fallback mode state (eski sistem)
-    private var fallbackQuestions = mutableListOf<com.akn.mathlock.util.MathQuestion>()
-    private var currentIndex = 0
-    private var correctCount = 0
-    private var totalQuestions = 5
-    private var passScore = 3
 
     private fun sendUserHome() {
         val homeIntent = Intent(Intent.ACTION_MAIN).apply {
@@ -101,12 +87,12 @@ class MathChallengeActivity : BaseActivity() {
             val jsonAvailable = questionManager.sync(authToken)
             topicHelper.sync()
             runOnUiThread {
-                // JSON soru varsa ve set tamamlanmadıysa JSON mode, yoksa fallback
+                // JSON soru varsa ve set tamamlanmadıysa JSON mode, yoksa internet gerekli
                 val hasQuestions = jsonAvailable && questionManager.totalCount() > 0
                 if (hasQuestions && (!questionManager.isSetComplete() || isTestMode || isPracticeMode)) {
                     startJsonMode()
                 } else {
-                    startFallbackMode()
+                    showNoInternetDialog()
                 }
             }
         }.start()
@@ -120,7 +106,6 @@ class MathChallengeActivity : BaseActivity() {
 
     private fun startJsonMode() {
         Log.d(TAG, "JSON mode başlatılıyor (v${questionManager.getVersion()})")
-        isJsonModeActive = true
         if (isTestMode) {
             // Ebeveyn önizleme: tüm soruları index 0'dan göster, unlock mekanizması yok
             testModeIndex = 0
@@ -569,135 +554,19 @@ class MathChallengeActivity : BaseActivity() {
     // Fallback Mode — JSON yoksa eski random soru sistemi
     // ═══════════════════════════════════════════════════════════════════════
 
-    private fun startFallbackMode() {
-        Log.d(TAG, "Fallback mode (random sorular)")
-        isJsonModeActive = false
-        // totalQuestions: passScore'un 2 katı, minimum 5 (questionCount ayarı kaldırıldı)
-        totalQuestions = (prefManager.passScore * 2).coerceAtLeast(5)
-        passScore = prefManager.passScore.coerceAtMost(totalQuestions)
-        binding.tvHint.visibility = View.GONE
-        generateFallbackQuestions()
-        showFallbackQuestion()
-    }
-
-    private fun generateFallbackQuestions() {
-        fallbackQuestions.clear()
-        val period = prefManager.activeEducationPeriod
-        repeat(totalQuestions) {
-            fallbackQuestions.add(MathQuestionGenerator.generate(period))
-        }
-    }
-
-    private fun showFallbackQuestion() {
-        if (currentIndex >= totalQuestions) {
-            showFallbackResult()
-            return
-        }
-
-        val question = fallbackQuestions[currentIndex]
-        binding.tvQuestion.text = question.text
-        // Soru sayacı ve bar: hedefe (passScore) göre — totalQuestions iç detay
-        binding.tvQuestionNum.text = getString(R.string.math_question_num, correctCount + 1, passScore)
-        binding.tvScore.text = ""
-        binding.progressBar.max = passScore
-        binding.progressBar.progress = correctCount
-
-        binding.etAnswer.setText("")
-        binding.etAnswer.isEnabled = true
-        binding.tvResult.visibility = View.GONE
-        binding.tvHint.visibility = View.GONE
-        binding.btnCheck.visibility = View.VISIBLE
-        binding.btnNext.visibility = View.GONE
-        binding.btnRetry.visibility = View.GONE
-        showKeyboard()
-    }
-
-    private fun checkFallbackAnswer() {
-        val answerText = binding.etAnswer.text.toString().trim()
-        if (answerText.isEmpty()) return
-        val userAnswer = answerText.toIntOrNull() ?: return
-        val correctAnswer = fallbackQuestions[currentIndex].answer
-
-        binding.etAnswer.isEnabled = false
-        binding.btnCheck.visibility = View.GONE
-        binding.tvResult.visibility = View.VISIBLE
-
-        if (userAnswer == correctAnswer) {
-            correctCount++
-            binding.tvResult.text = getString(R.string.math_correct)
-            binding.tvResult.setTextColor(getColor(R.color.correct_green))
-        } else {
-            binding.tvResult.text = getString(R.string.math_wrong, correctAnswer)
-            binding.tvResult.setTextColor(getColor(R.color.wrong_red))
-        }
-
-        binding.tvQuestionNum.text = getString(R.string.math_question_num, correctCount + 1, passScore)
-        binding.progressBar.progress = correctCount
-
-        // Erken unlock: passScore kadar doğru cevap toplandıysa kalan soruları bekleme
-        if (userAnswer == correctAnswer && correctCount >= passScore) {
-            binding.progressBar.progress = passScore
-            if (isPracticeMode) {
-                // Pratik modda devam et — yeni sorular üret
-                sessionSolvedCount += correctCount
-                correctCount = 0
-                currentIndex = 0
-                generateFallbackQuestions()
-                binding.root.postDelayed({
-                    if (!isFinishing && !isDestroyed) {
-                        binding.etAnswer.visibility = View.VISIBLE
-                        showFallbackQuestion()
-                    }
-                }, 1200)
-                return
+    private fun showNoInternetDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("İnternet Bağlantısı Gerekli")
+            .setMessage("Sorular sunucudan yükleniyor. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.")
+            .setPositiveButton("Tamam") { _, _ ->
+                if (!isTestMode && !isPracticeMode) {
+                    sendUserHome()
+                } else {
+                    finish()
+                }
             }
-            binding.root.postDelayed({ unlockAndLaunchApp() }, 1000)
-            return
-        }
-
-        if (currentIndex < totalQuestions - 1) {
-            binding.btnNext.visibility = View.VISIBLE
-        } else {
-            binding.root.postDelayed({ showFallbackResult() }, 1200)
-        }
-    }
-
-    private fun showFallbackResult() {
-        if (correctCount >= passScore) {
-            binding.tvQuestion.text = "🎉"
-            binding.tvResult.visibility = View.VISIBLE
-            binding.tvResult.setTextColor(getColor(R.color.correct_green))
-            binding.btnCheck.visibility = View.GONE
-            binding.btnNext.visibility = View.GONE
-            binding.etAnswer.visibility = View.GONE
-            binding.progressBar.progress = totalQuestions
-            if (isPracticeMode) {
-                sessionSolvedCount += correctCount
-                binding.tvResult.text = "⭐ $sessionSolvedCount doğru! Devam ediyor..."
-                correctCount = 0
-                currentIndex = 0
-                generateFallbackQuestions()
-                binding.root.postDelayed({
-                    if (!isFinishing && !isDestroyed) {
-                        binding.etAnswer.visibility = View.VISIBLE
-                        binding.tvResult.visibility = View.GONE
-                        showFallbackQuestion()
-                    }
-                }, 1500)
-                return
-            }
-            binding.tvResult.text = getString(R.string.math_success)
-            binding.root.postDelayed({ unlockAndLaunchApp() }, 1500)
-        } else {
-            binding.tvQuestion.text = "�"
-            binding.tvResult.visibility = View.VISIBLE
-            binding.tvResult.text = getString(R.string.math_fail)
-            binding.tvResult.setTextColor(getColor(R.color.accent))
-            binding.btnCheck.visibility = View.GONE
-            binding.btnNext.visibility = View.GONE
-            binding.etAnswer.visibility = View.GONE
-            binding.btnRetry.visibility = View.VISIBLE
-        }
+            .setCancelable(false)
+            .show()
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -735,11 +604,7 @@ class MathChallengeActivity : BaseActivity() {
 
     private fun setupListeners() {
         binding.btnCheck.setOnClickListener {
-            if (isJsonModeActive) {
-                checkJsonAnswer()
-            } else {
-                checkFallbackAnswer()
-            }
+            checkJsonAnswer()
         }
 
         binding.btnSkip.setOnClickListener {
@@ -750,12 +615,7 @@ class MathChallengeActivity : BaseActivity() {
         }
 
         binding.btnNext.setOnClickListener {
-            if (isJsonModeActive) {
-                showNextJsonQuestion()
-            } else {
-                currentIndex++
-                showFallbackQuestion()
-            }
+            showNextJsonQuestion()
         }
 
         binding.btnOption1.setOnClickListener {
@@ -767,22 +627,26 @@ class MathChallengeActivity : BaseActivity() {
         }
 
         binding.btnRetry.setOnClickListener {
-            // Sadece fallback modda kullanılır
-            currentIndex = 0
-            correctCount = 0
-            binding.etAnswer.visibility = View.VISIBLE
-            binding.btnRetry.visibility = View.GONE
-            generateFallbackQuestions()
-            showFallbackQuestion()
+            // Retry: internet bağlantısını tekrar dene
+            if (!isFinishing && !isDestroyed) {
+                val authToken = accountManager.getOrRefreshToken()
+                Thread {
+                    val jsonAvailable = questionManager.sync(authToken)
+                    runOnUiThread {
+                        val hasQuestions = jsonAvailable && questionManager.totalCount() > 0
+                        if (hasQuestions && (!questionManager.isSetComplete() || isTestMode || isPracticeMode)) {
+                            startJsonMode()
+                        } else {
+                            showNoInternetDialog()
+                        }
+                    }
+                }.start()
+            }
         }
 
         binding.etAnswer.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (isJsonModeActive) {
-                    checkJsonAnswer()
-                } else {
-                    checkFallbackAnswer()
-                }
+                checkJsonAnswer()
                 true
             } else false
         }

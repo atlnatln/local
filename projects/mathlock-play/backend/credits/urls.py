@@ -20,4 +20,13 @@ urlpatterns = [
     path('children/detail/', views.children_detail),
     path('children/report/', views.child_report),
     path('children/stats-history/', views.stats_history),
+    # Sayı Yolculuğu (Puzzle) sistemi
+    path('puzzles/', views.get_puzzles),
+    path('puzzles/progress/', views.save_puzzle_progress),
+    path('puzzles/progress/sync/', views.sync_puzzle_progress),
+    path('puzzles/analytics/', views.upload_puzzle_analytics),
+    path('puzzles/daily/', views.get_daily_challenge),
+    path('puzzles/leaderboard/', views.get_leaderboard),
+    # Crash reports (ACRA)
+    path('crash-reports/', views.report_crash),
 ]

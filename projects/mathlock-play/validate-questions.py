@@ -50,7 +50,7 @@ PERIOD_CONFIG = {
 EXPECTED_DISTRIBUTION = {
     "okul_oncesi": {"sayma": 0.27, "toplama": 0.27, "çıkarma": 0.13, "karşılaştırma": 0.20, "örüntü": 0.13},
     "sinif_1": {"toplama": 0.45, "çıkarma": 0.35, "sıralama": 0.13, "eksik_sayı": 0.07},
-    "sinif_2": {"toplama": 0.44, "çıkarma": 0.32, "çarpma": 0.10, "bölme": 0.08, "sıralama": 0.04, "eksik_sayı": 0.02},
+    "sinif_2": {"toplama": 0.38, "çıkarma": 0.30, "çarpma": 0.14, "bölme": 0.10, "sıralama": 0.05, "eksik_sayı": 0.03},
     "sinif_3": {"toplama": 0.24, "çıkarma": 0.20, "çarpma": 0.20, "bölme": 0.14, "sıralama": 0.06, "eksik_sayı": 0.04, "kesir": 0.06, "problem": 0.06},
     "sinif_4": {"toplama": 0.16, "çıkarma": 0.16, "çarpma": 0.18, "bölme": 0.18, "sıralama": 0.06, "eksik_sayı": 0.04, "kesir": 0.12, "problem": 0.10},
 }
@@ -266,6 +266,11 @@ def validate_questions():
         if field not in data:
             err(f"Üst seviye alan eksik: '{field}'")
 
+    # generatedBy kontrolü
+    gen_by = data.get("generatedBy", "")
+    if gen_by not in ("ai", "procedural"):
+        err(f"Geçersiz generatedBy: '{gen_by}' (beklenen: 'ai' veya 'procedural')")
+
     if "questions" not in data:
         return
 
@@ -276,6 +281,10 @@ def validate_questions():
     if ACTIVE_PERIOD is None:
         ACTIVE_PERIOD = data.get("educationPeriod", "sinif_2")
     period_cfg = PERIOD_CONFIG.get(ACTIVE_PERIOD, PERIOD_CONFIG["sinif_2"])
+
+    # educationPeriod varsa doğrula
+    if "educationPeriod" in data and data["educationPeriod"] not in PERIOD_CONFIG:
+        err(f"Geçersiz educationPeriod: '{data['educationPeriod']}'")
     valid_types = period_cfg["types"]
     expected_count = period_cfg["count"]
     print(f"  📚 Dönem: {ACTIVE_PERIOD} ({expected_count} soru bekleniyor)")

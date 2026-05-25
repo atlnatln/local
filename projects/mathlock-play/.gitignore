@@ -47,3 +47,9 @@ obj/
 .venv-upload/
 backend/.venv/
 venv/
+
+# Python
+__pycache__/
+*.pyc
+*.backup
+*.backup.*

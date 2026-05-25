@@ -1,0 +1,18 @@
+/* ═══════════════════════════════════════════════════════════
+   Sayı Yolculuğu — Responsive
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  :root { --cell-size: 48px; }
+  .cmd-btn { padding: 8px 12px; font-size: .8rem; }
+  .overlay-card { padding: 28px 20px; }
+  .cmd-actions { gap: 6px; }
+  .action-btn { padding: 10px 6px; font-size: .75rem; }
+  .level-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  #splash h1 { font-size: 2.2rem; }
+}
+
+@media (max-width: 360px) {
+  :root { --cell-size: 40px; }
+  .cmd-actions { grid-template-columns: 1fr 1fr; }
+}
