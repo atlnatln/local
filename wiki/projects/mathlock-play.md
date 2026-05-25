@@ -54,8 +54,8 @@ Ebeveynler çocuklarının telefon kullanımını kilitleyebilir; çocuklar mate
 | `projects/mathlock-play/backend/` | Django backend |
 | `projects/mathlock-play/website/` | Privacy policy, support sayfaları |
 | `projects/mathlock-play/deploy.sh` | Build + data sync |
-| `projects/mathlock-play/ai-generate.sh` | AI soru üretim pipeline'ı |
-| `projects/mathlock-play/ai-generate-levels.sh` | AI bulmaca seviye üretim pipeline'ı (Sayı Yolculuğu) |
+| `projects/mathlock-play/ai-generate.sh` | ~~AI soru üretim pipeline'ı~~ [STALE — silindi, procedural_questions/ kullanılıyor] |
+| `projects/mathlock-play/ai-generate-levels.sh` | ~~AI bulmaca seviye üretim pipeline'ı~~ [STALE — silindi, procedural_levels/ kullanılıyor] |
 | `projects/mathlock-play/procedural_levels/` | Procedural seviye üretimi v2 — modüler paket (BFS solver, 13+ desen, 5 op, zorluk planlama) |
 | `projects/mathlock-play/procedural-levels.py` | Procedural seviye üretimi (v1 — eski, devre dışı) |
 | `projects/mathlock-play/procedural-levels-v2.py` | Procedural seviye üretimi (v2 — eski tek dosya, backup) |
@@ -244,6 +244,10 @@ bundletool install-apks --apks=app-release.apks
 
 - [[adr-007-mathlock-meb-curriculum-compliance-implantation]] — MEB 2024 müfredat uyum implantasyonu
 
+## Android ErrorReporter (2026-05-25)
+
+Non-fatal business hataların merkezi raporlanması. PII filtreleme ile Firebase Crashlytics'e gönderilir. Bkz. [[mathlock-play-android]] ErrorReporter bölümü.
+
 ## Crash Report Telegram Notifications (2026-05-24)
 
 ACRA çökme raporlarını Telegram üzerinden günlük özet + anlık kritik bildirim olarak gönderen sistem.
@@ -271,6 +275,7 @@ ACRA çökme raporlarını Telegram üzerinden günlük özet + anlık kritik bi
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `f4cba014` feat(mathlock-play): ErrorReporter (PII-filtered non-fatal reporting), ACRA LOGCAT removal, v1.0.97 (2026-05-25) — v1.0.97
 - `90f892e` fix(mathlock-play): SayiYolculugu kredi hatasi (-1 gosterme), versiyon 1.0.94 (2026-05-25) — v1.0.94
 - `6973b89` feat(backend): crash report telegram daily & realtime notifications (2026-05-24)
 - `3a030f21` feat(mathlock-play): switchable backend AI↔Procedural, `/` `^` op support, enriched stats (2026-05-11)

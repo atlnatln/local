@@ -360,3 +360,20 @@ tags: [meta, log]
 - mathlock-play.sha: 6973b89 → 90f892e
 - local.sha: 60c781e → 5e5ae3f
 - Lint: 9/10 passing, 0 failure
+
+## [2026-05-25 17:06] ingest | mathlock-play, sayi-yolculugu | f4cba014 | 4 pages
+- Files: A:~20 M:~15 D:~15
+- Pages updated: [[mathlock-play-android]], [[mathlock-play]], [[mathlock-play-backend]], [[sayi-yolculugu]]
+- Diff summary: ErrorReporter (PII-filtered non-fatal reporting) added across all Android modules. ai-generate scripts and agents removed. MathQuestionGenerator deleted. sayi-yolculugu modularized. upload timeout fix.
+## [2026-05-25 17:58] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 8
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 34 entries
+

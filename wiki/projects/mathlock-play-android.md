@@ -43,7 +43,7 @@ Ebeveyn ayarlarına erişim için cihazın kendi güvenlik yöntemi kullanılır
 - Cihazda herhangi bir güvenlik yöntemi (parmak izi, desen, PIN, şifre) yoksa `Toast` ile "Bu cihazda parmak izi veya desen kilidi bulunamadı" mesajı gösterilir
 - Xiaomi MIUI cihazlarda `BIOMETRIC_STRONG or DEVICE_CREDENTIAL` kombinasyonu ile sistem prompt davranışı cihaza bağlıdır
 
-## Android Fallback Üretimi (`MathQuestionGenerator.kt`)
+## Android Fallback Üretimi (`MathQuestionGenerator.kt`) [STALE]
 
 `generate(educationPeriod)` çağrısıyla çalışır. Her yaş grubu için aynı sayı aralıklarını kullanır ama deterministic DEĞİLDİR (`Random.nextInt`). JSON cache yoksa `startFallbackMode()` ile bu generator çalışır.
 
@@ -84,6 +84,30 @@ Ebeveyn ayarlarına erişim için cihazın kendi güvenlik yöntemi kullanılır
 - **Bölme (`/`):** Oyuncu değeri hücredeki değere tam bölünmüyorsa hücreye girilmez; oyuncu eski konumunda kalır ve bump animasyonu oynatılır.
 - **Kare (`^`):** Oyuncu değeri kendisiyle çarpılır (`val *= val`).
 - Yeni CSS stilleri: `.cell-op-divide` (turuncu), `.cell-op-square` (mor).
+
+## ErrorReporter (2026-05-25)
+
+Merkezi non-fatal hata raporlama utility'si. PII (Personally Identifiable Information) filtreleme ile business hataları Firebase Crashlytics'e gönderir.
+
+**Kapsam:**
+| Modül | Kullanım |
+|-------|----------|
+| `AccountManager.kt` | Cihaz kaydı, auth hataları |
+| `RealApiClient.kt` | Network hataları (timeout, 5xx, parse) |
+| `BillingHelper.kt` | IAP doğrulama, satın alma hataları |
+| `SayiYolculuguActivity.kt` | Set yükleme, progress upload hataları |
+| `MathChallengeActivity.kt` | Soru seti yükleme, progress hataları |
+| `ChildProfilesActivity.kt` | Profil CRUD hataları |
+
+**PII Filtreleme:**
+- `device_token`, `child_id`, `email`, `name` gibi alanlar `***REDACTED***` ile maskelenir
+- Raw JSON response tam hali değil, sadece `error` / `message` alanları gönderilir
+- Exception stack trace korunur
+
+**ACRA Uyumluluğu:**
+`MathLockApplication.kt`'de ACRA config'den `LOGCAT` kaldırıldı (`customReportContent` içinde yok). COPPA/GDPR-K uyumu için cihaz log'ları crash raporuna dahil edilmiyor.
+
+---
 
 ## Bug Fixes (2026-05-25)
 
@@ -165,6 +189,19 @@ var unlockDurationMinutes: Int
 ```
 
 **Label:** `resources.getString(R.string.settings_unlock_duration_minutes, minutes)` → "X dakika"
+
+### Upload Timeout ve Resumable Upload (v1.0.96 / v1.0.97)
+
+**Sorun:** Google Play Store upload script'i (`upload-to-play-store.py`) 60 saniyelik timeout'a takılıyordu; büyük AAB dosyalarında kesinti oluyordu.
+
+**Çözüm:**
+- Timeout 120 saniyeye çıkarıldı
+- Resumable upload desteği eklendi (kesinti durumunda devam edebilir)
+- Retry mekanizması: 3 deneme, exponential backoff
+
+**Versiyonlar:**
+- `v1.0.96` — upload timeout fix
+- `v1.0.97` — resumable upload + retry
 
 ---
 

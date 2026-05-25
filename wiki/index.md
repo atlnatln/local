@@ -1,7 +1,7 @@
 ---
 title: "Wiki Index"
 created: 2026-05-01
-updated: 2026-05-10
+updated: 2026-05-25
 type: index
 tags: [meta, index]
 related: []
@@ -101,14 +101,18 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 | [[mathlock-play-ai]] | project | MathLock AI soru pipeline'ı | 2026-05-07 |
 | [[mathlock-play-android]] | project | MathLock Android detayları | 2026-05-25 |
 | [[mathlock-play-android-releases]] | project | MathLock Android release notları ve bug fix'ler | 2026-05-10 |
-| [[mathlock-play-backend]] | project | MathLock backend detayları | 2026-05-10 |
+| [[mathlock-play-backend]] | project | MathLock backend detayları | 2026-05-25 |
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
-| [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-03 |
+| [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-25 |
 | [[local]] | project | Ana monorepo — agent instruction'ları, references, wiki kuralları | 2026-05-10 |
 
 ## Recently Updated
 
+- [[mathlock-play-android]] — ErrorReporter (PII-filtered non-fatal reporting) eklendi; `MathQuestionGenerator.kt` [STALE]; ACRA LOGCAT kaldırıldı (COPPA/GDPR-K); upload timeout + resumable upload (v1.0.96/v1.0.97) (2026-05-25)
+- [[sayi-yolculugu]] — Standalone oyun modüler yapıya geçti: CSS → base/components/responsive, JS → 18 modül; `editor.html` seviye editörü eklendi (2026-05-25)
+- [[mathlock-play-backend]] — `generate_puzzle_set` Celery task + `puzzles` queue; `register_device` throttle handling; `update_level_progress` callback leak fix (2026-05-25)
+- [[mathlock-play]] — `ai-generate.sh` ve `ai-generate-levels.sh` [STALE] işaretlendi; ErrorReporter mention; v1.0.96/v1.0.97 release notes (2026-05-25)
 - [[mathlock-play]] — Google Play Store dağıtım süreci eklendi (`upload-play-store.py`, `upload-to-play-store.py`, AAB→APK, dahili test); v1.0.94 release notes (2026-05-25)
 - [[mathlock-play-android]] — Sayı Yolculuğu set bitiminde kredi hatası (-1 gösterme) fix dökümantasyonu; `optInt` default 0, `hasError` handler, `coerceAtLeast(0)` (2026-05-25)
 - [[mathlock-play-backend]] — Switchable backend AI↔Procedural, `_generate_level_set_procedural` + dispatcher, `GenerationJob.generator`, `LEVEL_GENERATOR` setting, enriched stats (`questionAccuracy`, `strongTopics`, `weakTopics`, `completionRate`), migration 0015 (2026-05-11)

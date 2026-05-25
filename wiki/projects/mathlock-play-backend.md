@@ -1,7 +1,7 @@
 ---
 title: "MathLock Play — Backend"
 created: 2026-05-07
-updated: 2026-05-10
+updated: 2026-05-25
 type: project
 tags: [mathlock-play, django]
 related:
@@ -357,6 +357,34 @@ sudo systemctl enable --now mathlock-celery-beat
 ```
 
 > **Not:** `mathlock-celery-beat.service` yeni eklenmelidir (Celery beat için). Eğer yoksa systemd servis dosyası oluşturulmalı.
+
+---
+
+## Puzzles Queue & Throttle İyileştirmeleri (2026-05-25)
+
+### `generate_puzzle_set` Celery Task
+
+Yeni puzzle seti üretimi için ayrı Celery task eklendi. `puzzles` adlı yeni queue kullanılır.
+
+```python
+# credits/tasks.py
+generate_puzzle_set.delay(child_id, ...)
+```
+
+**Celery servis yapılandırması:**
+- Worker `--queues=celery,puzzles` ile çalıştırılır
+- `mathlock-celery.service`'in `ExecStart` satırı güncellendi
+
+### `register_device` Throttle Handling
+
+`views.py`'de `register_device` endpoint'ine throttle uyumu eklendi:
+- Throttle limit aşımında 429 dönüşü düzgün handle edilir
+- Retry-after header'ı client'a iletilir
+
+### `update_level_progress` İyileştirmeleri
+
+- 200 OK + empty body durumunda callback leak düzeltildi (Android tarafı `onResponse` null body kontrolü eklendi)
+- `auto_renewal_started` flag'i olmayan response'lar artık `showRenewalError()` ile handle edilir
 
 ---
 

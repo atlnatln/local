@@ -1,7 +1,7 @@
 ---
 title: "Sayı Yolculuğu"
 created: "2026-05-01"
-updated: "2026-05-11"
+updated: "2026-05-25"
 type: project
 tags: [sayi-yolculugu, html5, javascript, android, webview, education]
 related:
@@ -21,13 +21,55 @@ sources:
 
 ## Standalone HTML5 Oyunu
 
-`projects/sayi-yolculugu/index.html` (~48 KB) — CSS, JavaScript ve oyun mantığı tek dosyada.
+`projects/sayi-yolculugu/index.html` — ana oyun dosyası. **Modüler yapıya geçildi** (2026-05-25): CSS ve JS ayrı dosyalara bölündü.
 
 | Bileşen | Teknoloji |
 |---------|-----------|
 | Runtime | HTML5, CSS3, Vanilla JavaScript |
-| Deploy | Statik dosya (nginx üzerinden servis edilir) |
-| Boyut | ~48 KB tek dosya |
+| Deploy | Statik dosyalar (nginx üzerinden servis edilir) |
+| Yapı | Modüler (CSS + JS ayrılmış) |
+
+### Modüler Dosya Yapısı (2026-05-25)
+
+**CSS:**
+| Dosya | İçerik |
+|-------|--------|
+| `css/base.css` | Temel stiller, layout, renkler |
+| `css/components.css` | Bileşen stilleri (grid, hücreler, butonlar) |
+| `css/responsive.css` | Mobil/tablet breakpoint'leri |
+
+**JavaScript:**
+| Dosya | İçerik |
+|-------|--------|
+| `js/main.js` | Entry point, oyun başlatma |
+| `js/state.js` | Oyun state yönetimi |
+| `js/grid-renderer.js` | Izgara render motoru |
+| `js/execution-engine.js` | Komut çalıştırma motoru |
+| `js/command-system.js` | Blockly benzeri komut sistemi |
+| `js/event-bus.js` | Modüller arası iletişim |
+| `js/level-manager.js` | Seviye yükleme, geçiş, kaydetme |
+| `js/levels-data.js` | Statik seviye tanımları |
+| `js/audio.js` | Ses efektleri ve müzik |
+| `js/hint-engine.js` | İpucu sistemi |
+| `js/progress.js` | İlerleme takibi |
+| `js/settings.js` | Kullanıcı ayarları |
+| `js/store.js` | Yerel depolama |
+| `js/ui-overlays.js` | Overlay'ler (splash, pause, game over) |
+| `js/utils.js` | Yardımcı fonksiyonlar |
+| `js/analytics.js` | Olay takibi |
+| `js/daily-challenge.js` | Günlük meydan okuma |
+| `js/api-client.js` | Backend API iletişimi (MathLock entegrasyonu) |
+
+### Level Editor (2026-05-25)
+
+`editor.html` — tarayıcıda çalışan seviye editörü. Yeni seviyeler tasarlanıp JSON olarak dışa aktarılabilir.
+
+| Özellik | Açıklama |
+|---------|----------|
+| Grid boyutu ayarı | Satır/sütun sayısı |
+| Hücre tipleri | Sayı, operatör (+, −, ×, /, ^), duvar, başlangıç, bitiş |
+| Test çalıştırma | Editörde seviyeyi oyna |
+| JSON export | `levels-data.js` formatında çıktı |
 
 ### Özellikler
 
@@ -151,6 +193,7 @@ override fun onDestroy() {
 
 ## Recent Commits
 
+- `f4cba014` feat(sayi-yolculugu): modüler JS/CSS yapıya geçiş, editor.html eklendi (2026-05-25)
 - `3a030f21` feat(sayi-yolculugu): `/` ve `^` operatör desteği, bölme bounce mantığı (2026-05-11)
 - `e5ae1fc1` fix(mathlock-play): v1.0.78 — compile fix, test limit, Play Store upload script (2026-05-10)
 - `681346a3` fix(mathlock-play): 7 critical bug fixes, UI/UX improvements, new tests, v1.0.77 (2026-05-09)
