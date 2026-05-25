@@ -377,3 +377,15 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 34 entries
 
+## [2026-05-25 22:07] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 9
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 35 entries
+

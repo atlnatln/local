@@ -191,8 +191,23 @@ override fun onDestroy() {
 - [[infrastructure]] — nginx, SSL, mathlock.com.tr domain
 - [[kimi-code-cli]] — AI seviye üretim aracı
 
+## Bilinen Bug'lar ve Düzeltmeler
+
+### 2026-05-25 — Ops var ama targetVal yok seviye geçiş bug'ı
+
+**Semptom:** Oyuncu `+2` gibi bir operatör hücresinden geçip sayısını 3 yapıp hedefe ulaştığında seviye geçiliyordu. Hedef değer (`targetVal`) tanımlı değilse oyun sadece konum kontrolü yapıyordu.
+
+**Kök Neden:** `procedural_levels/generator/pipeline.py` satır 175-178'de `targetVal` sadece `difficulty >= 3` ve `%60` ihtimalle atanırken, `place_ops()` her zaman çağrılıyordu. Sonuç: zorluk 2 seviyelerde (ve zorluk >=3'te %40 ihtimalle) operatörler vardı ama hedef değer yoktu. Oyuncu operatörden geçip sayısını değiştirse bile kazanıyordu.
+
+**Düzeltme:**
+- `pipeline.py`: `targetVal == null` ise `ops = []` — operatörler sadece hedef değer varsa yerleştirilir.
+- `validate-levels.py`: `ops` var ama `targetVal` yoksa uyarı verir.
+- `game.html` + `experimental-web`: Eski/cache'lenmiş seviyeler için fallback — `ops` var ama `targetVal` null ise `startVal` hedef değer olarak kabul edilir.
+- `SayiYolculuguGameEngineTest`: Regression testleri eklendi.
+
 ## Recent Commits
 
+- `d68e371` fix(sayi-yolculugu): operators without targetVal made levels trivial to win (2026-05-25)
 - `f4cba014` feat(sayi-yolculugu): modüler JS/CSS yapıya geçiş, editor.html eklendi (2026-05-25)
 - `3a030f21` feat(sayi-yolculugu): `/` ve `^` operatör desteği, bölme bounce mantığı (2026-05-11)
 - `e5ae1fc1` fix(mathlock-play): v1.0.78 — compile fix, test limit, Play Store upload script (2026-05-10)
