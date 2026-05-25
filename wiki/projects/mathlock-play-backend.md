@@ -56,114 +56,34 @@ class DeviceTokenSigner:
 
 ## Backend Auth Backward Compatibility Fix (2026-05-03)
 
-**Sorun:** Eski app versiyonları ve edge case'lerde `DeviceTokenAuthentication` 403 dönüyordu.
+**Sorun:** Eski app versiyonları `DeviceTokenAuthentication`'da 403 dönüyordu.
 
-**Kök Neden:** `DeviceTokenAuthentication` sadece `Authorization: Device <token>` header'ını okuyordu. Eski app versiyonları query param (`?device_token=...`) veya POST body (`{"device_token":...}`) ile token gönderiyordu.
-
-**Düzeltme:** `DeviceTokenAuthentication`'a fallback mekanizmaları eklendi:
-
-```python
-# file: projects/mathlock-play/backend/credits/authentication.py
-class DeviceTokenAuthentication(BaseAuthentication):
-    def authenticate(self, request):
-        signed_token = None
-        # 1. Authorization header
-        auth_header = request.headers.get('Authorization', '')
-        if auth_header.startswith(self.keyword + ' '):
-            signed_token = auth_header[len(self.keyword) + 1 :].strip()
-        # 2. Query param fallback
-        if not signed_token:
-            signed_token = request.query_params.get('device_token', '').strip()
-        # 3. JSON body fallback
-        if not signed_token:
-            try:
-                body = json.loads(request.body)
-                signed_token = body.get('device_token', '').strip()
-            except Exception:
-                pass
-        # ... verify token
-```
-
-**Test:** `test_auth.py`'ye 4 yeni test eklendi:
-- `test_query_param_token_fallback`
-- `test_json_body_token_fallback`
-- `test_no_token_returns_403`
+**Düzeltme:** `authentication.py`'e query param ve JSON body fallback'leri eklendi. `test_auth.py`'ye 3 yeni test eklendi (query param, JSON body, no token).
 
 ## Matematik Soruları child_id Mismatch Fix (2026-05-03)
 
-**Sorun:** `get_questions` ve `update_progress` endpoint'leri `child_id` mismatch durumunda sessizce `child=None` olarak devam ediyordu. AI soru setleri kayboluyor, progress yetim kaydediliyordu.
+**Sorun:** `get_questions`/`update_progress` `child_id` mismatch'te sessizce `child=None` ile devam ediyordu.
 
-**Kök Neden:** Levels endpoint'leri (`get_levels`, `update_level_progress`) 404 dönerken, questions endpoint'leri `ChildProfile.objects.filter(...).first()` kullanıyordu — bulunamayınca `None` dönüyordu.
-
-**Düzeltme:** Her iki endpoint de artık explicit `child_id` verilmiş ama bulunamazsa `404 child_not_found` döner:
-
-```python
-# file: projects/mathlock-play/backend/credits/views.py
-child_id = request.query_params.get('child_id')
-if child_id:
-    try:
-        child = device.children.get(id=child_id)
-    except ChildProfile.DoesNotExist:
-        return Response({'error': _('child_not_found')}, status=404)
-else:
-    child = device.children.filter(is_active=True).first() or device.children.first()
-```
-
-Bu, levels ile questions endpoint'leri arasında tutarlılık sağlar.
+**Düzeltme:** `views.py`'de explicit `child_id` verilmişse ve bulunamazsa `404 child_not_found` döner. Levels ile questions endpoint'leri arasında tutarlılık sağlar.
 
 ## Backend Tests
 
-Test suite'i 169 testten oluşur ve 10 modüle ayrılmıştır (~0.4s çalışma süresi).
+169 test, 10 modül, tümü passing (~0.4s).
 
-### Test Yapısı
+| Modül | Kapsam |
+|-------|--------|
+| `test_models.py` | Django model testleri |
+| `test_auth.py` | DeviceTokenSigner, DeviceTokenAuthentication |
+| `test_api_register.py` | Cihaz kaydı, locale, e-posta, health |
+| `test_api_credits.py` | Kredi sorgulama, satın alma, istatistik yükleme |
+| `test_api_children.py` | Çocuk listesi, detay, raporlama |
+| `test_api_questions.py` | Soru seti, ilerleme güncelleme |
+| `test_api_levels.py` | Seviye seti, seviye ilerlemesi |
+| `test_integration.py` | E2E akışlar, çapraz cihaz izolasyonu, girdi doğrulama |
+| `test_unit.py` | Sanitasyon, iade, rapor, kredi düşme/kilit |
+| `test_celery.py` | Celery task testleri |
 
-| Modül | Test Sayısı | Kapsam |
-|-------|-------------|--------|
-| `credits/tests/test_models.py` | — | Django model testleri |
-| `credits/tests/test_auth.py` | — | `DeviceTokenSigner`, `DeviceTokenAuthentication` — süre aşımı, bozuk imza, eksik header, `AllowAny` bypass |
-| `credits/tests/test_api_register.py` | — | Cihaz kaydı, locale, e-posta, health, paketler |
-| `credits/tests/test_api_credits.py` | — | Kredi sorgulama, satın alma doğrulama, kredi kullanma, istatistik yükleme |
-| `credits/tests/test_api_children.py` | — | Çocuk listesi, detay, raporlama |
-| `credits/tests/test_api_questions.py` | — | Soru seti, ilerleme güncelleme (normal + otomatik yenileme) |
-| `credits/tests/test_api_levels.py` | — | Seviye seti, seviye ilerlemesi (normal + otomatik yenileme) |
-| `credits/tests/test_integration.py` | — | E2E akışlar (tam soru + seviye döngüleri), çapraz cihaz yetkilendirme izolasyonu, girdi doğrulama (XSS/SQLi/sanitasyon) |
-| `credits/tests/test_unit.py` | — | Sanitasyon birim testi, iade ve rapor birim testleri, eski kilit temizliği, kredi düşme/kilit, yenileme kilidi serbest bırakma, throttle yapılandırma |
-| `credits/tests/test_celery.py` | — | Celery task testleri |
-
-### Paylaşılan Test Altyapısı
-
-`credits/tests/base.py` ortak kullanım alanını sağlar:
-
-```python
-# file: projects/mathlock-play/backend/credits/tests/base.py
-class AuthMixin:
-    def _auth_client(self, device):
-        signer = DeviceTokenSigner()
-        signed = signer.sign(str(device.device_token))
-        self.client.credentials(HTTP_AUTHORIZATION=f'Device {signed}')
-
-class ThrottleMixin:
-    def setUp(self):
-        # DRF cache/SimpleRateThrottle cache temizliği
-        cache.clear()
-        # ...
-
-NO_THROTTLE = {'DEFAULT_THROTTLE_CLASSES': [], 
-               'DEFAULT_THROTTLE_RATES': {}}
-```
-
-Tüm kimlik doğrulama gerektiren API testleri `AuthMixin`'den miras alır ve `setUp`'ta `self._auth_client(self.device)` çağrır. `Device.credits` ilişkisi test setup'ında `CreditBalance` ile birlikte oluşturulur.
-
-### Test Deseni: `DeviceTokenAuthentication`
-
-Kimlik doğrulama testleri şu senaryoları kapsar:
-- **Süre aşımı:** `max_age` sınırını aşan imzalı token → `403 Forbidden`
-- **Bozuk imza:** `TimestampSigner` tarafından reddedilen token → `403 Forbidden`
-- **Eksik header:** `Authorization` header'ı yoksa → anonim (izin verilen endpoint'lerde `AllowAny`)
-- **Silinmiş cihaz:** `Device` veritabanından silinmişse → `403 Forbidden`
-- **Çapraz cihaz izolasyonu:** Cihaz A'nın token'ı Cihaz B'nin kaynaklarına erişemez
-
----
+`credits/tests/base.py` ortak `AuthMixin` + `ThrottleMixin` sağlar. Kimlik doğrulama testleri süre aşımı, bozuk imza, eksik header, silinmiş cihaz ve çapraz cihaz izolasyonunu kapsar.
 
 > Android tarafı auth detayları için bkz. [[mathlock-play-android]]
 
@@ -385,6 +305,62 @@ generate_puzzle_set.delay(child_id, ...)
 
 - 200 OK + empty body durumunda callback leak düzeltildi (Android tarafı `onResponse` null body kontrolü eklendi)
 - `auto_renewal_started` flag'i olmayan response'lar artık `showRenewalError()` ile handle edilir
+
+## Adaptive Difficulty v2 — Sliding Window & Per-Topic Tracking (2026-05-25)
+
+`upload_stats` artık kümülatif yerine son 30 soruluk kayan pencere (`recentDetails`) kullanır.
+
+| Kural | Koşul | Eylem |
+|-------|-------|-------|
+| Zorluk +1 | Pencerede ≥10 gösterim, ≥%85 doğru | `current_difficulty += 1` |
+| Zorluk -1 | Pencerede ≥10 gösterim, <%50 doğru | `current_difficulty -= 1` |
+
+`byTypeDifficulty`: `stats_json` içinde konu başına zorluk takibi. Her konu ≥5 gösterimde kendi zorluğunu bağımsız ayarlar. `_build_child_stats` bu veriyi procedural generator'lara iletir.
+
+Migration: `0021_alter_childprofile_current_difficulty.py` — `ChildProfile.current_difficulty` default `1` → `2`.
+
+```python
+# file: projects/mathlock-play/backend/credits/models.py
+class ChildProfile(models.Model):
+    current_difficulty = models.IntegerField(default=2)
+```
+
+## Procedural Generator Updates (2026-05-25)
+
+| Değişiklik | Dosya | Açıklama |
+|------------|-------|----------|
+| `targetVal` zorunlu | `procedural_levels/generator/pipeline.py` | Zorluk ≥2'de her zaman `targetVal` (eskiden ≥3, %60 ihtimal). |
+| 2D override | `procedural_levels/generator/pipeline.py` | `sinif_1`/`sinif_2` zorluk 4'te ZP/ZM yok, sadece 2D komutlar. |
+| Fingerprint genişletildi | `procedural_levels/generator/fingerprint.py` | `startPos` + `targetPos` eklendi; zorluk-1 çakışması azaldı. |
+| Okul öncesi plan | `procedural_levels/generator/difficulty.py` | `_FIRST_SET_PLANS["okul_oncesi"]` `[1×7, 2×4, 1]` → `[1×3, 2×9]`. |
+
+## Question Set Builder — Period Difficulty Bands (2026-05-25)
+
+`procedural_questions/core/config.py`'e `PERIOD_DIFFICULTY_BANDS` eklendi. Her eğitim dönemi için kolay/orta/zor zorluk listeleri map'lenir.
+
+```python
+# file: projects/mathlock-play/procedural_questions/core/config.py
+PERIOD_DIFFICULTY_BANDS = {
+    "okul_oncesi": {"easy": [1], "medium": [2], "hard": [3]},
+    "sinif_1":     {"easy": [1, 2], "medium": [3], "hard": [4, 5]},
+    # ... sinif_2 … sinif_4
+}
+```
+
+`pipeline/builder.py`'deki `build()` artık bu mapping'i kullanır (eskiden `<=2`, `2<diff<=4`, `>=4`).
+
+`procedural_questions/__main__.py`'deki `generate_question_set` fallback zorluk sırası: önce `byTypeDifficulty` (konu özel), sonra global `currentDifficulty`.
+
+## Test Fixes — Obsolete Mock Patches (2026-05-25)
+
+Test dosyalarındaki eski `@patch('credits.views._generate_via_kimi')` mock'ları procedural generator isimlerine güncellendi:
+
+| Dosya | Yeni mock |
+|-------|-----------|
+| `test_api_credits.py` | `_generate_questions_procedural`, `generate_question_set` |
+| `test_integration.py` | `generate_level_set` |
+
+Ayrıca `Question.objects.create()` çift çağrılarından kaynaklanan `IntegrityError` düzeltildi.
 
 ---
 

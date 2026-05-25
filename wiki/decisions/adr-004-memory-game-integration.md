@@ -1,20 +1,20 @@
 ---
 title: "ADR-004: Hafıza Kartı Eşleştirme Oyununun MathLock Play'e Entegrasyonu"
 created: 2026-05-03
-updated: 2026-05-03
+updated: 2026-05-25
 type: decision
 tags: [adr, decision, mathlock-play, android, kotlin, memory-game]
 related:
   - mathlock-play
   - sayi-yolculugu
-status: Active
+status: Superseded
 ---
 
 # ADR-004: Sayı Hafızası Oyununun MathLock Play'e Entegrasyonu
 
 ## Durum
 
-Active — Implementasyon Tamamlandı
+Superseded — 2026-05-25 — Implementasyon tamamlandı
 
 ## Bağlam
 
@@ -189,3 +189,9 @@ Test edilen senaryolar:
 - `projects/mathlock-play/app/src/main/java/com/akn/mathlock/util/MemoryGameEngine.kt`
 - `projects/mathlock-play/app/src/test/java/com/akn/mathlock/MemoryGameEngineTest.kt`
 - Commit: (deploy öncesi ana monorepo'ya atılacak)
+
+## Status
+
+**Mevcut Durum:** `Superseded`
+
+> Bu karar 2026-05-25 tarihinde tamamlanmıştır. Sayı Hafızası oyunu (`MemoryGameActivity.kt` + `MemoryGameEngine.kt`) MathLock Play'e başarıyla entegre edildi. Challenge picker, ayarlar ekranı, kilit açma mekanizması ve 27 unit test ile birlikte production'da kullanılıyor.

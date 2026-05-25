@@ -82,11 +82,12 @@ Tüm kararlar: [[decisions-index|Mimari Kararlar Kataloğu]]
 |-------|-----|----------|
 | [[adr-001-monorepo-hybrid-structure]] | decision | Monorepo + ayrı repo hibrit yapısı |
 | [[adr-002-sec-agent-daily-report-agent-router]] | decision | sec-agent günlük rapor ve agent router |
-| [[adr-003-robotopia-extraction]] | decision | Robotopia'nın MathLock Play'den ayrılması |
-| [[adr-004-memory-game-integration]] | decision | Hafıza oyunu entegrasyon stratejisi |
-| [[adr-005-ops-bot-acp-sdk-migration]] | decision | ops-bot ACP client'ı resmi SDK'ya geçiş |
+| [[adr-003-robotopia-extraction]] | decision | Robotopia'nın MathLock Play'den ayrılması (Superseded 2026-05-25) |
+| [[adr-004-memory-game-integration]] | decision | Hafıza oyunu entegrasyon stratejisi (Superseded 2026-05-25) |
+| [[adr-005-ops-bot-acp-sdk-migration]] | decision | ops-bot ACP client'ı resmi SDK'ya geçiş (Superseded 2026-05-25) |
 | [[adr-006-github-sync-cross-machine-dev]] | decision | GitHub Sync + Cross-Machine Development |
-| [[adr-007-mathlock-meb-curriculum-compliance-implantation]] | decision | MathLock MEB müfredat uyum implantasyonu |
+| [[adr-007-mathlock-meb-curriculum-compliance-implantation]] | decision | MathLock MEB müfredat uyum implantasyonu (Superseded 2026-05-25) |
+| [[adr-008-remove-generationjob-poller]] | decision | GenerationJob + poll_generation_jobs kaldırma kararı (Active) |
 
 ## Projects
 
@@ -109,6 +110,8 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 
 ## Recently Updated
 
+- [[mathlock-play-backend]] — Adaptive Difficulty v2 (sliding window `recentDetails`, `byTypeDifficulty`, per-topic tracking); Procedural Generator Updates (`targetVal` mandatory, 2D override, fingerprint `startPos`/`targetPos`); Period Difficulty Bands; test mock fixes; 169 test passing (2026-05-25)
+- [[mathlock-play]] — Adaptif zorluk v2 mimarisi eklendi; `PERIOD_DIFFICULTY_BANDS` + `byTypeDifficulty` desteği (2026-05-25)
 - [[mathlock-play-android]] — ErrorReporter (PII-filtered non-fatal reporting) eklendi; `MathQuestionGenerator.kt` [STALE]; ACRA LOGCAT kaldırıldı (COPPA/GDPR-K); upload timeout + resumable upload (v1.0.96/v1.0.97) (2026-05-25)
 - [[sayi-yolculugu]] — Standalone oyun modüler yapıya geçti: CSS → base/components/responsive, JS → 18 modül; `editor.html` seviye editörü eklendi (2026-05-25)
 - [[mathlock-play-backend]] — `generate_puzzle_set` Celery task + `puzzles` queue; `register_device` throttle handling; `update_level_progress` callback leak fix (2026-05-25)

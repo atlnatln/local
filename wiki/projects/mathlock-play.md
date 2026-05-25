@@ -240,6 +240,10 @@ bundletool install-apks --apks=app-release.apks
 - `deploy.sh`: `procedural_questions/` rsync eklendi
 - Eski `procedural-questions-v2.py` → `procedural-questions-v2.py.backup`
 
+**Adaptif zorluk v2 (2026-05-25):**
+- Backend `upload_stats` artık son 30 soruluk kayan pencere (`recentDetails`) ile zorluk günceller.
+- Konu başına zorluk (`byTypeDifficulty`) desteği eklendi; `PERIOD_DIFFICULTY_BANDS` ile dönem bazlı zorluk dağılımı yapılır. Bkz. [[mathlock-play-backend|Adaptive Difficulty v2]].
+
 ## Related Decisions
 
 - [[adr-007-mathlock-meb-curriculum-compliance-implantation]] — MEB 2024 müfredat uyum implantasyonu

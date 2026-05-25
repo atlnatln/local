@@ -1,20 +1,20 @@
 ---
 title: "ADR-003: Robotopia'nın MathLock Play'den Ayrılması"
 created: 2026-05-03
-updated: 2026-05-03
+updated: 2026-05-25
 type: decision
 tags: [adr, decision, mathlock-play, robotopia-android, android]
 related:
   - mathlock-play
   - robotopia-android
-status: Active
+status: Superseded
 ---
 
 # ADR-003: Robotopia'nın MathLock Play'den Ayrılması
 
 ## Durum
 
-Active
+Superseded — 2026-05-25
 
 ## Bağlam
 
@@ -94,3 +94,9 @@ Yok (bu yeni bir karar).
 - `projects/robotopia-android/` — Yeni proje
 - `projects/mathlock-play/` — Temizlenmiş proje
 - Commit: (deploy öncesi ana monorepo'ya atılacak)
+
+## Status
+
+**Mevcut Durum:** `Superseded`
+
+> Bu karar 2026-05-25 tarihinde tamamlanmıştır. Robotopia (`projects/robotopia-android/`) bağımsız bir Android projesi olarak başarıyla ayrıldı. MathLock Play'den tüm Robotopia kodu, asset'leri ve referansları temizlendi. APK boyutunda ~2.9 MB azalma sağlandı.

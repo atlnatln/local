@@ -1,9 +1,10 @@
 ---
 title: "ADR-007: MathLock Play MEB 2024 Müfredat Uyum İmplantasyonu"
 created: "2026-05-07"
-updated: "2026-05-07"
+updated: "2026-05-25"
 type: decision
 tags: [mathlock-play, meb, curriculum, education, adr]
+status: Superseded
 related:
   - mathlock-play
   - mathlock-play-ai
@@ -15,7 +16,7 @@ related:
 
 ## Durum
 
-**Active** — 2026-05-07
+**Superseded** — 2026-05-25
 
 ## Bağlam
 
@@ -79,3 +80,9 @@ MathLock Play'in AI soru üretim motoru (`generate_age_questions.py`) ve agent r
 - [[mathlock-play-ai]]
 - [[mathlock-play-android]]
 - [[mathlock-play-backend]]
+
+## Status
+
+**Mevcut Durum:** `Superseded`
+
+> Bu karar 2026-05-25 tarihinde tamamlanmıştır. MEB 2024 müfredatı tam olarak implante edildi: `education_period` alanı aktif, `question_code` hibrit ID formatı kullanımda, `procedural_questions/` paketi 11 tip × 5 zorluk × 6 generator ile üretimde. Dönem bazlı ağırlıklı işlem dağılımı ve kazanım bazlı zorluk bantları çalışıyor.

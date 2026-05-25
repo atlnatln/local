@@ -389,3 +389,65 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 35 entries
 
+
+## [2026-05-25 23:31] ingest | mathlock-play | 9ec5dc6 | 2 pages
+- Files: A:1 M:8 D:0
+- Pages updated: [[mathlock-play-backend]], [[mathlock-play]]
+- Diff summary: Adaptive Difficulty v2 (sliding window recentDetails, byTypeDifficulty, per-topic tracking); Procedural Generator Updates (targetVal mandatory for diff≥2, sinif_1/2 2D-only override at diff 4, fingerprint startPos/targetPos, okul_oncesi plan change); Period Difficulty Bands in config.py/builder.py; test mock patches _generate_via_kimi → _generate_questions_procedural/generate_question_set/generate_level_set; IntegrityError fix; 169 tests passing.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+- Revert: git checkout 40264bba -- wiki/
+## [2026-05-26 00:02] lint | 8/10
+- Orphan pages: 0
+- Broken links: 1
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 9
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 37 entries
+
+## [2026-05-26 00:03] lint | 9/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 9
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 38 entries
+
+
+## [2026-05-25 23:35] adr-review | local | — | 8 pages
+- ADR status review: 4 ADRs marked Superseded, 1 new ADR created
+- Pages updated (Superseded): [[adr-003-robotopia-extraction]], [[adr-004-memory-game-integration]], [[adr-005-ops-bot-acp-sdk-migration]], [[adr-007-mathlock-meb-curriculum-compliance-implantation]]
+- Pages created (Active): [[adr-008-remove-generationjob-poller]]
+- Pages updated: [[decisions-index]], [[index]]
+- Diff summary: ADR-003/004/005/007 closed as Superseded based on codebase verification. ADR-008 opened for GenerationJob cleanup after procedural migration.
+## [2026-05-26 00:17] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 9
+- Unknown tags: 2 (backend, technical-debt)
+- Raw existence: 0
+- Log size: 40 entries
+
+## [2026-05-26 00:18] lint | 8/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 9
+- Unknown tags: 2 (backend, technical-debt)
+- Raw existence: 0
+- Log size: 41 entries
+

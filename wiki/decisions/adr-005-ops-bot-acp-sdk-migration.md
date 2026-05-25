@@ -7,10 +7,10 @@ description: |
   kullanma kararı. Tip güvenliği, process lifecycle, session management ve
   maintenance overhead avantajları nedeniyle.
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-05-25
 decision_date: 2026-05-04
 tags: [decision, adr, ops-bot, acp, sdk, refactor]
-status: Active
+status: Superseded
 deciders: akn
 related:
   - ops-bot
@@ -96,6 +96,8 @@ SDK'nın `new_session` method'unda `agentFile` parametresi yok. Ancak kimi-cli `
 
 ## Status
 
-**Mevcut Durum:** `Active`
+**Mevcut Durum:** `Superseded`
 
-> Son durum güncellemesi: 2026-05-04
+> Bu karar 2026-05-25 tarihinde tamamlanmıştır. `SdkAcpExecutor` (`bot/acp_sdk_executor.py`) production'a alındı; `telegram.py` artık resmi `agent-client-protocol` Python SDK'sını kullanıyor. Eski `acp_client.py` + `acp_executor.py` dosyaları arşivde kalıyor ancak aktif olarak import edilmiyor.
+
+> Son durum güncellemesi: 2026-05-25

@@ -1,7 +1,7 @@
 ---
 title: "Mimari Kararlar"
 created: "2026-05-10"
-updated: "2026-05-10"
+updated: "2026-05-25"
 type: index
 tags: [meta, decision, adr]
 related:
@@ -18,17 +18,21 @@ Aktif mimari karar kayıtları (ADR).
 |-------|-------|-------|----------|
 | [[adr-001-monorepo-hybrid-structure]] | Active | 2026-05-02 | Monorepo + ayrı repo karışık yapısı kararı |
 | [[adr-002-sec-agent-daily-report-agent-router]] | Active | 2026-05-02 | sec-agent raporlarının ops-bot agent router ile yorumlanması |
-| [[adr-003-robotopia-extraction]] | Active | 2026-05-03 | Robotopia'nın MathLock Play'den bağımsız projeye ayrılması |
-| [[adr-004-memory-game-integration]] | Active | 2026-05-03 | Sayı Hafızası oyununun MathLock Play'e entegrasyonu |
-| [[adr-005-ops-bot-acp-sdk-migration]] | Active | 2026-05-04 | Ops-bot ACP client'ının resmi SDK'ya geçiş kararı |
 | [[adr-006-github-sync-cross-machine-dev]] | Active | 2026-05-05 | GitHub Sync + Cross-Machine Development |
-| [[adr-007-mathlock-meb-curriculum-compliance-implantation]] | Active | 2026-05-07 | MathLock Play MEB 2024 müfredat uyum implantasyonu |
+| [[adr-008-remove-generationjob-poller]] | Active | 2026-05-25 | GenerationJob + poll_generation_jobs kaldırma kararı (procedural migration sonrası) |
 
 ---
 
 ## Arşivlenmiş Kararlar
 
-Geçersiz kılınmış veya değişmiş kararlar. Henüz arşivlenmiş karar yok.
+Geçersiz kılınmış veya tamamlanmış kararlar.
+
+| Karar | Durum | Tamamlanma Tarihi | Açıklama |
+|-------|-------|-------------------|----------|
+| [[adr-003-robotopia-extraction]] | Superseded | 2026-05-25 | Robotopia'nın MathLock Play'den bağımsız projeye ayrılması |
+| [[adr-004-memory-game-integration]] | Superseded | 2026-05-25 | Sayı Hafızası oyununun MathLock Play'e entegrasyonu |
+| [[adr-005-ops-bot-acp-sdk-migration]] | Superseded | 2026-05-25 | Ops-bot ACP client'ının resmi SDK'ya geçiş kararı |
+| [[adr-007-mathlock-meb-curriculum-compliance-implantation]] | Superseded | 2026-05-25 | MathLock Play MEB 2024 müfredat uyum implantasyonu |
 
 ---
 
