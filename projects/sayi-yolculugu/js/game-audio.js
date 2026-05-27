@@ -79,6 +79,37 @@
     }
   }
 
+  function playLevelComplete() {
+    if (muted) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      const notes = [
+        { f: 523.25, d: 0.10, t: 0.00 },   // C5 — dı
+        { f: 523.25, d: 0.10, t: 0.12 },   // C5 — dı
+        { f: 523.25, d: 0.10, t: 0.24 },   // C5 — dı
+        { f: 659.25, d: 0.12, t: 0.36 },   // E5 — dıt
+        { f: 523.25, d: 0.10, t: 0.52 },   // C5 — dı
+        { f: 659.25, d: 0.14, t: 0.64 },   // E5 — dıt
+      ];
+      notes.forEach(function(n) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = n.f;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.25, now + n.t);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + n.t);
+        osc.stop(now + n.t + n.d);
+      });
+      setTimeout(function() { ctx.close(); }, 1500);
+    } catch (e) {}
+  }
+
   function isMuted() {
     return muted;
   }
@@ -90,6 +121,7 @@
     playBGM: playBGM,
     stopBGM: stopBGM,
     setMuted: setMuted,
-    isMuted: isMuted
+    isMuted: isMuted,
+    playLevelComplete: playLevelComplete
   };
 })();

@@ -31,6 +31,7 @@ function renderQueue() {
     chip.textContent = cmd.label;
     chip.addEventListener('click', function() {
       if (state.running) return;
+      if (state.hintPreview) { hideHintPreview(); return; }
       state.queue.splice(i, 1);
       state.hintMode = false;
       pushHistory();
@@ -43,25 +44,26 @@ function renderQueue() {
   cmdCount.textContent = state.queue.length + ' / ' + lv.maxCmds;
 }
 
-function showHint() {
+function showHintPreview() {
   const lv = getLevel();
   if (!lv.hintCommands || lv.hintCommands.length === 0) return;
   if (state.running) return;
-
-  // Kredi kontrolü (stub: 3 ücretsiz)
-  var credits = getCredits();
-  if (credits <= 0) {
-    notifyAndroid('buyCredits', {});
-    return;
-  }
-  setCredits(credits - 1);
-
+  if (state.hintPreview) return;
+  state.hintPreview = true;
+  state._queueBeforeHint = state.queue.slice();
   state.queue = lv.hintCommands.slice();
   state.hintMode = true;
-  pushHistory();
+  renderQueue();
+}
+
+function hideHintPreview() {
+  if (!state.hintPreview) return;
+  state.hintPreview = false;
+  state.queue = state._queueBeforeHint || [];
+  state.hintMode = false;
+  delete state._queueBeforeHint;
   renderQueue();
   saveGameState();
-  if (window.AudioEngine) AudioEngine.play('click');
 }
 
 function pushHistory() {

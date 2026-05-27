@@ -170,7 +170,7 @@ function checkWin() {
   const valOk = effectiveTargetVal == null || state.playerVal === effectiveTargetVal;
 
   if (posOk && valOk) {
-    if (window.AudioEngine) AudioEngine.play('success');
+    if (window.AudioEngine) AudioEngine.playLevelComplete();
     notifyAndroid('haptic', {type: 'success'});
     const gap = 4;
     const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));

@@ -116,7 +116,13 @@ $('btnClear').addEventListener('click', function() { if (!state.running) { state
 $('btnUndo').addEventListener('click', function() { if (!state.running) undo(); });
 $('btnRedo').addEventListener('click', function() { if (!state.running) redo(); });
 $('btnReset').addEventListener('click', function() { if (!state.running) { state.queue = []; state.attempts = 0; state.hintMode = false; loadLevel(); saveGameState(); } });
-$('btnHint').addEventListener('click', function() { if (!state.running) showHint(); });
+var btnHintEl = $('btnHint');
+btnHintEl.addEventListener('mousedown', function(e) { if (!state.running) { e.preventDefault(); showHintPreview(); } });
+btnHintEl.addEventListener('touchstart', function(e) { if (!state.running) { e.preventDefault(); showHintPreview(); } });
+btnHintEl.addEventListener('mouseup', function() { hideHintPreview(); });
+btnHintEl.addEventListener('mouseleave', function() { hideHintPreview(); });
+btnHintEl.addEventListener('touchend', function() { hideHintPreview(); });
+btnHintEl.addEventListener('touchcancel', function() { hideHintPreview(); });
 $('btnRetry').addEventListener('click', function() {
   overlay.classList.remove('active');
   state.queue = [];

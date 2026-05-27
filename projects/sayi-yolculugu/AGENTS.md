@@ -9,7 +9,7 @@
 
 1. **.kimi/CONTEXT.md** — İlk oku. Durum, sıradaki görev, aktif sorunlar.
 2. **AGENTS.md** — Kurallar ve protokol (bu dosya).
-3. **SKILL.md** — Teknik referans (sadece görev gerektiriyorsa).
+3. **SKILL.md** — Teknik referans (VPS/DB erişimi, plugin kullanımı, Android sync).
 4. **Session log'ları** — Son 3 oturum (sadece detay gerekiyorsa).
 5. **Kod tabanı** — Yukarıdakiler yeterli olmadığında.
 
