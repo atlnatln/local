@@ -2,7 +2,7 @@
    Sayı Yolculuğu — Level Data (32 statik seviye)
    ═══════════════════════════════════════════════════════════ */
 
-export const LEVELS_BY_AGE = {
+const LEVELS_BY_AGE = {
 
   '5-6': [
     { title: 'İlk Adım', desc: 'Sayıyı sağa taşı!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 1, targetX: 2, targetY: 0, targetVal: null, walls: [], ops: [], commands: ['x+'], maxCmds: 4, stars: [2, 3] },
@@ -55,6 +55,4 @@ export const LEVELS_BY_AGE = {
    Procedurally Generated 100 Levels
    ═══════════════════════════════════════════════════════════ */
 
-export { GENERATED_LEVELS } from './generated-levels.js';
-export { GENERATED_LEVELS_V2 } from './generated-levels-v2.js';
-export { GENERATED_LEVELS_20_TEST } from './generated-levels-test.js';
+window.LEVELS_BY_AGE = LEVELS_BY_AGE;

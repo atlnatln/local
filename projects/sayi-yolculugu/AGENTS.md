@@ -17,7 +17,7 @@
 
 ---
 
-## 🔄 Çalışma Döngüsü (Yuva Keşfi ↔ Savaş Alanı) (Acele etmeden dikkat ederek çalışacağım)
+## 🔄 Çalışma Döngüsü (Acele etmeden dikkat ederek çalışacağım)
 
 1. **İstihbarat** — CONTEXT.md + aktif görevi bilerek başla.
 2. **Yuva İncelemesi** — Kaynak kodu oku, kök nedeni anla.
@@ -51,18 +51,40 @@ Her değişiklik sonrası **üç** kaydı güncelle:
 | **Skill** | Teknik bilgiye ihtiyaç duyduğunda | Skill güncel değilse kod tabanından al ve skill'i güncelle |
 | **Hook** | `WriteFile`/`StrReplaceFile` sonrası | Varsa tetikle, yoksa manuel çalıştır |
 | **pytest** | Python motoru değişince | `../mathlock-play/procedural_levels/tests/` |
-| **editor.html** | JS motoru değişince | Tarayıcıda test et |
+| **index.html** | JS motoru değişince | Browser'da `python3 -m http.server` ile test et |
+| **editor.html** | Seviye verisi değişince | Tarayıcıda test et |
 
 ---
 
 ## 🔧 Kod Değişikliği Kuralları
 
+### Android Motor Geliştirme (Tek Kaynak)
+
+| Kaynak | Konum | Test | Senkronizasyon |
+|--------|-------|------|----------------|
+| **JS motoru** | `js/game-*.js` | `index.html` (browser) | Değişiklik sonrası `../mathlock-play/app/src/main/assets/sayi-yolculugu/js/game-*.js`'e kopyalanmalı |
+| **CSS** | `css/game.css` | `index.html` (browser) | Değişiklik sonrası `../mathlock-play/app/src/main/assets/sayi-yolculugu/css/game.css`'ye kopyalanmalı |
+| **Statik seviyeler** | `js/levels-data.js` | `index.html` (browser) | Android backend API seviye verisini döner; bu dosya arşiv/referans |
+| **Seviye editörü** | `editor.html`, `js/editor.js` | `editor.html` (browser) | Export edilen seviyeler `js/levels-data.js`'e manuel eklenir |
+
+**Senkronizasyon komutu:**
+```bash
+cp js/game-*.js js/android-bridge.js ../mathlock-play/app/src/main/assets/sayi-yolculugu/js/
+cp css/game.css ../mathlock-play/app/src/main/assets/sayi-yolculugu/css/
+```
+
+### Python Motor (Procedural Level Generation)
+
 - **Python motoru:** `../mathlock-play/procedural_levels/` altında yapılır. Sonra `pytest`.
-- **JS motoru:** `js/` altında yapılır. Sonra `editor.html`'de test et.
 - **Cross-cutting:** Hem Python hem JS değişirse, her iki tarafı da test et.
 - **Plugin `.py` dosyaları:** Source dizinindeki değişiklik `~/.kimi/plugins/sayi-yolculugu-validator/scripts/` altına `cp` ile senkronize edilmeli (symlink yok).
-- **Dosya optimizasyonu:** Mevcut dosyayı büyüklük olarak optimize etmen gerekiyorsa modüler hale getir, oyun motoru için yeni bir dosyaya ihtiyaç olursa/gerekiyorsa yarat
+
+### Mimari Kurallar
+
 - **Teknik kararlar (K1–K10):** Kalıcı mimari kararlar SKILL.md §4'te. Debug senaryoları ve test şablonları SKILL.md §5–6'da.
+- **Modülerlik:** Yeni özellik mevcut `game-*.js` modülüne aitse o modüle ekle. Yeni sorumluluk alanı varsa yeni `game-*.js` dosyası oluştur ve `index.html`'e `<script src="...">` ekle.
+- **Android uyumluluğu:** `game-*.js` dosyaları plain JavaScript olmalı (ES module `import`/`export` kullanılmaz). `const`/`let` kullanılabilir (Android WebView Chrome tabanlı).
+
 ---
 
 ## 🧭 Oturum Protokolü
@@ -72,5 +94,6 @@ Her değişiklik sonrası **üç** kaydı güncelle:
 | 1. CONTEXT.md oku | 1. CONTEXT.md güncelle |
 | 2. AGENTS.md oku (bu dosya) | 2. Session log yaz |
 | 3. Skill oku (gerekirse) | 3. Skill güncelle (değişiklik varsa) |
-| 4. Son 3 log'a göz at (gerekirse) | 4. `pytest` çalıştır |
-| 5. Kullanıcıdan talimat al | 5. Git status kontrol et |
+| 4. Son 3 log'a göz at (gerekirse) | 4. `pytest` çalıştır (Python değiştiyse) |
+| 5. Kullanıcıdan talimat al | 5. Browser test çalıştır (JS değiştiyse) |
+| | 6. Git status kontrol et |
