@@ -1,7 +1,7 @@
 ---
 title: "Wiki Index"
 created: 2026-05-01
-updated: 2026-05-25
+updated: 2026-05-27
 type: index
 tags: [meta, index]
 related: []
@@ -70,6 +70,7 @@ Tüm konseptler: [[concepts-index|Konseptler Kataloğu]]
 | [[kimi-code-cli-plugins]] | concept | Kimi CLI Plugins (Beta) — plugin.json, credential injection |
 | [[kimi-code-cli-official-plugins]] | concept | Kimi CLI Official Plugins — kimi-datasource (finans, akademik) |
 | [[kimi-code-cli-mcp]] | concept | Kimi CLI MCP — Model Context Protocol entegrasyonu |
+| [[hooks]] | concept | Hooks — event-driven tetikleme mekanizmaları (genel konsept) |
 | [[kimi-code-cli-hooks]] | concept | Kimi CLI Hooks (Beta) — lifecycle event'leri, güvenlik, otomasyon |
 | [[log-management]] | concept | nginx log rotasyonu ve merkezi log yönetimi |
 | [[monitoring]] | concept | VPS servis izleme, Prometheus, Grafana, health check, alert |

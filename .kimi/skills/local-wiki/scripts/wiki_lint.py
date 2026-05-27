@@ -588,21 +588,31 @@ def check_contradictions(wiki_root: Path, pages: List[Path], all_frontmatters: D
 
 
 def check_page_size(wiki_root: Path, pages: List[Path], all_frontmatters: Dict[Path, Dict]) -> CheckResult:
-    """Check 7: Flag pages longer than MAX_LINES. Skip reference/archived pages."""
+    """Check 7: Flag pages longer than type-aware limits. Skip reference/archived pages."""
     result = CheckResult("Page Size")
+
+    TYPE_LIMITS = {
+        "project": 400,
+        "concept": 350,
+        "decision": 200,
+        "index": 500,
+        "log": 500,
+    }
 
     oversized = []
     for page in pages:
         fm = all_frontmatters.get(page, {})
         if fm.get("status") in ("reference", "archived"):
             continue
+        page_type = fm.get("type", "")
+        limit = TYPE_LIMITS.get(page_type, 200)
         try:
             with open(page, "r", encoding="utf-8") as f:
                 lines = f.readlines()
             count = len(lines)
-            if count > MAX_LINES:
+            if count > limit:
                 rel = page.relative_to(wiki_root)
-                oversized.append(f"  {rel} — {count} lines")
+                oversized.append(f"  {rel} — {count} lines (limit: {limit})")
         except (OSError, IOError) as e:
             result.add(f"WARN: Could not read {page}: {e}")
 

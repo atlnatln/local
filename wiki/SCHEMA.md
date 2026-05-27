@@ -1,7 +1,7 @@
 ---
 title: "SCHEMA"
 created: "2026-05-01"
-updated: "2026-05-02"
+updated: "2026-05-27"
 type: index
 tags: [meta, guide]
 related: []
@@ -55,17 +55,17 @@ All tags are flat strings. Namespaces below are organizational conventions only.
 Project tags bind a note to a specific codebase or service.
 
 ### Stack
-`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript` `webview` `kimi-cli` `tool` `cli` `json-rpc` `sdk`
+`django` `nextjs` `react` `docker` `nginx` `systemd` `android` `flutter` `telegram-bot` `python` `kotlin` `git` `html5` `javascript` `webview` `kimi-cli` `tool` `cli` `json-rpc` `sdk` `mcp` `api` `backend`
 
 Technology tags describe the toolchain a note touches.
 
 ### Concepts
-`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging` `agent` `ai` `acp` `agents` `memory-game` `protocol` `curriculum` `meb`
+`concept` `deployment` `ssl` `monitoring` `networking` `database` `caching` `security` `education` `logging` `agent` `ai` `acp` `agents` `memory-game` `protocol` `curriculum` `meb` `data` `extension` `finance` `integration` `plugin` `hook`
 
 Domain tags classify the subject matter independent of any project.
 
 ### Meta
-`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot` `reference` `coding-conventions` `configuration` `github` `refactor` `sync` `vps`
+`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot` `reference` `coding-conventions` `configuration` `github` `refactor` `sync` `vps` `beta` `ci-cd` `official` `technical-debt`
 
 Lifecycle tags track note maturity and provenance.
 
