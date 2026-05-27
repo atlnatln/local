@@ -1,7 +1,7 @@
 ---
 title: "Ops-Bot"
 created: 2026-05-01
-updated: 2026-05-07
+updated: 2026-05-26
 type: project
 tags: [ops-bot, python, telegram-bot, systemd, security, acp, kimi-cli]
 related:
@@ -83,6 +83,7 @@ Kullanıcıların Telegram üzerinden VPS'ye komut göndermesini, ajanlara soru 
 | `ops-bot/tests/test_telegram_messages.py` | 10 unit test: Telegram message handler formatting, error replies, notification parsing, chunking, footer |
 | `ops-bot/tests/test_integration.py` | 8 integration/E2E test: smoke + real kimi-cli ACP subprocess |
 | `ops-bot/scripts/acp_sdk_probe.py` | Standalone ACP SDK probe script — initialize, session, prompt, accumulator snapshot |
+| `ops-bot/scripts/sync_engaged_paths.py` | sec-agent engaged paths senkronizasyonu — sitemap'den dinamik path listesi üretir, never-engage guard içerir |
 | `ops-bot/deploy.sh` | VPS deploy script'i (package/git modları) |
 | `ops-bot/systemd/ops-bot.service` | systemd unit dosyası |
 
@@ -247,6 +248,15 @@ Detaylı mimari ve operasyon bilgisi: bkz. [[sec-agent]].
 - Günlük AI yorumlu rapor: bkz. [[security-ai-reporting]]
 - `ops-bot-critical-alert.service` `OPS_BOT_CRITICAL_STATE_PATH` env ile state dosyası yolunu sabitler (VPS dizinine yazar)
 
+**Multi-site engaged paths (2026-05-26):**
+- `sec-agent/config/engaged_sites.yaml` — hangi sitelerin izleneceğini ve sitemap URL'lerini tanımlar
+- `sec-agent/config/engaged_paths.json` — site başına aktif path listesi; `sync_engaged_paths.py` tarafından sitemap'ten üretilir
+- `scripts/sync_engaged_paths.py` — Sitemap XML'i çözümleyip engaged path listesini günceller; `/` root path'un tüm path'lere match etmesini önleyen never-engage guard içerir
+- `engaged_paths.json.bak` — önceki path listesinin yedeği, diff karşılaştırması için
+- Dynamic engaged paths: Her sitenin kendi sitemap'inden path'ler dinamik çekilir, statik regex listesi yerine gerçek URL yapısı kullanılır
+- Root path fix (2026-05-26): `/` artık tüm path'lere wildcard match yapmaz; her path bağımsız değerlendirilir
+- Deploy'ta `__pycache__` temizliği: sec-agent kopyası sonrası stale `.pyc` dosyaları silinir
+
 ## Komutlar
 
 | Komut | Açıklama |
@@ -335,12 +345,12 @@ sudo systemctl restart ops-bot
 <!-- AUTO-REFRESHED -->
 ## Recent Commits
 
+- `50ec258` fix(sec-agent): robust error handling in flags.py and sync_engaged_paths.py (2026-05-26)
+- `54386e5` fix(deploy): clear __pycache__ after sec-agent copy to prevent stale .pyc (2026-05-26)
+- `ec14c38` fix(sec-agent): root path / no longer matches all paths in engaged_user check (2026-05-26)
+- `c579fe0` refactor(sec-agent): config-driven engaged paths for multi-site support (2026-05-26)
+- `33d4f20` feat(sec-agent): dynamic engaged paths from sitemap + never-engage guard (2026-05-26)
 - `4a37ea0` fix(acp-client): git read-only komutlarına izin ver, yazma komutlarını reject et (2026-05-07)
-- Legacy cleanup: `logs/router_debug.jsonl` ve `data/agent_state.db` silindi (2026-05-07)
 - `2956c27` fix(sec-agent): AI analizi medium anomaly'de de tetiklensin, auth endpoint listesi genişletilsin, state path sabitlensin (2026-05-07)
-- `d05f0b6` fix(gitignore): add .venv/ and sec-agent runtime state (2026-05-06)
 - `d093d94` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
 - `2414268` feat(deploy): add VPS environment detection (2026-05-06)
-- `d6ddb0f` sync(vps): senkronize VPS'ten local'e — router.py silindi, orchestrator.py eklendi, agents/ dizini eklendi, eski ACP client/executor bot/'a geri taşındı (2026-05-05)
-- `c836b86` fix(acp-sdk): wait 1s after prompt for trailing session_update chunks (2026-05-05)
-- `5294c78` feat(telegram): remove agent list from /start, add accumulator debug logs (2026-05-05)

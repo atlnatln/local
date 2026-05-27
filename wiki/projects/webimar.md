@@ -1,7 +1,7 @@
 ---
 title: "Webimar"
 created: 2026-05-01
-updated: 2026-05-08
+updated: 2026-05-26
 type: project
 tags: [webimar, django, nextjs, react, docker, nginx]
 related:
@@ -46,6 +46,7 @@ Tarımsal arazilerde yapılaşma süreçlerinde güncel mevzuata ve bilimsel esa
 | `projects/webimar/webimar-api/accounts/views/google_auth_views.py` | Google OAuth + JWT views |
 | `projects/webimar/webimar-api/accounts/views/main_views.py` | User profile /me/ endpoint |
 | `projects/webimar/webimar-api/accounts/serializers.py` | User serializers |
+| `projects/webimar/webimar-api/accounts/management/commands/token_abuse_report.py` | Token abuse raporlama management command (auto-revoke ile) |
 
 ## Deploy
 
@@ -120,6 +121,7 @@ Günlük güvenlik raporunda tespit edilen token sızıntısı ve `/api/accounts
 - **Token abuse middleware:** Yeni `middleware_token_abuse.py` eklendi.
 - **Admin blacklist:** `admin_token_blacklist.py` ile admin panelden token revoke desteği eklendi.
 - **Token abuse cache fix (2026-05-05):** `middleware_token_abuse.py`'de saatlik IP counter cache'e `set()` yazılıyordu; JSON serializer bunu serialize edemiyordu ve her API isteğinde 500 hatası fırlatıyordu. `set()` → `list()` çevrildi, eski cache verisi `isinstance` kontrolü ile migrate ediliyor.
+- **Token abuse report command (2026-05-26):** `accounts/management/commands/token_abuse_report.py` eklendi. Admin panelden token abuse analizi ve otomatik revoke desteği.
 
 ## Su Tahsis Belgesi Kontrolü (Geçici Durum)
 
@@ -139,8 +141,8 @@ Kod blokları `# GEÇİCİ: ... devre dışı (2026-05-06)` başlığıyla yorum
 
 ## Recent Commits
 
+- `8e5b50280` revert(webimar): remove analytics throttle and IP anomaly middleware (2026-05-26)
+- `51b1cf3b1` feat(security): analytics throttle, IP anomaly detection, admin tools, token_abuse_report command (2026-05-26)
 - `33b6574ea` feat(api): temporarily disable su tahsis belgesi checks for 11 structures (2026-05-06)
 - `cdb21b895` fix(deploy): fix ssh() override for multi-line commands in VPS mode (2026-05-06)
 - `cb8eef36b` feat(deploy): add VPS environment detection and fix image tags (2026-05-06)
-- `fc83c038a` fix(accounts): replace set() with list() in token abuse middleware cache (2026-05-05)
-- `29c2c8a8e` fix(accounts): secure OAuth redirect with hash fragment, harden /me/ error handling (2026-05-05)

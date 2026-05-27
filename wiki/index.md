@@ -102,9 +102,9 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 
 | Proje | Tip | Açıklama | Son Güncelleme |
 |-------|-----|----------|----------------|
-| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67+ test) | 2026-05-07 |
+| [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67+ test) | 2026-05-26 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-07 |
-| [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-05 |
+| [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-26 |
 | [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) — **ayrı repo** | 2026-05-27 |
 | [[mathlock-play-ai]] | project | MathLock AI soru pipeline'ı | 2026-05-07 |
 | [[mathlock-play-android]] | project | MathLock Android detayları | 2026-05-25 |
@@ -112,11 +112,14 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 | [[mathlock-play-backend]] | project | MathLock backend detayları | 2026-05-25 |
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
-| [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-25 |
+| [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-27 |
 | [[local]] | project | Ana monorepo — agent instruction'ları, references, wiki kuralları | 2026-05-10 |
 
 ## Recently Updated
 
+- [[sayi-yolculugu]] — Oyun motoru tamamen yenilendi: 15+ JS modül (game-audio, game-command-system, game-execution-engine, game-main), ses efektleri, editor.html, AGENTS.md, test raporları (2026-05-27)
+- [[ops-bot]] — sec-agent multi-site support: engaged_paths.json, engaged_sites.yaml, sync_engaged_paths.py; flags.py ve scorer.py robustness (2026-05-26)
+- [[webimar]] — Token abuse report command eklendi; analytics throttle ve IP anomaly detection eklendi sonra revert edildi (2026-05-26)
 - [[mathlock-play]] — v1.0.101 release build, Google Play internal track upload; Sayı Yolculuğu game engine asset sync (ses, komut, execution, main) (2026-05-27)
 - [[mathlock-play-backend]] — Adaptive Difficulty v2 (sliding window `recentDetails`, `byTypeDifficulty`, per-topic tracking); Procedural Generator Updates (`targetVal` mandatory, 2D override, fingerprint `startPos`/`targetPos`); Period Difficulty Bands; test mock fixes; 169 test passing (2026-05-25)
 - [[mathlock-play]] — Adaptif zorluk v2 mimarisi eklendi; `PERIOD_DIFFICULTY_BANDS` + `byTypeDifficulty` desteği (2026-05-25)

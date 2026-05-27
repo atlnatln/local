@@ -607,3 +607,55 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 55 entries
 
+## [2026-05-27 19:52] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 56 entries
+
+
+## [2026-05-27 19:00] ingest | sayi-yolculugu | 8cc818a3 | [[sayi-yolculugu]]
+- Dosyalar: A:29 M:1 D:0
+- Pages created: 
+- Pages updated: [[sayi-yolculugu]]
+- Pages archived: 
+- Diff özeti: Oyun motoru tamamen yenilendi: 15+ JS modül (game-audio, game-command-system, game-execution-engine, game-main, game-store, game-i18n, game-level-manager, game-ui-overlays, game-utils, game-grid-renderer, editor.js, android-bridge.js), ses efektleri (audio/bgm.wav, click.wav, success.wav, bump.wav), editor.html, AGENTS.md, test raporları ve dokümantasyon.
+
+## [2026-05-27 19:00] ingest | ops-bot | 50ec258 | [[ops-bot]]
+- Dosyalar: A:3 M:10 D:0
+- Pages created: 
+- Pages updated: [[ops-bot]]
+- Pages archived: 
+- Diff özeti: sec-agent multi-site support: engaged_paths.json, engaged_sites.yaml, sync_engaged_paths.py; flags.py ve scorer.py robustness improvements; deploy.sh __pycache__ cleanup.
+
+## [2026-05-27 19:00] ingest | webimar | 8e5b502 | [[webimar]]
+- Dosyalar: A:1 M:2 D:0
+- Pages created: 
+- Pages updated: [[webimar]]
+- Pages archived: 
+- Diff özeti: Token abuse report management command eklendi (auto-revoke); analytics throttle ve IP anomaly detection middleware eklendi sonra revert edildi.
+
+## [2026-05-27 19:00] ingest | local | 8cc818a3 | [[hooks]]
+- Dosyalar: A:1 M:1 D:0
+- Pages created: [[hooks]]
+- Pages updated: 
+- Pages archived: 
+- Diff özeti: wiki/hooks.md yeni sayfa oluşumu; wiki_lint.py güncellendi.
+## [2026-05-27 19:54] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 61 entries
+

@@ -1,7 +1,7 @@
 ---
 title: "Sayı Yolculuğu"
 created: "2026-05-01"
-updated: "2026-05-25"
+updated: "2026-05-27"
 type: project
 tags: [sayi-yolculugu, html5, javascript, android, webview, education]
 related:
@@ -16,60 +16,77 @@ sources:
 
 Çocuklar için matematik eğitim oyunu. İki formatta var:
 
-1. **Standalone HTML5** — Tarayıcıda çalışan tek dosya (`index.html`)
+1. **Standalone HTML5** — Tarayıcıda çalışan modüler web uygulaması
 2. **MathLock Play entegrasyonu** — Android WebView içinde, backend bağlantılı
 
 ## Standalone HTML5 Oyunu
 
-`projects/sayi-yolculugu/index.html` — ana oyun dosyası. **Modüler yapıya geçildi** (2026-05-25): CSS ve JS ayrı dosyalara bölündü.
+`projects/sayi-yolculugu/index.html` — ana oyun dosyası. **Modüler yapıya geçildi** (2026-05-25), ardından `game-` prefix'li dosya yapısına standartlaştırıldı (2026-05-27).
 
 | Bileşen | Teknoloji |
 |---------|-----------|
 | Runtime | HTML5, CSS3, Vanilla JavaScript |
 | Deploy | Statik dosyalar (nginx üzerinden servis edilir) |
-| Yapı | Modüler (CSS + JS ayrılmış) |
+| Yapı | Modüler (`game-` prefix'li JS + ayrı CSS) |
 
-### Modüler Dosya Yapısı (2026-05-25)
+### Modüler Dosya Yapısı (2026-05-27)
 
 **CSS:**
 | Dosya | İçerik |
 |-------|--------|
-| `css/base.css` | Temel stiller, layout, renkler |
-| `css/components.css` | Bileşen stilleri (grid, hücreler, butonlar) |
-| `css/responsive.css` | Mobil/tablet breakpoint'leri |
+| `css/game.css` | Tüm oyun stilleri (layout, grid, renkler, responsive, overlay'ler) |
 
 **JavaScript:**
 | Dosya | İçerik |
 |-------|--------|
-| `js/main.js` | Entry point, oyun başlatma |
-| `js/state.js` | Oyun state yönetimi |
-| `js/grid-renderer.js` | Izgara render motoru |
-| `js/execution-engine.js` | Komut çalıştırma motoru |
-| `js/command-system.js` | Blockly benzeri komut sistemi |
-| `js/event-bus.js` | Modüller arası iletişim |
-| `js/level-manager.js` | Seviye yükleme, geçiş, kaydetme |
-| `js/levels-data.js` | Statik seviye tanımları |
-| `js/audio.js` | Ses efektleri ve müzik |
-| `js/hint-engine.js` | İpucu sistemi |
-| `js/progress.js` | İlerleme takibi |
-| `js/settings.js` | Kullanıcı ayarları |
-| `js/store.js` | Yerel depolama |
-| `js/ui-overlays.js` | Overlay'ler (splash, pause, game over) |
-| `js/utils.js` | Yardımcı fonksiyonlar |
-| `js/analytics.js` | Olay takibi |
-| `js/daily-challenge.js` | Günlük meydan okuma |
-| `js/api-client.js` | Backend API iletişimi (MathLock entegrasyonu) |
+| `js/game-main.js` | Entry point, oyun başlatma, lifecycle |
+| `js/game-cmds.js` | Komut kuyruğu yönetimi |
+| `js/game-command-system.js` | Blockly benzeri komut sistemi (drag & drop) |
+| `js/game-execution-engine.js` | Komut çalıştırma motoru (adım adım animasyon) |
+| `js/game-grid-renderer.js` | Izgara render motoru (SVG/Canvas hücre çizimi) |
+| `js/game-audio.js` | Ses efektleri ve arka plan müziği (HTML5 Audio) |
+| `js/game-i18n.js` | Çoklu dil desteği ve çeviri yönetimi |
+| `js/game-level-manager.js` | Seviye yükleme, geçiş, kaydetme, günlük set |
+| `js/game-store.js` | Yerel depolama, ayarlar, achievement'lar |
+| `js/game-ui-overlays.js` | Overlay'ler (splash, pause, tutorial, game over, settings) |
+| `js/game-utils.js` | Yardımcı fonksiyonlar ve genel araçlar |
+| `js/state.js` | Oyun state yönetimi (global state nesnesi) |
+| `js/levels-data.js` | Statik seviye tanımları (JSON formatında seviye dizisi) |
+| `js/editor.js` | Seviye editörü mantığı (grid edit, test, export) |
+| `js/android-bridge.js` | Android WebView ↔ JS iletişim köprüsü |
 
-### Level Editor (2026-05-25)
+### Entry Points
 
-`editor.html` — tarayıcıda çalışan seviye editörü. Yeni seviyeler tasarlanıp JSON olarak dışa aktarılabilir.
+| Dosya | Amaç |
+|-------|------|
+| `index.html` | Ana oyun (oyuncu modu) |
+| `editor.html` | Tarayıcıda çalışan seviye editörü. Yeni seviyeler tasarlanıp JSON olarak dışa aktarılabilir |
+| `index-web-backup.html` | Yedek/geri dönüşüm dosyası |
 
-| Özellik | Açıklama |
-|---------|----------|
-| Grid boyutu ayarı | Satır/sütun sayısı |
-| Hücre tipleri | Sayı, operatör (+, −, ×, /, ^), duvar, başlangıç, bitiş |
-| Test çalıştırma | Editörde seviyeyi oyna |
-| JSON export | `levels-data.js` formatında çıktı |
+### Ses ve Efektler (2026-05-27)
+
+`audio/` dizini — HTML5 Audio ile yönetilir:
+
+| Dosya | Kullanım |
+|-------|----------|
+| `audio/bgm.wav` | Arka plan müziği (loop) |
+| `audio/click.wav` | Buton / komut ekleme sesi |
+| `audio/success.wav` | Seviye tamamlama, achievement |
+| `audio/bump.wav` | Duvar çarpma, hatalı hareket |
+
+### Dokümantasyon & Test (2026-05-27)
+
+`docs/` ve `scripts/` dizinleri:
+
+| Dosya | İçerik |
+|-------|--------|
+| `docs/game-html-test-report.md` | Oyun HTML test raporu |
+| `docs/industry-gap-analysis.md` | Rakip analizi ve eksik özellikler |
+| `docs/stability-report-v4.md` | v4 stabilite raporu |
+| `docs/stability-test-plan.md` | Stabilite test planı |
+| `docs/next-session-plan.md` | Sonraki geliştirme oturumu planı |
+| `scripts/test-level-generation.py` | Seviye üretim test script'i |
+| `AGENTS.md` | Proje-level agent talimatları |
 
 ### Özellikler
 
@@ -197,13 +214,9 @@ override fun onDestroy() {
 
 **Semptom:** Oyuncu `+2` gibi bir operatör hücresinden geçip sayısını 3 yapıp hedefe ulaştığında seviye geçiliyordu. Hedef değer (`targetVal`) tanımlı değilse oyun sadece konum kontrolü yapıyordu.
 
-**Kök Neden:** `procedural_levels/generator/pipeline.py` satır 175-178'de `targetVal` sadece `difficulty >= 3` ve `%60` ihtimalle atanırken, `place_ops()` her zaman çağrılıyordu. Sonuç: zorluk 2 seviyelerde (ve zorluk >=3'te %40 ihtimalle) operatörler vardı ama hedef değer yoktu. Oyuncu operatörden geçip sayısını değiştirse bile kazanıyordu.
+**Kök Neden:** `procedural_levels/generator/pipeline.py` satır 175-178'de `targetVal` sadece `difficulty >= 3` ve `%60` ihtimalle atanırken, `place_ops()` her zaman çağrılıyordu. Sonuç: zorluk 2 seviyelerde (ve zorluk >=3'te %40 ihtimalle) operatörler vardı ama hedef değer yoktu.
 
-**Düzeltme:**
-- `pipeline.py`: `targetVal == null` ise `ops = []` — operatörler sadece hedef değer varsa yerleştirilir.
-- `validate-levels.py`: `ops` var ama `targetVal` yoksa uyarı verir.
-- `game.html` + `experimental-web`: Eski/cache'lenmiş seviyeler için fallback — `ops` var ama `targetVal` null ise `startVal` hedef değer olarak kabul edilir.
-- `SayiYolculuguGameEngineTest`: Regression testleri eklendi.
+**Düzeltme:** `pipeline.py`'de `targetVal == null` ise `ops = []`; `validate-levels.py`'de `ops` var ama `targetVal` yoksa uyarı verir; eski/cache'lenmiş seviyeler için fallback: `ops` var ama `targetVal` null ise `startVal` hedef değer olarak kabul edilir.
 
 ## Son Güncellemeler
 
@@ -222,9 +235,13 @@ override fun onDestroy() {
 
 ## Recent Commits
 
+- `8cc818a3` docs(wiki): ingest mathlock-play v1.0.101 release build + Google Play upload (2026-05-27)
+- `2f1e4860` chore(wiki): organize wiki and fix lint warnings (2026-05-27)
+- `cbed0ac0` feat(sayi-yolculugu): ses, tutorial, ipucu, path preview, undo/redo, achievements, daily set, haptic (2026-05-27)
+- `acb3dd4f` refactor(sayi-yolculugu): web motoru silindi, Android motoru test alanına dönüştürüldü (2026-05-27)
+- `6f2eabcc` docs(wiki): kimi-code-cli agents, skills, hooks ve plugins dokümantasyonu (2026-05-27)
 - `fa05f66` feat(mathlock): v1.0.100 — ses, tutorial, ipucu, path preview, undo/redo, achievements, daily set, haptic (2026-05-27)
 - `d68e371` fix(sayi-yolculugu): operators without targetVal made levels trivial to win (2026-05-25)
 - `f4cba014` feat(sayi-yolculugu): modüler JS/CSS yapıya geçiş, editor.html eklendi (2026-05-25)
 - `3a030f21` feat(sayi-yolculugu): `/` ve `^` operatör desteği, bölme bounce mantığı (2026-05-11)
 - `e5ae1fc1` fix(mathlock-play): v1.0.78 — compile fix, test limit, Play Store upload script (2026-05-10)
-- `681346a3` fix(mathlock-play): 7 critical bug fixes, UI/UX improvements, new tests, v1.0.77 (2026-05-09)
