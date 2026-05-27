@@ -312,4 +312,81 @@ class SayiYolculuguGameEngineTest {
         val unlocked = !isTestMode && shouldUnlock(levelsCompleted, passScore)
         assertFalse("Test modunda unlock olmamalı", unlocked)
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 6. checkWin regression: ops without targetVal must require startVal
+    // ═══════════════════════════════════════════════════════════════════════
+
+    /**
+     * Simulates game.html checkWin logic with the backend-regression fallback:
+     * if ops exist but targetVal is null, the effective target value becomes
+     * startVal so that operators are not meaningless.
+     */
+    data class CheckWinLevel(
+        val startVal: Int,
+        val targetVal: Int?,
+        val targetX: Int,
+        val targetY: Int,
+        val ops: List<Map<String, Any>> = emptyList()
+    )
+
+    private fun checkWin(playerX: Int, playerY: Int, playerVal: Int, lv: CheckWinLevel): Boolean {
+        val posOk = playerX == lv.targetX && playerY == lv.targetY
+        val effectiveTargetVal = lv.targetVal
+            ?: if (lv.ops.isNotEmpty()) lv.startVal else null
+        val valOk = effectiveTargetVal == null || playerVal == effectiveTargetVal
+        return posOk && valOk
+    }
+
+    @Test
+    fun `ops var targetVal null ise startVal a esit olmadan kazanilamaz`() {
+        val lv = CheckWinLevel(
+            startVal = 1,
+            targetVal = null,
+            targetX = 1, targetY = 0,
+            ops = listOf(mapOf("x" to 0, "y" to 0, "type" to "+", "val" to 2))
+        )
+        // Player passes through +2 → value becomes 3, reaches target
+        val won = checkWin(playerX = 1, playerY = 0, playerVal = 3, lv = lv)
+        assertFalse("+2'den geçip 3 olunca kazanılmamalı (hedef 1 olmalı)", won)
+    }
+
+    @Test
+    fun `ops var targetVal null ise startVal a esit olunca kazanilabilir`() {
+        val lv = CheckWinLevel(
+            startVal = 1,
+            targetVal = null,
+            targetX = 1, targetY = 0,
+            ops = listOf(mapOf("x" to 0, "y" to 0, "type" to "+", "val" to 2))
+        )
+        // Player avoids +2, value stays 1, reaches target
+        val won = checkWin(playerX = 1, playerY = 0, playerVal = 1, lv = lv)
+        assertTrue("+2'den geçmeden 1 olarak hedefe ulaşınca kazanılmalı", won)
+    }
+
+    @Test
+    fun `ops yok targetVal null ise sadece konum yeterli`() {
+        val lv = CheckWinLevel(
+            startVal = 5,
+            targetVal = null,
+            targetX = 2, targetY = 2,
+            ops = emptyList()
+        )
+        val won = checkWin(playerX = 2, playerY = 2, playerVal = 99, lv = lv)
+        assertTrue("Operatör yoksa hedefe herhangi bir sayıyla ulaşılabilir", won)
+    }
+
+    @Test
+    fun `targetVal tanili ise ops olup olmamasi fark etmez`() {
+        val lv = CheckWinLevel(
+            startVal = 1,
+            targetVal = 7,
+            targetX = 2, targetY = 0,
+            ops = emptyList()
+        )
+        val wonCorrect = checkWin(playerX = 2, playerY = 0, playerVal = 7, lv = lv)
+        val wonWrong = checkWin(playerX = 2, playerY = 0, playerVal = 3, lv = lv)
+        assertTrue("Hedef değere eşitse kazanılır", wonCorrect)
+        assertFalse("Hedef değere eşit değilse kazanılmaz", wonWrong)
+    }
 }

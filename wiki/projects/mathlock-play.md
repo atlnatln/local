@@ -279,6 +279,7 @@ ACRA çökme raporlarını Telegram üzerinden günlük özet + anlık kritik bi
 ## Recent Commits
 
 <!-- AUTO-REFRESHED -->
+- `fa05f66` feat(mathlock): v1.0.100 — ses, tutorial, ipucu, path preview, undo/redo, achievements, daily set, haptic (2026-05-27) — v1.0.100
 - `f4cba014` feat(mathlock-play): ErrorReporter (PII-filtered non-fatal reporting), ACRA LOGCAT removal, v1.0.97 (2026-05-25) — v1.0.97
 - `90f892e` fix(mathlock-play): SayiYolculugu kredi hatasi (-1 gosterme), versiyon 1.0.94 (2026-05-25) — v1.0.94
 - `6973b89` feat(backend): crash report telegram daily & realtime notifications (2026-05-24)

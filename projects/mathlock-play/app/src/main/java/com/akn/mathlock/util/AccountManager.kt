@@ -5,6 +5,7 @@ import android.util.Log
 import com.akn.mathlock.api.ApiClient
 import com.akn.mathlock.api.RealApiClient
 import org.json.JSONObject
+import com.akn.mathlock.util.ErrorReporter
 import java.util.UUID
 
 /**
@@ -128,7 +129,13 @@ class AccountManager(
                 Log.d(TAG, "Cihaz kaydedildi: accessToken=${accessToken.take(8)}...")
                 accessToken
             } else {
-                Log.w(TAG, "Cihaz kaydı başarısız: ${response.statusCode}")
+                val bodyStr = try { response.body.toString() } catch (_: Exception) { "" }
+                Log.w(TAG, "Cihaz kaydı başarısız: ${response.statusCode} body=$bodyStr")
+                ErrorReporter.report(
+                    category = "auth",
+                    message = "Device registration failed: ${response.statusCode}",
+                    extras = mapOf("status" to response.statusCode.toString(), "body" to bodyStr)
+                )
                 null
             }
         } catch (e: Exception) {
@@ -174,7 +181,12 @@ class AccountManager(
                 } catch (_: Exception) {
                     "Kayıt başarısız"
                 }
-                Log.w(TAG, "Email kaydı başarısız (${response.statusCode}): $error")
+                Log.w(TAG, "Email kaydı başarısız (${response.statusCode}): $error, body=${responseText.take(200)}")
+                ErrorReporter.report(
+                    category = "auth",
+                    message = "Email registration failed: ${response.statusCode} - $error",
+                    extras = mapOf("status" to response.statusCode.toString(), "error" to error)
+                )
                 RegisterEmailResult.Error(error)
             }
         } catch (e: Exception) {

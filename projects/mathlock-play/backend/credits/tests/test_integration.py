@@ -21,10 +21,15 @@ class EndToEndFlowTest(ThrottleMixin, AuthMixin, TestCase):
             )
         self._auth_client(self.device)
 
-    @patch('credits.views._generate_via_kimi', return_value=[
+    @patch('credits.views.generate_question_set')
+    @patch('credits.views._generate_questions_procedural', return_value=[
         {'text': 'AI1', 'answer': 1, 'type': 'a', 'difficulty': 2}
     ] * 50)
-    def test_full_question_cycle(self, mock_gen):
+    def test_full_question_cycle(self, mock_gen, mock_task_qs):
+        from unittest.mock import MagicMock
+        mock_task = MagicMock()
+        mock_task.id = 'mock-qs-task-id'
+        mock_task_qs.delay.return_value = mock_task
         # 1. İlk kredi kullanım (ücretsiz)
         resp = self.client.post('/api/mathlock/credits/use/', {
             'device_token': str(self.device.device_token),
@@ -56,10 +61,12 @@ class EndToEndFlowTest(ThrottleMixin, AuthMixin, TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(resp.json()['auto_renewal_started'])
 
-    @patch('credits.views._generate_levels_via_kimi', return_value=[
-        {'id': i, 'title': f'S{i}'} for i in range(1, 4)
-    ])
+    @patch('credits.views.generate_level_set')
     def test_full_level_cycle(self, mock_gen):
+        from unittest.mock import MagicMock
+        mock_task = MagicMock()
+        mock_task.id = 'mock-ls-task-id'
+        mock_gen.delay.return_value = mock_task
         # 1. Seviyeleri al (ilk erişim → fallback oluşturur)
         resp = self.client.get(
             f'/api/mathlock/levels/?device_token={self.device.device_token}&child_id={self.child.pk}'
@@ -208,13 +215,8 @@ class InputValidationEdgeCaseTest(ThrottleMixin, AuthMixin, TestCase):
         }, format='json')
         self.assertEqual(resp.status_code, 400)
 
-    @patch('credits.views._generate_via_kimi', return_value=[
-        {'text': 'AI1', 'answer': 1, 'type': 'a', 'difficulty': 1}
-    ] * 50)
-    def test_solved_questions_truncated_at_500(self, mock_gen):
+    def test_solved_questions_truncated_at_500(self):
         """500'den fazla ID gönderilirse sadece ilk 500 işlenmeli."""
-        Question.objects.create(question_id=1, text='Q1', answer=1,
-                                question_type='a', difficulty=1, batch_number=0)
         resp = self.client.post('/api/mathlock/questions/progress/', {
             'device_token': str(self.device.device_token),
             'solved_questions': list(range(1, 502)),
@@ -237,12 +239,7 @@ class InputValidationEdgeCaseTest(ThrottleMixin, AuthMixin, TestCase):
         }, format='json')
         self.assertEqual(resp.status_code, 400)
 
-    @patch('credits.views._generate_via_kimi', return_value=[
-        {'text': 'AI1', 'answer': 1, 'type': 'a', 'difficulty': 1}
-    ] * 50)
-    def test_negative_question_id_in_progress(self, mock_gen):
-        Question.objects.create(question_id=1, text='Q1', answer=1,
-                                question_type='a', difficulty=1, batch_number=0)
+    def test_negative_question_id_in_progress(self):
         resp = self.client.post('/api/mathlock/questions/progress/', {
             'device_token': str(self.device.device_token),
             'solved_questions': [-1, 1],

@@ -8,6 +8,9 @@ let state = {
   progress: {},
   startTime: 0,
   attempts: 0,
+  hintMode: false,
+  history: [],
+  historyIdx: -1,
 };
 let currentSignature = '';
 
@@ -30,6 +33,7 @@ function saveGameState() {
       queue: state.queue,
       attempts: state.attempts,
       progress: state.progress,
+      hintMode: state.hintMode,
       timestamp: Date.now()
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -54,3 +58,62 @@ function restoreGameState(signature) {
 function clearGameState() {
   try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
 }
+
+/* ── History (Undo/Redo) ────────────────────────────────── */
+function resetHistory() {
+  state.history = [[]];
+  state.historyIdx = 0;
+}
+
+/* ── Achievements ───────────────────────────────────────── */
+function loadAchievements() {
+  try {
+    const raw = localStorage.getItem('sy_achievements');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return {};
+}
+function saveAchievements(ach) {
+  try { localStorage.setItem('sy_achievements', JSON.stringify(ach)); } catch(e) {}
+}
+function unlockAchievement(id) {
+  var ach = loadAchievements();
+  if (!ach[id]) {
+    ach[id] = { unlockedAt: Date.now() };
+    saveAchievements(ach);
+    if (window.showAchievementToast) showAchievementToast(id);
+  }
+}
+
+/* ── Settings ───────────────────────────────────────────── */
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem('sy_settings');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { audio: true, haptic: true };
+}
+
+function saveSettings(settings) {
+  try {
+    localStorage.setItem('sy_settings', JSON.stringify(settings));
+  } catch(e) {}
+}
+
+/* ── Credits ────────────────────────────────────────────── */
+function getCredits() {
+  try {
+    const raw = localStorage.getItem('sy_credits');
+    if (raw !== null) return parseInt(raw, 10);
+  } catch(e) {}
+  return 3;
+}
+function setCredits(c) {
+  try { localStorage.setItem('sy_credits', String(c)); } catch(e) {}
+}
+
+window.onPurchaseSuccess = function(addedCredits) {
+  var current = getCredits();
+  setCredits(current + addedCredits);
+  if (window.AudioEngine) AudioEngine.play('success');
+};

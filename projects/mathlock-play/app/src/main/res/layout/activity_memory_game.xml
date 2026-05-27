@@ -140,12 +140,19 @@
     </LinearLayout>
 
     <!-- Oyun Tahtası -->
-    <GridLayout
-        android:id="@+id/cardGrid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|top"
-        android:padding="8dp" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <GridLayout
+            android:id="@+id/cardGrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
+            android:padding="8dp" />
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Yeniden Oyna Butonu -->
     <com.google.android.material.button.MaterialButton

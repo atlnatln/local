@@ -523,3 +523,19 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 47 entries
 
+## [2026-05-27 16:41] lint | 7/10
+- Orphan pages: 0
+- Broken links: 7
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 12
+- Unknown tags: 13 (api, backend, beta, ci-cd, data, extension, finance, hook, integration, mcp...)
+- Raw existence: 0
+- Log size: 48 entries
+
+
+## [2026-05-27 14:48] ingest | sayi-yolculugu + mathlock-play v1.0.100
+- sayi-yolculugu: ses, tutorial, ipucu, path preview, undo/redo, achievements, daily set, haptic
+- mathlock-play: v1.0.100 Android release, haptic event handler, IAP bridge, release notes

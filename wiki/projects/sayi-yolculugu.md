@@ -205,8 +205,24 @@ override fun onDestroy() {
 - `game.html` + `experimental-web`: Eski/cache'lenmiş seviyeler için fallback — `ops` var ama `targetVal` null ise `startVal` hedef değer olarak kabul edilir.
 - `SayiYolculuguGameEngineTest`: Regression testleri eklendi.
 
+## Son Güncellemeler
+
+### 2026-05-27 — v1.0.100 Özellikleri (MVP Polish)
+
+- **Ses sistemi:** HTML5 Audio ile arka plan müziği (`bgm.wav`), SFX (başarı, hata, buton, duvar çarpma)
+- **Tutorial overlay:** İlk 3 seviyede interaktif rehber balonları (`tutorialSteps` metadata)
+- **Ipucu sistemi:** Python generator `hintCommands` output'u, kuyruğa ghost chip ekleme
+- **Path preview:** Komut kuyruğuna her eklemede hayalet oyuncu pozisyonu (`updateGhostPreview`)
+- **Undo/Redo stack:** Komut kuyruğu history (`history[]` / `historyIdx`), max 50 adım
+- **Achievement rozetleri:** `first_win`, `perfect_3`, `speedster`, `no_mistake`, `ten_levels`
+- **Günlük seviye seti (Daily):** Tarihe göre deterministik 10 seviye seçimi (`getDailySetIndex`)
+- **Haptic feedback:** Android bridge üzerinden `Vibrator` ile titreşim (`notifyAndroid('haptic')`)
+- **Pause menüsü:** Ses, haptic toggle, nasıl oynanır
+- **IAP Bridge:** Google Play Billing entegrasyonu (`BillingHelper.kt` ↔ JS `onPurchaseSuccess`)
+
 ## Recent Commits
 
+- `fa05f66` feat(mathlock): v1.0.100 — ses, tutorial, ipucu, path preview, undo/redo, achievements, daily set, haptic (2026-05-27)
 - `d68e371` fix(sayi-yolculugu): operators without targetVal made levels trivial to win (2026-05-25)
 - `f4cba014` feat(sayi-yolculugu): modüler JS/CSS yapıya geçiş, editor.html eklendi (2026-05-25)
 - `3a030f21` feat(sayi-yolculugu): `/` ve `^` operatör desteği, bölme bounce mantığı (2026-05-11)

@@ -216,12 +216,16 @@ class QuestionManager(private val context: Context) {
      * Eğer hiç çözülmemiş soru yoksa tüm sorular sıfırlanır ve tamamı döner.
      */
     private fun buildRotationQueue() {
-        val unsolvedByBatch = _allQuestions
+        val unsolvedByDifficulty = _allQuestions
             .filter { !it.solved }
-            .sortedWith(compareByDescending<JsonQuestion> { it.batch }.thenBy { it.id })
+            .sortedWith(
+                compareBy<JsonQuestion> { it.difficulty }     // Önce kolaylar
+                    .thenByDescending { it.batch }            // Yeni batch'ler önce
+                    .thenBy { it.id }
+            )
 
-        if (unsolvedByBatch.isNotEmpty()) {
-            rotationQueue = unsolvedByBatch.toMutableList()
+        if (unsolvedByDifficulty.isNotEmpty()) {
+            rotationQueue = unsolvedByDifficulty.toMutableList()
         } else {
             // Tüm sorular çözüldü → rotasyonu sıfırla, hepsini döndür
             rotationQueue = _allQuestions.toMutableList()

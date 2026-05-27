@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.akn.mathlock.util.AccountManager
+import com.akn.mathlock.util.ErrorReporter
 import com.akn.mathlock.util.PreferenceManager
 import com.akn.mathlock.util.QuestionManager
 import com.google.android.material.button.MaterialButton
@@ -84,6 +85,11 @@ class ChildProfilesActivity : BaseActivity() {
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Profil yükleme hatası: ${e.message}")
+                ErrorReporter.report(
+                    category = "profile",
+                    message = "Load profiles failed: ${e.message}",
+                    throwable = e
+                )
                 runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
             }
         }.start()
@@ -249,6 +255,11 @@ class ChildProfilesActivity : BaseActivity() {
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Profil ekleme hatası: ${e.message}")
+                ErrorReporter.report(
+                    category = "profile",
+                    message = "Create child failed: ${e.message}",
+                    throwable = e
+                )
                 runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
             }
         }.start()
@@ -304,6 +315,11 @@ class ChildProfilesActivity : BaseActivity() {
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Güncelleme hatası: ${e.message}")
+                ErrorReporter.report(
+                    category = "profile",
+                    message = "Update child failed: ${e.message}",
+                    throwable = e
+                )
                 runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
             }
         }.start()
@@ -338,6 +354,11 @@ class ChildProfilesActivity : BaseActivity() {
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Silme hatası: ${e.message}")
+                ErrorReporter.report(
+                    category = "profile",
+                    message = "Delete child failed: ${e.message}",
+                    throwable = e
+                )
                 runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
             }
         }.start()

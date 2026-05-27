@@ -1,5 +1,6 @@
 package com.akn.mathlock
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -63,6 +64,7 @@ class ParentAuthActivity : BaseActivity() {
                         binding.tvAuthStatus.text = "Hata: $errString"
                         binding.tvAuthStatus.setTextColor(getColor(R.color.wrong_red))
                     }
+                    setResult(RESULT_CANCELED)
                 }
 
                 override fun onAuthenticationFailed() {
@@ -91,6 +93,20 @@ class ParentAuthActivity : BaseActivity() {
     private fun onAuthSuccess() {
         binding.tvAuthStatus.text = getString(R.string.pin_success)
         binding.tvAuthStatus.setTextColor(getColor(R.color.correct_green))
+
+        val forwardTo = intent.getStringExtra("forward_to")
+        if (!forwardTo.isNullOrEmpty()) {
+            try {
+                val clazz = Class.forName(forwardTo)
+                val launchIntent = Intent(this, clazz)
+                startActivity(launchIntent)
+            } catch (_: ClassNotFoundException) {
+                Toast.makeText(this, "Hedef ekran bulunamadı", Toast.LENGTH_SHORT).show()
+            }
+            setResult(RESULT_OK)
+            finish()
+            return
+        }
 
         if (returnToSettings) {
             setResult(RESULT_OK)

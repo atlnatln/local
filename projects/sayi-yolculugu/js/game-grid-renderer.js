@@ -87,6 +87,31 @@ function buildGrid(lv) {
     }
   }
 }
+function updateGhostPreview() {
+  document.querySelectorAll('.cell.ghost').forEach(function(c) { c.classList.remove('ghost'); });
+  const lv = getLevel();
+  if (!lv) return;
+  let gx = lv.startX, gy = lv.startY;
+  for (var i = 0; i < state.queue.length; i++) {
+    const cmdId = state.queue[i];
+    const cmd = CMDS[cmdId];
+    if (cmd.dz !== 0) continue;
+    const nx = gx + cmd.dx, ny = gy + cmd.dy;
+    if (nx < 0 || nx >= lv.cols || ny < 0 || ny >= lv.rows) break;
+    var blocked = false;
+    for (var j = 0; j < (lv.walls || []).length; j++) {
+      var w = lv.walls[j];
+      var wx = Array.isArray(w) ? w[0] : w.x;
+      var wy = Array.isArray(w) ? w[1] : w.y;
+      if (wx === nx && wy === ny) { blocked = true; break; }
+    }
+    if (blocked) break;
+    gx = nx; gy = ny;
+  }
+  const cell = document.querySelector('.cell[data-x="' + gx + '"][data-y="' + gy + '"]');
+  if (cell) cell.classList.add('ghost');
+}
+
 function updatePlayerPos(animate) {
   const gap = 4;
   const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));

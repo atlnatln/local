@@ -131,7 +131,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
                 runOnUiThread {
                     binding.btnRegister.isEnabled = true
                     binding.btnRegister.text = "Kayıt Ol"
-                    Snackbar.make(binding.root, "❌ Cihaz kaydı yapılamadı", Snackbar.LENGTH_LONG)
+                    Snackbar.make(binding.root, "❌ Cihaz kaydı yapılamadı. İnternet bağlantınızı kontrol edin veya birkaç dakika bekleyip tekrar deneyin.", Snackbar.LENGTH_LONG)
                         .setBackgroundTint(getColor(R.color.wrong_red))
                         .setTextColor(getColor(android.R.color.white))
                         .show()
@@ -211,7 +211,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         Thread {
             accountManager.getOrRegister() ?: run {
                 runOnUiThread {
-                    Snackbar.make(binding.root, "❌ Cihaz kaydı yapılamadı", Snackbar.LENGTH_LONG)
+                    Snackbar.make(binding.root, "❌ Cihaz kaydı yapılamadı. İnternet bağlantınızı kontrol edin veya birkaç dakika bekleyip tekrar deneyin.", Snackbar.LENGTH_LONG)
                         .setBackgroundTint(getColor(R.color.wrong_red))
                         .setTextColor(getColor(android.R.color.white))
                         .show()

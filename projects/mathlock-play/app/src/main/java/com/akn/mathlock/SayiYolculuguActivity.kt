@@ -18,12 +18,21 @@ import com.akn.mathlock.api.ApiClient
 import com.akn.mathlock.api.RealApiClient
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.AccountManager
+import com.akn.mathlock.util.BillingHelper
 import com.akn.mathlock.util.PreferenceManager
 import com.akn.mathlock.util.SecurePrefs
+import com.akn.mathlock.util.ErrorReporter
 import org.json.JSONArray
 import org.json.JSONObject
 
 class SayiYolculuguActivity : BaseActivity() {
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_AUTH_ACCOUNT && resultCode == android.app.Activity.RESULT_OK) {
+            startActivity(android.content.Intent(this, AccountActivity::class.java))
+        }
+    }
 
     companion object {
         private const val TAG = "SayiYolculugu"
@@ -31,6 +40,7 @@ class SayiYolculuguActivity : BaseActivity() {
         private const val KEY_CACHED_LEVELS = "cached_levels"
         private const val KEY_COMPLETED_IDS = "completed_level_ids"
         private const val KEY_CURRENT_SET_ID = "current_set_id"
+        private const val REQUEST_AUTH_ACCOUNT = 5001
     }
 
     private lateinit var webView: WebView
@@ -45,6 +55,7 @@ class SayiYolculuguActivity : BaseActivity() {
     private val apiClient: ApiClient = RealApiClient()
     private val handler = Handler(Looper.getMainLooper())
     private var lastGenerationInProgress = false
+    private lateinit var billingHelper: BillingHelper
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +96,8 @@ class SayiYolculuguActivity : BaseActivity() {
 
         val accountManager = AccountManager(this)
         apiClient.setAuthToken(accountManager.getAccessToken())
+
+        initBilling()
 
         loadCompletedLevels()
         loadCurrentSetId()
@@ -408,7 +421,28 @@ class SayiYolculuguActivity : BaseActivity() {
                             finish()
                         }
                         "buyCredits" -> {
-                            startActivity(android.content.Intent(this@SayiYolculuguActivity, AccountActivity::class.java))
+                            if (::billingHelper.isInitialized && billingHelper.isReady()) {
+                                billingHelper.launchPurchase("kredi_1")
+                            } else {
+                                Toast.makeText(this@SayiYolculuguActivity, "Satın alma servisi hazırlanıyor, lütfen bekleyin", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        "haptic" -> {
+                            val type = data.optString("type", "light")
+                            val vibrator = getSystemService(android.content.Context.VIBRATOR_SERVICE) as? android.os.Vibrator
+                            if (vibrator?.hasVibrator() == true) {
+                                val duration = when (type) {
+                                    "success" -> 80L
+                                    "error" -> 150L
+                                    else -> 40L
+                                }
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                    vibrator.vibrate(android.os.VibrationEffect.createOneShot(duration, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+                                } else {
+                                    @Suppress("DEPRECATION")
+                                    vibrator.vibrate(duration)
+                                }
+                            }
                         }
                     }
                 } catch (e: Exception) {
@@ -460,12 +494,14 @@ class SayiYolculuguActivity : BaseActivity() {
                     val responseText = response.body.toString()
                     System.out.println("[SY-UPLOAD] response code=$code body=${responseText.take(120)}")
 
-                    if (code in 200..299 && responseText.isNotBlank()) {
+                    if (code in 200..299) {
                         try {
-                            val resp = JSONObject(responseText)
+                            val resp = if (responseText.isNotBlank()) JSONObject(responseText) else JSONObject()
                             invokeResult(resp)
-                            return true
-                        } catch (_: Exception) {}
+                        } catch (_: Exception) {
+                            invokeResult(JSONObject())
+                        }
+                        return true
                     } else if (code == 404 && withChildId && childId > 0) {
                         // child_id bulunamadı; child_id olmadan tekrar dene
                         return false
@@ -477,18 +513,35 @@ class SayiYolculuguActivity : BaseActivity() {
                                 put("auto_renewal_started", false)
                             }
                             invokeResult(resp)
-                        } catch (_: Exception) {}
+                            ErrorReporter.report(
+                                category = "renewal",
+                                message = "Level upload failed: HTTP $code",
+                                extras = mapOf(
+                                    "set_id" to (currentSetId?.toString() ?: "null"),
+                                    "http_code" to code.toString(),
+                                    "completed" to completedLevelIds.sorted().toString()
+                                )
+                            )
+                        } catch (_: Exception) {
+                            invokeResult(JSONObject())
+                        }
+                        return true
                     }
-                    return true
                 }
 
                 val ok = tryUpload(true)
                 if (!ok) {
                     System.out.println("[SY-UPLOAD] child_id=$childId not found, retrying without child_id")
-                    tryUpload(false)
+                    val ok2 = tryUpload(false)
                     if (!callbackInvoked) {
                         System.out.println("[SY-UPLOAD] Resetting local childId from $childId")
                         prefManager.activeChildId = 0
+                    }
+                    if (!ok2 && !callbackInvoked) {
+                        invokeResult(JSONObject().apply {
+                            put("error", "upload_failed")
+                            put("auto_renewal_started", false)
+                        })
                     }
                 }
             } catch (e: Exception) {
@@ -531,9 +584,49 @@ class SayiYolculuguActivity : BaseActivity() {
         }
     }
 
+    private fun initBilling() {
+        billingHelper = BillingHelper(this, object : BillingHelper.BillingListener {
+            override fun onProductDetailsReady(details: Map<String, com.android.billingclient.api.ProductDetails>) {
+                Log.d(TAG, "Billing products ready: ${details.keys}")
+            }
+            override fun onPurchaseSuccess(purchase: com.android.billingclient.api.Purchase) {
+                Log.i(TAG, "Purchase success: ${purchase.products.firstOrNull()}")
+                val productId = purchase.products.firstOrNull() ?: ""
+                val credits = when (productId) {
+                    "kredi_1" -> 1
+                    "kredi_3" -> 3
+                    "kredi_5" -> 5
+                    else -> 1
+                }
+                billingHelper.consumePurchase(purchase)
+                runOnUiThread {
+                    webView.evaluateJavascript("onPurchaseSuccess($credits);", null)
+                    Toast.makeText(this@SayiYolculuguActivity, "$credits kredi eklendi!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onPurchaseError(message: String) {
+                Log.w(TAG, "Purchase error: $message")
+                runOnUiThread {
+                    Toast.makeText(this@SayiYolculuguActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onBillingReady() {
+                Log.d(TAG, "Billing ready")
+            }
+            override fun onBillingUnavailable(message: String) {
+                Log.w(TAG, "Billing unavailable: $message")
+            }
+        })
+        billingHelper.connect()
+    }
+
     override fun onDestroy() {
         // Polling handler'ını temizle — activity öldükten sonra callback çalışmasın
         handler.removeCallbacksAndMessages(null)
+
+        if (::billingHelper.isInitialized) {
+            billingHelper.disconnect()
+        }
 
         // WebView temizlik
         webView.stopLoading()
@@ -551,6 +644,15 @@ class SayiYolculuguActivity : BaseActivity() {
     }
 
     private fun showRenewalError() {
+        ErrorReporter.report(
+            category = "renewal",
+            message = "Renewal error: set $currentSetId",
+            extras = mapOf(
+                "set_id" to (currentSetId?.toString() ?: "null"),
+                "completed" to completedLevelIds.sorted().toString(),
+                "child_id" to PreferenceManager(this).activeChildId.toString()
+            )
+        )
         runOnUiThread {
             webView.evaluateJavascript("showRenewalError();", null)
         }
@@ -559,6 +661,15 @@ class SayiYolculuguActivity : BaseActivity() {
     private fun pollForNewSet(attempt: Int = 0) {
         if (attempt >= 120) {
             Log.w(TAG, "Yeni set 10 dk içinde gelmedi, hata gösteriliyor")
+            ErrorReporter.report(
+                category = "renewal",
+                message = "Poll timeout: set $currentSetId",
+                extras = mapOf(
+                    "set_id" to (currentSetId?.toString() ?: "null"),
+                    "attempt" to attempt.toString(),
+                    "completed" to completedLevelIds.sorted().toString()
+                )
+            )
             showRenewalError()
             return
         }

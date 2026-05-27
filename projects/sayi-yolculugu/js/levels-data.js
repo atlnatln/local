@@ -5,9 +5,25 @@
 const LEVELS_BY_AGE = {
 
   '5-6': [
-    { title: 'İlk Adım', desc: 'Sayıyı sağa taşı!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 1, targetX: 2, targetY: 0, targetVal: null, walls: [], ops: [], commands: ['x+'], maxCmds: 4, stars: [2, 3] },
-    { title: 'Aşağı İn', desc: 'Sayıyı aşağı götür!', cols: 1, rows: 3, startX: 0, startY: 0, startVal: 2, targetX: 0, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['y+'], maxCmds: 4, stars: [2, 3] },
-    { title: 'Köşeye Git', desc: 'Sağ alta ulaş!', cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5] },
+    { title: 'İlk Adım', desc: 'Sayıyı sağa taşı!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 1, targetX: 2, targetY: 0, targetVal: null, walls: [], ops: [], commands: ['x+'], maxCmds: 4, stars: [2, 3],
+      tutorialSteps: [
+        { target: '.cmd-btn.x-plus', text: 'Sağa gitmek için bu butona dokun' },
+        { target: '#btnRun', text: 'Komutu ekledikten sonra Çalıştır\'a bas!' }
+      ]
+    },
+    { title: 'Aşağı İn', desc: 'Sayıyı aşağı götür!', cols: 1, rows: 3, startX: 0, startY: 0, startVal: 2, targetX: 0, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['y+'], maxCmds: 4, stars: [2, 3],
+      tutorialSteps: [
+        { target: '.cmd-btn.y-plus', text: 'Aşağı gitmek için bu butona dokun' },
+        { target: '#btnRun', text: 'Şimdi Çalıştır\'a bas!' }
+      ]
+    },
+    { title: 'Köşeye Git', desc: 'Sağ alta ulaş!', cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5],
+      tutorialSteps: [
+        { target: '.cmd-btn.x-plus', text: 'Önce sağa git' },
+        { target: '.cmd-btn.y-plus', text: 'Sonra aşağı in' },
+        { target: '#btnRun', text: 'Hazırsan Çalıştır!' }
+      ]
+    },
     { title: 'Geri Dön', desc: 'Sol tarafa git!', cols: 3, rows: 1, startX: 2, startY: 0, startVal: 5, targetX: 0, targetY: 0, targetVal: null, walls: [], ops: [], commands: ['x-'], maxCmds: 4, stars: [2, 3] },
     { title: 'Yukarı Çık', desc: 'Yukarıya git!', cols: 1, rows: 3, startX: 0, startY: 2, startVal: 4, targetX: 0, targetY: 0, targetVal: null, walls: [], ops: [], commands: ['y-'], maxCmds: 4, stars: [2, 3] },
     { title: 'L Yolu', desc: 'L şeklinde ilerle!', cols: 3, rows: 3, startX: 0, startY: 0, startVal: 6, targetX: 2, targetY: 2, targetVal: null, walls: [[1,0],[2,0],[2,1]], ops: [], commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5] },
@@ -16,9 +32,29 @@ const LEVELS_BY_AGE = {
   ],
 
   '7-8': [
-    { title: 'Sayı Taşı', desc: 'Sayıyı hedefe götür!', cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5] },
-    { title: 'Duvar Aşma', desc: 'Duvarın etrafından dolaş!', cols: 4, rows: 3, startX: 0, startY: 0, startVal: 5, targetX: 3, targetY: 0, targetVal: null, walls: [[2,0],[2,1]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [6, 7] },
-    { title: 'Değer Değiştir', desc: 'Sayını 5 yap ve hedefe götür!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 0, targetVal: 5, walls: [], ops: [], commands: ['x+', 'z+', 'z-'], maxCmds: 6, stars: [4, 5] },
+    { title: 'Sayı Taşı', desc: 'Sayıyı hedefe götür!', cols: 3, rows: 3, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 2, targetVal: null, walls: [], ops: [], commands: ['x+', 'y+'], maxCmds: 6, stars: [4, 5],
+      tutorialSteps: [
+        { target: '.cmd-btn.x-plus', text: 'Sağa gitmek için bu butona dokun' },
+        { target: '.cmd-btn.y-plus', text: 'Aşağı inmek için bu butona dokun' },
+        { target: '#btnRun', text: 'Hazırsan Çalıştır!' }
+      ],
+      hintCommands: ['x+', 'x+', 'y+', 'y+']
+    },
+    { title: 'Duvar Aşma', desc: 'Duvarın etrafından dolaş!', cols: 4, rows: 3, startX: 0, startY: 0, startVal: 5, targetX: 3, targetY: 0, targetVal: null, walls: [[2,0],[2,1]], ops: [], commands: ['x+', 'x-', 'y+', 'y-'], maxCmds: 8, stars: [6, 7],
+      tutorialSteps: [
+        { target: '.cmd-btn.y-plus', text: 'Duvarı aşmak için önce aşağı in' },
+        { target: '.cmd-btn.x-plus', text: 'Sonra sağa devam et' },
+        { target: '.cmd-btn.y-minus', text: 'Yukarı çık ve hedefe ulaş' },
+        { target: '#btnRun', text: 'Hazırsan Çalıştır!' }
+      ]
+    },
+    { title: 'Değer Değiştir', desc: 'Sayını 5 yap ve hedefe götür!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 3, targetX: 2, targetY: 0, targetVal: 5, walls: [], ops: [], commands: ['x+', 'z+', 'z-'], maxCmds: 6, stars: [4, 5],
+      tutorialSteps: [
+        { target: '.cmd-btn.z-plus', text: 'Sayını artırmak için + butonuna bas' },
+        { target: '.cmd-btn.x-plus', text: 'Sonra sağa git' },
+        { target: '#btnRun', text: 'Hazırsan Çalıştır!' }
+      ]
+    },
     { title: 'Toplama Yolu', desc: 'Sayıyı büyüt ve hedefe ulaş!', cols: 4, rows: 1, startX: 0, startY: 0, startVal: 1, targetX: 3, targetY: 0, targetVal: 4, walls: [], ops: [], commands: ['x+', 'z+'], maxCmds: 8, stars: [6, 7] },
     { title: 'Çıkarma Yolu', desc: 'Sayıyı küçült!', cols: 3, rows: 1, startX: 0, startY: 0, startVal: 8, targetX: 2, targetY: 0, targetVal: 5, walls: [], ops: [], commands: ['x+', 'z-'], maxCmds: 6, stars: [5, 6] },
     { title: 'Toplama Hücreleri', desc: 'Özel hücreler sayını değiştirir!', cols: 4, rows: 3, startX: 0, startY: 0, startVal: 2, targetX: 3, targetY: 2, targetVal: 5, walls: [[1,1]], ops: [{x:2,y:0,type:'+',val:1},{x:3,y:1,type:'+',val:2}], commands: ['x+', 'y+', 'y-'], maxCmds: 8, stars: [5, 7] },

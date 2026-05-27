@@ -1,5 +1,6 @@
 package com.akn.mathlock.api
 
+import com.akn.mathlock.util.ErrorReporter
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -53,33 +54,43 @@ class RealApiClient : ApiClient {
         path: String,
         configure: (HttpURLConnection) -> Unit = {}
     ): ApiClient.Response {
-        val url = URL("$API_BASE$path")
-        val conn = url.openConnection() as HttpURLConnection
-        conn.requestMethod = method
-        conn.connectTimeout = TIMEOUT
-        conn.readTimeout = TIMEOUT
-        authToken?.let {
-            conn.setRequestProperty("Authorization", "Device $it")
-        }
-        configure(conn)
-
-        val code = conn.responseCode
-        val text = try {
-            if (code in 200..299) {
-                conn.inputStream.bufferedReader().readText()
-            } else {
-                conn.errorStream?.bufferedReader()?.readText() ?: ""
+        return try {
+            val url = URL("$API_BASE$path")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = method
+            conn.connectTimeout = TIMEOUT
+            conn.readTimeout = TIMEOUT
+            authToken?.let {
+                conn.setRequestProperty("Authorization", "Device $it")
             }
-        } catch (_: Exception) {
-            ""
-        }
-        conn.disconnect()
+            configure(conn)
 
-        val json = try {
-            JSONObject(text)
-        } catch (_: Exception) {
-            JSONObject()
+            val code = conn.responseCode
+            val text = try {
+                if (code in 200..299) {
+                    conn.inputStream.bufferedReader().readText()
+                } else {
+                    conn.errorStream?.bufferedReader()?.readText() ?: ""
+                }
+            } catch (_: Exception) {
+                ""
+            }
+            conn.disconnect()
+
+            val json = try {
+                JSONObject(text)
+            } catch (_: Exception) {
+                JSONObject()
+            }
+            ApiClient.Response(code, json)
+        } catch (e: Exception) {
+            ErrorReporter.report(
+                category = "network",
+                message = "API $method $path failed: ${e.javaClass.simpleName}",
+                extras = mapOf("path" to path, "method" to method),
+                throwable = e
+            )
+            ApiClient.Response(0, JSONObject())
         }
-        return ApiClient.Response(code, json)
     }
 }

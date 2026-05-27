@@ -20,8 +20,8 @@ android {
         applicationId = "com.akn.mathlock.play"
         minSdk = 26
         targetSdk = 35
-        versionCode = 94
-        versionName = "1.0.94"
+        versionCode = 100
+        versionName = "1.0.100"
     }
 
     signingConfigs {

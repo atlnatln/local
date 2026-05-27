@@ -6,13 +6,15 @@ AI'ın ürettiği seviyelerin geçerliliğini ve çözülebilirliğini kontrol e
 Kullanım:
     python3 validate-levels.py                # levels.json doğrula
     python3 validate-levels.py --file X.json  # belirli dosya
+    python3 validate-levels.py --batch X.json --sample 500  # batch sample
 
 Çıkış kodları: 0 = başarılı, 1 = hata var
 """
 import json
 import os
+import random
 import sys
-from collections import deque
+from collections import deque, Counter
 from pathlib import Path
 
 VALID_COMMANDS = {"x+", "x-", "y+", "y-", "z+", "z-"}
@@ -41,7 +43,7 @@ def warn(msg):
 
 
 def bfs_solvable(level):
-    """BFS: (x, y, val) state space. Returns (solvable, min_steps, solution_path)."""
+    """BFS: (x, y, val, activated) state space. Returns (solvable, min_steps, solution_path)."""
     cols, rows = level["cols"], level["rows"]
     sx, sy, sv = level["startX"], level["startY"], level["startVal"]
     tx, ty = level["targetX"], level["targetY"]
@@ -49,7 +51,7 @@ def bfs_solvable(level):
     commands = level["commands"]
     max_cmds = level["maxCmds"]
 
-    # Normalize ops format (AI sometimes produces [[x,y,type,val], ...] instead of [{x,y,type,val}, ...])
+    # Normalize ops format
     raw_ops = level.get("ops", [])
     ops = []
     for o in raw_ops:
@@ -69,14 +71,22 @@ def bfs_solvable(level):
     for o in ops:
         op_map[(o["x"], o["y"])] = o
 
-    # BFS with path tracking
-    start = (sx, sy, sv)
-    # visited[state] = (parent_state, command_used) for path reconstruction
+    # Switch lookups
+    switch_map = {}
+    switch_targets = {}
+    for sw in level.get("toggleSwitches", []):
+        spos = (sw["x"], sw["y"])
+        switch_map[spos] = sw
+        tw = sw.get("toggleWalls", sw.get("targets", []))
+        switch_targets[spos] = {(t[0], t[1]) for t in tw}
+
+    # BFS with path tracking — state: (x, y, val, activated)
+    start = (sx, sy, sv, frozenset())
     visited = {start: None}
-    queue = deque([(start, 0)])  # (state, steps)
+    queue = deque([(start, 0)])
 
     while queue:
-        (cx, cy, cv), steps = queue.popleft()
+        (cx, cy, cv, activated), steps = queue.popleft()
         if steps >= max_cmds:
             continue
 
@@ -93,25 +103,44 @@ def bfs_solvable(level):
             if nx < 0 or nx >= cols or ny < 0 or ny >= rows:
                 continue
 
-            # wall check
-            if (nx, ny) in wall_set:
+            # wall check (respects toggle switches)
+            pos = (nx, ny)
+            opened_by_switch = set()
+            for spos in activated:
+                opened_by_switch.update(switch_targets.get(spos, set()))
+            if pos in wall_set and pos not in opened_by_switch:
                 continue
 
             # apply operation if present
-            if dz == 0 and (nx, ny) in op_map:
-                op = op_map[(nx, ny)]
+            if dz == 0 and pos in op_map:
+                op = op_map[pos]
                 if op["type"] == "+":
                     nv = cv + op["val"]
                 elif op["type"] == "-":
                     nv = cv - op["val"]
                 elif op["type"] == "×":
                     nv = cv * op["val"]
+                elif op["type"] == "/":
+                    if op["val"] == 0 or cv % op["val"] != 0:
+                        continue
+                    nv = cv // op["val"]
+                elif op["type"] == "^":
+                    nv = cv * cv
 
-            state = (nx, ny, nv)
+            # limit value range BEFORE win check
+            if nv < -500 or nv > 5000:
+                continue
+
+            # Switch activation
+            new_activated = activated
+            if pos in switch_map and pos not in activated:
+                new_activated = frozenset(activated | {pos})
+
+            state = (nx, ny, nv, new_activated)
             if state in visited:
                 continue
 
-            visited[state] = ((cx, cy, cv), cmd_id)
+            visited[state] = ((cx, cy, cv, activated), cmd_id)
 
             # check win
             pos_ok = nx == tx and ny == ty
@@ -126,10 +155,6 @@ def bfs_solvable(level):
                     cur = parent
                 path.reverse()
                 return True, steps + 1, path
-
-            # limit value range to prevent infinite state space
-            if nv < -100 or nv > 1000:
-                continue
 
             queue.append((state, steps + 1))
 
@@ -217,12 +242,32 @@ def validate_level(lv, idx, age_group):
             continue
         if o["type"] not in VALID_OP_TYPES:
             err(f"{prefix}: geçersiz operasyon tipi '{o['type']}'")
+
+    # Operators without targetVal are meaningless (player can ignore them)
+    if lv.get("ops") and lv.get("targetVal") is None:
+        warn(f"{prefix}: ops var ama targetVal yok — oyuncu operatörleri görmezden gelip kazanabilir")
         if o["val"] <= 0:
             err(f"{prefix}: operasyon değeri pozitif olmalı: {o}")
         if o["x"] < 0 or o["x"] >= cols or o["y"] < 0 or o["y"] >= rows:
             err(f"{prefix}: operasyon ({o['x']},{o['y']}) grid dışında")
         if o["x"] == lv["startX"] and o["y"] == lv["startY"]:
             warn(f"{prefix}: operasyon başlangıç noktasında (beklenmedik)")
+
+    # Toggle switches check
+    for sw in lv.get("toggleSwitches", []):
+        if not all(k in sw for k in ["x", "y", "toggleWalls"]):
+            err(f"{prefix}: toggleSwitch eksik alan: {sw}")
+            continue
+        if sw["x"] < 0 or sw["x"] >= cols or sw["y"] < 0 or sw["y"] >= rows:
+            err(f"{prefix}: switch ({sw['x']},{sw['y']}) grid dışında")
+        if (sw["x"], sw["y"]) in wall_set:
+            err(f"{prefix}: switch ({sw['x']},{sw['y']}) duvarın üzerinde")
+        for tw in sw.get("toggleWalls", []):
+            if len(tw) < 2:
+                err(f"{prefix}: geçersiz toggleWall formatı: {tw}")
+                continue
+            if tw[0] < 0 or tw[0] >= cols or tw[1] < 0 or tw[1] >= rows:
+                err(f"{prefix}: toggleWall ({tw[0]},{tw[1]}) grid dışında")
 
     # Stars check
     stars = lv["stars"]
@@ -301,8 +346,17 @@ def _mechanics_fingerprint(lv):
     return f"cmds={cmds}|ops={has_ops}|walls={has_walls}|targetVal={has_target_val}|grid={grid}"
 
 
-def validate(data, stats_file=None):
+def validate(data, stats_file=None, sample_size=None):
     """Validate the entire levels.json."""
+
+    # Batch mode: raw array wrap
+    if isinstance(data, list):
+        data = {
+            "version": 4,
+            "ageGroup": "7-8",
+            "difficultyProfile": {"overall": "intermediate"},
+            "levels": data,
+        }
 
     # Top-level structure
     if "version" not in data:
@@ -327,18 +381,41 @@ def validate(data, stats_file=None):
         return
 
     levels = data["levels"]
-    if len(levels) != EXPECTED_LEVELS:
+    if not sample_size and len(levels) != EXPECTED_LEVELS:
         err(f"{len(levels)} seviye var, {EXPECTED_LEVELS} bekleniyor")
+
+    # Sample mode
+    if sample_size and sample_size < len(levels):
+        random.seed(42)
+        levels = random.sample(levels, sample_size)
+        print(f"  📊 Batch mode: {sample_size}/{len(data['levels'])} rastgele seviye seçildi\n")
 
     # Validate each level
     age_group = data.get("ageGroup", "7-8")
     titles = set()
+    solvable_count = 0
+    total_steps = 0
+    diff_counts = Counter()
+    mechanic_counts = Counter()
+    switch_count = 0
+
     for i, lv in enumerate(levels):
         validate_level(lv, i, age_group)
         t = lv.get("title", "")
         if t in titles:
             err(f"Seviye {i + 1}: title tekrarı: '{t}'")
         titles.add(t)
+
+        # Stats collection
+        diff_counts[lv.get("difficulty", 0)] += 1
+        if lv.get("toggleSwitches"):
+            switch_count += 1
+        mech = _mechanics_fingerprint(lv)
+        mechanic_counts[mech] += 1
+        solvable, steps, _ = bfs_solvable(lv)
+        if solvable:
+            solvable_count += 1
+            total_steps += steps
 
     # Cross-set duplicate check
     previous_titles = set()
@@ -353,7 +430,7 @@ def validate(data, stats_file=None):
                 for m in ps.get('mechanics', []):
                     previous_mechanics.add(m)
         except Exception:
-            pass  # Graceful degradation if stats file is unreadable
+            pass
 
     for i, lv in enumerate(levels):
         t = lv.get("title", "").lower().strip()
@@ -364,18 +441,32 @@ def validate(data, stats_file=None):
         if mech in previous_mechanics:
             err(f"Seviye {i + 1}: önceki setlerde kullanılan mekanik tekrarı (title='{lv.get('title')}')")
 
-    # Difficulty progression check
-    diffs = [lv.get("difficulty", 0) for lv in levels]
-    if len(diffs) >= 2:
-        if diffs[0] > 2:
-            warn(f"İlk seviye zorluk={diffs[0]}, başlangıç için çok zor")
-        if diffs[-1] >= max(diffs):
-            warn("Son seviye en zor — psikolojik olarak kolay bitirmek daha iyi")
+    # Difficulty progression check (skip in batch mode)
+    if not sample_size:
+        diffs = [lv.get("difficulty", 0) for lv in levels]
+        if len(diffs) >= 2:
+            if diffs[0] > 2:
+                warn(f"İlk seviye zorluk={diffs[0]}, başlangıç için çok zor")
+            if diffs[-1] >= max(diffs):
+                warn("Son seviye en zor — psikolojik olarak kolay bitirmek daha iyi")
+
+    return {
+        "total": len(levels),
+        "solvable": solvable_count,
+        "unsolvable": len(levels) - solvable_count,
+        "avg_steps": round(total_steps / solvable_count, 2) if solvable_count else 0,
+        "diff_counts": dict(diff_counts),
+        "switch_levels": switch_count,
+        "mechanic_diversity": len(mechanic_counts),
+    }
 
 
 def main():
     file_path = Path("data/levels.json")
     stats_file = None
+    batch_mode = False
+    sample_size = None
+    output_path = None
 
     args = sys.argv[1:]
     i = 0
@@ -386,12 +477,26 @@ def main():
         elif args[i] == "--stats-file" and i + 1 < len(args):
             stats_file = args[i + 1]
             i += 2
+        elif args[i] == "--batch" and i + 1 < len(args):
+            file_path = Path(args[i + 1])
+            batch_mode = True
+            i += 2
+        elif args[i] == "--sample" and i + 1 < len(args):
+            sample_size = int(args[i + 1])
+            i += 2
+        elif args[i] == "--output" and i + 1 < len(args):
+            output_path = Path(args[i + 1])
+            i += 2
         else:
             i += 1
 
     print(f"\n{'='*60}")
     print(f"  Sayı Yolculuğu — Seviye Doğrulama")
     print(f"  Dosya: {file_path}")
+    if batch_mode:
+        print(f"  Mod: BATCH")
+    if sample_size:
+        print(f"  Sample: {sample_size}")
     print(f"{'='*60}\n")
 
     if not file_path.exists():
@@ -405,7 +510,7 @@ def main():
         print(f"❌ JSON parse hatası: {e}")
         sys.exit(1)
 
-    validate(data, stats_file=stats_file)
+    stats = validate(data, stats_file=stats_file, sample_size=sample_size)
 
     print(f"\n{'─'*60}")
     if warnings:
@@ -425,7 +530,32 @@ def main():
         print(f"\n{'='*60}")
         print(f"  SONUÇ: BAŞARILI ✅ ({len(warnings)} uyarı)")
         print(f"{'='*60}\n")
-        sys.exit(0)
+
+    # Batch report
+    if batch_mode and stats:
+        report = f"""# Batch Stabilite Raporu — v4
+
+| Metrik | Değer |
+|--------|-------|
+| Toplam seviye | {stats['total']} |
+| Çözülebilir | {stats['solvable']} ({stats['solvable']*100//stats['total']}%) |
+| Çözülemez | {stats['unsolvable']} |
+| Ort. çözüm uzunluğu | {stats['avg_steps']} |
+| Switch içeren | {stats['switch_levels']} |
+| Mekanik çeşitliliği | {stats['mechanic_diversity']} |
+
+Zorluk dağılımı:
+"""
+        for d in sorted(stats['diff_counts']):
+            report += f"- Diff {d}: {stats['diff_counts'][d]}\n"
+        if output_path:
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(report)
+            print(f"📄 Rapor yazıldı: {output_path}")
+        else:
+            print(report)
+
+    sys.exit(0)
 
 
 if __name__ == "__main__":

@@ -10,7 +10,9 @@ function loadLevel() {
   state.playerY = lv.startY;
   state.playerVal = lv.startVal;
   state.running = false;
+  state.hintMode = false;
   state.startTime = Date.now();
+  resetHistory();
   // state.queue ve state.attempts'ı KORUYORUZ (initGame'den restore edilmiş olabilir)
 
   if (window.currentSetId) {
@@ -36,7 +38,13 @@ function loadLevel() {
   updatePlayerPos(false);
   buildPalette(lv);
   renderQueue();
+  updateGhostPreview();
   $('btnRun').disabled = false;
+
+  if (lv.tutorialSteps && lv.tutorialSteps.length > 0 && !isTutorialShown(state.levelIdx)) {
+    markTutorialShown(state.levelIdx);
+    showTutorial(lv.tutorialSteps);
+  }
 }
 function showLevelSelect() {
   var grid = $('levelGrid');

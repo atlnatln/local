@@ -82,7 +82,10 @@ class SettingsActivity : BaseActivity() {
                     binding.btnRegisterEmail.text = "📧 Hesap Oluştur / Kayıt Ol"
                 }
                 binding.btnRegisterEmail.setOnClickListener {
-                    startActivity(android.content.Intent(this, AccountActivity::class.java))
+                    val authIntent = android.content.Intent(this, ParentAuthActivity::class.java).apply {
+                        putExtra("forward_to", AccountActivity::class.java.name)
+                    }
+                    startActivityForResult(authIntent, REQUEST_AUTH_ACCOUNT)
                 }
                 // Soru modu bilgisi — çocuğa özel
                 if (hasJson) {
@@ -619,7 +622,15 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_AUTH_ACCOUNT && resultCode == RESULT_OK) {
+            startActivity(android.content.Intent(this, AccountActivity::class.java))
+        }
+    }
+
     companion object {
         private const val REQUEST_NOTIFICATION = 3002
+        private const val REQUEST_AUTH_ACCOUNT = 5001
     }
 }

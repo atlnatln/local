@@ -196,7 +196,7 @@ class UseCreditViewTest(ThrottleMixin, AuthMixin, TestCase):
         self.child = ChildProfile.objects.create(device=self.device, name='Çocuk')
         self._auth_client(self.device)
 
-    @patch('credits.views._generate_via_kimi', return_value=[
+    @patch('credits.views._generate_questions_procedural', return_value=[
         {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
     ] * 50)
     def test_first_use_is_free(self, mock_gen):
@@ -216,7 +216,7 @@ class UseCreditViewTest(ThrottleMixin, AuthMixin, TestCase):
         self.assertTrue(self.balance.free_set_used)
         self.assertEqual(data['questions_generated'], 50)
 
-    @patch('credits.views._generate_via_kimi', return_value=[
+    @patch('credits.views._generate_questions_procedural', return_value=[
         {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
     ] * 50)
     def test_second_use_consumes_credit(self, mock_gen):
@@ -262,7 +262,7 @@ class UseCreditViewTest(ThrottleMixin, AuthMixin, TestCase):
         }, format='json')
         self.assertEqual(resp.status_code, 402)
 
-    @patch('credits.views._generate_via_kimi', return_value=[
+    @patch('credits.views._generate_questions_procedural', return_value=[
         {'text': 'S1', 'answer': 1, 'type': 'a', 'difficulty': 1}
     ] * 50)
     def test_use_credit_db_error_refunds(self, mock_gen):

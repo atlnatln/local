@@ -1,3 +1,18 @@
+function spawnParticles(x, y) {
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = (x + 24) + 'px';
+    p.style.top = (y + 24) + 'px';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 30 + Math.random() * 40;
+    p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+    gridEl.appendChild(p);
+    setTimeout(function() { p.remove(); }, 800);
+  }
+}
+
 async function runProgram() {
   if (state.running || state.queue.length === 0) return;
   state.running = true;
@@ -53,6 +68,8 @@ async function runProgram() {
       if (blocked) {
         chips[i].classList.remove('running');
         playerEl.classList.add('bump');
+        if (window.AudioEngine) AudioEngine.play('bump');
+        notifyAndroid('haptic', {type: 'light'});
         await sleep(200);
         playerEl.classList.remove('bump');
         await sleep(150);
@@ -65,6 +82,8 @@ async function runProgram() {
     if (lock && state.playerVal !== lock.requiredVal) {
       chips[i].classList.remove('running');
       playerEl.classList.add('bump');
+      if (window.AudioEngine) AudioEngine.play('bump');
+      notifyAndroid('haptic', {type: 'light'});
       await sleep(200);
       playerEl.classList.remove('bump');
       await sleep(150);
@@ -151,6 +170,13 @@ function checkWin() {
   const valOk = effectiveTargetVal == null || state.playerVal === effectiveTargetVal;
 
   if (posOk && valOk) {
+    if (window.AudioEngine) AudioEngine.play('success');
+    notifyAndroid('haptic', {type: 'success'});
+    const gap = 4;
+    const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
+    const px = 14 + lv.targetX * (cellSize + gap);
+    const py = 14 + lv.targetY * (cellSize + gap);
+    spawnParticles(px, py);
     const usedCmds = state.queue.length;
     let stars = 1;
     if (usedCmds <= lv.stars[0]) stars = 3;
@@ -166,6 +192,8 @@ function checkWin() {
         showWinOverlay(stars);
       }
     }, 500);
+
+    checkAchievements(stars, usedCmds);
 
     const prev = state.progress[state.levelIdx];
     if (!prev || prev.stars < stars) {
@@ -197,6 +225,22 @@ function checkWin() {
     saveGameState();
   }
 
+  state.hintMode = false;
   state.running = false;
   $('btnRun').disabled = false;
+}
+
+function checkAchievements(stars, usedCmds) {
+  const timeSeconds = Math.round((Date.now() - state.startTime) / 1000);
+
+  unlockAchievement('first_win');
+  if (stars === 3) unlockAchievement('perfect_3');
+  if (timeSeconds <= 30) unlockAchievement('speedster');
+  if (state.attempts === 1) unlockAchievement('no_mistake');
+
+  var completedCount = 0;
+  for (var k in state.progress) {
+    if (state.progress[k].completed) completedCount++;
+  }
+  if (completedCount >= 10) unlockAchievement('ten_levels');
 }

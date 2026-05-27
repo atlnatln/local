@@ -2,9 +2,12 @@
 <!--
     MathLock Play — Network Security Configuration
     - Cleartext traffic is globally disabled (all API calls use HTTPS).
-    - Certificate pinning for mathlock.com.tr with backup pins for
-      Let's Encrypt root CAs (ISRG Root X1 and X2) to survive
-      leaf/intermediate certificate rotations.
+    - Certificate pinning for mathlock.com.tr.
+    - Pins are updated for the current Let's Encrypt certificate chain
+      (leaf + E7 intermediate). Root pins are kept as ultimate fallback
+      but note: Android only checks pins against certs sent by the server
+      during the TLS handshake, NOT against root CAs in the device trust
+      store. Therefore intermediate/leaf pins are required to be valid.
 -->
 <network-security-config>
     <base-config cleartextTrafficPermitted="false" />
@@ -12,8 +15,10 @@
     <domain-config>
         <domain includeSubdomains="true">mathlock.com.tr</domain>
         <pin-set expiration="2027-05-01">
-            <!-- Current leaf certificate (mathlock.com.tr) -->
-            <pin digest="SHA-256">USM+Gu9QqBpezOCE+kkT6dUOA4uisPeuDKckfjK4yls=</pin>
+            <!-- Current leaf certificate (mathlock.com.tr) — May 2025 -->
+            <pin digest="SHA-256">pKxKrKahKSd5RHxxw0ehZiwGc3OCpSptnP3Bf2tQ830=</pin>
+            <!-- Intermediate: Let's Encrypt E7 (survives leaf renewal) -->
+            <pin digest="SHA-256">y7xVm0TVJNahMr2sZydE2jQH8SquXV9yLF9seROHHHU=</pin>
             <!-- Backup: ISRG Root X1 (RSA, Let's Encrypt) -->
             <pin digest="SHA-256">C5+lpZ7tcVwmwQIMcRpt83TPwIJy8nELZZQG8Z6SB5Y=</pin>
             <!-- Backup: ISRG Root X2 (ECDSA, Let's Encrypt) -->

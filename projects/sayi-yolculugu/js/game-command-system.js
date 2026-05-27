@@ -14,7 +14,10 @@ function addCommand(cmdId) {
   const lv = getLevel();
   if (state.running || state.queue.length >= lv.maxCmds) return;
   state.queue.push(cmdId);
+  if (window.AudioEngine) AudioEngine.play('click');
+  pushHistory();
   renderQueue();
+  updateGhostPreview();
   saveGameState();
 }
 function renderQueue() {
@@ -24,13 +27,73 @@ function renderQueue() {
     const cmd = CMDS[cmdId];
     const chip = document.createElement('span');
     chip.className = 'cmd-chip ' + cmd.css;
+    if (state.hintMode) chip.classList.add('ghost');
     chip.textContent = cmd.label;
     chip.addEventListener('click', function() {
       if (state.running) return;
       state.queue.splice(i, 1);
+      state.hintMode = false;
+      pushHistory();
       renderQueue();
+      updateGhostPreview();
+      saveGameState();
     });
     cmdQueue.appendChild(chip);
   });
   cmdCount.textContent = state.queue.length + ' / ' + lv.maxCmds;
+}
+
+function showHint() {
+  const lv = getLevel();
+  if (!lv.hintCommands || lv.hintCommands.length === 0) return;
+  if (state.running) return;
+
+  // Kredi kontrolü (stub: 3 ücretsiz)
+  var credits = getCredits();
+  if (credits <= 0) {
+    notifyAndroid('buyCredits', {});
+    return;
+  }
+  setCredits(credits - 1);
+
+  state.queue = lv.hintCommands.slice();
+  state.hintMode = true;
+  pushHistory();
+  renderQueue();
+  saveGameState();
+  if (window.AudioEngine) AudioEngine.play('click');
+}
+
+function pushHistory() {
+  if (state.historyIdx < state.history.length - 1) {
+    state.history = state.history.slice(0, state.historyIdx + 1);
+  }
+  state.history.push(state.queue.slice());
+  state.historyIdx++;
+  if (state.history.length > 50) {
+    state.history.shift();
+    state.historyIdx--;
+  }
+}
+
+function undo() {
+  if (state.historyIdx > 0) {
+    state.historyIdx--;
+    state.queue = state.history[state.historyIdx].slice();
+    state.hintMode = false;
+    renderQueue();
+    updateGhostPreview();
+    saveGameState();
+  }
+}
+
+function redo() {
+  if (state.historyIdx < state.history.length - 1) {
+    state.historyIdx++;
+    state.queue = state.history[state.historyIdx].slice();
+    state.hintMode = false;
+    renderQueue();
+    updateGhostPreview();
+    saveGameState();
+  }
 }

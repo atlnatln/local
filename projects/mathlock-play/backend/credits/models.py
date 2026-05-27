@@ -55,7 +55,7 @@ class ChildProfile(models.Model):
         max_length=64, blank=True, null=True,
         help_text="Son işlenen istatistik oturum ID'si — idempotency için"
     )
-    current_difficulty = models.IntegerField(default=1)
+    current_difficulty = models.IntegerField(default=2)
     stats_json = models.JSONField(default=dict, blank=True,
                                   help_text="Tip/zorluk bazlı detaylı istatistikler")
     daily_stats = models.JSONField(

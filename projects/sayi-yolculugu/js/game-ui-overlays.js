@@ -56,6 +56,15 @@ function showCreditRequired() {
   $('btnBuyCredits').style.display = '';
   allComplete.classList.add('active');
 }
+/* ── Pause Overlay ──────────────────────────────────────── */
+function showPause() {
+  if (state.running) return;
+  $('pauseOverlay').classList.add('active');
+}
+function hidePause() {
+  $('pauseOverlay').classList.remove('active');
+}
+
 function showRenewalError() {
   console.info('[Game] showRenewalError');
   $('allCompleteTitle').textContent = t('error');
@@ -65,4 +74,103 @@ function showRenewalError() {
   $('btnFinish').style.display = '';
   $('btnBuyCredits').style.display = 'none';
   allComplete.classList.add('active');
+}
+
+/* ── Tutorial Overlay ───────────────────────────────────── */
+let tutorialSteps = [];
+let tutorialIndex = 0;
+let tutorialClickHandler = null;
+
+function getTutorialKey(levelIdx) {
+  return 'sy_tutorial_' + (window.currentSetId || 'default') + '_' + levelIdx;
+}
+function isTutorialShown(levelIdx) {
+  try { return localStorage.getItem(getTutorialKey(levelIdx)) === '1'; } catch(e) { return false; }
+}
+function markTutorialShown(levelIdx) {
+  try { localStorage.setItem(getTutorialKey(levelIdx), '1'); } catch(e) {}
+}
+function showTutorial(steps) {
+  if (!steps || steps.length === 0) return;
+  tutorialSteps = steps;
+  tutorialIndex = 0;
+  $('tutorialOverlay').style.display = 'block';
+  $('tutorialOverlay').classList.add('active');
+  renderTutorialStep();
+  // Kullanıcı herhangi bir yere tıklayınca next step
+  tutorialClickHandler = function() { nextTutorialStep(); };
+  document.addEventListener('click', tutorialClickHandler);
+}
+function renderTutorialStep() {
+  const step = tutorialSteps[tutorialIndex];
+  const bubble = $('tutorialBubble');
+  const pointer = $('tutorialPointer');
+  const text = $('tutorialText');
+  if (!step) { dismissTutorial(); return; }
+
+  const target = document.querySelector(step.target);
+  if (!target) { dismissTutorial(); return; }
+
+  text.textContent = step.text;
+  const rect = target.getBoundingClientRect();
+  const px = rect.left + rect.width / 2;
+  const py = rect.top + rect.height / 2;
+
+  pointer.style.left = px + 'px';
+  pointer.style.top = py + 'px';
+
+  const bubbleH = 80;
+  const offset = 20;
+  let bx = px - 130;
+  let by = rect.top - bubbleH - offset;
+  let above = false;
+
+  if (by < 10) {
+    by = rect.bottom + offset;
+    above = true;
+  }
+  if (bx < 10) bx = 10;
+  if (bx + 260 > window.innerWidth - 10) bx = window.innerWidth - 270;
+
+  bubble.style.left = bx + 'px';
+  bubble.style.top = by + 'px';
+  if (above) bubble.classList.add('above');
+  else bubble.classList.remove('above');
+}
+function nextTutorialStep() {
+  tutorialIndex++;
+  if (tutorialIndex >= tutorialSteps.length) {
+    dismissTutorial();
+  } else {
+    renderTutorialStep();
+  }
+}
+function dismissTutorial() {
+  $('tutorialOverlay').classList.remove('active');
+  $('tutorialOverlay').style.display = 'none';
+  if (tutorialClickHandler) {
+    document.removeEventListener('click', tutorialClickHandler);
+    tutorialClickHandler = null;
+  }
+  tutorialSteps = [];
+  tutorialIndex = 0;
+}
+
+/* ── Achievement Toast ──────────────────────────────────── */
+const ACHIEVEMENT_DEFS = {
+  first_win: { icon: '🏆', name: 'İlk Zafer' },
+  perfect_3: { icon: '⭐', name: 'Mükemmel' },
+  speedster: { icon: '⚡', name: 'Hızlı' },
+  no_mistake: { icon: '🎯', name: 'Tek Atış' },
+  ten_levels: { icon: '💪', name: 'Dayanıklı' },
+};
+
+function showAchievementToast(id) {
+  const def = ACHIEVEMENT_DEFS[id];
+  if (!def) return;
+  const toast = document.createElement('div');
+  toast.className = 'achievement-toast';
+  toast.textContent = def.icon + ' ' + def.name;
+  document.body.appendChild(toast);
+  setTimeout(function() { toast.remove(); }, 3600);
 }

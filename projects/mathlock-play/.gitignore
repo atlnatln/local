@@ -53,3 +53,7 @@ __pycache__/
 *.pyc
 *.backup
 *.backup.*
+
+# Generated / debug artifacts
+generated-levels/
+debug_*.py

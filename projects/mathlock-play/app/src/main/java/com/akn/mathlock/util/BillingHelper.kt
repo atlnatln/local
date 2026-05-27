@@ -2,6 +2,7 @@ package com.akn.mathlock.util
 
 import android.app.Activity
 import android.util.Log
+import com.akn.mathlock.util.ErrorReporter
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 
@@ -45,6 +46,11 @@ class BillingHelper(
                     queryProducts()
                 } else {
                     Log.e(TAG, "BillingClient setup failed: ${result.debugMessage}")
+                    ErrorReporter.report(
+                        category = "billing",
+                        message = "Billing setup failed: ${result.responseCode}",
+                        extras = mapOf("response_code" to result.responseCode.toString(), "debug_msg" to result.debugMessage)
+                    )
                     listener.onBillingUnavailable("Faturalandırma servisi başlatılamadı")
                 }
             }
@@ -102,6 +108,11 @@ class BillingHelper(
                 }
             } else {
                 Log.e(TAG, "queryProductDetails failed: ${result.debugMessage}")
+                ErrorReporter.report(
+                    category = "billing",
+                    message = "queryProductDetails failed: ${result.responseCode}",
+                    extras = mapOf("response_code" to result.responseCode.toString(), "debug_msg" to result.debugMessage)
+                )
             }
         }
     }
@@ -130,6 +141,11 @@ class BillingHelper(
         val result = client.launchBillingFlow(activity, billingFlowParams)
         if (result.responseCode != BillingClient.BillingResponseCode.OK) {
             Log.e(TAG, "launchBillingFlow failed: ${result.debugMessage}")
+            ErrorReporter.report(
+                category = "billing",
+                message = "launchBillingFlow failed: ${result.responseCode}",
+                extras = mapOf("response_code" to result.responseCode.toString(), "debug_msg" to result.debugMessage)
+            )
             listener.onPurchaseError("Satın alma başlatılamadı")
         }
     }
@@ -151,6 +167,11 @@ class BillingHelper(
             }
             else -> {
                 Log.e(TAG, "Purchase error: ${result.responseCode} - ${result.debugMessage}")
+                ErrorReporter.report(
+                    category = "billing",
+                    message = "Purchase error: ${result.responseCode}",
+                    extras = mapOf("response_code" to result.responseCode.toString(), "debug_msg" to result.debugMessage)
+                )
                 activity.runOnUiThread {
                     listener.onPurchaseError("Satın alma hatası: ${result.debugMessage}")
                 }
@@ -177,6 +198,11 @@ class BillingHelper(
                 Log.d(TAG, "Purchase consumed successfully")
             } else {
                 Log.e(TAG, "Consume failed: ${result.debugMessage}")
+                ErrorReporter.report(
+                    category = "billing",
+                    message = "Consume failed: ${result.responseCode}",
+                    extras = mapOf("response_code" to result.responseCode.toString(), "debug_msg" to result.debugMessage)
+                )
             }
         }
     }

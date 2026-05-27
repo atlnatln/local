@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.akn.mathlock.databinding.ActivityMathChallengeBinding
 import com.akn.mathlock.service.AppLockService
 import com.akn.mathlock.util.AccountManager
@@ -18,11 +19,20 @@ import com.akn.mathlock.util.QuestionManager
 import com.akn.mathlock.util.StatsTracker
 import com.akn.mathlock.util.TopicHelper
 import com.akn.mathlock.util.CreditApiClient
+import com.akn.mathlock.util.ErrorReporter
 
 class MathChallengeActivity : BaseActivity() {
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_AUTH_ACCOUNT && resultCode == RESULT_OK) {
+            startActivity(Intent(this, AccountActivity::class.java))
+        }
+    }
+
     companion object {
         private const val TAG = "MathChallenge"
+        private const val REQUEST_AUTH_ACCOUNT = 5001
     }
 
     private lateinit var binding: ActivityMathChallengeBinding
@@ -506,6 +516,11 @@ class MathChallengeActivity : BaseActivity() {
                 Log.d(TAG, "Stats yüklendi, progress sıfırlandı")
             } else {
                 Log.w(TAG, "Stats yükleme başarısız, sonra tekrar denenecek")
+                ErrorReporter.report(
+                    category = "challenge",
+                    message = "Stats upload failed",
+                    extras = mapOf("version" to questionManager.getVersion().toString())
+                )
             }
             // Yeni set üretmek için kredi kullan (ilk set ücretsiz)
             if (authToken != null) {
@@ -514,6 +529,11 @@ class MathChallengeActivity : BaseActivity() {
                 when {
                     creditResult.creditsRefunded -> {
                         Log.w(TAG, "Kredi iade edildi: ${creditResult.error}")
+                        ErrorReporter.report(
+                            category = "challenge",
+                            message = "Credit refunded: ${creditResult.error}",
+                            extras = mapOf("version" to questionManager.getVersion().toString(), "error" to (creditResult.error ?: "unknown"))
+                        )
                         runOnUiThread {
                             Toast.makeText(
                                 this@MathChallengeActivity,
@@ -527,12 +547,24 @@ class MathChallengeActivity : BaseActivity() {
                     }
                     else -> {
                         Log.w(TAG, "Kredi kullanılamadı: ${creditResult.error}")
+                        ErrorReporter.report(
+                            category = "challenge",
+                            message = "Credit use failed: ${creditResult.error}",
+                            extras = mapOf("version" to questionManager.getVersion().toString(), "error" to (creditResult.error ?: "unknown"))
+                        )
                         runOnUiThread {
-                            Toast.makeText(
-                                this@MathChallengeActivity,
-                                "🎉 50 soru tamamlandı! Yeni sorular için kredi satın alabilirsin.",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            MaterialAlertDialogBuilder(this@MathChallengeActivity)
+                                .setTitle("Yeni Sorular İçin Kredi Gerekli")
+                                .setMessage("50 soruluk seti tamamladın. Yeni sorular için kredi satın alabilirsin.")
+                                .setPositiveButton("Kredi Al") { _, _ ->
+                                    val authIntent = Intent(this@MathChallengeActivity, ParentAuthActivity::class.java).apply {
+                                        putExtra("forward_to", AccountActivity::class.java.name)
+                                    }
+                                    startActivityForResult(authIntent, REQUEST_AUTH_ACCOUNT)
+                                }
+                                .setNegativeButton("Kapat", null)
+                                .setCancelable(false)
+                                .show()
                         }
                     }
                 }
@@ -671,6 +703,11 @@ class MathChallengeActivity : BaseActivity() {
                 questionManager.uploadProgress(authToken)
             } catch (e: Exception) {
                 Log.w(TAG, "onDestroy progress upload hatası: ${e.message}")
+                ErrorReporter.report(
+                    category = "challenge",
+                    message = "onDestroy progress upload failed: ${e.message}",
+                    throwable = e
+                )
             }
         }
         super.onDestroy()

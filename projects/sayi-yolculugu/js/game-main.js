@@ -106,18 +106,22 @@ function initGame(levelsJson) {
   $('btnBuyCredits').textContent = t('buyCredits');
 
   loadLevel();
+  if (window.AudioEngine) AudioEngine.playBGM();
 }
 
 // Called from Android
 window.initGame = initGame;
 $('btnRun').addEventListener('click', runProgram);
-$('btnClear').addEventListener('click', function() { if (!state.running) { state.queue = []; renderQueue(); saveGameState(); } });
-$('btnUndo').addEventListener('click', function() { if (!state.running) { state.queue.pop(); renderQueue(); saveGameState(); } });
-$('btnReset').addEventListener('click', function() { if (!state.running) { state.queue = []; state.attempts = 0; loadLevel(); saveGameState(); } });
+$('btnClear').addEventListener('click', function() { if (!state.running) { state.queue = []; pushHistory(); renderQueue(); saveGameState(); } });
+$('btnUndo').addEventListener('click', function() { if (!state.running) undo(); });
+$('btnRedo').addEventListener('click', function() { if (!state.running) redo(); });
+$('btnReset').addEventListener('click', function() { if (!state.running) { state.queue = []; state.attempts = 0; state.hintMode = false; loadLevel(); saveGameState(); } });
+$('btnHint').addEventListener('click', function() { if (!state.running) showHint(); });
 $('btnRetry').addEventListener('click', function() {
   overlay.classList.remove('active');
   state.queue = [];
   state.attempts = 0;
+  state.hintMode = false;
   loadLevel();
   saveGameState();
 });
@@ -127,6 +131,7 @@ $('btnNext').addEventListener('click', function() {
     state.levelIdx++;
     state.queue = [];
     state.attempts = 0;
+    state.hintMode = false;
     loadLevel();
     saveGameState();
   } else {
@@ -141,4 +146,67 @@ $('btnBuyCredits').addEventListener('click', function() {
   notifyAndroid('buyCredits', {});
 });
 $('btnLevels').addEventListener('click', showLevelSelect);
+$('btnPause').addEventListener('click', showPause);
+$('btnDaily').addEventListener('click', function() { if (!state.running) playDailySet(); });
 $('btnCloseLevels').addEventListener('click', function() { levelSelect.classList.remove('active'); });
+
+/* ── Pause & Settings ───────────────────────────────────── */
+$('btnResume').addEventListener('click', hidePause);
+$('btnPauseRetry').addEventListener('click', function() {
+  hidePause();
+  state.queue = []; state.attempts = 0; state.hintMode = false; loadLevel(); saveGameState();
+});
+
+(function initSettings() {
+  const s = loadSettings();
+  $('toggleAudio').checked = s.audio !== false;
+  $('toggleHaptic').checked = s.haptic !== false;
+  if (window.AudioEngine && s.audio === false) AudioEngine.setMuted(true);
+})();
+
+$('toggleAudio').addEventListener('change', function() {
+  const s = loadSettings();
+  s.audio = this.checked;
+  saveSettings(s);
+  if (window.AudioEngine) AudioEngine.setMuted(!this.checked);
+});
+
+$('toggleHaptic').addEventListener('change', function() {
+  const s = loadSettings();
+  s.haptic = this.checked;
+  saveSettings(s);
+});
+
+/* ── Daily Set ──────────────────────────────────────────── */
+function getDailySetIndex() {
+  const now = new Date();
+  return now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+}
+
+function getAllLevelsFlat() {
+  var all = [];
+  if (typeof LEVELS_BY_AGE !== 'undefined') {
+    for (var age in LEVELS_BY_AGE) {
+      all = all.concat(LEVELS_BY_AGE[age]);
+    }
+  }
+  return all;
+}
+
+function playDailySet() {
+  var all = getAllLevelsFlat();
+  if (all.length === 0) return;
+  var seed = getDailySetIndex();
+  var daily = [];
+  var count = Math.min(10, all.length);
+  for (var i = 0; i < count; i++) {
+    var idx = (seed + i * 997) % all.length;
+    daily.push(JSON.parse(JSON.stringify(all[idx])));
+  }
+  initGame(JSON.stringify({
+    levels: daily,
+    locale: 'tr',
+    forceClear: false,
+    set_id: 'daily_' + seed
+  }));
+}

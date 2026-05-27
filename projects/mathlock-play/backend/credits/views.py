@@ -1131,13 +1131,45 @@ def upload_stats(request):
     cutoff = (_date.today() - _td(days=90)).isoformat()
     child.daily_stats = {k: v for k, v in daily.items() if k >= cutoff}
 
-    # Zorluk seviyesi ayarla (doğruluk oranına göre)
-    if child.total_shown >= 10:
+    # Zorluk seviyesi ayarla (sliding window + fallback)
+    old_stats = child.stats_json or {}
+    old_recent = old_stats.get('recentDetails', [])
+    new_details = stats.get('details', [])
+    merged = old_recent + new_details
+    stats['recentDetails'] = merged[-30:]
+
+    recent = stats['recentDetails']
+    if len(recent) >= 10:
+        recent_correct = sum(1 for d in recent if d.get('correct', False))
+        recent_accuracy = recent_correct / len(recent)
+        if recent_accuracy >= 0.85 and child.current_difficulty < 5:
+            child.current_difficulty += 1
+        elif recent_accuracy < 0.5 and child.current_difficulty > 1:
+            child.current_difficulty -= 1
+    elif child.total_shown >= 10:
+        # Fallback: eski kümülatif mantık
         accuracy = child.total_correct / child.total_shown
         if accuracy >= 0.85 and child.current_difficulty < 5:
             child.current_difficulty += 1
         elif accuracy < 0.5 and child.current_difficulty > 1:
             child.current_difficulty -= 1
+
+    # Konu bazlı zorluk takibi
+    by_type = stats.get('byType', {})
+    by_type_difficulty = (child.stats_json or {}).get('byTypeDifficulty', {})
+
+    for tip, data in by_type.items():
+        shown = data.get('shown', 0)
+        correct = data.get('correct', 0)
+        if shown >= 5:
+            acc = correct / shown
+            current = by_type_difficulty.get(tip, child.current_difficulty)
+            if acc >= 0.85 and current < 5:
+                by_type_difficulty[tip] = current + 1
+            elif acc < 0.5 and current > 1:
+                by_type_difficulty[tip] = current - 1
+
+    stats['byTypeDifficulty'] = by_type_difficulty
 
     child.stats_json = stats
     if session_id:
