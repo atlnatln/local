@@ -587,3 +587,23 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 53 entries
 
+
+## [2026-05-27 18:30] ingest | mathlock-play | a5e041c | [[mathlock-play]]
+- Dosyalar: A:0 M:7 D:0
+- Pages created: 
+- Pages updated: [[mathlock-play]]
+- Pages archived: 
+- Diff özeti: v1.0.101 release build, Google Play internal track upload (versionCode 101), Sayı Yolculuğu game engine asset sync (game-audio.js, game-command-system.js, game-execution-engine.js, game-main.js), play-console.json ve upload-play-store.py release notes güncellendi.
+- Wiki diff: see `git log --oneline -1 -- wiki/` for the commit hash
+## [2026-05-27 18:32] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 55 entries
+

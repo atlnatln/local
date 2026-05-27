@@ -105,7 +105,7 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 | [[ops-bot]] | project | Telegram operations bot — Python, systemd, sec-agent, test suite (67+ test) | 2026-05-07 |
 | [[sec-agent]] | project | Güvenlik ajanı — nginx/sshd izleme, UFW enforcement | 2026-05-07 |
 | [[webimar]] | project | Tarım İmar — Django + Next.js + React | 2026-05-05 |
-| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) — **ayrı repo** | 2026-05-25 |
+| [[mathlock-play]] | project | Android math game + Django backend (Robotopia'sız) — **ayrı repo** | 2026-05-27 |
 | [[mathlock-play-ai]] | project | MathLock AI soru pipeline'ı | 2026-05-07 |
 | [[mathlock-play-android]] | project | MathLock Android detayları | 2026-05-25 |
 | [[mathlock-play-android-releases]] | project | MathLock Android release notları ve bug fix'ler | 2026-05-10 |
@@ -117,6 +117,7 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 
 ## Recently Updated
 
+- [[mathlock-play]] — v1.0.101 release build, Google Play internal track upload; Sayı Yolculuğu game engine asset sync (ses, komut, execution, main) (2026-05-27)
 - [[mathlock-play-backend]] — Adaptive Difficulty v2 (sliding window `recentDetails`, `byTypeDifficulty`, per-topic tracking); Procedural Generator Updates (`targetVal` mandatory, 2D override, fingerprint `startPos`/`targetPos`); Period Difficulty Bands; test mock fixes; 169 test passing (2026-05-25)
 - [[mathlock-play]] — Adaptif zorluk v2 mimarisi eklendi; `PERIOD_DIFFICULTY_BANDS` + `byTypeDifficulty` desteği (2026-05-25)
 - [[mathlock-play-android]] — ErrorReporter (PII-filtered non-fatal reporting) eklendi; `MathQuestionGenerator.kt` [STALE]; ACRA LOGCAT kaldırıldı (COPPA/GDPR-K); upload timeout + resumable upload (v1.0.96/v1.0.97) (2026-05-25)
