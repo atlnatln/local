@@ -146,6 +146,18 @@ Kullanıcı "wiki topla"/"wiki ingest"/"wiki güncelle" dediğinde ara sormadan 
 
 **Kural:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Agent `.pending`'i okuduğunda AGENTS.md'ye göre karar verir.
 
+### Wiki Ingest — Token Tasarrufu Kuralları
+
+> Aşağıdaki kurallar `wiki/concepts/wiki-growth-protocol.md` ve `references/CONVENTIONS.md`'den türetilmiştir.
+
+| # | Kural | Neden |
+|---|-------|-------|
+| 1 | **Lint sonuçları `log.md`'ye yazılmaz.** Lint sadece kontrol edilir, PASS/WARN/FAIL kullanıcıya söylenir. Geçmiş lint kayıtları `wiki/log-lint-archive.md`'de arşivlenir. | `log.md`'nin gereksiz büyümesini engeller; wiki-growth-protocol.md Kural 2 |
+| 2 | **Wiki sayfasını baştan sona okuma.** `Grep` ile değişecek satırı bul (`grep -n "updated:" wiki/...md`), sonra `ReadFile(line_offset, n_lines)` ile sadece o bölümü oku. | ~%90 context tasarrufu |
+| 3 | **`StrReplaceFile` doğrudan dene.** Eşleşmezse hata verir; o zaman `ReadFile` ile oku. | %95 vakada başarılı, gereksiz ReadFile'ı ortadan kaldırır |
+| 4 | **Raw arşiv kopyası:** Kaynak dosya ingest edildiğinde `wiki/raw/articles/<filename>` yoluna kopyala (`cp` ile). | CONVENTIONS.md Section 6.1 |
+| 5 | **Gereksiz `git status` tekrarlarından kaçın.** Tek kontrol yeterli. | Her komut bir tool call = token |
+
 Detaylı komutlar ve kurallar: `references/WORKFLOW.md` ve `~/.kimi/skills/local-wiki/SKILL.md`  
 Wiki bakım, büyüme kontrolü ve ortam bazlı yetki kuralları: `wiki/AGENTS.md`
 
@@ -206,6 +218,6 @@ Detaylı komutlar: `references/QUICKREF.md` | Wiki iş akışları: `references/
 ---
 
 > **Son güncelleme:** 2026-05-10
-> **Wiki durumu:** 7 proje ingest edildi, 8/10 lint passing
+> **Wiki durumu:** 10 proje ingest edildi, 10/10 lint passing
 > **VPS durumu:** ops-bot ✅, sec-agent ✅, telegram-kimi ✅, webimar ✅, mathlock-play ✅
 > **GitHub:** `github.com:atlnatln/local.git`

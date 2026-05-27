@@ -66,6 +66,28 @@ function hideHintPreview() {
   saveGameState();
 }
 
+function showHint() {
+  const lv = getLevel();
+  if (!lv.hintCommands || lv.hintCommands.length === 0) return;
+  if (state.running) return;
+
+  // Kredi kontrolü (stub: 3 ücretsiz)
+  var credits = getCredits();
+  if (credits <= 0) {
+    notifyAndroid('buyCredits', {});
+    return;
+  }
+  setCredits(credits - 1);
+
+  state.queue = lv.hintCommands.slice();
+  state.hintMode = true;
+  pushHistory();
+  renderQueue();
+  updateGhostPreview();
+  saveGameState();
+  if (window.AudioEngine) AudioEngine.play('click');
+}
+
 function pushHistory() {
   if (state.historyIdx < state.history.length - 1) {
     state.history = state.history.slice(0, state.historyIdx + 1);
