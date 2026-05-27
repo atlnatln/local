@@ -65,6 +65,12 @@ Tüm konseptler: [[concepts-index|Konseptler Kataloğu]]
 | [[kimi-code-cli]] | concept | Kimi CLI — kurulum, konfigürasyon, çalışma modları, data locations |
 | [[kimi-code-cli-skills]] | concept | Kimi CLI skills sistemi — discovery, creation, flow |
 | [[kimi-code-cli-agents]] | concept | Kimi CLI agent ve sub-agent sistemi |
+| [[kimi-code-cli-wire-mode]] | concept | Kimi CLI Wire Mode — JSON-RPC protokol, event'ler, request'ler |
+| [[kimi-code-cli-print-mode]] | concept | Kimi CLI Print Mode — non-interactive, CI/CD, JSON format |
+| [[kimi-code-cli-plugins]] | concept | Kimi CLI Plugins (Beta) — plugin.json, credential injection |
+| [[kimi-code-cli-official-plugins]] | concept | Kimi CLI Official Plugins — kimi-datasource (finans, akademik) |
+| [[kimi-code-cli-mcp]] | concept | Kimi CLI MCP — Model Context Protocol entegrasyonu |
+| [[kimi-code-cli-hooks]] | concept | Kimi CLI Hooks (Beta) — lifecycle event'leri, güvenlik, otomasyon |
 | [[log-management]] | concept | nginx log rotasyonu ve merkezi log yönetimi |
 | [[monitoring]] | concept | VPS servis izleme, Prometheus, Grafana, health check, alert |
 | [[nginx-routing]] | concept | Domain-based routing, rate limiting, SSL termination |

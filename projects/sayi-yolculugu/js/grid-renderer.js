@@ -21,7 +21,10 @@ export function buildGrid(lv) {
   gridEl.style.gridTemplateColumns = 'repeat(' + lv.cols + ', ' + cellSize + 'px)';
 
   const wallSet = new Set();
-  lv.walls.forEach(w => wallSet.add(w[0] + ',' + w[1]));
+  lv.walls.forEach(w => {
+    if (Array.isArray(w)) wallSet.add(w[0] + ',' + w[1]);
+    else wallSet.add(w.x + ',' + w.y);
+  });
   const opMap = {};
   lv.ops.forEach(o => { opMap[o.x + ',' + o.y] = o; });
   const lockMap = {};
@@ -30,6 +33,16 @@ export function buildGrid(lv) {
   (lv.teleports || []).forEach(t => { teleportMap[t.x + ',' + t.y] = t; });
   const restartSet = new Set();
   (lv.restarts || []).forEach(r => { restartSet.add(r.x + ',' + r.y); });
+  const switchMap = {};
+  (lv.toggleSwitches || []).forEach(s => { switchMap[s.x + ',' + s.y] = s; });
+
+  // Track toggle-wall cells for dynamic visual updates
+  const toggleWallSet = new Set();
+  (lv.toggleSwitches || []).forEach(s => {
+    (s.toggleWalls || []).forEach(([wx, wy]) => {
+      toggleWallSet.add(wx + ',' + wy);
+    });
+  });
 
   for (let r = 0; r < lv.rows; r++) {
     for (let c = 0; c < lv.cols; c++) {
@@ -44,6 +57,7 @@ export function buildGrid(lv) {
 
       if (wallSet.has(key)) {
         cell.classList.add('wall');
+        if (toggleWallSet.has(key)) cell.classList.add('toggle-wall');
       } else if (c === lv.targetX && r === lv.targetY) {
         cell.classList.add('target');
         if (lv.targetVal != null) {
@@ -71,6 +85,9 @@ export function buildGrid(lv) {
       } else if (restartSet.has(key)) {
         cell.classList.add('restart');
         cell.textContent = '↺';
+      } else if (switchMap[key]) {
+        cell.classList.add('switch');
+        cell.textContent = '🔘';
       } else {
         cell.classList.add('empty');
       }
@@ -104,4 +121,22 @@ export function updatePlayerPos(animate) {
     playerEl.classList.add('bump');
     setTimeout(() => playerEl.classList.remove('bump'), 300);
   }
+}
+
+/* ── Toggle-wall visual sync ──
+   Toggle walls start CLOSED (they are in lv.walls). When a switch is
+   stepped on, the walls in activeWalls are OPENED (wall class removed).
+*/
+export function updateWallVisuals(activeWalls) {
+  const gridEl = $('grid');
+  if (!gridEl) return;
+  const cells = gridEl.querySelectorAll('.cell.toggle-wall');
+  cells.forEach(cell => {
+    const key = cell.dataset.x + ',' + cell.dataset.y;
+    if (activeWalls.has(key)) {
+      cell.classList.remove('wall');
+    } else {
+      cell.classList.add('wall');
+    }
+  });
 }

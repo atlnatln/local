@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 import { dispatch, getState } from './store.js';
-import { getLevels, getLevel } from './state.js';
+import { getLevels, getLevel, preloadLevels } from './state.js';
 import { $ } from './utils.js';
 import { ensureAudio } from './audio.js';
 import { loadProgress } from './progress.js';
@@ -72,18 +72,34 @@ function exitToSplash() {
 
 /* ── Splash screen interactions ─────────────────────────── */
 document.querySelectorAll('.age-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', async () => {
     document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     dispatch({ type: 'SET_AGE_GROUP', payload: btn.dataset.age });
+    // Pre-load levels in background so "Başla" feels instant
+    await preloadLevels(btn.dataset.age);
   });
 });
 
-$('btnStart').addEventListener('click', () => {
+function showLoading() {
+  const ov = document.getElementById('loadingOverlay');
+  if (ov) ov.classList.add('active');
+}
+function hideLoading() {
+  const ov = document.getElementById('loadingOverlay');
+  if (ov) ov.classList.remove('active');
+}
+
+$('btnStart').addEventListener('click', async () => {
   ensureAudio();
   loadProgress();
   dispatch({ type: 'SET_MODE', payload: 'standard' });
   dispatch({ type: 'SET_LEVEL_IDX', payload: 0 });
+
+  showLoading();
+  await preloadLevels(getState().ageGroup);
+  hideLoading();
+
   enterGameScreen();
   loadLevel();
 });
@@ -263,3 +279,8 @@ if (settMotion) {
   if (settContrast) settContrast.checked = s.highContrast;
   if (settMotion) settMotion.checked = s.reducedMotion;
 })();
+
+// Pre-load default age-group levels in background on page load
+preloadLevels(getState().ageGroup).catch(err => {
+  console.warn('[preload] Background load failed:', err);
+});

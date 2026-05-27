@@ -29,8 +29,8 @@
 .editor-cell.lock { background: rgba(245,197,24,.15); color: var(--gold); font-size: .75rem; }
 .editor-cell.teleport { background: rgba(156,39,176,.15); color: #9C27B0; }
 .editor-cell.restart { background: rgba(233,69,96,.15); color: var(--primary); }
-.op-config, .lock-config, .teleport-config { display: none; gap: 8px; align-items: center; margin-top: 8px; }
-.op-config.active, .lock-config.active, .teleport-config.active { display: flex; }
+.op-config, .lock-config, .teleport-config, .switch-config { display: none; gap: 8px; align-items: center; margin-top: 8px; }
+.op-config.active, .lock-config.active, .teleport-config.active, .switch-config.active { display: flex; }
 .editor-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .editor-actions button { padding: 10px 20px; border-radius: 10px; border: none; font-size: .9rem; font-weight: 700; cursor: pointer; }
 .btn-test { background: linear-gradient(135deg, var(--green), #00b377); color: #000; }
@@ -60,6 +60,7 @@
     <button class="tool-btn" data-tool="lock">🔒 Kilit</button>
     <button class="tool-btn" data-tool="teleport">🌀 Teleport</button>
     <button class="tool-btn" data-tool="restart">↺ Restart</button>
+    <button class="tool-btn" data-tool="switch">🔘 Switch</button>
     <button class="tool-btn" data-tool="eraser">🗑 Sil</button>
   </div>
 
@@ -74,6 +75,9 @@
     <label>Hedef X: <input type="number" id="tpX" value="0" min="0" max="9" style="width:50px;"></label>
     <label>Y: <input type="number" id="tpY" value="0" min="0" max="9" style="width:50px;"></label>
   </div>
+  <div class="switch-config" id="switchConfig">
+    <label>Toggle Duvarlar: <input type="text" id="switchWalls" value="" placeholder="x,y; x,y" style="width:140px;"></label>
+  </div>
 
   <div class="editor-actions">
     <button class="btn-test" id="btnTest">▶ Test Et</button>
@@ -87,6 +91,6 @@
   <textarea id="jsonOutput" placeholder="JSON çıktısı burada görünecek..."></textarea>
 </div>
 
-<script type="module" src="js/editor.js"></script>
+<script type="module" src="js/editor.js?v=3"></script>
 </body>
 </html>

@@ -140,3 +140,36 @@ Avantajları:
 | `model` | string | Opsiyonel model override |
 | `resume` | string | Mevcut instance ID ile resume et |
 | `run_in_background` | bool | Arka planda çalıştır (varsayılan: false) |
+| `timeout` | int | Saniye cinsinden timeout (30–3600). Foreground varsayılan sınırsız, background varsayılan 15 dk |
+
+## Built-in Tools List
+
+Kimi Code CLI'nin tüm built-in tool'ları:
+
+| Tool | Path | Açıklama |
+|------|------|----------|
+| `Agent` | `kimi_cli.tools.agent:Agent` | Subagent başlat/resume et |
+| `AskUserQuestion` | `kimi_cli.tools.ask_user:AskUserQuestion` | Yapılandırılmış sorular sun |
+| `SetTodoList` | `kimi_cli.tools.todo:SetTodoList` | Todo listesi yönetimi |
+| `Shell` | `kimi_cli.tools.shell:Shell` | Shell komutu çalıştır |
+| `ReadFile` | `kimi_cli.tools.file:ReadFile` | Metin dosyası oku (max 1000 satır) |
+| `ReadMediaFile` | `kimi_cli.tools.file:ReadMediaFile` | Resim/video dosyası oku (max 100MB) |
+| `Glob` | `kimi_cli.tools.file:Glob` | Glob pattern ile dosya/dizin ara |
+| `Grep` | `kimi_cli.tools.file:Grep` | Regex ile dosya içeriği ara (ripgrep tabanlı) |
+| `WriteFile` | `kimi_cli.tools.file:WriteFile` | Dosya yaz (onay gerekir) |
+| `StrReplaceFile` | `kimi_cli.tools.file:StrReplaceFile` | String replacement ile dosya düzenle |
+| `SearchWeb` | `kimi_cli.tools.web:SearchWeb` | Web araması yap |
+| `FetchURL` | `kimi_cli.tools.web:FetchURL` | URL içeriğini çek |
+| `Think` | `kimi_cli.tools.think:Think` | Düşünce sürecini kaydet |
+| `SendDMail` | `kimi_cli.tools.dmail:SendDMail` | Gecikmeli mesaj gönder (checkpoint rollback) |
+| `EnterPlanMode` | `kimi_cli.tools.plan.enter:EnterPlanMode` | Plan moduna gir |
+| `ExitPlanMode` | `kimi_cli.tools.plan:ExitPlanMode` | Planı onaya sun |
+| `TaskList` | `kimi_cli.tools.background:TaskList` | Arka plan görevlerini listele |
+| `TaskOutput` | `kimi_cli.tools.background:TaskOutput` | Arka plan görev çıktısını al |
+| `TaskStop` | `kimi_cli.tools.background:TaskStop` | Arka plan görevini durdur |
+
+### Tool Güvenlik Sınırları
+
+- **Workspace scope:** Dosya okuma/yazma çalışma dizini içinde yapılır. Dışındaki dosyalar için absolute path gerekir.
+- **Onay mekanizması:** Shell komutu, dosya yazma/düzenleme, MCP tool çağrısı, arka plan görev durdurma her seferinde onay ister.
+- **Hassas dosyalar:** `.env`, SSH private key, cloud credential dosyaları her zaman filtrelendir (hatta `include_ignored=true` olsa bile).

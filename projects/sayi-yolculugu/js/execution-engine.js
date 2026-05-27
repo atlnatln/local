@@ -5,7 +5,7 @@
 import { dispatch, getState } from './store.js';
 import { getLevel, CMDS } from './state.js';
 import { $, sleep } from './utils.js';
-import { updatePlayerPos } from './grid-renderer.js';
+import { updatePlayerPos, updateWallVisuals } from './grid-renderer.js';
 import { renderQueue } from './command-system.js';
 import { showWinOverlay } from './ui-overlays.js';
 import { saveProgress } from './progress.js';
@@ -33,6 +33,8 @@ export async function runProgram() {
   await sleep(200);
 
   let px = lv.startX, py = lv.startY, pval = lv.startVal;
+  let activeWalls = new Set();   // toggle-activated extra walls
+  updateWallVisuals(activeWalls);
 
   for (let i = 0; i < state.queue.length; i++) {
     if (!getState().running) break;
@@ -47,6 +49,11 @@ export async function runProgram() {
     // Z operations - value only
     if (cmd.dz !== 0) {
       pval += cmd.dz;
+      // Clamp value to match Python BFS limits
+      const VAL_MIN = -500;
+      const VAL_MAX = 5000;
+      if (pval < VAL_MIN) pval = VAL_MIN;
+      if (pval > VAL_MAX) pval = VAL_MAX;
       dispatch({ type: 'SET_PLAYER_VAL', payload: pval });
       playerEl.textContent = pval;
       playMove();
@@ -67,15 +74,29 @@ export async function runProgram() {
       continue;
     }
 
-    // Wall check
-    const isWall = lv.walls.some(w => w[0] === nx && w[1] === ny);
-    if (isWall) {
-      playerEl.classList.add('bump');
-      playBump();
-      await sleep(200);
-      playerEl.classList.remove('bump');
-      await sleep(150);
-      continue;
+    // Wall check: supports legacy [x,y], full dict, directional dict, and toggle switches
+    const posKey = `${nx},${ny}`;
+    const wall = lv.walls.find(w => {
+      if (Array.isArray(w)) return w[0] === nx && w[1] === ny;
+      return w.x === nx && w.y === ny;
+    });
+    if (wall && !activeWalls.has(posKey)) {
+      let blocked = true;
+      if (!Array.isArray(wall) && wall.type === 'directional') {
+        const dirMap = { '1,0': 'E', '-1,0': 'W', '0,1': 'S', '0,-1': 'N' };
+        const dir = dirMap[`${cmd.dx},${cmd.dy}`];
+        if (dir && !wall.blocks.includes(dir)) {
+          blocked = false;
+        }
+      }
+      if (blocked) {
+        playerEl.classList.add('bump');
+        playBump();
+        await sleep(200);
+        playerEl.classList.remove('bump');
+        await sleep(150);
+        continue;
+      }
     }
 
     // Lock check
@@ -102,7 +123,7 @@ export async function runProgram() {
       else if (op.type === '-') pval -= op.val;
       else if (op.type === '×') pval *= op.val;
       else if (op.type === '/') {
-        if (pval % op.val === 0) pval /= op.val;
+        if (pval % op.val === 0) pval = Math.floor(pval / op.val);
         else {
           px = prevPx; py = prevPy;
           dispatch({ type: 'SET_PLAYER_POS', payload: { x: px, y: py } });
@@ -116,6 +137,11 @@ export async function runProgram() {
         }
       }
       else if (op.type === '^') pval *= pval;
+      // Clamp value to match Python BFS limits
+      const VAL_MIN = -500;
+      const VAL_MAX = 5000;
+      if (pval < VAL_MIN) pval = VAL_MIN;
+      if (pval > VAL_MAX) pval = VAL_MAX;
       dispatch({ type: 'SET_PLAYER_VAL', payload: pval });
       playOp();
     } else {
@@ -140,6 +166,17 @@ export async function runProgram() {
       playerEl.style.transition = 'none';
       updatePlayerPos(false);
       playerEl.style.transition = oldTransition;
+    }
+
+    // Toggle switch check
+    const sw = (lv.toggleSwitches || []).find(s => s.x === px && s.y === py);
+    if (sw) {
+      (sw.toggleWalls || []).forEach(([wx, wy]) => {
+        const wk = `${wx},${wy}`;
+        if (activeWalls.has(wk)) activeWalls.delete(wk);
+        else activeWalls.add(wk);
+      });
+      updateWallVisuals(activeWalls);
     }
 
     updatePlayerPos(true);

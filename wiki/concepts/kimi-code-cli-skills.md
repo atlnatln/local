@@ -83,6 +83,54 @@ In this project, please follow these conventions:
 - Göreceli yollar kullan
 - Adım adım talimatlar, input/output örnekleri, edge case açıklamaları
 
+### Flat `.md` Skills
+
+Skill dizinine doğrudan yerleştirilen tek bir `.md` dosyası da skill olarak tanınır. İsmi `.md` uzantısı hariç dosya adıdır.
+
+```
+~/my-skills-collection/
+├── demo-ui-components.md    # flat: name = "demo-ui-components"
+└── deploy/                   # subdirectory: name = "deploy"
+    └── SKILL.md
+```
+
+Aynı dizinde aynı isimde hem flat `.md` hem alt dizin varsa alt dizin kazanır.
+
+### Description Resolution
+
+Skill tanımlaması (description) aşağıdaki zincirle çözülür:
+
+1. Frontmatter `description:` alanı (tercih edilen)
+2. Body'nin ilk boş olmayan satırı (fallback; 240 karakterde kesilir)
+3. `"No description provided."` (son çare)
+
+### Extra Skill Dizinleri
+
+Auto-discovered built-in / user / project dizinlerinin üzerine ek dizinler eklemek için config'te `extra_skill_dirs` kullanılır:
+
+```toml
+extra_skill_dirs = [
+    "~/my-skills-collection",
+    ".claude/plugins/my-skills",
+    "/opt/team-shared/skills",
+]
+```
+
+Her giriş absolute path, `~` ile başlayan path veya proje root'a göre relative path olabilir. Var olmayan girişler sessizce atlanır. Bu dizinlerden keşfedilen skill'ler `Extra` scope'unda gruplanır.
+
+### Slash Commands ile Skill Yükleme
+
+`/skill:<name>` slash command'ı sık kullanılan prompt şablonlarını skill olarak kaydedip hızlıca çağırmayı sağlar:
+
+```
+/skill:code-style
+/skill:git-commits fix user login issue
+```
+
+Komutun ardına eklenen metin skill prompt'una kullanıcının spesifik isteği olarak eklenir.
+
+Normal konuşmalarda Agent context'e göre otomatik olarak skill içeriğini okumaya karar verir, manuel çağrı gerekmez.
+
 ### Flow Skills
 
 `type: flow` frontmatter + Mermaid/D2 diyagramı ile multi-step workflow tanımlanır.
@@ -122,12 +170,17 @@ D -> END
 
 Flow diyagramlarında bir `BEGIN` ve bir `END` node zorunludur. Decision node'lar `<choice>branch name</choice>` output'u bekler.
 
-## Skills vs Plugins
+## Skills vs Plugins vs MCP
 
-| Mekanizma | Amaç | Format |
-|-----------|------|--------|
-| **Skills** | Bilgi tabanlı rehberler | `SKILL.md` — AI okur ve uygular |
-| **Plugins** | Çalıştırılabilir araçlar | `plugin.json` — AI doğrudan tool çağrır |
+| Mekanizma | Amaç | Format | Trigger |
+|-----------|------|--------|---------|
+| **Skills** | Bilgi tabanlı rehberler | `SKILL.md` | AI context'e göre okur |
+| **Plugins** | Çalıştırılabilir yerel araçlar | `plugin.json` + script'ler | AI tool çağrısı |
+| **MCP** | Harici sürekli çalışan servisler | `mcp.json` | AI tool çağrısı (cross-process) |
+| **Hooks** | Yaşam döngüsü otomasyonu | `config.toml` + shell | Event tabanlı |
 
-Skills: kod stili, workflow, best practice tanımları için.
-Plugins: script, API call, database query wrapper'ları için.
+**Seçim rehberi:**
+- Kod stili, workflow, best practice → **Skill**
+- Basit script wrapper, proje özel araç → **Plugin**
+- Karmaşık tool orkestrasyonu, browser/database kontrolü → **MCP**
+- Güvenlik kontrolü, formatlama, bildirim → **Hook**

@@ -11,6 +11,12 @@
 </head>
 <body>
 
+<!-- ─── LOADING OVERLAY ───────────────────────────────────── -->
+<div id="loadingOverlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(15,15,26,.92);flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div class="spinner"></div>
+  <p style="color:var(--text-dim);font-size:1rem;">Seviyeler yükleniyor…</p>
+</div>
+
 <!-- ─── ARIA LIVE REGIONS ─────────────────────────────────── -->
 <div id="ariaAnnounce" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;top:-9999px;"></div>
 
@@ -32,8 +38,8 @@
   <button class="start-btn secondary" id="btnLeaderboardSplash" aria-label="Skor tablosu" style="margin-top:8px;background:linear-gradient(135deg,#f093fb,#f5576c);font-size:.95rem;">🏆 Liderlik</button>
 
   <div class="splash-features">
-    <span>📐 32 Bulmaca</span>
-    <span>🎯 4 Zorluk</span>
+    <span>📐 100+ Bulmaca</span>
+    <span>🎯 5 Zorluk</span>
     <span>🧠 Programlama</span>
   </div>
 </div>

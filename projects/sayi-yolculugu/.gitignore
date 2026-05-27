@@ -1,0 +1,11 @@
+# Generated level data (reproducible from source)
+js/generated-levels*.js
+js/levels-diff*.js
+generated-levels/
+
+# Agent / IDE artifacts
+.kimi/
+.playwright-mcp/
+
+# Backups
+*-backup-*/

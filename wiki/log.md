@@ -451,3 +451,75 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 41 entries
 
+## [2026-05-26 12:46] lint | 7/10
+- Orphan pages: 0
+- Broken links: 10
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 11
+- Unknown tags: 10 (api, backend, beta, ci-cd, extension, hook, integration, mcp, plugin, technical-debt)
+- Raw existence: 0
+- Log size: 42 entries
+
+## [2026-05-26 12:48] lint | 7/10
+- Orphan pages: 0
+- Broken links: 7
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 11
+- Unknown tags: 10 (api, backend, beta, ci-cd, extension, hook, integration, mcp, plugin, technical-debt)
+- Raw existence: 0
+- Log size: 43 entries
+
+## [2026-05-26 12:49] lint | 7/10
+- Orphan pages: 0
+- Broken links: 7
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 11
+- Unknown tags: 10 (api, backend, beta, ci-cd, extension, hook, integration, mcp, plugin, technical-debt)
+- Raw existence: 0
+- Log size: 44 entries
+
+## [2026-05-26 12:52] lint | 7/10
+- Orphan pages: 0
+- Broken links: 7
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 12
+- Unknown tags: 10 (api, backend, beta, ci-cd, extension, hook, integration, mcp, plugin, technical-debt)
+- Raw existence: 0
+- Log size: 45 entries
+
+## [2026-05-26 12:55] lint | 7/10
+- Orphan pages: 0
+- Broken links: 7
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 12
+- Unknown tags: 13 (api, backend, beta, ci-cd, data, extension, finance, hook, integration, mcp...)
+- Raw existence: 0
+- Log size: 46 entries
+
+## [2026-05-27 11:16] lint | 7/10
+- Orphan pages: 0
+- Broken links: 7
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 12
+- Unknown tags: 13 (api, backend, beta, ci-cd, data, extension, finance, hook, integration, mcp...)
+- Raw existence: 0
+- Log size: 47 entries
+

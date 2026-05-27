@@ -59,6 +59,7 @@ function renderGrid() {
         case 'lock': cell.textContent = '🔒' + g.data.requiredVal; break;
         case 'teleport': cell.textContent = '🌀'; break;
         case 'restart': cell.textContent = '↺'; break;
+        case 'switch': cell.textContent = '🔘'; break;
         default: cell.textContent = '';
       }
 
@@ -117,6 +118,16 @@ function onCellClick(x, y) {
     grid[y][x] = { type: 'teleport', data: { targetX, targetY } };
   } else if (selectedTool === 'restart') {
     grid[y][x] = { type: 'restart', data: null };
+  } else if (selectedTool === 'switch') {
+    const wallsInput = $('switchWalls').value.trim();
+    const toggleWalls = [];
+    if (wallsInput) {
+      wallsInput.split(';').forEach(part => {
+        const m = part.trim().match(/^(\d+),(\d+)$/);
+        if (m) toggleWalls.push([parseInt(m[1], 10), parseInt(m[2], 10)]);
+      });
+    }
+    grid[y][x] = { type: 'switch', data: { toggleWalls } };
   }
 
   renderGrid();
@@ -126,6 +137,7 @@ function updateConfigPanels() {
   $('opConfig').classList.toggle('active', selectedTool === 'op');
   $('lockConfig').classList.toggle('active', selectedTool === 'lock');
   $('teleportConfig').classList.toggle('active', selectedTool === 'teleport');
+  $('switchConfig').classList.toggle('active', selectedTool === 'switch');
 }
 
 function buildPuzzleFromEditorState() {
@@ -134,15 +146,23 @@ function buildPuzzleFromEditorState() {
   const locks = [];
   const teleports = [];
   const restarts = [];
+  const toggleSwitches = [];
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const c = grid[y][x];
-      if (c.type === 'wall') walls.push([x, y]);
+      if (c.type === 'wall') {
+        if (c.data && c.data.directional) {
+          walls.push({ x, y, type: 'directional', blocks: c.data.blocks || [] });
+        } else {
+          walls.push([x, y]);
+        }
+      }
       else if (c.type === 'op') ops.push({ x, y, type: c.data.type, val: c.data.val });
       else if (c.type === 'lock') locks.push({ x, y, requiredVal: c.data.requiredVal });
       else if (c.type === 'teleport') teleports.push({ x, y, targetX: c.data.targetX, targetY: c.data.targetY });
       else if (c.type === 'restart') restarts.push({ x, y });
+      else if (c.type === 'switch') toggleSwitches.push({ x, y, toggleWalls: c.data.toggleWalls || [] });
     }
   }
 
@@ -165,6 +185,7 @@ function buildPuzzleFromEditorState() {
     locks,
     teleports,
     restarts,
+    toggleSwitches,
     commands: availableCommands,
     maxCmds: parseInt($('maxCmds').value, 10) || 10,
     stars: [3, 5],
@@ -255,6 +276,11 @@ $('btnTest').addEventListener('click', () => {
 
 $('btnExport').addEventListener('click', () => {
   const puzzle = buildPuzzleFromEditorState();
+  const sol = solveLevel(puzzle);
+  if (!sol) {
+    alert('⚠️ Bu seviye çözülemez! Export yapılmadı. Lütfen duvarları ve hedefi kontrol et.');
+    return;
+  }
   $('jsonOutput').value = JSON.stringify(puzzle, null, 2);
 });
 
@@ -262,6 +288,14 @@ $('btnImport').addEventListener('click', () => {
   try {
     const puzzle = JSON.parse($('jsonOutput').value);
     if (!puzzle.cols || !puzzle.rows) throw new Error('Geçersiz puzzle');
+
+    if (!puzzle.commands) puzzle.commands = ['x+', 'x-', 'y+', 'y-', 'z+', 'z-'];
+    if (!puzzle.toggleSwitches) puzzle.toggleSwitches = [];
+    const sol = solveLevel(puzzle);
+    if (!sol) {
+      alert('⚠️ İçe aktarılan seviye çözülemez! Lütfen duvarları ve hedefi kontrol et.');
+      return;
+    }
 
     cols = Math.max(1, Math.min(10, puzzle.cols));
     rows = Math.max(1, Math.min(10, puzzle.rows));
@@ -279,9 +313,18 @@ $('btnImport').addEventListener('click', () => {
     startPos = null;
     targetPos = null;
 
-    // Apply walls
-    (puzzle.walls || []).forEach(([x, y]) => {
-      if (x < cols && y < rows) grid[y][x] = { type: 'wall', data: null };
+    // Apply walls (legacy [x,y] or dict format)
+    (puzzle.walls || []).forEach(w => {
+      let x, y, data = null;
+      if (Array.isArray(w)) {
+        [x, y] = w;
+      } else {
+        x = w.x; y = w.y;
+        if (w.type === 'directional') {
+          data = { directional: true, blocks: w.blocks || [] };
+        }
+      }
+      if (x < cols && y < rows) grid[y][x] = { type: 'wall', data };
     });
     // Apply ops
     (puzzle.ops || []).forEach(o => {
@@ -298,6 +341,10 @@ $('btnImport').addEventListener('click', () => {
     // Apply restarts
     (puzzle.restarts || []).forEach(r => {
       if (r.x < cols && r.y < rows) grid[r.y][r.x] = { type: 'restart', data: null };
+    });
+    // Apply switches
+    (puzzle.toggleSwitches || []).forEach(s => {
+      if (s.x < cols && s.y < rows) grid[s.y][s.x] = { type: 'switch', data: { toggleWalls: s.toggleWalls || [] } };
     });
 
     // Apply start/target

@@ -8,6 +8,13 @@ related:
   - proactive-wiki
   - deployment
   - git-workflow
+  - kimi-code-cli-skills
+  - kimi-code-cli-agents
+  - kimi-code-cli-wire-mode
+  - kimi-code-cli-print-mode
+  - kimi-code-cli-plugins
+  - kimi-code-cli-mcp
+  - kimi-code-cli-hooks
 sources:
   - raw/articles/kimi-code-cli-docs.md
 status: reference
@@ -168,11 +175,161 @@ max_context_size = 262144
 | `~/.kimi/sessions/` | Oturum geçmişi |
 | `~/.kimi/skills/` | Kullanıcı seviyesi skill'ler |
 | `~/.kimi/mcp.json` | MCP sunucu yapılandırması |
+| `~/.kimi/plugins/` | Yüklenen plugin'ler |
 | `.kimi/skills/` | Proje seviyesi skill'ler |
+| `.kimi/hooks/` | Hook betikleri (proje seviyesi) |
+
+## Print Mode
+
+Non-interactive çalışma modu. Script ve otomasyon senaryoları için uygundur.
+
+```bash
+# Komut satırından
+kimi --print -p "List all Python files in the current directory"
+
+# Stdin'den
+echo "Explain this code" | kimi --print
+```
+
+Özellikleri:
+- **Auto-exit**: İşlem bittiğinde otomatik çıkar
+- **Auto-approval**: `--afk` modunu implicit olarak etkinleştirir, tüm tool çağrıları otomatik onaylanır
+- **Text output**: AI yanıtları stdout'a yazılır
+
+**`--quiet`** = `--print --output-format text --final-message-only` kısayoludur.
+
+**JSON format:**
+```bash
+kimi --print -p "Hello" --output-format=stream-json
+```
+
+**Exit kodları:**
+
+| Kod | Anlamı |
+|-----|--------|
+| `0` | Başarılı |
+| `1` | Başarısız (tekrar denenmez) — config hatası, auth failure, quota |
+| `75` | Başarısız (tekrar denenebilir) — 429 rate limit, 5xx, timeout |
+
+Detaylar: [[kimi-code-cli-print-mode|Print Mode Detayları →]]
+
+## Wire Mode
+
+Kimi Code CLI'nin düşük seviyeli iletişim protokolü. JSON-RPC 2.0 tabanlı, çift yönlü stdin/stdout iletişimi sağlar. Özel UI'ler, IDE entegrasyonları ve otomatik testler için kullanılır.
+
+```bash
+kimi --wire
+```
+
+**Protokol versiyonu:** `1.10`
+
+**Temel method'lar:** `initialize`, `prompt`, `replay`, `steer`, `set_plan_mode`, `cancel`
+
+**Event tipleri:** `TurnBegin`, `TurnEnd`, `StepBegin`, `StepRetry`, `StatusUpdate`, `ContentPart`, `ToolCall`, `SubagentEvent`, `PlanDisplay`, `HookTriggered`, `HookResolved`
+
+**Request tipleri:** `ApprovalRequest`, `ToolCallRequest`, `QuestionRequest`, `HookRequest`
+
+Detaylar: [[kimi-code-cli-wire-mode|Wire Mode Detayları →]]
+
+## MCP (Model Context Protocol)
+
+Harici araç ve veri kaynaklarıyla güvenli etkileşim için açık protokol. Kimi Code CLI MCP sunucularına bağlanarak yeteneklerini genişletebilir.
+
+```bash
+# HTTP sunucu ekle
+kimi mcp add --transport http context7 https://mcp.context7.com/mcp
+
+# stdio sunucu ekle
+kimi mcp add --transport stdio chrome-devtools -- npx chrome-devtools-mcp@latest
+
+# Listele
+kimi mcp list
+
+# Test et
+kimi mcp test context7
+```
+
+**Config:** `~/.kimi/mcp.json` (diğer MCP client'larla uyumlu)
+
+**Güvenlik:** MCP tool çağrıları da onay ister. YOLO/AFK modunda otomatik onaylanır. Güvenilmeyen kaynaklardan MCP sunucusu kullanmayın.
+
+Detaylar: [[kimi-code-cli-mcp|MCP Detayları →]]
+
+## Hooks (Beta)
+
+Agent yaşam döngüsündeki kritik noktalarda özel komutlar çalıştırma mekanizması. Otomasyon, güvenlik kontrolü, bildirim ve formatlama için kullanılır.
+
+13 desteklenen event:
+
+| Event | Tetikleyici |
+|-------|-------------|
+| `PreToolUse` | Tool çağrısı öncesi |
+| `PostToolUse` | Başarılı tool sonrası |
+| `PostToolUseFailure` | Başarısız tool sonrası |
+| `UserPromptSubmit` | Kullanıcı input'u işlenmeden önce |
+| `Stop` | Agent turn sonunda |
+| `StopFailure` | Hata ile turn sonunda |
+| `SessionStart` / `SessionEnd` | Session başlangıç/bitiş |
+| `SubagentStart` / `SubagentStop` | Subagent başlangıç/bitiş |
+| `PreCompact` / `PostCompact` | Context compaction öncesi/sonrası |
+| `Notification` | Bildirim iletildiğinde |
+
+**Config:** `~/.kimi/config.toml` içinde `` `[[ hooks ]]` `` array syntax:
+
+```toml
+[[ hooks ]]
+event = "PreToolUse"
+matcher = "WriteFile|StrReplaceFile"
+command = ".kimi/hooks/protect-env.sh"
+timeout = 10
+```
+
+**Exit kodları:** `0` = izin ver, `2` = engelle, diğer = izin ver (stderr loglanır).
+
+Detaylar: [[kimi-code-cli-hooks|Hooks Detayları →]]
+
+## Official Plugins
+
+Kimi Code CLI tarafından resmi olarak sağlanan plugin'ler. Mevcutta **kimi-datasource** (Beta) bulunur — finansal piyasalar, makroekonomik göstergeler ve akademik literatür verilerine doğal dil ile erişim sağlar.
+
+```bash
+kimi plugin install https://cdn.kimi.com/kimi-code-plugins/kimi-datasource.zip
+```
+
+Detaylar: [[kimi-code-cli-official-plugins|Official Plugins →]]
+
+## Plugins (Beta)
+
+Plugin sistemi, AI'a özel çalıştırılabilir araçlar eklemenizi sağlar. Skill'lerden farklı olarak doğrudan tool çağrısı yapılabilir.
+
+**Skill vs Plugin:**
+
+| | Skill | Plugin |
+|---|---|--------|
+| Amaç | Bilgi tabanlı rehber | Çalıştırılabilir araç |
+| Format | `SKILL.md` | `plugin.json` + script'ler |
+| Etkileşim | AI okur ve uygular | AI doğrudan çağırır |
+
+**Kurulum:**
+```bash
+kimi plugin install /path/to/my-plugin
+kimi plugin install https://github.com/user/repo.git
+kimi plugin list
+kimi plugin remove my-plugin
+```
+
+**Plugin dizini:** `~/.kimi/plugins/`
+
+Detaylar: [[kimi-code-cli-plugins|Plugins Detayları →]]
 
 ## Kaynaklar
 
 - Kimi Code CLI Docs — Configuration Overrides: https://www.kimi.com/code/docs/en/kimi-code-cli/configuration/overrides-and-precedence.html
 - Kimi Code CLI Docs — Skills: https://www.kimi.com/code/docs/en/kimi-code-cli/customization/skills.html
 - Kimi Code CLI Docs — Sub-agents: https://www.kimi.com/code/docs/en/kimi-code-cli/customization/sub-agents.html
+- Kimi Code CLI Docs — Print Mode: https://www.kimi.com/code/docs/en/kimi-code-cli/customization/print-mode.html
+- Kimi Code CLI Docs — Wire Mode: https://www.kimi.com/code/docs/en/kimi-code-cli/customization/wire-mode.html
+- Kimi Code CLI Docs — MCP: https://www.kimi.com/code/docs/en/kimi-code-cli/customization/mcp.html
+- Kimi Code CLI Docs — Hooks: https://www.kimi.com/code/docs/en/kimi-code-cli/customization/hooks.html
+- Kimi Code CLI Docs — Plugins: https://www.kimi.com/code/docs/en/kimi-code-cli/customization/plugins.html
 
