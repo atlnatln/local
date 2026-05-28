@@ -24,7 +24,6 @@ function showAllComplete() {
   $('totalStarsText').style.display = '';
   $('allCompleteSpinner').style.display = 'none';
   $('btnFinish').style.display = '';
-  $('btnBuyCredits').style.display = 'none';
   allComplete.classList.add('active');
 
   notifyAndroid('allComplete', {
@@ -43,17 +42,6 @@ function showRenewalLoading() {
   $('totalStarsText').style.display = 'none';
   $('allCompleteSpinner').style.display = 'block';
   $('btnFinish').style.display = 'none';
-  $('btnBuyCredits').style.display = 'none';
-  allComplete.classList.add('active');
-}
-function showCreditRequired() {
-  console.info('[Game] showCreditRequired');
-  $('allCompleteTitle').textContent = t('creditRequired');
-  $('allCompleteMsg').textContent = t('creditRequiredMsg');
-  $('totalStarsText').style.display = 'none';
-  $('allCompleteSpinner').style.display = 'none';
-  $('btnFinish').style.display = 'none';
-  $('btnBuyCredits').style.display = '';
   allComplete.classList.add('active');
 }
 /* ── Pause Overlay ──────────────────────────────────────── */
@@ -72,7 +60,6 @@ function showRenewalError() {
   $('totalStarsText').style.display = 'none';
   $('allCompleteSpinner').style.display = 'none';
   $('btnFinish').style.display = '';
-  $('btnBuyCredits').style.display = 'none';
   allComplete.classList.add('active');
 }
 

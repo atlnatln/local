@@ -46,12 +46,13 @@ function renderQueue() {
 
 function showHintPreview() {
   const lv = getLevel();
-  if (!lv.hintCommands || lv.hintCommands.length === 0) return;
+  var hintCommands = lv.hintCommands || lv.solution || [];
+  if (hintCommands.length === 0) return;
   if (state.running) return;
   if (state.hintPreview) return;
   state.hintPreview = true;
   state._queueBeforeHint = state.queue.slice();
-  state.queue = lv.hintCommands.slice();
+  state.queue = hintCommands.slice();
   state.hintMode = true;
   renderQueue();
 }
@@ -68,18 +69,11 @@ function hideHintPreview() {
 
 function showHint() {
   const lv = getLevel();
-  if (!lv.hintCommands || lv.hintCommands.length === 0) return;
+  var hintCommands = lv.hintCommands || lv.solution || [];
+  if (hintCommands.length === 0) return;
   if (state.running) return;
 
-  // Kredi kontrolü (stub: 3 ücretsiz)
-  var credits = getCredits();
-  if (credits <= 0) {
-    notifyAndroid('buyCredits', {});
-    return;
-  }
-  setCredits(credits - 1);
-
-  state.queue = lv.hintCommands.slice();
+  state.queue = hintCommands.slice();
   state.hintMode = true;
   pushHistory();
   renderQueue();

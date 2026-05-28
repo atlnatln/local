@@ -13,9 +13,7 @@ const I18N = {
     allCompleteMsg: 'Tüm seviyeleri tamamladın!',
     renewalLoading: '⏳ Yeni seviyeler hazırlanıyor...',
     renewalLoadingMsg: 'Yapay zeka yeni bulmacalar üretiyor, lütfen bekleyin.',
-    creditRequired: '💎 Kredi Gerekli',
-    creditRequiredMsg: 'Yeni seviyelere geçmek için kredi satın almalısın.',
-    buyCredits: '💎 Kredi Satın Al',
+
     error: '⚠️ Hata',
     errorMsg: 'Yeni seviyeler hazırlanırken bir sorun oluştu. Lütfen tekrar dene.',
     failTitle: '😕 Hedefine ulaşamadın',
@@ -40,9 +38,7 @@ const I18N = {
     allCompleteMsg: 'You completed all levels!',
     renewalLoading: '⏳ Preparing new levels...',
     renewalLoadingMsg: 'AI is generating new puzzles, please wait.',
-    creditRequired: '💎 Credits Required',
-    creditRequiredMsg: 'You need to buy credits to unlock new levels.',
-    buyCredits: '💎 Buy Credits',
+
     error: '⚠️ Error',
     errorMsg: 'Something went wrong while preparing new levels. Please try again.',
     failTitle: "😕 You didn't reach the target",

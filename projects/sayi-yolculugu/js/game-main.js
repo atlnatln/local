@@ -103,7 +103,6 @@ function initGame(levelsJson) {
   document.querySelector('.level-select-card h2').textContent = t('levelSelect');
   $('btnCloseLevels').textContent = t('close');
   $('btnFinish').textContent = t('finish');
-  $('btnBuyCredits').textContent = t('buyCredits');
 
   loadLevel();
   if (window.AudioEngine) AudioEngine.playBGM();
@@ -117,8 +116,22 @@ $('btnUndo').addEventListener('click', function() { if (!state.running) undo(); 
 $('btnRedo').addEventListener('click', function() { if (!state.running) redo(); });
 $('btnReset').addEventListener('click', function() { if (!state.running) { state.queue = []; state.attempts = 0; state.hintMode = false; loadLevel(); saveGameState(); } });
 var btnHintEl = $('btnHint');
-// Tek tıklama: kalıcı ipucu (basit ve net)
+// Tek tıklama: kalıcı ipucu
 btnHintEl.addEventListener('click', function(e) { if (!state.running) showHint(); });
+
+// Basılı tutma: ipucu preview (ghost)
+function onHintDown(e) {
+  if (e.type === 'touchstart') e.preventDefault();
+  if (!state.running) showHintPreview();
+}
+function onHintUp(e) {
+  if (state.hintPreview) hideHintPreview();
+}
+btnHintEl.addEventListener('mousedown', onHintDown);
+btnHintEl.addEventListener('mouseup', onHintUp);
+btnHintEl.addEventListener('mouseleave', onHintUp);
+btnHintEl.addEventListener('touchstart', onHintDown, {passive: false});
+btnHintEl.addEventListener('touchend', onHintUp);
 $('btnRetry').addEventListener('click', function() {
   overlay.classList.remove('active');
   state.queue = [];
@@ -143,9 +156,6 @@ $('btnNext').addEventListener('click', function() {
 $('btnFinish').addEventListener('click', function() {
   allComplete.classList.remove('active');
   notifyAndroid('finish', {});
-});
-$('btnBuyCredits').addEventListener('click', function() {
-  notifyAndroid('buyCredits', {});
 });
 $('btnLevels').addEventListener('click', showLevelSelect);
 $('btnPause').addEventListener('click', showPause);

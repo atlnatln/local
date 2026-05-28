@@ -100,20 +100,4 @@ function saveSettings(settings) {
   } catch(e) {}
 }
 
-/* ── Credits ────────────────────────────────────────────── */
-function getCredits() {
-  try {
-    const raw = localStorage.getItem('sy_credits');
-    if (raw !== null) return parseInt(raw, 10);
-  } catch(e) {}
-  return 3;
-}
-function setCredits(c) {
-  try { localStorage.setItem('sy_credits', String(c)); } catch(e) {}
-}
 
-window.onPurchaseSuccess = function(addedCredits) {
-  var current = getCredits();
-  setCredits(current + addedCredits);
-  if (window.AudioEngine) AudioEngine.play('success');
-};
