@@ -28,6 +28,9 @@ async function runProgram() {
   var activeWalls = new Set();
   updateWallVisuals(activeWalls);
 
+  var unlockedLocks = new Set();
+  var activatedSwitches = new Set();
+
   const chips = cmdQueue.querySelectorAll('.cmd-chip');
 
   for (let i = 0; i < state.queue.length; i++) {
@@ -77,23 +80,44 @@ async function runProgram() {
       }
     }
 
-    // Lock check
+    // Lock check (persistent — once unlocked, stays unlocked)
     const lock = (lv.locks || []).find(function(l) { return l.x === nx && l.y === ny; });
-    if (lock && state.playerVal !== lock.requiredVal) {
-      chips[i].classList.remove('running');
-      playerEl.classList.add('bump');
-      if (window.AudioEngine) AudioEngine.play('bump');
-      notifyAndroid('haptic', {type: 'light'});
-      await sleep(200);
-      playerEl.classList.remove('bump');
-      await sleep(150);
-      continue;
+    if (lock) {
+      var lockKey = nx + ',' + ny;
+      if (!unlockedLocks.has(lockKey)) {
+        if (state.playerVal !== lock.requiredVal) {
+          chips[i].classList.remove('running');
+          playerEl.classList.add('bump');
+          if (window.AudioEngine) AudioEngine.play('bump');
+          notifyAndroid('haptic', {type: 'light'});
+          await sleep(200);
+          playerEl.classList.remove('bump');
+          await sleep(150);
+          continue;
+        }
+        unlockedLocks.add(lockKey);
+      }
     }
 
     var prevX = state.playerX;
     var prevY = state.playerY;
     state.playerX = nx;
     state.playerY = ny;
+
+    // Toggle switch check (persistent + before op, matching Python BFS order)
+    const sw = (lv.toggleSwitches || []).find(function(s) { return s.x === state.playerX && s.y === state.playerY; });
+    if (sw) {
+      var swKey = state.playerX + ',' + state.playerY;
+      if (!activatedSwitches.has(swKey)) {
+        activatedSwitches.add(swKey);
+        (sw.toggleWalls || []).forEach(function(tw) {
+          var wk = tw[0] + ',' + tw[1];
+          if (activeWalls.has(wk)) activeWalls.delete(wk);
+          else activeWalls.add(wk);
+        });
+        updateWallVisuals(activeWalls);
+      }
+    }
 
     // Op apply
     const op = (lv.ops || []).find(function(o) { return o.x === state.playerX && o.y === state.playerY; });
@@ -114,11 +138,19 @@ async function runProgram() {
         }
       }
       else if (op.type === '^') state.playerVal *= state.playerVal;
-      // Clamp value to match Python BFS limits
+      // Prune on boundary (matching Python BFS: state discarded)
       var VAL_MIN = -500;
       var VAL_MAX = 5000;
-      if (state.playerVal < VAL_MIN) state.playerVal = VAL_MIN;
-      if (state.playerVal > VAL_MAX) state.playerVal = VAL_MAX;
+      if (state.playerVal < VAL_MIN || state.playerVal > VAL_MAX) {
+        state.playerX = prevX;
+        state.playerY = prevY;
+        playerEl.classList.add('bump');
+        updatePlayerPos(false);
+        await sleep(200);
+        playerEl.classList.remove('bump');
+        await sleep(150);
+        continue;
+      }
     }
 
     // Restart check
@@ -138,17 +170,6 @@ async function runProgram() {
       playerEl.style.transition = oldTransition;
     }
 
-    // Toggle switch check
-    const sw = (lv.toggleSwitches || []).find(function(s) { return s.x === state.playerX && s.y === state.playerY; });
-    if (sw) {
-      (sw.toggleWalls || []).forEach(function(tw) {
-        var wk = tw[0] + ',' + tw[1];
-        if (activeWalls.has(wk)) activeWalls.delete(wk);
-        else activeWalls.add(wk);
-      });
-      updateWallVisuals(activeWalls);
-    }
-
     updatePlayerPos(true);
     await sleep(300);
     chips[i].classList.remove('running');
@@ -160,14 +181,8 @@ async function runProgram() {
 function checkWin() {
   const lv = getLevel();
   const posOk = state.playerX === lv.targetX && state.playerY === lv.targetY;
-  // BUG FIX (backend regression fallback): if operators exist but targetVal
-  // is null, the level is ill-formed — operators become meaningless because
-  // the player can change their number arbitrarily and still win by position.
-  // Treat the required value as startVal so operators matter.
-  const effectiveTargetVal = lv.targetVal != null
-    ? lv.targetVal
-    : (lv.ops && lv.ops.length > 0 ? lv.startVal : null);
-  const valOk = effectiveTargetVal == null || state.playerVal === effectiveTargetVal;
+  // Aligned with Python BFS: targetVal == null means position-only victory
+  const valOk = lv.targetVal == null || state.playerVal === lv.targetVal;
 
   if (posOk && valOk) {
     if (window.AudioEngine) AudioEngine.playLevelComplete();

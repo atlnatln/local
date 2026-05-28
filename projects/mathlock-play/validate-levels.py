@@ -18,7 +18,7 @@ from collections import deque, Counter
 from pathlib import Path
 
 VALID_COMMANDS = {"x+", "x-", "y+", "y-", "z+", "z-"}
-VALID_OP_TYPES = {"+", "-", "×"}
+VALID_OP_TYPES = {"+", "-", "×", "/", "^"}
 VALID_AGE_GROUPS = {"5-6", "6-7", "7-8", "8-9", "9-10", "11-12"}
 VALID_OVERALLS = {"beginner", "developing", "intermediate", "advanced"}
 EXPECTED_LEVELS = 12

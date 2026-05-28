@@ -1,7 +1,7 @@
 ---
 title: "Sayı Yolculuğu"
 created: "2026-05-01"
-updated: "2026-05-27"
+updated: "2026-05-28"
 type: project
 tags: [sayi-yolculugu, html5, javascript, android, webview, education]
 related:
@@ -235,6 +235,7 @@ override fun onDestroy() {
 
 ## Recent Commits
 
+- `819cf45c` fix(sayi-yolculugu): JS execution engine synced with Python BFS — lock persistence, switch persistence, switch timing, value boundary prune, targetVal fallback removal (2026-05-28)
 - `8cc818a3` docs(wiki): ingest mathlock-play v1.0.101 release build + Google Play upload (2026-05-27)
 - `2f1e4860` chore(wiki): organize wiki and fix lint warnings (2026-05-27)
 - `cbed0ac0` feat(sayi-yolculugu): ses, tutorial, ipucu, path preview, undo/redo, achievements, daily set, haptic (2026-05-27)

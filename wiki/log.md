@@ -215,3 +215,22 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 24 entries
 
+
+## [2026-05-28 21:50] ingest | mathlock-play, sayi-yolculugu
+- sayi-yolculugu/js/game-execution-engine.js: JS motoru Python BFS ile senkronize edildi (lock persistence, switch persistence, switch timing, value boundary prune, targetVal fallback removal)
+- mathlock-play/validate_1000_levels.py: parse_level switches desteği + re-validation eklendi
+- mathlock-play/validate-levels.py: VALID_OP_TYPES `/` ve `^` eklendi
+- mathlock-play v1.1.0 (versionCode 103) release build + Google Play internal track upload
+- Log size: 25 entries
+## [2026-05-28 21:53] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 26 entries
+
