@@ -17,6 +17,93 @@ import sys
 
 LOCAL_ROOT = "/home/akn/local"
 WIKI_ROOT = os.path.join(LOCAL_ROOT, "wiki")
+WIKI_ASSISTANT_INDEX = os.path.join(WIKI_ROOT, ".assistant-index.json")
+
+# ---------------------------------------------------------------------------
+# Cache / Index Mekanizması (L2 Cache benzeri)
+# ---------------------------------------------------------------------------
+# Wiki sayfalarının başlık yapısını (headings) cache'ler.
+# Sonraki çalıştırmalarda değişmemiş sayfalar için dosyayı baştan açmaz.
+# ---------------------------------------------------------------------------
+
+def load_cache():
+    """Cache dosyasını oku. Yoksa boş dict döndür."""
+    if os.path.exists(WIKI_ASSISTANT_INDEX):
+        try:
+            with open(WIKI_ASSISTANT_INDEX, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+
+def save_cache(cache):
+    """Cache dosyasını atomik olarak yaz."""
+    tmp_path = WIKI_ASSISTANT_INDEX + ".tmp"
+    try:
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(cache, f, indent=2, ensure_ascii=False)
+        os.replace(tmp_path, WIKI_ASSISTANT_INDEX)
+    except Exception as e:
+        sys.stderr.write(f"Cache yazma hatası: {e}\n")
+
+
+def get_file_mtime(path):
+    """Dosyanın değişiklik zamanını (mtime) int olarak döndür."""
+    try:
+        return int(os.path.getmtime(path))
+    except Exception:
+        return 0
+
+
+def parse_headings_from_file(full_path):
+    """Bir markdown dosyasındaki tüm başlıkları parse et."""
+    headings = []
+    try:
+        with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
+            for i, line in enumerate(f):
+                m = re.match(r"^(#{1,4})\s+(.+)", line)
+                if m:
+                    headings.append({
+                        "level": len(m.group(1)),
+                        "title": m.group(2).strip(),
+                        "line": i + 1,
+                    })
+    except Exception:
+        pass
+    return headings
+
+
+def get_cached_headings(wiki_path):
+    """
+    Wiki dosyasının başlık listesini getir.
+    Cache'te var ve güncelse cache'ten, yoksa dosyadan parse edip cache'e yazar.
+    """
+    full_path = os.path.join(LOCAL_ROOT, wiki_path)
+    if not os.path.exists(full_path):
+        return []
+
+    cache = load_cache()
+    current_mtime = get_file_mtime(full_path)
+    cache_key = wiki_path
+
+    # Cache kontrolü
+    if cache_key in cache:
+        entry = cache[cache_key]
+        if entry.get("mtime") == current_mtime and "headings" in entry:
+            return entry["headings"]
+
+    # Cache miss → dosyadan parse et
+    headings = parse_headings_from_file(full_path)
+
+    # Cache'e kaydet
+    cache[cache_key] = {
+        "mtime": current_mtime,
+        "headings": headings,
+    }
+    save_cache(cache)
+    return headings
+
 
 # Proje yapılandırması
 PROJECTS = {
@@ -235,24 +322,38 @@ def extract_wiki_sections(wiki_path, section_hints):
     """
     Wiki sayfasından ilgili bölümleri çıkar.
     section_hints: aranacak bölüm anahtar kelimeleri listesi
+
+    OPTIMIZASYON: Önce cache'teki headings listesini kontrol eder.
+    Hiç section eşleşmezse dosyayı açmaz, sadece outline döndürür.
     """
     full_path = os.path.join(LOCAL_ROOT, wiki_path)
     if not os.path.exists(full_path):
         return None
 
+    # 1. Headings'i cache'ten al (dosyayı açmadan)
+    headings = get_cached_headings(wiki_path)
+    if not headings:
+        return None
+
+    # 2. İlgili başlıkları bul (keyword eşleme)
+    matched_titles = []
+    for hint in section_hints:
+        hint_lower = hint.lower()
+        for h in headings:
+            title_lower = h["title"].lower()
+            if hint_lower in title_lower or title_lower in hint_lower:
+                matched_titles.append(h)
+
+    # 3. Hiç eşleşme yoksa → dosyayı açmaya gerek yok, outline döndür
+    if not matched_titles:
+        return {
+            "type": "outline",
+            "headings": [{"title": h["title"], "level": h["level"], "line": h["line"]} for h in headings],
+        }
+
+    # 4. Eşleşme varsa → dosyayı aç, section içeriğini çıkar
     with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
         lines = f.readlines()
-
-    # Tüm başlıkları ve pozisyonlarını bul
-    headings = []
-    for i, line in enumerate(lines):
-        m = re.match(r"^(#{1,4})\s+(.+)", line)
-        if m:
-            headings.append({
-                "level": len(m.group(1)),
-                "title": m.group(2).strip(),
-                "line": i + 1,
-            })
 
     # İlgili başlıkları bul (keyword eşleme)
     matched_sections = {}
@@ -279,13 +380,6 @@ def extract_wiki_sections(wiki_path, section_hints):
                     "end_line": end_idx,
                     "content": section_content,
                 }
-
-    # Eğer hiç eşleşme yoksa, sayfanın genel yapısını (tüm başlıklar) sun
-    if not matched_sections:
-        return {
-            "type": "outline",
-            "headings": [{"title": h["title"], "level": h["level"], "line": h["line"]} for h in headings],
-        }
 
     return {"type": "sections", "matched": matched_sections}
 

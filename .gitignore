@@ -82,4 +82,5 @@
 
 # Wiki machine-specific marker
 wiki/.checkpoints/
+wiki/.assistant-index.json
 projects/mathlock-play/
