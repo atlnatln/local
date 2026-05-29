@@ -36,6 +36,10 @@ LANGUAGE_SERVERS = {
         "cmd": ["typescript-language-server", "--stdio"],
         "needs_did_open": True,
     },
+    "kotlin": {
+        "cmd": [os.path.expanduser("~/.local/bin/kotlin-language-server")],
+        "needs_did_open": True,
+    },
 }
 
 # SymbolKind → insan-readable isim

@@ -399,6 +399,7 @@ def locate_symbol(file_path, symbol_name, pretty=False):
         ".jsx": "javascript",
         ".ts": "typescript",
         ".tsx": "typescript",
+        ".kt": "kotlin",
     }
     language = lang_map.get(ext, "python")
 
