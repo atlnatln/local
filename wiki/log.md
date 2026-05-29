@@ -234,3 +234,41 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 26 entries
 
+
+## [2026-05-30 01:05] ingest | sayi-yolculugu | wiki-assistant-v1
+- **Asistan kullanımı:** İlk kez `wiki-assistant.py` ile token-optimize edilmiş ingest yapıldı
+- Files: M:6 (working directory)
+  - `projects/sayi-yolculugu/.kimi/CONTEXT.md`
+  - `projects/sayi-yolculugu/AGENTS.md`
+  - `projects/sayi-yolculugu/editor.html`
+  - `projects/sayi-yolculugu/js/game-execution-engine.js`
+  - `projects/sayi-yolculugu/js/game-grid-renderer.js`
+  - `projects/sayi-yolculugu/js/game-store.js`
+- Pages updated: [[sayi-yolculugu]]
+  - Son Güncellemeler bölümüne motor senkronizasyonu notları eklendi
+  - Recent Commits güncellendi
+- Token tasarrufu: Asistan çıktısı ~338 satır / Eski yöntem ~1,137 satır → ~%70 azalma
+## [2026-05-30 01:49] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 28 entries
+
+## [2026-05-30 01:50] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 29 entries
+

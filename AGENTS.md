@@ -126,35 +126,51 @@ cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"
 
 İlk başvuru kaynağı her zaman `index.md`'dir. Acil/kronolojik bilgi için `log.md`, tag taksonomisi için `SCHEMA.md` kullanılır.
 
-## Wiki Ingest Flow (9 Adım)
+## Wiki Ingest Flow
 
-Kullanıcı "wiki topla"/"wiki ingest"/"wiki güncelle" dediğinde ara sormadan tek seferde:
+Kullanıcı "wiki topla"/"wiki ingest"/"wiki güncelle" dediğinde **asistanlı akış** birincildir.
 
-| Adım | İşlem |
-|------|-------|
-| 1 | Checkpoint SHA'ları oku (`wiki/.checkpoints/*.sha`) |
-| 2 | Her repo için `git diff --name-status <checkpoint>..HEAD` |
-| 3 | Diff boşsa → `.pending` temizle, lint, log'a "no changes", bitir |
-| 4 | Diff doluysa → değişen dosyaları analiz et (A/M/D/R) |
-| 5 | İlgili wiki sayfalarını güncelle (`wiki/projects/<repo>.md`) |
-| 6 | Çapraz referansları yenile (`index.md`, `log.md`) |
-| 7 | Lint çalıştır: `python3 /home/akn/local/.kimi/skills/local-wiki/scripts/wiki_lint.py /home/akn/local/wiki` |
-> **Not:** `scripts/wiki_lint.py` eski konumudur; doğru yer skill altındadır.
-| 8 | Checkpoint'leri güncelle (`git rev-parse HEAD > wiki/.checkpoints/<repo>.sha`) |
-> **Not:** `.checkpoints/local.sha`, `/home/akn/local` monorepo'sunun HEAD'ini izler. `local` monorepo içindeki `anka`, `mathlock-play`, `telegram-kimi`, `sayi-yolculugu`, `infrastructure` gibi projeler aynı checkpoint dosyasını paylaşır.
-| 9 | `.pending` temizle, kullanıcıya özet rapor ver |
+### Asistanlı Akış (Birincil)
 
-**Kural:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Agent `.pending`'i okuduğunda AGENTS.md'ye göre karar verir.
+| Adım | İşlem | Kim Yapar? |
+|------|-------|------------|
+| 1 | Checkpoint SHA'ları oku (`wiki/.checkpoints/*.sha`) | Kimi |
+| 2 | Git diff çalıştır (`git diff --name-status <checkpoint>..HEAD`) | Kimi |
+| **3** | **Asistanı çalıştır: `python3 /home/akn/local/scripts/wiki-assistant.py --prepare [--project X]`** | **Kimi çağırır, Asistan çalıştırır** |
+| 4 | Asistan JSON çıktısını analiz et. Diff boş mu kontrol et. | Kimi |
+| 5 | Asistanın `changed_files[].snippets` çıktısını oku. Sadece snippet'leri değerlendir. | Kimi |
+| 6 | Asistanın `wiki_targets[].sections` çıktısını kullan. **Sadece ilgili bölümleri** oku. | Kimi |
+| 7 | Çapraz referansları yenile. Asistan candidate listesi sunar. | Kimi |
+| 8 | Lint çalıştır: `wiki_lint.py` | Kimi (veya Asistan çağırır) |
+| 9 | Checkpoint'leri güncelle | Kimi |
+| 10 | `.pending` temizle, kullanıcıya özet rapor ver | Kimi |
 
-### Wiki Ingest — Token Tasarrufu Kuralları
+**Asistan ne yapar?**
+- Git diff analizi (checkpoint'ten HEAD'e)
+- Değişen dosyaları ilgili wiki sayfalarına eşler
+- Her dosyadan snippet (yapısal özet) çıkarır
+- Wiki sayfalarından ilgili bölümleri bulur
+- Tüm bunları JSON "context paketi" olarak Kimi'ye sunar
+
+**Asistan cache'i:** `wiki/.assistant-index.json` — wiki sayfalarının başlık yapısını cache'ler. Değişmemiş sayfalar için tekrar parse etmez.
+
+### Fallback (Asistan Çalışmazsa)
+
+Eğer `wiki-assistant.py` hata verirse veya çıktı üretmezse:
+1. Hatayı kullanıcıya söyle
+2. Klasik akışa dön: Checkpoint → Git diff → Dosyaları oku → Wiki güncelle → Lint → Checkpoint güncelle
+3. Asistan olmadan devam et
+
+### Token Tasarrufu Kuralları
 
 > Aşağıdaki kurallar `wiki/concepts/wiki-growth-protocol.md` ve `references/CONVENTIONS.md`'den türetilmiştir.
+> **Not:** Kurallar 2 ve 3 artık `wiki-assistant.py` tarafından otomatik uygulanır. Asistan zaten sadece ilgili bölümleri sunar ve `StrReplaceFile` öncesinde dosyayı açmaz.
 
 | # | Kural | Neden |
 |---|-------|-------|
-| 1 | **Lint sonuçları `log.md`'ye yazılmaz.** Lint sadece kontrol edilir, PASS/WARN/FAIL kullanıcıya söylenir. Geçmiş lint kayıtları `wiki/log-lint-archive.md`'de arşivlenir. | `log.md`'nin gereksiz büyümesini engeller; wiki-growth-protocol.md Kural 2 |
-| 2 | **Wiki sayfasını baştan sona okuma.** `Grep` ile değişecek satırı bul (`grep -n "updated:" wiki/...md`), sonra `ReadFile(line_offset, n_lines)` ile sadece o bölümü oku. | ~%90 context tasarrufu |
-| 3 | **`StrReplaceFile` doğrudan dene.** Eşleşmezse hata verir; o zaman `ReadFile` ile oku. | %95 vakada başarılı, gereksiz ReadFile'ı ortadan kaldırır |
+| 1 | **Lint sonuçları `log.md`'ye yazılmaz.** Lint sadece kontrol edilir, PASS/WARN/FAIL kullanıcıya söylenir. Geçmiş lint kayıtları `wiki/log-lint-archive.md`'de arşivlenir. | `log.md`'nin gereksiz büyümesini engeller |
+| 2 | **Wiki sayfasını baştan sona okuma.** Asistan `wiki_targets[].sections.matched` ile sadece ilgili bölümü sunar. Eşleşme yoksa `type: "outline"` ile başlık listesi gelir. | ~%90 context tasarrufu |
+| 3 | **`StrReplaceFile` doğrudan dene.** Asistan çıktısı üzerinden değişiklik yapılır; gereksiz `ReadFile` önlenir. | %95 vakada başarılı |
 | 4 | **Raw arşiv kopyası:** Kaynak dosya ingest edildiğinde `wiki/raw/articles/<filename>` yoluna kopyala (`cp` ile). | CONVENTIONS.md Section 6.1 |
 | 5 | **Gereksiz `git status` tekrarlarından kaçın.** Tek kontrol yeterli. | Her komut bir tool call = token |
 

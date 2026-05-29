@@ -220,6 +220,14 @@ override fun onDestroy() {
 
 ## Son Güncellemeler
 
+### 2026-05-28 — Motor Senkronizasyonu ve Çeşitli Güncellemeler
+
+- **Execution Engine:** Python BFS motoru ile JS motoru senkronize edildi. Lock persistence, switch persistence, switch timing, value boundary prune, targetVal fallback removal
+- **Grid Renderer:** Izgara render motoru güncellemeleri
+- **Game Store:** Yerel depolama ve state yönetimi iyileştirmeleri
+- **Editör:** `editor.html` güncellemeleri
+- **Yeni dosya:** `game.html` eklendi (oyun ekranı)
+
 ### 2026-05-27 — v1.0.100 Özellikleri (MVP Polish)
 
 - **Ses sistemi:** HTML5 Audio ile arka plan müziği (`bgm.wav`), SFX (başarı, hata, buton, duvar çarpma)
@@ -235,7 +243,8 @@ override fun onDestroy() {
 
 ## Recent Commits
 
-- `819cf45c` fix(sayi-yolculugu): JS execution engine synced with Python BFS — lock persistence, switch persistence, switch timing, value boundary prune, targetVal fallback removal (2026-05-28)
+- `7c0a7249` fix(sayi-yolculugu): sync JS execution engine with Python BFS — lock persistence, switch persistence, switch timing, value boundary prune, targetVal fallback removal (2026-05-28)
+- `819cf45c` feat(sayi-yolculugu): difficulty score system + session updates (2026-05-28)
 - `8cc818a3` docs(wiki): ingest mathlock-play v1.0.101 release build + Google Play upload (2026-05-27)
 - `2f1e4860` chore(wiki): organize wiki and fix lint warnings (2026-05-27)
 - `cbed0ac0` feat(sayi-yolculugu): ses, tutorial, ipucu, path preview, undo/redo, achievements, daily set, haptic (2026-05-27)
