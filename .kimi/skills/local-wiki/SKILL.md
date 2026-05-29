@@ -170,8 +170,16 @@ Asistan şu yapıda bir JSON döner:
 
 Eğer `wiki-assistant.py` hata verirse veya çıktı üretmezse:
 1. Hatayı kullanıcıya söyle
-2. **Mevcut 9 adımlık klasik akışa dön** (AGENTS.md'deki orijinal tablo)
+2. Klasik akışa dön: Checkpoint → Git diff → Dosyaları oku → Wiki güncelle → Lint → Checkpoint güncelle
 3. Asistan olmadan devam et
+
+### Cache Mekanizması (L2 Cache)
+
+Asistan `wiki/.assistant-index.json` dosyasında wiki sayfalarının başlık yapısını cache'ler.
+
+- **Cache hit:** Dosya değişmemişse (mtime eşleşiyorsa) headings listesi cache'ten gelir. Dosya **açılmaz**.
+- **Cache miss:** Dosya değişmişse veya ilk çalıştırmadaysa headings parse edilir, cache güncellenir.
+- **Manuel temizlik:** `rm wiki/.assistant-index.json` ile cache silinir, bir sonraki çalıştırmada yeniden oluşur.
 
 ### Token Tasarrufu Hedefi
 
