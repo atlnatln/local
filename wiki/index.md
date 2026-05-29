@@ -112,11 +112,12 @@ Tüm projeler: [[projects-index|Projeler Kataloğu]]
 | [[mathlock-play-backend]] | project | MathLock backend detayları | 2026-05-25 |
 | [[robotopia-android]] | project | Blockly kodlama oyunu — bağımsız Android | 2026-05-03 |
 | [[telegram-kimi]] | project | Telegram Kimi Bridge — Python, systemd, ACP | 2026-05-03 |
-| [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-27 |
+| [[sayi-yolculugu]] | project | HTML5 matematik eğitim oyunu + MathLock entegrasyonu | 2026-05-30 |
 | [[local]] | project | Ana monorepo — agent instruction'ları, references, wiki kuralları | 2026-05-10 |
 
 ## Recently Updated
 
+- [[sayi-yolculugu]] — Motor senkronizasyonu ve çeşitli güncellemeler: JS execution engine Python BFS ile sync edildi, grid renderer ve game store güncellemeleri, editor.html revizyonu, game.html eklendi (2026-05-30)
 - [[sayi-yolculugu]] — Oyun motoru tamamen yenilendi: 15+ JS modül (game-audio, game-command-system, game-execution-engine, game-main), ses efektleri, editor.html, AGENTS.md, test raporları (2026-05-27)
 - [[ops-bot]] — sec-agent multi-site support: engaged_paths.json, engaged_sites.yaml, sync_engaged_paths.py; flags.py ve scorer.py robustness (2026-05-26)
 - [[webimar]] — Token abuse report command eklendi; analytics throttle ve IP anomaly detection eklendi sonra revert edildi (2026-05-26)
