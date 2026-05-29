@@ -296,3 +296,27 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 31 entries
 
+## [2026-05-30 02:40] lint | 6/10
+- Orphan pages: 1 ([[wiki-assistant]])
+- Broken links: 1
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 2 (lsp-style, tooling)
+- Raw existence: 0
+- Log size: 32 entries
+
+## [2026-05-30 02:41] lint | 8/10
+- Orphan pages: 1 ([[wiki-assistant]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 2 (lsp-style, tooling)
+- Raw existence: 0
+- Log size: 33 entries
+

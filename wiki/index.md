@@ -34,6 +34,7 @@ Ortak altyapı ve platform servisleri. Diğer tüm projelere hizmet eden katman.
 | [[monitoring]] | concept | VPS servis izleme, Prometheus, Grafana, health check, alert |
 | [[nginx-routing]] | concept | Domain-based routing, rate limiting, SSL termination |
 | [[ssl-automation]] | concept | Let's Encrypt sertifika yönetimi ve otomatik yenileme |
+| [[wiki-assistant]] | concept | Wiki asistanı — LSP-style token optimizasyon, kod düzenleme |
 | [[log-management]] | concept | nginx log rotasyonu ve merkezi log yönetimi |
 | [[deployment]] | concept | Deploy pipeline, rollback, VPS senkronizasyonu |
 | [[security-ai-reporting]] | concept | AI güvenlik raporlama ve incident response deseni |

@@ -167,11 +167,22 @@ AGENTS.md açık bir formattır ve birden fazla agent/tool tarafından desteklen
 - Aider (`.aider.conf.yml` ile yapılandırılabilir)
 - Gemini CLI (`.gemini/settings.json` ile yapılandırılabilir)
 
-## Güncellemeler (2026-05-09)
+## Güncellemeler (2026-05-30)
 
+- **Kod Düzenleme Prensibi** eklendi: `scripts/wiki-assistant.py --locate` ile LSP tabanlı sembol konumlandırma
 - **Wiki İçeriği İddiası Kuralı** eklendi: "X yok / Y yansımamış" demeden önce `grep -r "terim" wiki/` ile doğrulama zorunluluğu
 - **Wiki Toplama Filtreleme Kuralı** eklendi: Etkili değişiklikler (logic, API, config) wiki'ye yazılır; etkisizler (UI renk, padding, test, asset) atlanır. Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz
 - Wiki bölümleri sadeleştirildi: Detaylar `wiki/README.md` ve `local-wiki SKILL.md`'ye yönlendirildi
+
+## Kod Düzenleme Prensibi
+
+Kod düzenleme isteklerinde (fonksiyon ekleme, değiştirme, refactor):
+1. `scripts/wiki-assistant.py --locate --file <path> --symbol <name>` ile sembol konumunu bul
+2. Kimi sadece ilgili satır aralığını (`range`) okur, `snippet` ile bağlam alır
+3. Değişiklik `StrReplaceFile` ile uygulanır
+4. İlgili wiki sayfası otomatik güncellenir (`wiki-assistant.py --prepare`)
+
+Desteklenen diller: Python (Pyright) ✅ | JS/TS (TypeScript Server) ⏳ | Kotlin/Java ⏳
 
 ## Kaynaklar
 

@@ -384,6 +384,56 @@ def extract_wiki_sections(wiki_path, section_hints):
     return {"type": "sections", "matched": matched_sections}
 
 
+def locate_symbol(file_path, symbol_name, pretty=False):
+    """LSP üzerinden sembol konumunu bul."""
+    full_path = os.path.join(LOCAL_ROOT, file_path)
+    if not os.path.exists(full_path):
+        full_path = file_path
+    if not os.path.exists(full_path):
+        return {"error": f"Dosya bulunamadı: {file_path}"}
+
+    ext = os.path.splitext(full_path)[1].lower()
+    lang_map = {
+        ".py": "python",
+        ".js": "javascript",
+        ".jsx": "javascript",
+        ".ts": "typescript",
+        ".tsx": "typescript",
+    }
+    language = lang_map.get(ext, "python")
+
+    # Proje kökünü tahmin et — sunucu başlatma hızı için daralt
+    project_root = LOCAL_ROOT
+    rel = os.path.relpath(full_path, LOCAL_ROOT)
+    parts = rel.split(os.sep)
+    if parts[0] == "ops-bot":
+        project_root = os.path.join(LOCAL_ROOT, "ops-bot")
+    elif parts[0] == "projects" and len(parts) >= 2:
+        project_root = os.path.join(LOCAL_ROOT, "projects", parts[1])
+
+    lsp_client_path = os.path.join(LOCAL_ROOT, "scripts", "lsp-client.py")
+    cmd = [
+        sys.executable, lsp_client_path,
+        "--language", language,
+        "--file", full_path,
+        "--symbol", symbol_name,
+        "--project-root", project_root,
+    ]
+
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+    if result.returncode != 0:
+        err = result.stderr.strip() or result.stdout.strip()
+        try:
+            return json.loads(err)
+        except Exception:
+            return {"error": f"LSP client hatası: {err}"}
+
+    try:
+        return json.loads(result.stdout)
+    except Exception as e:
+        return {"error": f"LSP çıktısı parse edilemedi: {e}", "raw": result.stdout}
+
+
 def prepare_project(project):
     """Bir proje için context paketi hazırla."""
     cfg = PROJECTS[project]
@@ -461,9 +511,21 @@ def main():
     parser.add_argument("--project", help="Belirli bir proje (tümü için boş bırak)")
     parser.add_argument("--apply", help="Kimi'nin karar JSON'unu uygula (gelecek)")
     parser.add_argument("--pretty", action="store_true", help="JSON'u formatlı yaz")
+    parser.add_argument("--locate", action="store_true", help="Kod sembolü konumlandır (LSP)")
+    parser.add_argument("--file", help="Hedef dosya yolu (--locate için)")
+    parser.add_argument("--symbol", help="Aranacak sembol adı (--locate için)")
     args = parser.parse_args()
 
-    if args.prepare:
+    if args.locate:
+        if not args.file or not args.symbol:
+            print(json.dumps({"error": "--locate için --file ve --symbol zorunlu"}), file=sys.stderr)
+            sys.exit(1)
+        result = locate_symbol(args.file, args.symbol, pretty=args.pretty)
+        if "error" in result:
+            print(json.dumps(result, indent=2 if args.pretty else None, ensure_ascii=False), file=sys.stderr)
+            sys.exit(1)
+        print(json.dumps(result, indent=2 if args.pretty else None, ensure_ascii=False))
+    elif args.prepare:
         if args.project:
             if args.project not in PROJECTS:
                 print(json.dumps({"error": f"Bilinmeyen proje: {args.project}"}), file=sys.stderr)

@@ -223,6 +223,18 @@ Detaylı komutlar: `references/QUICKREF.md` | Wiki iş akışları: `references/
 
 ---
 
+## Kod Düzenleme Prensibi
+
+Kod düzenleme isteklerinde (fonksiyon ekleme, değiştirme, refactor):
+1. `scripts/wiki-assistant.py --locate --file <path> --symbol <name>` ile sembol konumunu bul
+2. Kimi sadece ilgili satır aralığını (`range`) okur, `snippet` ile bağlam alır
+3. Değişiklik `StrReplaceFile` ile uygulanır
+4. İlgili wiki sayfası otomatik güncellenir (`wiki-assistant.py --prepare`)
+
+**Desteklenen diller:** Python (Pyright) ✅ | JS/TS (TypeScript Server) ⏳ | Kotlin/Java ⏳
+
+---
+
 ## Güvenlik Notları
 
 - **sudo şifresi:** Kullanıcıya sor (sadece yerel, VPS'te sudoers var)
@@ -233,7 +245,7 @@ Detaylı komutlar: `references/QUICKREF.md` | Wiki iş akışları: `references/
 
 ---
 
-> **Son güncelleme:** 2026-05-10
+> **Son güncelleme:** 2026-05-30
 > **Wiki durumu:** 10 proje ingest edildi, 10/10 lint passing
 > **VPS durumu:** ops-bot ✅, sec-agent ✅, telegram-kimi ✅, webimar ✅, mathlock-play ✅
 > **GitHub:** `github.com:atlnatln/local.git`

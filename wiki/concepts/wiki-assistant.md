@@ -43,14 +43,30 @@ Kimi'nin `wiki topla` sirasinda dosya karistirma/okuma yukunu alir. Ona sadece "
 - Lint: 10/10 PASS
 - Commit: `d484c84a` (main)
 
-## 2. Asama (Planlandi): Kod Duzenleme
+## 2. Asama (Devam Ediyor): Kod Duzenleme
 
 **Hedef:** `wiki-assistant.py`'ye `--locate` modu eklenir. Kullanici "su fonksiyona ekleme yap" dediginde:
 1. Asistan dosyayi ve fonksiyonu bulur
 2. Satir araligini tespit eder
 3. Kimi'ye sadece ilgili fonksiyonu sunar
 
-**LSP entegrasyonu:** Kod duzenleme icin gercek LSP server (Pyright, TS Server, gopls) kurulmasi planlanir. Wiki icin ozel script, kod icin gercek LSP.
+### 2.1 Python (Tamamlandi)
+
+- **LSP Sunucusu:** Pyright (`pyright-langserver --stdio`)
+- **Client:** `scripts/lsp-client.py`
+- **Komut:** `python3 scripts/wiki-assistant.py --locate --file <path> --symbol <name>`
+- **Cikti:** JSON (`range`, `kind`, `snippet`)
+- **Test:** `ops-bot/conversation_memory.py` uzerinde dogrulandi
+
+### 2.2 JS/TS (Planlandi)
+
+- TypeScript Server kurulumu
+- `lsp-client.py`'ye JS/TS destegi
+
+### 2.3 Kotlin/Java (Planlandi)
+
+- `kotlin-language-server` ve JDTLS kurulumu
+- Android projelerinde kullanim
 
 ## Dosya Yapisi
 
@@ -78,6 +94,6 @@ Asistan calismazsa (Python hatasi, bos cikti):
 
 ## Baglanti
 
-- [[local-wiki]] — Skill detaylari
+- [[README|local-wiki skill]] — Skill detaylari
 - [[wiki-growth-protocol]] — Buyume kurallari
 - [[agents-md]] — Agent davranis kurallari
