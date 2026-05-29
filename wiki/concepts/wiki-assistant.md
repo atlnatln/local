@@ -65,12 +65,12 @@ Kimi'nin `wiki topla` sirasinda dosya karistirma/okuma yukunu alir. Ona sadece "
 - **Komut:** `python3 scripts/wiki-assistant.py --locate --file <path> --symbol <name>`
 - **Test:** `projects/webimar/webimar-nextjs/middleware.ts` uzerinde dogrulandi
 
-### 2.3 Kotlin (Tamamlandi) / Java (Planlandi)
+### 2.3 Kotlin (Tamamlandi) / Java (Gerek Yok)
 
 - **Kotlin LSP Sunucusu:** `kotlin-language-server` (v1.3.13, `~/.local/bin`)
 - **Client:** `scripts/lsp-client.py` (kotlin destegi eklendi)
 - **Test:** `projects/mathlock-play/app/src/main/java/.../MemoryGameEngine.kt` uzerinde dogrulandi
-- **Java:** JDTLS kurulumu planlandi (karmasik, sonraki oturuma birakildi)
+- **Java:** Monorepo'da elle yazilmis 0 Java dosyasi var (sadece build-generated). JDTLS kurulumuna gerek yok.
 
 ## Dosya Yapisi
 
