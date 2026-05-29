@@ -58,10 +58,12 @@ Kimi'nin `wiki topla` sirasinda dosya karistirma/okuma yukunu alir. Ona sadece "
 - **Cikti:** JSON (`range`, `kind`, `snippet`)
 - **Test:** `ops-bot/conversation_memory.py` uzerinde dogrulandi
 
-### 2.2 JS/TS (Planlandi)
+### 2.2 JS/TS (Tamamlandi)
 
-- TypeScript Server kurulumu
-- `lsp-client.py`'ye JS/TS destegi
+- **LSP Sunucusu:** TypeScript Server (`typescript-language-server --stdio`)
+- **Client:** Mevcut `scripts/lsp-client.py` (JS/TS destegi hazirdi)
+- **Komut:** `python3 scripts/wiki-assistant.py --locate --file <path> --symbol <name>`
+- **Test:** `projects/webimar/webimar-nextjs/middleware.ts` uzerinde dogrulandi
 
 ### 2.3 Kotlin/Java (Planlandi)
 

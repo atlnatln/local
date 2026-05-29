@@ -182,7 +182,7 @@ Kod düzenleme isteklerinde (fonksiyon ekleme, değiştirme, refactor):
 3. Değişiklik `StrReplaceFile` ile uygulanır
 4. İlgili wiki sayfası otomatik güncellenir (`wiki-assistant.py --prepare`)
 
-Desteklenen diller: Python (Pyright) ✅ | JS/TS (TypeScript Server) ⏳ | Kotlin/Java ⏳
+Desteklenen diller: Python (Pyright) ✅ | JS/TS (TypeScript Server) ✅ | Kotlin/Java ⏳
 
 ## Kaynaklar
 
