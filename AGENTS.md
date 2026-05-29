@@ -146,6 +146,21 @@ Kullanıcı "wiki topla"/"wiki ingest"/"wiki güncelle" dediğinde ara sormadan 
 
 **Kural:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Agent `.pending`'i okuduğunda AGENTS.md'ye göre karar verir.
 
+### Wiki Asistanı Prensibi
+
+> `wiki topla` / `wiki ingest` / `wiki güncelle` komutlarında `scripts/wiki-assistant.py` programı **öncelikli araçtır.**
+
+Program: git diff analizi, dosya-wiki eşleme, snippet çıkarma, ilgili bölüm tespiti işlemlerini üstlenir. Kimi sadece asistanın sunduğu "context paketi" (JSON) üzerinden anlam çıkarır ve yazma kararı verir.
+
+**Kullanım:**
+1. Kimi `wiki topla` komutunu alır.
+2. `python3 /home/akn/local/scripts/wiki-assistant.py --prepare [--project X]` çalıştırılır.
+3. Asistan JSON çıktı verir: değişen dosyalar, snippet'ler, ilgili wiki bölümleri.
+4. Kimi sadece bu JSON'u okur. Değişen dosyaların tamamını ve wiki sayfalarının tamamını tekrar tekrar okumaz.
+5. Kimi karar verir, `StrReplaceFile` veya `WriteFile` ile değişiklikleri uygular.
+
+**Fallback:** Asistan çalışmazsa (Python hatası, boş çıktı), klasik 9 adımlık akışa dönülür.
+
 ### Wiki Ingest — Token Tasarrufu Kuralları
 
 > Aşağıdaki kurallar `wiki/concepts/wiki-growth-protocol.md` ve `references/CONVENTIONS.md`'den türetilmiştir.

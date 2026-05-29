@@ -85,6 +85,15 @@ Run the linter:
 cd ~/.kimi/skills/local-wiki/ && python3 scripts/wiki_lint.py /home/akn/local/wiki
 ```
 
+Run the assistant (token optimization):
+```bash
+# Prepare context package for a specific project
+python3 /home/akn/local/scripts/wiki-assistant.py --prepare --project <project> --pretty
+
+# Prepare context package for all projects
+python3 /home/akn/local/scripts/wiki-assistant.py --prepare --pretty
+```
+
 ## Writing Conventions (Summary)
 
 Full rules in `references/CONVENTIONS.md`. Key points:
@@ -95,3 +104,79 @@ Full rules in `references/CONVENTIONS.md`. Key points:
 - Deleted sources → mark `[STALE]`, move to `_archive/`, update index.md.
 - After every ingest: append to `wiki/log.md`, update `wiki/index.md`.
 - On every ingest: refresh `## Recent Commits` section from `git log --oneline -5`.
+
+## Wiki Ingest Flow — Asistanlı (Optimizasyonlu)
+
+Bu akış, mevcut 9 adımlık ingest sürecini **wiki-assistant.py** programıyla birleştirir. Amaç: Kimi'nin okuduğu toplam satır sayısını %70-80 azaltmak.
+
+### Ne Zane Asistan Kullanılır?
+
+Kullanıcı `wiki topla`, `wiki ingest` veya `wiki güncelle` dediğinde **her zaman** bu akışı izle.
+
+### Yeni Akış (10 Adım)
+
+| Adım | İşlem | Kim Yapar? |
+|------|-------|------------|
+| 1 | Checkpoint SHA'ları oku (`wiki/.checkpoints/*.sha`) | Kimi |
+| 2 | Git diff çalıştır (`git diff --name-status <checkpoint>..HEAD`) | Kimi |
+| **3** | **Asistanı çalıştır: `wiki-assistant.py --prepare`** | **Kimi çağırır, Asistan çalıştırır** |
+| 4 | Asistan çıktısını (JSON) analiz et. Diff boş mu kontrol et. | Kimi |
+| 5 | Asistanın `changed_files[].snippets` çıktısını oku. Sadece snippet'leri ve yapısal özetleri değerlendir. | Kimi |
+| 6 | Asistanın `wiki_targets[].sections` çıktısını kullan. **Sadece ilgili bölümleri** oku, sayfanın tamamını değil. | Kimi |
+| 7 | Çapraz referansları yenile. Asistan `wiki_targets` listesinden candidate'ları bil. | Kimi |
+| 8 | Lint çalıştır: `wiki_lint.py` | Kimi (veya Asistan çağırır) |
+| 9 | Checkpoint'leri güncelle | Kimi |
+| 10 | `.pending` temizle, kullanıcıya özet rapor ver | Kimi |
+
+### Asistan Çıktısı (JSON) Nasıl Kullanılır?
+
+Asistan şu yapıda bir JSON döner:
+
+```json
+{
+  "project": "sayi-yolculugu",
+  "diff_summary": {"added": 1, "modified": 3, "deleted": 0},
+  "changed_files": [
+    {
+      "path": "projects/sayi-yolculugu/js/game.js",
+      "status": "M",
+      "snippets": { "type": "structure", "line_count": 200, "header": "...", "structure": [...] }
+    }
+  ],
+  "wiki_targets": [
+    {
+      "page": "wiki/projects/sayi-yolculugu.md",
+      "relevant_sections": ["JavaScript", "Oyun Motoru"],
+      "sections": {
+        "type": "sections",
+        "matched": {
+          "## Oyun Motoru": { "level": 2, "start_line": 45, "content": "..." }
+        }
+      }
+    }
+  ],
+  "index_needs_update": true,
+  "log_needs_update": true
+}
+```
+
+**Kimi'nin kullanımı:**
+- `diff_summary` → kullanıcıya özet raporun ilk cümlesi
+- `changed_files[].snippets` → dosyanın ne içerdiğini anlamak için. **Sayfanın tamamını okuma.** Sadece snippet yeterli.
+- `wiki_targets[].sections.matched` → wiki sayfasının **sadece ilgili bölümünü** oku. Eşleşme yoksa `type: "outline"` gelir, o zaman sayfa yapısını (başlık listesi) görürsün.
+- `index_needs_update` / `log_needs_update` → true ise index.md ve log.md güncellenmeli
+
+### Fallback (Asistan Çalışmazsa)
+
+Eğer `wiki-assistant.py` hata verirse veya çıktı üretmezse:
+1. Hatayı kullanıcıya söyle
+2. **Mevcut 9 adımlık klasik akışa dön** (AGENTS.md'deki orijinal tablo)
+3. Asistan olmadan devam et
+
+### Token Tasarrufu Hedefi
+
+| Metrik | Klasik Akış | Asistanlı Akış | Hedef |
+|--------|-------------|----------------|-------|
+| Okunan toplam satır | ~3000-5000 | ~500-800 | %70-80 azalma |
+| ReadFile tool call | 15-25 | 5-8 | %60 azalma |
+
