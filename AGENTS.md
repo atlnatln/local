@@ -117,12 +117,17 @@ cat /home/akn/local/wiki/.pending 2>/dev/null || echo "EMPTY"
 
 ### Wiki'de Bilgi Arama
 
-Üst ajan wiki'de bilgi ararken şu yolu izler:
+Üst ajan wiki'de bilgi ararken **asistan birincil kaynaktır**:
 
-1. **Kategorik tarama:** `index.md` → ilgili alt index (`concepts-index`, `projects-index`, `decisions-index`, `analysis-index`)
-2. **Full-text arama:** `Grep` ile anahtar kelime arama (örn. `Grep -r "render" wiki/`)
-3. **Sayfa okuma:** `ReadFile` ile hedef sayfayı aç
-4. **Gezinme:** Sayfa içindeki wikilink'lerle (`[[...]]`) ilgili sayfalara atla
+```bash
+python3 /home/akn/local/scripts/wiki-assistant.py --query "<konu>"
+```
+
+Asistan ilgili sayfaları ve bölümleri JSON olarak sunar. Daha hızlıdır ve token tasarrufu sağlar.
+
+**Asistan çalışmazsa veya yetersiz kalırsa:** `index.md` → alt index → `Grep` arama → `ReadFile` okuma → wikilink gezintisi
+
+> Asistan cache'i (`wiki/.assistant-index.json`) wiki sayfalarının başlık yapısını tutar. Değişmemiş sayfalar için tekrar parse edilmez.
 
 İlk başvuru kaynağı her zaman `index.md`'dir. Acil/kronolojik bilgi için `log.md`, tag taksonomisi için `SCHEMA.md` kullanılır.
 
@@ -240,6 +245,38 @@ Her oturum başında:
    - Confidence >= 0.70 olan dersleri **mutlaka** uygula
    - Confidence 0.50-0.69 olan dersleri **dikkatli** uygula
    - Confidence < 0.50 olan dersleri **göz ardı et** (eski olabilir)
+
+---
+
+## Kod Araştırması (Investigation)
+
+Bir hatanın kökenini, bir API'nin kullanımını veya veri akışını anlamak için iki katman vardır:
+
+### 1. Static Analiz (Kod yapısı)
+**Birinci kaynak LSP'dir.** Sembol konumlandırma, cross-references ve tip bilgisi için:
+
+```bash
+scripts/wiki-assistant.py --locate --file <path> --symbol <name>
+```
+
+- **Go to definition:** Sembol nerede tanımlı
+- **Find references:** Kimler çağırıyor
+- **Hover / tip bilgisi:** Dokümantasyon ve tip çıkarımı
+- **Workspace symbols:** Proje genelinde sembol arama
+
+**LSP yetersiz kalırsa (reflection, generated kod, build hatası):** `Grep` ile full-text arama → `ReadFile` ile bağlam okuma
+
+### 2. Runtime Analiz (Davranış)
+LSP static analizdir, runtime'ı görmez. Crash, log veya network sorunlarında:
+
+| Ortam | Araç | Örnek |
+|-------|------|-------|
+| Android | `adb logcat`, `adb shell dumpsys` | ACRA init logu, ANR trace |
+| Backend | `journalctl`, `docker logs` | Django traceback, 5xx hatası |
+| Network | `curl`, browser devtools | API timeout, 403/500 |
+| DB | `psql`, `redis-cli`, Django shell | Query performansı, race condition |
+
+> **Kural:** Runtime sorununda önce log/veri topla, sonra kodu oku. Tersi yapılırsa LSP "kod doğru görünüyor" dediği halde uygulama çöküyor olabilir.
 
 ---
 
