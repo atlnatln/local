@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Wiki Asistanı — LSP-Style Token Optimizasyon için yardımcı program.
-Kimi'nin dosya karıştırma/okuma yükünü alır, ona sadece "context paketi" sunar.
+Kimi'nin dosya keşfi/okuma yükünü alır, ona sadece "context paketi" sunar.
 
 Kullanım:
     python3 wiki-assistant.py --prepare [--project <isim>]
@@ -267,7 +267,7 @@ def guess_section_from_path(path):
 def extract_snippets(rel_path, max_lines=40):
     """
     Bir dosyadan 'snippet' çıkar.
-    MVP'de: Dosyanın tamamını değil, başlık/fonksiyon düzeyinde özet sun.
+    Uzun dosyalarda: Tamamını değil, başlık/fonksiyon düzeyinde özet sun.
     Eğer dosya çok kısaysa tamamını, uzunsa sadece yapısını.
     """
     full_path = os.path.join(LOCAL_ROOT, rel_path)
@@ -402,7 +402,9 @@ def locate_symbol(file_path, symbol_name, pretty=False):
         ".tsx": "typescript",
         ".kt": "kotlin",
     }
-    language = lang_map.get(ext, "python")
+    language = lang_map.get(ext)
+    if not language:
+        return {"error": f"Desteklenmeyen dosya türü: {ext}. --locate sadece Python, JS/TS ve Kotlin dosyaları için çalışır."}
 
     # Proje kökünü tahmin et — sunucu başlatma hızı için daralt
     project_root = LOCAL_ROOT
