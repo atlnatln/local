@@ -92,7 +92,23 @@ python3 /home/akn/local/scripts/wiki-assistant.py --prepare --project <project> 
 
 # Prepare context package for all projects
 python3 /home/akn/local/scripts/wiki-assistant.py --prepare --pretty
+
+# Locate a symbol in source code (LSP)
+python3 /home/akn/local/scripts/wiki-assistant.py --locate --file <path> --symbol <name> --pretty
 ```
+
+## Code Editing Flow — LSP
+
+When the user asks to modify a function/class/section in code:
+
+| Adım | İşlem | Kim Yapar? |
+|------|-------|------------|
+| 1 | `wiki-assistant.py --locate --file <path> --symbol <name>` | Kimi çağırır |
+| 2 | JSON çıktısındaki `range` (satır aralığı) ve `snippet` (içerik) bilgisini kullan | Kimi |
+| 3 | Sadece ilgili satır aralığını gör, karar ver, `StrReplaceFile` ile değişikliği uygula | Kimi |
+| 4 | Kod değişikliği sonrası `wiki-assistant.py --prepare --project <proje>` ile wiki güncelle | Kimi |
+
+**Desteklenen diller:** Python (Pyright), JavaScript/TypeScript (TypeScript Server), Kotlin (kotlin-language-server).
 
 ## Writing Conventions (Summary)
 

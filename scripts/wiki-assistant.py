@@ -5,6 +5,7 @@ Kimi'nin dosya karıştırma/okuma yükünü alır, ona sadece "context paketi" 
 
 Kullanım:
     python3 wiki-assistant.py --prepare [--project <isim>]
+    python3 wiki-assistant.py --locate --file <dosya> --symbol <isim>
     python3 wiki-assistant.py --apply <kiminin-karar.json>
 """
 

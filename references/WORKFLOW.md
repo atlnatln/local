@@ -39,8 +39,11 @@ git diff çıktısını parse et (A/M/D/R durumları):
 | `D` (Deleted/Silindi) | Bu kaynaktan türetilmiş wiki sayfasını bul → `[STALE]` olarak işaretle → `_archive/` dizinine taşı → index.md güncelle (ana bölümlerden kaldır, ## Archived Pages bölümüne ekle) → log güncelle |
 | `R` (Renamed/Yeniden adlandırıldı) | Eski sayfayı arşivle (`[STALE]` işaretle, `_archive/` taşı) → yeniden adlandırılmış kaynaktan yeni sayfa oluştur → eski ↔ yeni arasında çapraz bağlanti kur → index'i güncelle |
 
-### Adım 4 — Kaynağı Oku ve Analiz Et
-Her A/M/R dosyası için:
+### Adım 4 — Kaynağı Oku ve Analiz Et (Asistanlı)
+
+`wiki-assistant.py --prepare` çıktısındaki `changed_files[].snippets` bilgisini kullan. Asistan zaten dosyadan yapısal özet (snippet) çıkarmıştır. Dosyayı baştan sona okuma.
+
+Eğer asistan çalışmazsa (fallback):
 - Dosya içeriğini oku
 - Türünü belirle: config, kaynak kod, deploy script, dokümantasyon
 - Çıkar: amaç, ana fonksiyonlar/bölümler, bağımlılıklar, ilgili dosyalar
@@ -411,6 +414,35 @@ cd /home/akn/local && git show --stat <SHA>
 Değişen dosyaları gör, sonra yukarıdaki listeye göre karar ver.
 
 > **Neden:** Karar mantığı AGENTS.md'de yaşar, hook script'ine gömülü kalmaz. Böylece kurallar zamanla evrilebilir, agent her session'da güncel kılavuzu okur.
+
+---
+
+---
+
+## Workflow 6: Kod Düzenleme (LSP ile)
+
+Kullanıcı "şu fonksiyonu değiştir", "şu dosyada X'e ekleme yap" dediğinde:
+
+### Adım 1 — Sembolü Bul
+```bash
+python3 /home/akn/local/scripts/wiki-assistant.py --locate \
+  --file <dosya-yolu> \
+  --symbol <sembol-adı> \
+  --pretty
+```
+
+Çıktı: JSON (`range`, `kind`, `snippet`)
+
+### Adım 2 — Değişiklik Yap
+Kimi sadece `range` içindeki satırları görür. `StrReplaceFile` ile değişikliği uygula.
+
+### Adım 3 — Wiki Güncelle
+Kod değişikliği sonrası ilgili proje için wiki ingest çalıştır:
+```bash
+python3 /home/akn/local/scripts/wiki-assistant.py --prepare --project <proje> --pretty
+```
+
+**Desteklenen diller:** Python (Pyright), JavaScript/TypeScript (TypeScript Server), Kotlin (kotlin-language-server). Diğer dillerde fallback olarak dosyanın tamamı okunur.
 
 ---
 
