@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f0f1a">
+<title>Sayı Yolculuğu</title>
+<link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+
+<div id="game">
+  <div class="game-header">
+    <div class="level-info">
+      <span class="set-badge" id="setBadge" style="display:none;"></span>
+      <span class="level-badge" id="levelBadge">Seviye 1</span>
+      <span class="level-title" id="levelTitle"></span>
+    </div>
+    <div class="stars" id="starsDisplay">⭐⭐⭐</div>
+    <button class="level-badge" id="btnLevels" style="cursor:pointer;background:var(--secondary);">📋</button>
+    <button class="level-badge" id="btnDaily" style="cursor:pointer;background:var(--gold);color:#000;margin-left:6px;">📅</button>
+    <button class="level-badge" id="btnPause" style="cursor:pointer;background:var(--secondary);margin-left:6px;">⏸</button>
+  </div>
+
+  <div class="game-main">
+    <div class="goal-bar">
+      <div class="goal-icon">🎯</div>
+      <div class="goal-text">
+        <div id="goalDesc" class="goal-desc"></div>
+        <div><strong id="goalDetail"></strong></div>
+      </div>
+      <div id="moveCounter" style="font-size:.8rem;color:var(--text-dim);">0 / 5</div>
+    </div>
+
+    <div class="grid-container">
+      <div class="grid" id="grid"></div>
+      <div class="player" id="player">3</div>
+    </div>
+
+    <div class="cmd-panel">
+      <h3>Komutlar</h3>
+      <div class="cmd-palette" id="cmdPalette"></div>
+      <div class="cmd-queue-label">
+        <h3>Programın</h3>
+        <span class="cmd-count" id="cmdCount">0 / 10</span>
+        <button class="action-btn btn-hint" id="btnHint" style="padding:6px 12px;font-size:.75rem;min-width:auto;flex:0;">💡 Ipucu</button>
+      </div>
+      <div class="cmd-queue" id="cmdQueue"></div>
+      <div class="cmd-actions">
+        <button class="action-btn btn-undo" id="btnUndo">↩</button>
+        <button class="action-btn btn-redo" id="btnRedo">↪</button>
+        <button class="action-btn btn-clear" id="btnClear">🗑</button>
+        <button class="action-btn btn-reset" id="btnReset">🔄</button>
+        <button class="action-btn btn-run" id="btnRun">▶ Çalıştır</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="overlay">
+  <div class="overlay-card">
+    <h2 id="overlayTitle">🎉 Tebrikler!</h2>
+    <div class="overlay-stars" id="overlayStars">⭐⭐⭐</div>
+    <p id="overlayMsg"></p>
+    <div class="overlay-btns">
+      <button class="btn-retry" id="btnRetry">🔄 Tekrar</button>
+      <button class="btn-next" id="btnNext">▶ Sonraki</button>
+    </div>
+  </div>
+</div>
+
+<div id="levelSelect">
+  <div class="level-select-card">
+    <h2>Seviye Seç</h2>
+    <div class="level-grid" id="levelGrid"></div>
+    <button class="level-select-close" id="btnCloseLevels">Kapat</button>
+  </div>
+</div>
+
+<div id="pauseOverlay">
+  <div class="overlay-card">
+    <h2>⏸ Duraklatıldı</h2>
+    <div class="pause-btns">
+      <button class="btn-next" id="btnResume">▶ Devam Et</button>
+      <button class="btn-retry" id="btnPauseRetry">🔄 Yeniden Başla</button>
+    </div>
+    <div class="settings-row">
+      <label class="setting-toggle">
+        <input type="checkbox" id="toggleAudio" checked>
+        <span>🔊 Ses</span>
+      </label>
+      <label class="setting-toggle">
+        <input type="checkbox" id="toggleHaptic" checked>
+        <span>📳 Titreşim</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<div id="allComplete">
+  <h1 id="allCompleteTitle">🏆 Harika!</h1>
+  <div class="total-stars" id="totalStarsText"></div>
+  <p id="allCompleteMsg">Tüm seviyeleri tamamladın!</p>
+  <div id="allCompleteSpinner" style="display:none; margin: 16px 0; font-size: 1.2rem;">⏳ Yeni seviyeler hazırlanıyor, lütfen bekleyin...</div>
+  <button id="btnFinish">Tamam</button>
+</div>
+
+<!-- Tutorial Overlay -->
+<div id="tutorialOverlay" style="display:none;">
+  <div class="tutorial-bubble" id="tutorialBubble">
+    <p id="tutorialText"></p>
+  </div>
+  <div class="tutorial-pointer" id="tutorialPointer"></div>
+</div>
+
+<script src="js/game-i18n.js"></script>
+<script src="js/game-cmds.js"></script>
+<script src="js/game-audio.js"></script>
+<script src="js/game-store.js"></script>
+<script src="js/android-bridge.js"></script>
+<script src="js/game-utils.js"></script>
+<script src="js/game-grid-renderer.js"></script>
+<script src="js/game-command-system.js"></script>
+<script src="js/game-execution-engine.js"></script>
+<script src="js/game-level-manager.js"></script>
+<script src="js/game-ui-overlays.js"></script>
+<script src="js/game-main.js"></script>
+</body>
+</html>

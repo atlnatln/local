@@ -18,6 +18,7 @@ const STORAGE_KEY = 'sayiYolculuguState';
 
 function getSetSignature(data) {
   if (data.set_id) return 'set_' + data.set_id;
+  if (data.version != null) return 'set_v' + data.version;
   if (levels.length > 0) {
     const firstId = levels[0].id != null ? levels[0].id : 1;
     return 'lv_' + firstId + '_' + levels.length;
