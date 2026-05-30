@@ -305,7 +305,7 @@ def cmd_invalidate(args) -> int:
 
 
 def cmd_prune(args) -> int:
-    files = [GENERAL_PLAYBOOK] + sorted(ACE_DIR.glob("*.md"))
+    files = sorted(ACE_DIR.glob("*.md"))
     today = datetime.now().strftime("%Y-%m-%d")
     archived_any = False
 
@@ -391,14 +391,27 @@ def cmd_topla(args) -> int:
     print("=" * 50)
     print("ACE TOPLA — Oturum Sonu Özeti")
     print("=" * 50)
-    print("\n[1/3] Stats:")
+    print("\n[1/4] Stats:")
     cmd_stats(args)
-    print("\n[2/3] Prune dry-run:")
+    print("\n[2/4] Prune dry-run:")
     args.dry_run = True
     cmd_prune(args)
     args.dry_run = False
-    print("\n[3/3] Çakışma kontrolü:")
+    print("\n[3/4] Çakışma kontrolü:")
     cmd_conflicts(args)
+    print("\n[4/4] Wiki Ingest:")
+    import subprocess
+    result = subprocess.run(
+        ["python3", "/home/akn/local/scripts/wiki-assistant.py", "--prepare", "--project", "ace"],
+        capture_output=True, text=True
+    )
+    if result.returncode == 0:
+        print("[OK] Wiki asistanı çalıştırıldı.")
+        print(result.stdout[:500] if result.stdout else "  (değişiklik yok veya başarılı)")
+    else:
+        print("[WARN] Wiki asistanı çalıştırılamadı, fallback aktif:")
+        print(result.stderr[:300] if result.stderr else "  (bilinmeyen hata)")
+        print("  Manuel: cd /home/akn/local && python3 scripts/wiki-assistant.py --prepare")
     print("\n" + "=" * 50)
     print("ACE topla tamamlandı.")
     print("Ders eklemek için: ace-curator.py --learn --title '...' --rule '...'")

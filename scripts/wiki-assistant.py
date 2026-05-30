@@ -150,6 +150,12 @@ PROJECTS = {
         "checkpoint": "wiki/.checkpoints/local.sha",
         "git_root": ".",
     },
+    "ace": {
+        "dir": "wiki/ace",
+        "wiki": "wiki/ace/playbook.md",
+        "checkpoint": "wiki/.checkpoints/local.sha",
+        "git_root": ".",
+    },
 }
 
 # Dosya → Wiki hedefi eşleme kuralları (WORKFLOW.md Adım 4'ten)
@@ -222,6 +228,10 @@ def parse_diff(name_status_output):
 
 def map_to_wiki(project, rel_path):
     """Bir dosya yolunu ilgili wiki sayfasına ve bölüm ipucuna eşle."""
+    # ACE playbook dosyaları → kendi wiki sayfaları
+    if rel_path.startswith("wiki/ace/") and rel_path.endswith(".md"):
+        return rel_path, "ACE Playbook"
+
     # Önce genel kurallar
     for pattern, wiki_page, section_hint in FILE_TO_WIKI_RULES:
         if re.search(pattern, rel_path):

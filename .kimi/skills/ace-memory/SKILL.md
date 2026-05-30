@@ -92,6 +92,13 @@ ACE dosyaları değişmişse wiki ingest çalıştır:
 python3 /home/akn/local/scripts/wiki-assistant.py --prepare --project ace
 ```
 
+> **Not:** `ace-curator.py topla` bu adımı otomatik çalıştırır. Manuel kullanımda yukarıdaki komut çalışır.
+>
+> Fallback (asistan çalışmazsa):
+> ```bash
+> cd /home/akn/local && python3 scripts/wiki-assistant.py --prepare
+> ```
+
 ### Step 6 — Commit Öner
 Eğer playbook değişmişse:
 ```bash
