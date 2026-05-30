@@ -3,7 +3,7 @@ title: "Wiki Asistanı (wiki-assistant.py)"
 created: "2026-05-30"
 updated: "2026-05-30"
 type: concept
-tags: [meta, tooling, automation, lsp-style]
+tags: [meta, automation]
 related: [local-wiki, wiki-growth-protocol, agents-md]
 ---
 

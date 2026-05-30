@@ -320,3 +320,33 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 33 entries
 
+## [2026-05-30 03:14] ingest | sayi-yolculugu | feature/sayi-yolculugu-updates | [[sayi-yolculugu]]
+- **Kapsam:** game-execution-engine.js, game-grid-renderer.js, game-store.js, editor.html, game.html
+- **AGENTS.md:** Asset senkronizasyonu git hook ile otomatik hale getirildi
+- **Yeni dosya:** `game.html` (Android WebView oyun ekranı)
+- **Yeni script:** `scripts/hooks/sync-sayi-yolculugu-assets.sh`
+
+## [2026-05-30 03:14] lint | 8/10
+- Orphan pages: 1 ([[wiki-assistant]])
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 2 (lsp-style, tooling)
+- Raw existence: 0
+- Log size: 35 entries
+
+## [2026-05-30 03:15] lint | 10/10
+- Orphan pages: 0
+- Broken links: 0
+- Missing from index: 0
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 0
+- Unknown tags: 0
+- Raw existence: 0
+- Log size: 36 entries
+

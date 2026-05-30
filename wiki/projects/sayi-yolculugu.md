@@ -227,6 +227,7 @@ override fun onDestroy() {
 - **Game Store:** Yerel depolama ve state yönetimi iyileştirmeleri
 - **Editör:** `editor.html` güncellemeleri
 - **Yeni dosya:** `game.html` eklendi (oyun ekranı)
+- **Asset senkronizasyonu:** Git pre-commit hook ile `mathlock-play` Android asset dizinine otomatik senkronizasyon eklendi. Senkronize edilen dosyalar: `js/game-*.js`, `js/android-bridge.js`, `css/game.css`, `audio/*`, `game.html`
 
 ### 2026-05-27 — v1.0.100 Özellikleri (MVP Polish)
 

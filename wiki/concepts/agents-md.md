@@ -184,6 +184,8 @@ Kod düzenleme isteklerinde (fonksiyon ekleme, değiştirme, refactor):
 
 Desteklenen diller: Python (Pyright) ✅ | JS/TS (TypeScript Server) ✅ | Kotlin ✅ | Java (JDTLS gerek yok — 0 kaynak dosya)
 
+Ayrıca bakınız: [[wiki-assistant]] — LSP-style token optimizasyon ve kod düzenleme asistanı
+
 ## Kaynaklar
 
 - [agents.md](https://agents.md) — Resmi site ve spec
