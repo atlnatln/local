@@ -198,18 +198,20 @@ Kullanıcı "push yap" dediğinde:
 
 ---
 
-## Proje Yapısı (Monorepo)
+## Proje Yapısı (Monorepo + Ayrı Repo'lar)
 
-```
-/home/akn/local/
-├── infrastructure/    # nginx, SSL, monitoring (Docker)
-├── ops-bot/           # Telegram bot (Python, systemd, ayrı repo)
-├── projects/
-│   ├── webimar/       # Django + Next.js + React (ayrı repo)
-│   └── telegram-kimi/ # Telegram Kimi bot
-├── scripts/           # Yardımcı script'ler
-├── wiki/              # LLM Wiki
-└── ARCHITECTURE.md    # Detaylı mimari
+| Proje | Dizin | Repo | Deploy | AGENTS.md |
+|-------|-------|------|--------|-----------|
+| `ops-bot` | `ops-bot/` | Ayrı (`atlnatln/ops-bot`) | systemd | `ops-bot/AGENTS.md` |
+| `webimar` | `projects/webimar/` | Ayrı (`atlnatln/webimar`) | Docker | `projects/webimar/AGENTS.md` |
+| `mathlock-play` | `projects/mathlock-play/` | Ayrı (`atlnatln/mathlock-play`) | Play Store | `projects/mathlock-play/AGENTS.md` |
+| `infrastructure` | `infrastructure/` | **local monorepo** | VPS Docker | `AGENTS.md` (root) |
+| `wiki` | `wiki/` | **local monorepo** | — | `AGENTS.md` (root) |
+| `scripts` | `scripts/` | **local monorepo** | — | `AGENTS.md` (root) |
+
+```bash
+# Tüm repo'ların durumunu tek komutla gör
+bash scripts/repo-status.sh
 ```
 
 > **Ayrı repo'lar:** `ops-bot` → `github.com/atlnatln/ops-bot` | `webimar` → `github.com/atlnatln/webimar` | `mathlock-play` → `github.com/atlnatln/mathlock-play`

@@ -53,4 +53,13 @@ if echo "$STAGED" | grep -qE "^projects/sayi-yolculugu/"; then
     git add mathlock-play/app/src/main/assets/sayi-yolculugu/
 fi
 
+# ── Nested Repo Uyarısı ────────────
+for nested in ops-bot projects/webimar projects/mathlock-play; do
+  if [ -n "$(git -C "$nested" status --short 2>/dev/null)" ]; then
+    echo ""
+    echo "⚠️  $nested dirty! Ayrı commit + push yapmayı unutma."
+    echo "   → cd $nested && git add -A && git commit && git push"
+  fi
+done
+
 exit 0
