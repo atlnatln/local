@@ -223,6 +223,26 @@ Detaylı komutlar: `references/QUICKREF.md` | Wiki iş akışları: `references/
 
 ---
 
+## ACE Playbook Yükleme
+
+Her oturum başında:
+1. Genel playbook'u oku: `wiki/ace/playbook.md`
+2. Proje playbook'unu oku (bulunduğun dizine göre):
+   - `ops-bot/` içindeysem → `wiki/ace/ops-bot.md`
+   - `projects/webimar/` içindeysem → `wiki/ace/webimar.md`
+   - `projects/mathlock-play/` içindeysem → `wiki/ace/mathlock-play.md`
+   - `projects/sayi-yolculugu/` içindeysem → `wiki/ace/sayi-yolculugu.md`
+   - `projects/telegram-kimi/` içindeysem → `wiki/ace/telegram-kimi.md`
+   - `projects/robotopia-android/` içindeysem → `wiki/ace/robotopia-android.md`
+   - `infrastructure/` içindeysem → `wiki/ace/infrastructure.md`
+   - Diğer tüm durumlar → sadece genel playbook
+3. Playbook'teki dersleri uygula:
+   - Confidence >= 0.70 olan dersleri **mutlaka** uygula
+   - Confidence 0.50-0.69 olan dersleri **dikkatli** uygula
+   - Confidence < 0.50 olan dersleri **göz ardı et** (eski olabilir)
+
+---
+
 ## Kod Düzenleme Prensibi
 
 Kod düzenleme isteklerinde (fonksiyon ekleme, değiştirme, refactor):

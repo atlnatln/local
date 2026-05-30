@@ -39,6 +39,21 @@ Ortak altyapı ve platform servisleri. Diğer tüm projelere hizmet eden katman.
 | [[deployment]] | concept | Deploy pipeline, rollback, VPS senkronizasyonu |
 | [[security-ai-reporting]] | concept | AI güvenlik raporlama ve incident response deseni |
 
+## ACE Playbook
+
+Oturumlar arası kalıcı bellek — cross-project ve proje-spesifik dersler.
+
+| Sayfa | Tip | Açıklama |
+|-------|-----|----------|
+| [[playbook]] | ace | Genel cross-project dersler (her oturumda okunur) |
+| [[ops-bot]] | ace | `ops-bot/` — Python, asyncio, Telegram |
+| [[webimar]] | ace | `projects/webimar/` — Django + Next.js |
+| [[mathlock-play]] | ace | `projects/mathlock-play/` — Kotlin/Android |
+| [[sayi-yolculugu]] | ace | `projects/sayi-yolculugu/` — HTML5/JS oyun motoru |
+| [[telegram-kimi]] | ace | `projects/telegram-kimi/` — Python bot |
+| [[robotopia-android]] | ace | `projects/robotopia-android/` — Kotlin/Android |
+| [[infrastructure]] | ace | `infrastructure/` — Docker, nginx, SSL |
+
 ## Analysis
 
 Derinlemesine teknik analiz ve uyum raporları.
@@ -59,6 +74,8 @@ Tüm konseptler: [[concepts-index|Konseptler Kataloğu]]
 
 | Sayfa | Tip | Açıklama |
 |-------|-----|----------|
+| [[ace-system]] | concept | ACE — Adaptive Cross-session Experience, cross-session bellek sistemi |
+| [[ace-simulation]] | concept | ACE simülasyonu — 3 haftalık kurgusal akış |
 | [[acp-protocol]] | concept | ACP protokolü, SDK karşılaştırması, kimi-cli entegrasyonu |
 | [[agents-md]] | concept | AGENTS.md kalıbı — agent instruction dosyası deseni |
 | [[deployment]] | concept | Deploy pipeline, rollback, VPS senkronizasyonu |

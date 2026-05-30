@@ -65,7 +65,7 @@ Technology tags describe the toolchain a note touches.
 Domain tags classify the subject matter independent of any project.
 
 ### Meta
-`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot` `reference` `coding-conventions` `configuration` `github` `refactor` `sync` `vps` `beta` `ci-cd` `official` `technical-debt`
+`meta` `overview` `decision` `adr` `todo` `stale` `archived` `needs-review` `ai-generated` `guide` `automation` `local-wiki` `git-hook` `certbot` `reference` `coding-conventions` `configuration` `github` `refactor` `sync` `vps` `beta` `ci-cd` `official` `technical-debt` `ace` `playbook` `lesson`
 
 Lifecycle tags track note maturity and provenance.
 

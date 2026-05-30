@@ -350,3 +350,50 @@ tags: [meta, log]
 - Raw existence: 0
 - Log size: 36 entries
 
+## [2026-05-30 04:25] lint | 4/10
+- Orphan pages: 9 ([[_template]], [[infrastructure]], [[mathlock-play]], [[ops-bot]], [[robotopia-android]]...)
+- Broken links: 3
+- Missing from index: 3
+- Frontmatter errors: 1
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 3 (memory, simulation, template)
+- Raw existence: 0
+- Log size: 37 entries
+
+## [2026-05-30 04:26] lint | 6/10
+- Orphan pages: 9 ([[_template]], [[infrastructure]], [[mathlock-play]], [[ops-bot]], [[robotopia-android]]...)
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 3 (memory, simulation, template)
+- Raw existence: 0
+- Log size: 38 entries
+
+## [2026-05-30 04:26] lint | 6/10
+- Orphan pages: 9 ([[_template]], [[infrastructure]], [[mathlock-play]], [[ops-bot]], [[robotopia-android]]...)
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 3 (memory, simulation, template)
+- Raw existence: 0
+- Log size: 39 entries
+
+
+## [2026-05-30 04:17] ace | ACE playbook system initialized
+- New: wiki/ace/ hierarchical playbook structure (general + 7 project files)
+- New: scripts/ace-curator.py (learn, validate, prune, stats, topla)
+- New: .kimi/skills/ace-memory/SKILL.md (ace topla workflow)
+- New: wiki/concepts/ace-system.md (concept documentation)
+- Updated: AGENTS.md (ACE Playbook loading instructions)
+- Updated: wiki/index.md (ACE Playbook section)
+- Updated: wiki/SCHEMA.md (ace, playbook, lesson tags)
+- Initial lessons: Ders 001 (LSP locate), Ders 002 (git stash), Ders 003 (lint before ingest)
+- Lint: 6/10 passed, 0 failures, 4 warnings (orphan ACE pages, ace-simulation size, tags)
