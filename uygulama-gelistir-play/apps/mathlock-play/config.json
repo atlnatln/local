@@ -1,0 +1,22 @@
+{
+  "packageName": "com.akn.mathlock.play",
+  "serviceAccount": "/home/akn/secrets/mathlock-play/google-service-account.json",
+  "track": "internal",
+  "defaultLanguage": "tr-TR",
+  "details": {
+    "defaultLanguage": "tr-TR",
+    "contactEmail": "destek@mathlock.app",
+    "contactWebsite": "https://mathlock.app",
+    "contactPhone": ""
+  },
+  "releaseNotes": [
+    {
+      "language": "tr-TR",
+      "text": "Genel iyileştirmeler ve performans güncellemeleri."
+    },
+    {
+      "language": "en-US",
+      "text": "General improvements and performance updates."
+    }
+  ]
+}

@@ -1,97 +1,198 @@
 # uygulama-gelistir-play
 
-Google Play Console'da yeni uygulama kayıt sürecini otomatikleştiren Tampermonkey betikleri ve yardımcı araçlar.
+Google Play Store'da uygulama yönetimini otomatize eden merkezi sistem.
 
-## Amaç
+**API + CLI** ile store listing, görseller, detaylar ve release yönetimini tek komutta yap.
+Yeni uygulama eklemek için `scaffold` komutuyla saniyeler içinde template oluştur.
 
-Copilot yardımı ile uygulama meta verilerini tanımlayıp Google Play Console'a **hızlıca** kaydetmek; geliştirme → test sürecini kısaltmak.
+---
 
-## Yapı
+## Özellikler
 
-```
-uygulama-gelistir-play/
-├── apps/                          # Uygulama config dosyaları (JSON)
-│   └── ornek-uygulama.json
-├── tampermonkey/
-│   └── play-console-autofill.user.js  # Ana Tampermonkey betiği
-├── config-editor/
-│   └── index.html                 # Yerel config editörü (tarayıcıda aç)
-└── docs/
-    └── KULLANIM.md
-```
+| Özellik | Nasıl? |
+|---------|--------|
+| Store listing (başlık, açıklama) | ✅ API (`sync-listing`) |
+| Ekran görüntüleri, ikon, grafik | ✅ API (`sync-listing`) |
+| Uygulama detayları (kategori, iletişim) | ✅ API (`sync-listing`) |
+| AAB/APK yükleme + track | ✅ API (`release`) |
+| İçerik derecelendirmesi | ❌ Tarayıcı (Tampermonkey) |
+| Hedef kitle / Reklam / Data Safety | ❌ Tarayıcı (Tampermonkey) |
+
+---
 
 ## Kurulum
 
-### 1. Tampermonkey Betiği Yükle
-
-1. Tarayıcıda Tampermonkey eklentisi kurulu olsun.  
-2. Tampermonkey Dashboard → **Create a new script** → tüm içeriği temizle.  
-3. `tampermonkey/play-console-autofill.user.js` dosyasının içeriğini yapıştır → Kaydet.  
-4. Alternatif: Tampermonkey → **Import from file** → dosyayı seç.
-
-### 2. Config Editörü
+### 1. Python Bağımlılıkları
 
 ```bash
-# Tarayıcıda aç
-xdg-open /home/akn/vps/uygulama-gelistir-play/config-editor/index.html
+pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 ```
 
-Veya VS Code'dan Live Server ile servis et.
+### 2. Service Account
 
-## Kullanım Akışı
+Her uygulamanın `config.json`'unda bir Google Service Account JSON dosyası referansı olmalı.
+Play Console → Kurulum → API erişimi → Service Account oluştur → `Release Manager` rolü ver.
 
-### Yöntem A: Kayan Panel (Tampermonkey)
+---
 
-1. [https://play.google.com/console/…/create-new-app](https://play.google.com/console/u/0/developers/9071363965517112224/create-new-app) sayfasına git.  
-2. Sağda otomatik açılan **"🚀 Play Console – Hızlı Kayıt"** panelini kullan.  
-3. Alanları doldur → **⚡ Formu Doldur** veya **⚡ Doldur & Oluştur**.
-
-### Yöntem B: URL Parametresi (CI / Copilot ile)
-
-Config editöründen veya aşağıdaki formatla URL oluştur:
+## Klasör Yapısı
 
 ```
-https://play.google.com/console/u/0/developers/9071363965517112224/create-new-app
-  ?ugpAutoFill=1
-  &ugpName=Mathlock%20Play
-  &ugpLang=tr-TR
-  &ugpType=app
-  &ugpPricing=free
-  &ugpPolicy=1
-  &ugpExport=1
-  &ugpSubmit=0   ← 1 yapınca otomatik "Oluştur" butonuna da basar
+uygulama-gelistir-play/
+├── apps/
+│   └── mathlock-play/
+│       ├── config.json              ← Paket adı, service account, track, iletişim
+│       └── metadata/
+│           └── tr-TR/
+│               ├── title.txt              (max 30 karakter)
+│               ├── short_description.txt  (max 80)
+│               ├── full_description.txt   (max 4000)
+│               └── images/
+│                   ├── icon/icon.png                (512×512)
+│                   ├── featureGraphic.png           (1024×500)
+│                   ├── phoneScreenshots/
+│                   ├── sevenInchScreenshots/
+│                   └── tenInchScreenshots/
+│           └── en-US/
+│               └── ...
+├── scripts/
+│   └── play-cli.py          ← Ana CLI (sync-listing, release, scaffold, validate)
+├── tampermonkey/
+│   └── play-console-autofill.user.js  ← Yedek: Tarayıcı otomasyonu
+└── config-editor/
+    └── index.html            ← Yedek: Web config editörü
 ```
 
-### Yöntem C: JSON Config Dosyası
+---
 
-`apps/` klasöründe her uygulama için bir JSON dosyası tut:
+## Komutlar
+
+### `sync-listing` — Mağaza girişini senkronize et
+
+Tüm diller için metinleri, görselleri ve uygulama detaylarını Play Console'a upload eder.
+
+```bash
+python scripts/play-cli.py sync-listing --app mathlock-play
+```
+
+### `release` — AAB yükle + track'e ata
+
+```bash
+python scripts/play-cli.py release \
+  --app mathlock-play \
+  --aab /home/akn/local/projects/mathlock-play/app/build/outputs/bundle/release/app-release.aab
+```
+
+### `scaffold` — Yeni uygulama template'i oluştur
+
+```bash
+python scripts/play-cli.py scaffold \
+  --app super-oyun \
+  --package com.akn.superoyun \
+  --title "Süper Oyun" \
+  --lang tr-TR
+```
+
+Bu komut `apps/super-oyun/` altında tüm gerekli klasörleri ve boş config dosyalarını oluşturur.
+
+### `validate` — Kontrol et
+
+Metin uzunlukları, görsel varlığı ve config doğruluğunu kontrol eder.
+
+```bash
+python scripts/play-cli.py validate --app mathlock-play
+```
+
+---
+
+## `config.json` Şeması
 
 ```json
 {
-  "appName": "Mathlock Play",
+  "packageName": "com.akn.mathlock.play",
+  "serviceAccount": "/home/akn/secrets/mathlock-play/google-service-account.json",
+  "track": "internal",
   "defaultLanguage": "tr-TR",
-  "type": "app",
-  "pricing": "free",
-  "declarations": {
-    "developerPoliciesAccepted": true,
-    "exportLawsAccepted": true
-  }
+  "details": {
+    "defaultLanguage": "tr-TR",
+    "contactEmail": "destek@ornek.com",
+    "contactWebsite": "https://ornek.com",
+    "contactPhone": ""
+  },
+  "releaseNotes": [
+    {"language": "tr-TR", "text": "Genel iyileştirmeler."},
+    {"language": "en-US", "text": "General improvements."}
+  ]
 }
 ```
 
-Config editörüne yükle → **URL Oluştur** → tarayıcıda aç → form otomatik dolar.
+| Alan | Açıklama |
+|------|----------|
+| `packageName` | Google Play'deki paket adı |
+| `serviceAccount` | Service Account JSON dosyasının yolu (mutlak veya göreceli) |
+| `track` | `internal`, `alpha`, `beta`, `production` |
+| `defaultLanguage` | Varsayılan dil kodu |
+| `details` | Uygulama detayları (e-posta, web sitesi, telefon) |
+| `releaseNotes` | Her release'te kullanılacak release notes |
 
-## Copilot ile Hızlı Kullanım
+---
 
-Yeni uygulama eklerken Copilot'a şunu söyle:
+## Yeni Uygulama Ekleme Akışı
 
-> "apps/ klasöründe `benim-uygulamam.json` oluştur: ad 'Süper Uygulama', dil tr-TR, tür app, ücretsiz"
+1. **Scaffold oluştur:**
+   ```bash
+   python scripts/play-cli.py scaffold --app yeni-app --package com.sirket.yeniapp --title "Yeni App"
+   ```
 
-Copilot JSON'u oluşturur, config editörüne yüklersin, URL'yi kopyalarsın, tarayıcıda form otomatik dolar.
+2. **Service account ayarla:**
+   - Play Console'da service account oluştur
+   - `config.json`'a `serviceAccount` yolunu yaz
+
+3. **Store listing metinlerini doldur:**
+   - `metadata/tr-TR/title.txt`
+   - `metadata/tr-TR/short_description.txt`
+   - `metadata/tr-TR/full_description.txt`
+
+4. **Görselleri yerleştir:**
+   - `metadata/tr-TR/images/icon/icon.png` (512×512)
+   - `metadata/tr-TR/images/featureGraphic.png` (1024×500)
+   - `metadata/tr-TR/images/phoneScreenshots/*.png` (en az 2 adet)
+
+5. **Doğrula:**
+   ```bash
+   python scripts/play-cli.py validate --app yeni-app
+   ```
+
+6. **API ile upload et:**
+   ```bash
+   python scripts/play-cli.py sync-listing --app yeni-app
+   ```
+
+7. **Play Console'da manuel tamamla:**
+   - İçerik derecelendirmesi
+   - Hedef kitle & Reklam
+   - Data Safety
+   - Gizlilik politikası
+
+8. **İlk release'i yap:**
+   ```bash
+   python scripts/play-cli.py release --app yeni-app --aab path/to/app-release.aab
+   ```
+
+---
+
+## Tampermonkey (Yedek)
+
+Eğer API ile bir işlem yapılamazsa veya tarayıcı otomasyonu gerekiyorsa, mevcut `tampermonkey/play-console-autofill.user.js` betiği kullanılabilir. Bu betik:
+
+- Yeni uygulama oluşturma formunu otomatik doldurur
+- Mağaza girişi metinlerini otomatik doldurur
+- URL parametreleri ile Copilot/agent entegrasyonu sağlar
+
+---
 
 ## Notlar
 
-- `ugpSubmit=1` parametresi formu otomatik gönderir — dikkatli kullan.  
-- Tampermonkey panelindeki config'ler `GM_storage`'da saklanır (tarayıcıya özel).  
-- Config editöründeki kayıtlar `localStorage`'da saklanır.  
-- Dil dropdown'u `tr-TR` seçmek için Angular menüsünün açılmasını bekler; yavaş bağlantılarda `sleep` süresini betikte artır.
+- `sync-listing` her çalıştığında mevcut görselleri siler ve yeniden upload eder. Bu, eski görsellerin kalıntı kalmasını engeller.
+- Her API işlemi bir "edit" (taslak) oluşturur, işlemler bitince `commit` edilir. Hata olursa edit iptal edilir (otomatik rollback).
+- Service account'un Play Console'da en az `Release Manager` rolüne sahip olması gerekir.

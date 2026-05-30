@@ -57,7 +57,8 @@ Oturum geçmişini analiz et:
 ### Step 2 — Ders Çıkar (Workflow 1-A)
 Eğer oturumdan çıkarılabilir bir ders varsa:
 - Ders taslağı oluştur (aşağıdaki Extract Lesson workflow'nu kullan)
-- Kullanıcıya göster, onay al
+- **Talimat:** Ders ekleme kararında tereddütte kalınırsa (örn. "ikisini mi üçünü mü ekleyeyim"), somut sebep varsa (somut örnek, tekrarlanabilir pattern, zaman kaybı) kullanıcıya sormadan doğrudan ekle. Kullanıcı "ace topla" dediğinde karar yetkisini devretmiştir.
+- Ders taslağını kullanıcıya göster, onay al (ama ekleme kararı için ara sorma)
 - Onaylanırsa `scripts/ace-curator.py --learn` ile kaydet
 
 Örnek komut:
