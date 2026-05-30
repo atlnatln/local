@@ -62,23 +62,15 @@ Her değişiklik sonrası **üç** kaydı güncelle:
 
 | Kaynak | Konum | Test | Senkronizasyon |
 |--------|-------|------|----------------|
-| **JS motoru** | `js/game-*.js` | `index.html` (browser) | Otomatik senkronizasyon (git hook) |
-| **CSS** | `css/game.css` | `index.html` (browser) | Otomatik senkronizasyon (git hook) |
-| **game.html** | `game.html` | Android WebView | Otomatik senkronizasyon (git hook) |
-| **Audio** | `audio/*` | Android WebView | Otomatik senkronizasyon (git hook) |
+| **JS motoru** | `js/game-*.js` | `index.html` (browser) | Değişiklik sonrası `../mathlock-play/app/src/main/assets/sayi-yolculugu/js/game-*.js`'e kopyalanmalı |
+| **CSS** | `css/game.css` | `index.html` (browser) | Değişiklik sonrası `../mathlock-play/app/src/main/assets/sayi-yolculugu/css/game.css`'ye kopyalanmalı |
 | **Statik seviyeler** | `js/levels-data.js` | `index.html` (browser) | Android backend API seviye verisini döner; bu dosya arşiv/referans |
 | **Seviye editörü** | `editor.html`, `js/editor.js` | `editor.html` (browser) | Export edilen seviyeler `js/levels-data.js`'e manuel eklenir |
 
-**Senkronizasyon:**
-Git pre-commit hook otomatik olarak aşağıdaki dosyaları `mathlock-play` Android asset dizinine senkronize eder:
-- `js/game-*.js`, `js/android-bridge.js`
-- `css/game.css`
-- `audio/*`
-- `game.html`
-
-Manuel tetikleme (acil durumlar için):
+**Senkronizasyon komutu:**
 ```bash
-bash /home/akn/local/scripts/hooks/sync-sayi-yolculugu-assets.sh
+cp js/game-*.js js/android-bridge.js ../mathlock-play/app/src/main/assets/sayi-yolculugu/js/
+cp css/game.css ../mathlock-play/app/src/main/assets/sayi-yolculugu/css/
 ```
 
 ### Python Motor (Procedural Level Generation)

@@ -17,14 +17,11 @@
 - **Path planning must respect commands:** `plan_solution_path` sadece oyuncunun kullanabileceği komut yönlerini kullanmalı.
 - **Op processing order must match path order:** `place_ops`'ta `chosen` listesi path sırasına göre sort edilmeli.
 - **Android asset sync:** Her değişiklik sonrası `cp js/game-*.js css/game.css ../mathlock-play/app/src/main/assets/sayi-yolculugu/`
-- **Browser cache:** Playwright testlerinde cache bypass gerekli (`Network.clearBrowserCache` CDP). Android WebView'da da benzer: `game-execution-engine.js` değişince browser cache'den eski versiyon yüklenip "Unexpected end of input" hatası verebilir. Çözüm: `location.reload(true)` veya cache bypass header'ları.
+- **Browser cache:** Playwright testlerinde cache bypass gerekli (`Network.clearBrowserCache` CDP)
 - **Tutorial localStorage key:** `sy_tutorial_{setId}_{levelIdx}` formatında tutulur, set değişiminde tekrar gösterilir
 - **Hint system:** `hintCommands` Python `to_dict()`'a eklendi. JS'te `showHint()` kredi kontrolü ve tüm kredi sistemi kodu tamamen kaldırıldı (oyun içi kredi kaldırıldı). `showHintPreview()`/`hideHintPreview()` basılı-tutma mekaniği eklendi. `hintCommands` yoksa `lv.solution`'a fallback yapılır. Android asset'ler senkronize edildi.
 - **Ghost preview:** Komut kuyruğu değiştiğinde `updateGhostPreview()` otomatik çağrılır, duvar kontrolü yapar
 - **IAP bridge:** `BillingHelper` `SayiYolculuguActivity`'de initialize ediliyor, `buyCredits` → `launchPurchase("kredi_1")`
-- **Cross-file variable scope:** `const`/`let` ile tanımlanan değişkenler block-scoped'tur. Farklı `<script>` dosyaları arasında paylaşılan değerlar global `state` objesine veya fonksiyon parametresine alınmalı. `effectiveTargetVal` `loadLevel()`'ın local değişkeniydi, `checkWin()` göremedi → `ReferenceError` → UI dondu.
-- **Duplicate op consistency:** Grid renderer (`opMap`, son yazan kazanır) ve execution engine (`Array.find()`, ilk bulan kazanır) farklı lookup kullanıyordu. Aynı mekanizma kullanılmalı.
-- **Async exception safety:** `runProgram` gibi async fonksiyonlarda `try/catch/finally` zorunlu. Exception atılırsa `state.running = false` ve UI reset hiç çalışmaz, ekran donar.
 
 ---
 
@@ -69,17 +66,20 @@
 
 ---
 
-## ⏭️ Sonraki Adımlar
+## ⏭️ Sonraki Adımlar (3 Haftalık Plan)
 
-**1000 Seviye Sonrası İyileştirme Planı — Tamamlandı:**
-- `build_difficulty_plan()` — `base = round(last_avg * 0.75)` + plan yapısı düzeltmesi (base değeri daha iyi temsil ediliyor)
-- `difficulty_score` field'i — `Level.to_dict()`'ye `"difficultyScore"` eklendi
-- Veriye dayalı kalibrasyon — `scripts/calibrate_difficulty_bands.py` + P20/P40/P60/P80/P95 percentilleri
-- `score_to_difficulty` bantları — D4/D5 sınırı 55'e yükseltildi (generator varyansını tolere eder)
-- Grid filtreleme — D1'de 1×N / N×1 grid'ler kaldırıldı
-- 1000 batch üretim + validasyon — 996 seviye, %100 temiz, D5 oranı %9.1
-- 54 pytest passed, 0 failure
-- Plugin `analyze_level.py` güncellendi (yeni bantlar + `stored_difficulty_score`)
+**Hafta 3: "İnce Ayar" — Tamamlandı:**
+- ~~Undo/Redo Stack~~ ✅
+- ~~Basit Yerel Achievements~~ ✅
+- ~~Bugünün Seti~~ ✅
+
+**Yeni: Zorluk Dengesi Düzeltme (Tam Yeniden Tasarım) — Tamamlandı:**
+- `procedural_levels/generator/difficulty_score.py` — Gerçek zorluk skoru hesaplama (BFS metrik tabanlı)
+- `ScoreConfig.for_target_score()` — Hedef skora göre parametre seçimi
+- `pipeline.py` — `generate_level()` hedef skor-tabanlı, `generate_set()` set profili + monoton sıralama
+- 1000 seviyelik batch: %100 temiz, 0 overlap, 0 band violation
+- 52 pytest passed (42 eski + 10 yeni)
+- Plugin `analyze_level.py` + `validate_level.py` güncellendi
 
 ---
 
@@ -90,20 +90,29 @@
 | S2 | `browser_evaluate` MCP tool'u büyük işlemlerde timeout veriyor | Playwright MCP | Orta |
 | S3 | Browser cache: Playwright testlerinde JS değişiklikleri cache'den yükleniyor | Playwright/CDP | Düşük (test-only) |
 
-**Çözülmüş Sorunlar (2026-05-29):**
-- ~~janset 3.set 9.seviye: duplicate op (×2 + +1 aynı konumda)~~ ✅ — VPS DB düzeltildi, generator dedup koruma eklendi, plugin `check_duplicate_ops` eklendi
-- ~~czerdali/kerem: Yanlış yapınca donma + uyarı vermeme~~ ✅ — `effectiveTargetVal` `loadLevel()` local `const`'ı `checkWin()`'da `ReferenceError` atıyordu. `checkWin()` içinde local hesaplamaya çevrildi + `runProgram`'a `try/catch/finally` eklendi
-
 ---
 
 ## 🔮 Bir Sonraki Oturum İçin Hazırlık
 
-**Durum:** Zorluk dengeleme iyileştirmesi tamamlandı. D5 oranı %73.5'ten %9.1'e düştü.
+**Durum:** Hafta 3 tamamlandı. 3 haftalık pragmatik geliştirme planı tamamlandı.
 
-**Olası devam görevleri:**
-- Yeni 1000 batch'i Android asset'ine dahil etme
-- `levels-data.js`'e yeni batch'i ekleme (arşiv/referans)
-- Daha fazla batch üretimi (10.000 seviye)
+**Hafta 3 (İnce Ayar) — Tamamlandı:**
+- **Undo/Redo Stack** — Komut kuyruğu history (max 50 adım)
+  - `game-store.js`: `history`, `historyIdx`, `resetHistory()`, `pushHistory()`
+  - `game-command-system.js`: `undo()`, `redo()`, her `addCommand()`/remove/clear/showHint sonrası snapshot
+  - `index.html` / `game.html`: `btnRedo` butonu
+  - `game-main.js`: Event handler'lar, `btnClear`'a `pushHistory()`
+  - `game-level-manager.js`: `loadLevel()` sonunda `resetHistory()`
+- **Basit Yerel Achievements** — 5 rozet, localStorage flag'leri + toast
+  - `game-store.js`: `loadAchievements()`, `saveAchievements()`, `unlockAchievement()`
+  - `game-execution-engine.js`: `checkAchievements()` — `first_win`, `perfect_3`, `speedster`, `no_mistake`, `ten_levels`
+  - `game-ui-overlays.js`: `showAchievementToast()` + `ACHIEVEMENT_DEFS`
+  - `css/game.css`: `.achievement-toast`, `@keyframes toastIn/toastOut`
+- **Bugünün Seti** — Deterministik daily, `LEVELS_BY_AGE`'den 10 seviye
+  - `game-main.js`: `getDailySetIndex()`, `getAllLevelsFlat()`, `playDailySet()`
+  - `index.html` / `game.html`: `btnDaily` butonu
+- **Android asset senkronizasyonu** — `js/game-*.js`, `css/game.css`, `game.html` kopyalandı
+- **pytest** — 42 passed, 0 failure
 
 ---
 
@@ -111,7 +120,6 @@
 
 - [x] Bu dosyayı güncelle (görev durumu, yeni kararlar, yeni bug'lar)
 - [x] Session log yaz: `.kimi/logs/YYYY-MM-DD-HHMM-session.md`
-- [x] Plugin `.py` dosyalarını `~/.kimi/plugins/.../scripts/` altına senkronize et
-- [x] `pytest` çalıştır (`../mathlock-play/procedural_levels/tests/`) — 54 passed
-- [x] 1000 batch validasyon — %100 temiz, D5 %9.1
+- [ ] Plugin `.py` dosyalarını `~/.kimi/plugins/.../scripts/` altına senkronize et
+- [x] `pytest` çalıştır (`../mathlock-play/procedural_levels/tests/`) — 42 passed
 - [x] Git status kontrol et

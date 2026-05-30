@@ -19,8 +19,7 @@ async function runProgram() {
   state.attempts++;
   $('btnRun').disabled = true;
 
-  try {
-    const lv = getLevel();
+  const lv = getLevel();
   state.playerX = lv.startX;
   state.playerY = lv.startY;
   state.playerVal = lv.startVal;
@@ -33,10 +32,6 @@ async function runProgram() {
   var activatedSwitches = new Set();
 
   const chips = cmdQueue.querySelectorAll('.cmd-chip');
-
-  // Build opMap once for O(1) lookup throughout the execution
-  const opMap = {};
-  (lv.ops || []).forEach(function(o) { opMap[o.x + ',' + o.y] = o; });
 
   for (let i = 0; i < state.queue.length; i++) {
     const cmdId = state.queue[i];
@@ -124,8 +119,8 @@ async function runProgram() {
       }
     }
 
-    // Op apply — use the pre-built opMap for O(1) lookup
-    const op = opMap[state.playerX + ',' + state.playerY];
+    // Op apply
+    const op = (lv.ops || []).find(function(o) { return o.x === state.playerX && o.y === state.playerY; });
     if (op) {
       if (op.type === '+') state.playerVal += op.val;
       else if (op.type === '-') state.playerVal -= op.val;
@@ -182,19 +177,6 @@ async function runProgram() {
 
   await sleep(200);
   checkWin();
-  } catch (e) {
-    console.error('[Game] runProgram error:', e);
-    try {
-      $('overlayTitle').textContent = t('error');
-      $('overlayStars').textContent = '';
-      $('overlayMsg').textContent = t('errorMsg');
-      $('btnNext').style.display = 'none';
-      overlay.classList.add('active');
-    } catch(_) {}
-  } finally {
-    state.running = false;
-    $('btnRun').disabled = false;
-  }
 }
 function checkWin() {
   const lv = getLevel();
@@ -251,7 +233,7 @@ function checkWin() {
     $('overlayTitle').textContent = t('failTitle');
     $('overlayStars').textContent = '';
     $('overlayMsg').textContent = posOk && !valOk
-      ? t('failValueMsg', {playerVal: state.playerVal, targetVal: (lv.targetVal != null ? lv.targetVal : (lv.ops && lv.ops.length > 0 ? lv.startVal : null))})
+      ? t('failValueMsg', {playerVal: state.playerVal, targetVal: effectiveTargetVal})
       : t('failPosMsg');
     $('btnNext').style.display = 'none';
     overlay.classList.add('active');

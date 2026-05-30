@@ -66,7 +66,7 @@ function buildGrid(lv) {
         else if (op.type === '-') { cell.classList.add('op-minus'); cell.textContent = '-' + op.val; }
         else if (op.type === '×' || op.type === '*') { cell.classList.add('op-times'); cell.textContent = '×' + op.val; }
         else if (op.type === '/') { cell.classList.add('op-divide'); cell.textContent = '÷' + op.val; }
-        else if (op.type === '^') { cell.classList.add('op-square'); cell.textContent = '²'; }
+        else if (op.type === '^') { cell.classList.add('op-square'); cell.textContent = '^' + op.val; }
       } else if (lockMap[key]) {
         const lock = lockMap[key];
         cell.classList.add('lock');
