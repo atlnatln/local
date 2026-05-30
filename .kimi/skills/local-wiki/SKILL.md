@@ -37,6 +37,7 @@ Persistent, compounding knowledge base for the `/home/akn/local` VPS monorepo. A
 - User says "karar ekle", "adr ekle", "mimari karar", "decision add" → ADR workflow
 - User asks "why did we choose X over Y", "neden X yaptık", "X yerine neden Y", "bu kararın gerekçesi" → Query workflow (ADR-aware)
 - User proposes a change that may conflict with an existing architectural decision → Proactive ADR Check (CONVENTIONS.md Section 15)
+- User says "ace topla" and wiki ingest is needed as the final step of ACE session wrap-up → Ingest workflow (ACE files in `wiki/ace/` are subject to the same lint/rules as other wiki pages)
 
 ## Orientation Ritual (Before Every Wiki Command)
 
@@ -77,6 +78,7 @@ For page templates, read `references/PAGE_TEMPLATES.md`:
 | telegram-kimi | `/home/akn/local/.git` | `.checkpoints/local.sha` | `projects/telegram-kimi/` |
 | sayi-yolculugu | `/home/akn/local/.git` | `.checkpoints/local.sha` | `projects/sayi-yolculugu/` |
 | infrastructure | `/home/akn/local/.git` | `.checkpoints/local.sha` | `infrastructure/` |
+| ace | `/home/akn/local/.git` | `.checkpoints/local.sha` | `wiki/ace/` |
 
 ## Script Invocation
 
@@ -121,13 +123,21 @@ Full rules in `references/CONVENTIONS.md`. Key points:
 - After every ingest: append to `wiki/log.md`, update `wiki/index.md`.
 - On every ingest: refresh `## Recent Commits` section from `git log --oneline -5`.
 
+## ACE + Wiki Cross-Reference
+
+ACE (`wiki/ace/`) is part of the wiki and follows the same rules:
+- ACE playbook pages are linted together with other wiki pages.
+- ACE changes are tracked via the `local` checkpoint (`.checkpoints/local.sha`).
+- When `ace topla` triggers wiki ingest, use the same assisted ingest flow below.
+- The `ace-memory` skill owns lesson extraction / prune / stats; this skill owns the wiki ingest step.
+
 ## Wiki Ingest Flow — Asistanlı (Optimizasyonlu)
 
 Bu akış, mevcut 9 adımlık ingest sürecini **wiki-assistant.py** programıyla birleştirir. Amaç: Kimi'nin okuduğu toplam satır sayısını %70-80 azaltmak.
 
 ### Ne Zane Asistan Kullanılır?
 
-Kullanıcı `wiki topla`, `wiki ingest` veya `wiki güncelle` dediğinde **her zaman** bu akışı izle.
+Kullanıcı `wiki topla`, `wiki ingest`, `wiki güncelle` veya `ace topla`'nın wiki ingest adımında **her zaman** bu akışı izle.
 
 ### Yeni Akış (10 Adım)
 
