@@ -137,3 +137,37 @@ git add wiki/ && git commit -m "docs(wiki): ..."
 - [[wiki-growth-protocol]]
 
 ---
+
+## Ders 004: Entegrasyon değişikliklerini ilk implementasyonda test et
+**Confidence:** 0.80
+**Created:** 2026-05-30
+**Updated:** 2026-05-30
+**Validations:** 0
+**Source:** scripts/wiki-assistant.py
+**Scope:** genel
+**Type:** anti-pattern
+
+### Context
+ACE sistemini wiki'ye entegre ederken wiki-assistant.py ace'yi tanımıyordu ve map_to_wiki yanlış hedefe yönlendiriyordu.
+
+### Rule
+Yeni bir alt sistem eklerken (ACE gibi), mevcut otomasyon araçlarının (wiki-assistant.py) onu tanıyıp tanımadığını, dosya eşlemelerinin doğru çalışıp çalışmadığını hemen test et.
+
+### Rationale
+Entegrasyon 'teoride çalışır' ama pratikte kırık olabilir. Erken test etmek ileride büyük zaman kaybını ve tutarsızlığı önler.
+
+### Examples
+#### ✅ Do
+```bash
+python3 scripts/wiki-assistant.py --prepare --project ace --pretty
+```
+
+#### ❌ Don't
+```bash
+# Dokümantasyonda 'ace topla' ile wiki ingest çalışır yaz, ama hiç test etme
+```
+
+### Related
+- [[playbook]]
+
+---
