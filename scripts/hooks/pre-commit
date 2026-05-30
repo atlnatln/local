@@ -42,4 +42,15 @@ if echo "$STAGED" | grep -qE "^(AGENTS\.md|README\.md|SCHEMA\.md|wiki/|projects/
     exit 1
 fi
 
+# ── Sayı Yolculuğu Android Asset Senkronizasyonu ────────────
+if echo "$STAGED" | grep -qE "^projects/sayi-yolculugu/"; then
+    echo ""
+    echo "📱 Sayı Yolculuğu dosyalarında değişiklik tespit edildi."
+    echo "   Android asset'leri senkronize ediliyor..."
+    echo ""
+    bash /home/akn/local/scripts/hooks/sync-sayi-yolculugu-assets.sh
+    # Senkronize edilen dosyaları otomatik olarak stage'e ekle
+    git add mathlock-play/app/src/main/assets/sayi-yolculugu/
+fi
+
 exit 0
