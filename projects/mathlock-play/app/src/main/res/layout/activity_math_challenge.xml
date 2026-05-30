@@ -76,7 +76,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="👁️ Ebeveyn Önizleme — Cevaplar gösteriliyor, hiçbir şey kaydedilmiyor"
+            android:text="@string/test_banner_text"
             android:textSize="12sp"
             android:textColor="#2E7D32"
             android:textStyle="bold"

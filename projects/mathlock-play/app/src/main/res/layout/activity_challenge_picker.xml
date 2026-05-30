@@ -46,7 +46,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Süre bitti!"
+                    android:text="@string/timer_expired_title"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="#E65100" />
@@ -55,7 +55,7 @@
                     android:id="@+id/tvTimerExpiredSub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bir oyun seç veya ebeveyn girişi yap"
+                    android:text="@string/timer_expired_subtitle"
                     android:textSize="12sp"
                     android:textColor="#BF360C" />
             </LinearLayout>
@@ -132,7 +132,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Matematik Soruları"
+                    android:text="@string/challenge_math_title"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface" />
@@ -140,7 +140,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Toplama, çıkarma, çarpma, bölme"
+                    android:text="@string/challenge_math_desc"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface_secondary" />
             </LinearLayout>
@@ -189,7 +189,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sayı Tahmin Oyunu"
+                    android:text="@string/challenge_guess_title"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface" />
@@ -197,7 +197,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tuttuğum sayıyı bul!"
+                    android:text="@string/challenge_guess_desc"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface_secondary" />
             </LinearLayout>
@@ -246,7 +246,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sayı Yolculuğu"
+                    android:text="@string/challenge_puzzle_title"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface" />
@@ -254,7 +254,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sayıları hareket ettir, bulmacayı çöz!"
+                    android:text="@string/challenge_puzzle_desc"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface_secondary" />
             </LinearLayout>
@@ -304,7 +304,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sayı Hafızası"
+                    android:text="@string/challenge_memory_title"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface" />
@@ -312,7 +312,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kartları çevir, sayıları eşleştir!"
+                    android:text="@string/challenge_memory_desc"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface_secondary" />
             </LinearLayout>
@@ -362,7 +362,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ebeveyn Girişi"
+                    android:text="@string/challenge_parent_title"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface" />
@@ -370,7 +370,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Parmak izi, PIN veya desen"
+                    android:text="@string/challenge_parent_desc"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface_secondary" />
             </LinearLayout>

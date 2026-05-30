@@ -291,6 +291,22 @@ Kod düzenleme isteklerinde (fonksiyon ekleme, değiştirme, refactor):
 4. İlgili wiki sayfası otomatik güncellenir (`wiki-assistant.py --prepare`)
 
 **Desteklenen diller:** Python (Pyright) ✅ | JS/TS (TypeScript Server) ✅ | Kotlin ✅ | Java (JDTLS gerek yok — 0 kaynak dosya)
+> **Yapılandırma dosyaları:** `strings.xml`, `build.gradle.kts`, `.json`, `.yaml`, `.sh`, `.env`, `.conf`, `.toml` — LSP desteği yoktur; `wiki-assistant.py --locate` otomatik olarak `grep`-based fallback kullanır.
+
+---
+
+## Agent Karar Verme Yetkisi
+
+Kullanıcı agent'a bir görev devrettiğinde (örn. "ace topla", "wiki topla", "deploy et"), **her ara adım için onay istemek** workflow'u yavaşlatır ve kullanıcıyı yorar.
+
+### Rule
+- Görev net ise ve alt adımlar öngörülebilirse **agent karar versin**, kullanıcıya sormasın.
+- Ekleme/oluşturma kararları (ders, dosya, config) agent'a aittir — somut bir sebep varsa (tekrarlanabilir pattern, zaman kaybı, bug) doğrudan ekle.
+- Silme/prune/arşivleme kararları kullanıcıya sorulur.
+- Kullanıcı "sen ne düşünüyorsun?" veya "seçenek sun" derse o zaman seçenek sun.
+
+### Rationale
+"ace topla" = tüm bakımı agent'a devretmek. Her ders için "ekleyeyim mi?" sormak bu komutun anlamını yitirir. Düşük confidence (0.50-0.70) dersler zaten `prune` ile temizlenir.
 
 ---
 

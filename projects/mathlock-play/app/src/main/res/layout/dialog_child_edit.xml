@@ -9,7 +9,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Çocuğun adı">
+        android:hint="@string/hint_child_name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etChildName"
@@ -23,7 +23,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Eğitim Dönemi"
+        android:text="@string/label_education_period"
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
@@ -34,7 +34,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Dönem seçin">
+        android:hint="@string/hint_select_period">
 
         <AutoCompleteTextView
             android:id="@+id/spinnerPeriod"

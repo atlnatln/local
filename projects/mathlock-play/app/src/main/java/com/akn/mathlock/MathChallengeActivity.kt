@@ -179,7 +179,7 @@ class MathChallengeActivity : BaseActivity() {
             .replace("_", "?")
 
         val batchNum = currentJsonQuestion?.batch ?: 0
-        binding.tvBatch.text = if (batchNum > 0) "Set $batchNum" else "Ücretsiz Set"
+        binding.tvBatch.text = if (batchNum > 0) getString(R.string.batch_label, batchNum) else getString(R.string.free_set)
 
         if (isTestMode) {
             // Ebeveyn önizleme: "Soru 3/50" — toplam soru sayısını göster
@@ -191,8 +191,8 @@ class MathChallengeActivity : BaseActivity() {
             binding.cardTestBanner.visibility = View.VISIBLE
         } else if (isPracticeMode) {
             // Pratik mod: çözülen soru sayısını göster
-            binding.tvQuestionNum.text = "Soru ${sessionSolvedCount + 1}"
-            binding.tvScore.text = "⭐ $sessionSolvedCount doğru"
+            binding.tvQuestionNum.text = getString(R.string.math_question_single, sessionSolvedCount + 1)
+            binding.tvScore.text = getString(R.string.practice_score, sessionSolvedCount)
             binding.progressBar.visibility = View.GONE
         } else {
             // Normal mod: "2/3" — oturum ilerleme
@@ -226,14 +226,14 @@ class MathChallengeActivity : BaseActivity() {
             binding.tilAnswer.visibility = View.GONE
             binding.layoutOptions.visibility = View.GONE
             binding.btnCheck.visibility = View.GONE
-            binding.tvResult.text = "✅ Cevap: ${q.answer}"
+            binding.tvResult.text = getString(R.string.test_answer_preview, q.answer)
             binding.tvResult.setTextColor(getColor(R.color.correct_green))
             binding.tvResult.visibility = View.VISIBLE
             if (q.hint.isNotBlank()) {
-                binding.tvHint.text = "💡 ${q.hint}"
+                binding.tvHint.text = getString(R.string.hint_prefix, q.hint)
                 binding.tvHint.visibility = View.VISIBLE
             }
-            binding.btnSkip.text = "Sonraki Soru →"
+            binding.btnSkip.text = getString(R.string.btn_next_question)
             binding.btnSkip.visibility = View.VISIBLE
         }
     }
@@ -294,10 +294,10 @@ class MathChallengeActivity : BaseActivity() {
             if (attempts == 1 && !sawHint) {
                 // İlk yanlış → ipucu göster
                 sawHint = true
-                binding.tvHint.text = "💡 ${q.hint}"
+                binding.tvHint.text = getString(R.string.hint_prefix, q.hint)
                 binding.tvHint.visibility = View.VISIBLE
                 binding.tvResult.visibility = View.VISIBLE
-                binding.tvResult.text = "Neredeyse! Tekrar dene 🤔"
+                binding.tvResult.text = getString(R.string.almost_try_again)
                 binding.tvResult.setTextColor(getColor(R.color.accent))
                 binding.etAnswer.setText("")
                 binding.etAnswer.requestFocus()
@@ -306,7 +306,7 @@ class MathChallengeActivity : BaseActivity() {
                 sawTopic = true
                 showTopicDialog(q.type)
                 binding.tvResult.visibility = View.VISIBLE
-                binding.tvResult.text = "Bir ipucu daha var! 📚"
+                binding.tvResult.text = getString(R.string.more_hint_available)
                 binding.tvResult.setTextColor(getColor(R.color.accent))
                 binding.etAnswer.setText("")
                 binding.etAnswer.requestFocus()
@@ -341,7 +341,7 @@ class MathChallengeActivity : BaseActivity() {
         val message = buildString {
             appendLine(topic.explanation)
             appendLine()
-            appendLine("📝 Örnek:")
+            appendLine(getString(R.string.example_label))
             appendLine(topic.example)
             appendLine()
             topic.tips.forEach { tip ->
@@ -350,9 +350,9 @@ class MathChallengeActivity : BaseActivity() {
         }
 
         AlertDialog.Builder(this)
-            .setTitle("📚 ${topic.title}")
+            .setTitle(getString(R.string.topic_dialog_title, topic.title))
             .setMessage(message)
-            .setPositiveButton("Anladım! ✨", null)
+            .setPositiveButton(getString(R.string.btn_understood), null)
             .setCancelable(false)
             .show()
     }
@@ -429,7 +429,7 @@ class MathChallengeActivity : BaseActivity() {
         Log.d(TAG, "Ebeveyn önizleme tamamlandı (${questionManager.totalCount()} soru)")
         binding.tvQuestion.text = "✅"
         binding.tvResult.visibility = View.VISIBLE
-        binding.tvResult.text = "Önizleme tamamlandı — ${questionManager.totalCount()} soru incelendi"
+        binding.tvResult.text = getString(R.string.test_preview_complete, questionManager.totalCount())
         binding.tvResult.setTextColor(getColor(R.color.correct_green))
         binding.btnCheck.visibility = View.GONE
         binding.btnSkip.visibility = View.GONE
@@ -465,7 +465,7 @@ class MathChallengeActivity : BaseActivity() {
         // Tebrik mesajı göster, 2s sonra yeni set başlat
         binding.tvQuestion.text = "🎉"
         binding.tvResult.visibility = View.VISIBLE
-        binding.tvResult.text = "Üstbeyinsin! 🌟 Toplam $sessionSolvedCount doğru!\nYeni sorular geliyor..."
+        binding.tvResult.text = getString(R.string.practice_set_complete, sessionSolvedCount)
         binding.tvResult.setTextColor(getColor(R.color.correct_green))
         binding.btnCheck.visibility = View.GONE
         binding.etAnswer.visibility = View.GONE
@@ -491,7 +491,7 @@ class MathChallengeActivity : BaseActivity() {
         Log.d(TAG, "50 soru tamamlandı! Stats yükleniyor...")
         binding.tvQuestion.text = "🎉"
         binding.tvResult.visibility = View.VISIBLE
-        binding.tvResult.text = "Harika! 50 soruyu tamamladın! 🌟"
+        binding.tvResult.text = getString(R.string.set_complete_congrats)
         binding.tvResult.setTextColor(getColor(R.color.correct_green))
         binding.btnCheck.visibility = View.GONE
         binding.btnSkip.visibility = View.GONE
@@ -537,7 +537,7 @@ class MathChallengeActivity : BaseActivity() {
                         runOnUiThread {
                             Toast.makeText(
                                 this@MathChallengeActivity,
-                                "Yeni sorular hazırlanamadı, kredi iade edildi. Tekrar deneyin.",
+                                getString(R.string.credit_refunded_retry),
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -554,15 +554,15 @@ class MathChallengeActivity : BaseActivity() {
                         )
                         runOnUiThread {
                             MaterialAlertDialogBuilder(this@MathChallengeActivity)
-                                .setTitle("Yeni Sorular İçin Kredi Gerekli")
-                                .setMessage("50 soruluk seti tamamladın. Yeni sorular için kredi satın alabilirsin.")
-                                .setPositiveButton("Kredi Al") { _, _ ->
+                                .setTitle(getString(R.string.dialog_credit_needed_title))
+                                .setMessage(getString(R.string.dialog_credit_needed_message))
+                                .setPositiveButton(getString(R.string.btn_get_credits)) { _, _ ->
                                     val authIntent = Intent(this@MathChallengeActivity, ParentAuthActivity::class.java).apply {
                                         putExtra("forward_to", AccountActivity::class.java.name)
                                     }
                                     startActivityForResult(authIntent, REQUEST_AUTH_ACCOUNT)
                                 }
-                                .setNegativeButton("Kapat", null)
+                                .setNegativeButton(getString(R.string.btn_close), null)
                                 .setCancelable(false)
                                 .show()
                         }
@@ -588,8 +588,8 @@ class MathChallengeActivity : BaseActivity() {
 
     private fun showNoInternetDialog() {
         AlertDialog.Builder(this)
-            .setTitle("İnternet Bağlantısı Gerekli")
-            .setMessage("Sorular sunucudan yükleniyor. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.")
+            .setTitle(getString(R.string.dialog_no_internet_title))
+            .setMessage(getString(R.string.dialog_no_internet_message))
             .setPositiveButton("Tamam") { _, _ ->
                 if (!isTestMode && !isPracticeMode) {
                     sendUserHome()
@@ -607,7 +607,7 @@ class MathChallengeActivity : BaseActivity() {
 
     private fun unlockAndLaunchApp() {
         if (isTestMode) {
-            Toast.makeText(this, "Test başarılı! Uygulama açılacaktı.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.test_success_toast), Toast.LENGTH_SHORT).show()
             finish()
             return
         }

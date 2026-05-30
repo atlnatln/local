@@ -71,15 +71,15 @@ class SettingsActivity : BaseActivity() {
             val hasJson = qm.sync(authToken)
             val email = accountManager.getEmail()
             val credits = accountManager.getCachedCredits()
-            val childName = prefManager.activeChildName ?: "Çocuk"
+            val childName = prefManager.activeChildName ?: getString(R.string.default_child_name)
             runOnUiThread {
                 // Hesap durumu (ayrı kartta) — tıklanınca AccountActivity'ye git
                 if (!email.isNullOrBlank()) {
-                    binding.tvAccountStatus.text = "📧 $email  •  💰 $credits kredi"
-                    binding.btnRegisterEmail.text = "Hesabım →"
+                    binding.tvAccountStatus.text = getString(R.string.account_status_with_credits, email, credits)
+                    binding.btnRegisterEmail.text = getString(R.string.btn_my_account)
                 } else {
-                    binding.tvAccountStatus.text = "Kayıtlı hesap yok"
-                    binding.btnRegisterEmail.text = "📧 Hesap Oluştur / Kayıt Ol"
+                    binding.tvAccountStatus.text = getString(R.string.account_not_registered)
+                    binding.btnRegisterEmail.text = getString(R.string.btn_register_email)
                 }
                 binding.btnRegisterEmail.setOnClickListener {
                     val authIntent = android.content.Intent(this, ParentAuthActivity::class.java).apply {
@@ -92,9 +92,9 @@ class SettingsActivity : BaseActivity() {
                     val total = qm.totalCount()
                     val solved = qm.solvedCount()
                     val sets = qm.accessibleBatches().size
-                    binding.tvMathModeInfo.text = "👤 $childName — $total soru ($solved çözüldü), $sets set"
+                    binding.tvMathModeInfo.text = getString(R.string.math_mode_info, childName, total, solved, sets)
                 } else {
-                    binding.tvMathModeInfo.text = "⚡ Klasik mod — rastgele sorular"
+                    binding.tvMathModeInfo.text = getString(R.string.math_mode_classic)
                 }
             }
         }.start()
@@ -103,33 +103,35 @@ class SettingsActivity : BaseActivity() {
     private fun updateProtectionStatus() {
         val isEnabled = prefManager.isServiceEnabled
         if (isEnabled) {
-            binding.tvProtectionStatus.text = "🟢 Koruma aktif"
+            binding.tvProtectionStatus.text = getString(R.string.protection_active)
             binding.tvProtectionStatus.setTextColor(getColor(R.color.correct_green))
-            binding.btnToggleService.text = "Korumayı Kapat"
+            binding.btnToggleService.text = getString(R.string.btn_disable_protection)
         } else {
-            binding.tvProtectionStatus.text = "🔴 Koruma kapalı"
+            binding.tvProtectionStatus.text = getString(R.string.protection_inactive)
             binding.tvProtectionStatus.setTextColor(getColor(R.color.wrong_red))
-            binding.btnToggleService.text = "Korumayı Aç"
+            binding.btnToggleService.text = getString(R.string.btn_enable_protection)
         }
     }
 
     private fun updateLockedAppCount() {
         val count = prefManager.getLockedApps().size
-        binding.tvLockedAppCount.text = "$count uygulama"
+        binding.tvLockedAppCount.text = getString(R.string.locked_apps_count, count)
+    }
+
+    private fun getPeriodLabel(period: String): String = when (period) {
+        "okul_oncesi" -> getString(R.string.period_okul_oncesi)
+        "sinif_1" -> getString(R.string.period_sinif_1)
+        "sinif_2" -> getString(R.string.period_sinif_2)
+        "sinif_3" -> getString(R.string.period_sinif_3)
+        "sinif_4" -> getString(R.string.period_sinif_4)
+        else -> period
     }
 
     private fun updateActiveChildInfo() {
-        val periodLabels = mapOf(
-            "okul_oncesi" to "Okul Öncesi",
-            "sinif_1" to "1. Sınıf",
-            "sinif_2" to "2. Sınıf",
-            "sinif_3" to "3. Sınıf",
-            "sinif_4" to "4. Sınıf"
-        )
         val childName = prefManager.activeChildName ?: "Çocuk"
         val period = prefManager.activeEducationPeriod
-        val label = periodLabels[period] ?: period
-        binding.tvActiveChild.text = "👤 $childName  •  📚 $label"
+        val label = getPeriodLabel(period)
+        binding.tvActiveChild.text = getString(R.string.active_child_info, childName, label)
     }
 
     private fun loadSettings() {
@@ -196,7 +198,7 @@ class SettingsActivity : BaseActivity() {
         binding.cardPerformanceReport.setOnClickListener {
             val childName = prefManager.activeChildName
             if (childName.isNullOrEmpty()) {
-                Toast.makeText(this, "Önce çocuk profili oluşturun", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.please_create_child_profile), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val intent = Intent(this, PerformanceReportActivity::class.java)
@@ -210,7 +212,7 @@ class SettingsActivity : BaseActivity() {
                 AppLockService.stop(this)
                 prefManager.isServiceEnabled = false
                 updateProtectionStatus()
-                Toast.makeText(this, "Koruma kapatıldı", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.protection_disabled_toast), Toast.LENGTH_SHORT).show()
             } else {
                 checkAndRequestPermissions()
             }
@@ -347,16 +349,9 @@ class SettingsActivity : BaseActivity() {
         if (!hasUsageStatsPermission()) {
             permissionCheckPending = true
             AlertDialog.Builder(this)
-                .setTitle("📱 Kullanım Erişimi (1/2)")
-                .setMessage(
-                    "MathLock'un hangi uygulamanın açık olduğunu görebilmesi için bu izin zorunludur.\n\n" +
-                    "Bu izin yalnızca ön plandaki uygulama adını okur — " +
-                    "kişisel verilerinize erişmez.\n\n" +
-                    "⚠️ Sonraki ekranda Android kırmızı bir uyarı gösterecek. " +
-                    "Bu tüm uygulamalar için gösterilen standart bir uyarıdır. " +
-                    "Onay kutusunu işaretleyip \"Tamam\" demeniz yeterli."
-                )
-                .setPositiveButton("Devam") { _, _ ->
+                .setTitle(getString(R.string.dialog_usage_access_title))
+                .setMessage(getString(R.string.dialog_usage_access_message))
+                .setPositiveButton(getString(R.string.btn_continue)) { _, _ ->
                     startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
                 }
                 .setNegativeButton("İptal") { _, _ -> permissionCheckPending = false }
@@ -369,12 +364,9 @@ class SettingsActivity : BaseActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
             permissionCheckPending = true
             AlertDialog.Builder(this)
-                .setTitle("🪟 Ekran Üstü Gösterim (2/2)")
-                .setMessage(
-                    "Kilitli uygulama açıldığında soru ekranının görünmesi için bu izin gereklidir.\n\n" +
-                    "Açılacak sayfada MathLock'u bulup izni etkinleştirin."
-                )
-                .setPositiveButton("Ayarlara Git") { _, _ ->
+                .setTitle(getString(R.string.dialog_overlay_title))
+                .setMessage(getString(R.string.dialog_overlay_message))
+                .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
                     startActivity(Intent(
                         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:$packageName")
@@ -397,7 +389,7 @@ class SettingsActivity : BaseActivity() {
         }
         prefManager.isServiceEnabled = true
         updateProtectionStatus()
-        Toast.makeText(this, "🛡️ Koruma etkinleştirildi!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.protection_enabled_toast), Toast.LENGTH_SHORT).show()
 
         // Opsiyonel izinler — servis zaten çalışıyor, atlanabilir
         showOptionalSetup()
@@ -434,12 +426,9 @@ class SettingsActivity : BaseActivity() {
 
         prefManager.prefs.edit().putBoolean("battery_prompted", true).apply()
         AlertDialog.Builder(this)
-            .setTitle("🔋 Batarya Optimizasyonu (Önerilen)")
-            .setMessage(
-                "Korumanın arka planda kesintisiz çalışması için önerilir.\n\n" +
-                "Bu adımı atlayabilirsiniz — koruma yine de çalışacak."
-            )
-            .setPositiveButton("İzin Ver") { _, _ ->
+            .setTitle(getString(R.string.dialog_battery_title))
+            .setMessage(getString(R.string.dialog_battery_message))
+            .setPositiveButton(getString(R.string.btn_allow)) { _, _ ->
                 try {
                     @Suppress("BatteryLife")
                     val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
@@ -450,7 +439,7 @@ class SettingsActivity : BaseActivity() {
                     startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
                 }
             }
-            .setNegativeButton("Atla", null)
+            .setNegativeButton(getString(R.string.btn_skip_wizard), null)
             .setCancelable(true)
             .show()
     }
@@ -474,18 +463,14 @@ class SettingsActivity : BaseActivity() {
             return
         }
         AlertDialog.Builder(this)
-            .setTitle("📋 Xiaomi Kurulum (1/3)")
-            .setMessage(
-                "Otomatik Başlatma\n\n" +
-                "MathLock'un cihaz yeniden başlatıldığında otomatik açılması için gerekli.\n\n" +
-                "Açılacak sayfada MathLock'u bulup izni açın."
-            )
-            .setPositiveButton("Ayarlara Git") { _, _ ->
+            .setTitle(getString(R.string.xiaomi_step1_title))
+            .setMessage(getString(R.string.xiaomi_step1_message))
+            .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
                 prefManager.prefs.edit().putBoolean("xiaomi_step1_done", true).apply()
                 xiaomiStepPending = 1
                 openMiuiAutostart()
             }
-            .setNeutralButton("Sonraki ▸") { _, _ ->
+            .setNeutralButton(getString(R.string.btn_next_step)) { _, _ ->
                 prefManager.prefs.edit().putBoolean("xiaomi_step1_done", true).apply()
                 showXiaomiStep2()
             }
@@ -500,13 +485,9 @@ class SettingsActivity : BaseActivity() {
             return
         }
         AlertDialog.Builder(this)
-            .setTitle("📋 Xiaomi Kurulum (2/3)")
-            .setMessage(
-                "Arka Planda Açılır Pencere\n\n" +
-                "Kilitli uygulama açıldığında soru ekranının görünmesi için bu izin şart.\n\n" +
-                "Bu en kritik adımdır — açılacak sayfada \"Arka planda açılır pencere göster\" iznini etkinleştirin."
-            )
-            .setPositiveButton("Ayarlara Git") { _, _ ->
+            .setTitle(getString(R.string.xiaomi_step2_title))
+            .setMessage(getString(R.string.xiaomi_step2_message))
+            .setPositiveButton(getString(R.string.btn_go_settings)) { _, _ ->
                 prefManager.prefs.edit().putBoolean("xiaomi_step2_done", true).apply()
                 xiaomiStepPending = 2
                 openMiuiPermissionEditor()
@@ -526,21 +507,15 @@ class SettingsActivity : BaseActivity() {
             .putBoolean("miui_popup_prompted", true)
             .apply()
         AlertDialog.Builder(this)
-            .setTitle("📋 Xiaomi Kurulum (3/3)")
-            .setMessage(
-                "Arka Planda Çalışma\n\n" +
-                "Son olarak, uygulama ayarlarından şunu kontrol edin:\n\n" +
-                "• Batarya tasarrufu → Kısıtlama yok\n" +
-                "• Diğer izinler → Arka planda başlat → İzin ver\n\n" +
-                "Bu adımları tamamladıktan sonra MathLock tam koruma sağlayacak."
-            )
-            .setPositiveButton("Uygulama Ayarlarına Git") { _, _ ->
+            .setTitle(getString(R.string.xiaomi_step3_title))
+            .setMessage(getString(R.string.xiaomi_step3_message))
+            .setPositiveButton(getString(R.string.btn_app_settings)) { _, _ ->
                 startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.parse("package:$packageName")
                 })
             }
-            .setNegativeButton("Tamamla") { _, _ ->
-                Toast.makeText(this, "✅ Kurulum tamamlandı!", Toast.LENGTH_SHORT).show()
+            .setNegativeButton(getString(R.string.btn_complete)) { _, _ ->
+                Toast.makeText(this, getString(R.string.setup_complete_toast), Toast.LENGTH_SHORT).show()
             }
             .setCancelable(false)
             .show()

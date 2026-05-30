@@ -38,7 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dokunun veya tekrar deneyin"
+            android:text="@string/auth_touch_retry"
             android:textSize="13sp"
             android:textColor="@color/on_surface_secondary"
             android:layout_marginTop="4dp"

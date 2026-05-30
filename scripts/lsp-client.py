@@ -55,7 +55,7 @@ SYMBOL_KINDS = {
 
 
 class LSPClient:
-    def __init__(self):
+    def __init__(self, verbose=False):
         self.proc = None
         self.msg_id = 0
         self._lock = threading.Lock()
@@ -63,6 +63,8 @@ class LSPClient:
         self._reader_thread = None
         self._running = False
         self._needs_did_open = False
+        self._verbose = verbose
+        self._stderr_thread = None
 
     # ------------------------------------------------------------------
     # Sunucu yaşam-döngüsü
@@ -78,7 +80,6 @@ class LSPClient:
         self._needs_did_open = cfg.get("needs_did_open", False)
 
         env = os.environ.copy()
-        # Pyright büyük projelerde log spam yapabilir; stderr'i pipe'la
         self.proc = subprocess.Popen(
             cfg["cmd"],
             stdin=subprocess.PIPE,
@@ -90,6 +91,10 @@ class LSPClient:
         self._running = True
         self._reader_thread = threading.Thread(target=self._read_loop, daemon=True)
         self._reader_thread.start()
+
+        if self._verbose:
+            self._stderr_thread = threading.Thread(target=self._read_stderr, daemon=True)
+            self._stderr_thread.start()
 
         # Initialize
         root_uri = "file://" + os.path.abspath(project_root)
@@ -109,6 +114,8 @@ class LSPClient:
 
         # Initialized notification
         self._send_notification("initialized", {})
+        # Pyright'ın workspace'i indexlemesi için ek süre
+        time.sleep(0.5)
         return result
 
     def shutdown(self):
@@ -171,6 +178,17 @@ class LSPClient:
                 if self._running:
                     sys.stderr.write(f"[lsp-client] read error: {e}\n")
 
+    def _read_stderr(self):
+        """Verbose modunda stderr'i oku ve sys.stderr'e yaz."""
+        while self._running:
+            try:
+                line = self.proc.stderr.readline()
+                if not line:
+                    break
+                sys.stderr.write(f"[lsp-server] {line.decode('utf-8', errors='replace')}")
+            except Exception:
+                break
+
     def _read_message(self):
         """Tek bir JSON-RPC mesajını oku (Content-Length başlığına göre)."""
         stdout = self.proc.stdout
@@ -221,8 +239,9 @@ class LSPClient:
                 "text": text,
             }
         })
-        # Sunucunun işlemesi için kısa bekle
-        time.sleep(0.3)
+        # Sunucunun parse etmesi için bekle (Pyright büyük projelerde
+        # background indexing yapar; 0.3s yetersiz kalabilir)
+        time.sleep(1.0)
 
     def document_symbol(self, file_path: str, file_text: str = None):
         """Bir dosyadaki tüm sembolleri listele (DocumentSymbol[] veya SymbolInformation[])."""
@@ -365,6 +384,7 @@ def main():
     parser.add_argument("--symbol", required=True, help="Aranacak sembol adı")
     parser.add_argument("--project-root", default=LOCAL_ROOT, help="Proje kök dizini")
     parser.add_argument("--pretty", action="store_true", help="Formatlı JSON çıktı")
+    parser.add_argument("--verbose", action="store_true", help="LSP sunucu loglarını stderr'e yaz")
     args = parser.parse_args()
 
     file_path = os.path.abspath(args.file)
@@ -373,7 +393,7 @@ def main():
         sys.exit(1)
 
     try:
-        with LSPClient() as client:
+        with LSPClient(verbose=args.verbose) as client:
             client.start_server(args.language, args.project_root)
 
             # Pyright diskten okur ama didOpen daha güvenli
@@ -381,8 +401,18 @@ def main():
                 file_text = f.read()
 
             symbols = client.document_symbol(file_path, file_text=file_text)
+            # Retry: Pyright arka planda indexlerken sembol listesi boş gelebilir
             if not symbols:
-                print(json.dumps({"error": "Sembol listesi boş döndü"}))
+                if args.verbose:
+                    sys.stderr.write("[lsp-client] Sembol listesi boş, 2sn sonra retry...\n")
+                time.sleep(2.0)
+                symbols = client.document_symbol(file_path, file_text=file_text)
+
+            if not symbols:
+                print(json.dumps({
+                    "error": "Sembol listesi boş döndü",
+                    "hint": "Sunucu dosyayı parse edemedi; dosya türü desteklenmiyor olabilir veya proje çok büyük.",
+                }))
                 sys.exit(1)
 
             sym = find_symbol_in_tree(symbols, args.symbol)
@@ -392,6 +422,7 @@ def main():
                 print(json.dumps({
                     "error": f"'{args.symbol}' sembolü bulunamadı",
                     "available_symbols": names[:50],
+                    "hint": "Sembol bu dosyada tanımlı değilse başka dosyada olabilir.",
                 }, indent=2 if args.pretty else None, ensure_ascii=False))
                 sys.exit(1)
 

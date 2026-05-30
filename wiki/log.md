@@ -397,3 +397,27 @@ tags: [meta, log]
 - Updated: wiki/SCHEMA.md (ace, playbook, lesson tags)
 - Initial lessons: Ders 001 (LSP locate), Ders 002 (git stash), Ders 003 (lint before ingest)
 - Lint: 6/10 passed, 0 failures, 4 warnings (orphan ACE pages, ace-simulation size, tags)
+## [2026-05-30 19:50] lint | 6/10
+- Orphan pages: 9 ([[_template]], [[infrastructure]], [[mathlock-play]], [[ops-bot]], [[robotopia-android]]...)
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 1
+- Unknown tags: 3 (memory, simulation, template)
+- Raw existence: 0
+- Log size: 41 entries
+
+## [2026-05-31 01:02] lint | 6/10
+- Orphan pages: 9 ([[_template]], [[infrastructure]], [[mathlock-play]], [[ops-bot]], [[robotopia-android]]...)
+- Broken links: 0
+- Missing from index: 1
+- Frontmatter errors: 0
+- Stale pages: 0
+- Contradictions: 0
+- Oversized pages: 2
+- Unknown tags: 3 (memory, simulation, template)
+- Raw existence: 0
+- Log size: 42 entries
+

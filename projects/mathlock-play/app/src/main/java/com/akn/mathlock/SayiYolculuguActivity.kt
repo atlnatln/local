@@ -164,7 +164,7 @@ class SayiYolculuguActivity : BaseActivity() {
                         webView.evaluateJavascript("initGame('$escaped');", null)
                     } catch (e: Exception) {
                         Log.e(TAG, "Fallback levels da yüklenemedi", e)
-                        Toast.makeText(this, "Seviyeler yüklenemedi", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.levels_load_failed), Toast.LENGTH_SHORT).show()
                         finish()
                     }
                 }
@@ -336,7 +336,7 @@ class SayiYolculuguActivity : BaseActivity() {
 
     private fun unlockAndFinish() {
         if (isTestMode) {
-            Toast.makeText(this, "Test başarılı!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.test_success_short), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -424,7 +424,7 @@ class SayiYolculuguActivity : BaseActivity() {
                             if (::billingHelper.isInitialized && billingHelper.isReady()) {
                                 billingHelper.launchPurchase("kredi_1")
                             } else {
-                                Toast.makeText(this@SayiYolculuguActivity, "Satın alma servisi hazırlanıyor, lütfen bekleyin", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@SayiYolculuguActivity, getString(R.string.billing_service_preparing), Toast.LENGTH_SHORT).show()
                             }
                         }
                         "haptic" -> {
@@ -601,7 +601,7 @@ class SayiYolculuguActivity : BaseActivity() {
                 billingHelper.consumePurchase(purchase)
                 runOnUiThread {
                     webView.evaluateJavascript("onPurchaseSuccess($credits);", null)
-                    Toast.makeText(this@SayiYolculuguActivity, "$credits kredi eklendi!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SayiYolculuguActivity, getString(R.string.credits_added, credits), Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onPurchaseError(message: String) {

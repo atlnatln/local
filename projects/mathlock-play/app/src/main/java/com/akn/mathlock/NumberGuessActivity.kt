@@ -100,7 +100,7 @@ class NumberGuessActivity : BaseActivity() {
         rangeMax = gameMax
 
         binding.tvSubtitle.text = if (!isPracticeMode && requiredCount > 1) {
-            "Tur ${sessionSolvedCount + 1}/$requiredCount • " + getString(R.string.guess_subtitle, gameMax)
+            getString(R.string.guess_round_prefix, sessionSolvedCount + 1, requiredCount) + getString(R.string.guess_subtitle, gameMax)
         } else {
             getString(R.string.guess_subtitle, gameMax)
         }
@@ -178,7 +178,7 @@ class NumberGuessActivity : BaseActivity() {
         } else {
             // Daha tur var — kısa mesaj, sonra yeni oyun
             binding.tvSuccess.visibility = View.VISIBLE
-            binding.tvSuccess.text = "✅ Doğru! ($sessionSolvedCount/$requiredCount) Sonraki tur..."
+            binding.tvSuccess.text = getString(R.string.guess_next_round, sessionSolvedCount, requiredCount)
             binding.root.postDelayed({
                 if (!isFinishing && !isDestroyed) {
                     binding.tvSuccess.visibility = View.GONE

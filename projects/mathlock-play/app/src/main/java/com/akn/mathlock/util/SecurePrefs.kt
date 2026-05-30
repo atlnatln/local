@@ -1,5 +1,6 @@
 package com.akn.mathlock.util
 
+import com.akn.mathlock.R
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -30,7 +31,7 @@ object SecurePrefs {
             // Fallback KALDIRILDI — güvenlik riski
             Log.e("SecurePrefs", "Encryption init failed for '$name': ${e.message}")
             throw IllegalStateException(
-                "Güvenli depolama başlatılamadı. Lütfen cihaz şifrelemesini kontrol edin.",
+                context.getString(R.string.secure_storage_init_failed),
                 e
             )
         }

@@ -64,9 +64,9 @@ class MainActivity : BaseActivity() {
 
         val lockedCount = prefManager.getLockedApps().size
         binding.tvLockedAppCount.text = if (lockedCount > 0)
-            "$lockedCount uygulama koruma altında"
+            getString(R.string.main_locked_apps_count, lockedCount)
         else
-            "Henüz kilitli uygulama yok"
+            getString(R.string.main_no_locked_apps)
     }
 
     private fun setupListeners() {
@@ -134,7 +134,7 @@ class MainActivity : BaseActivity() {
 
         val bm = BiometricManager.from(this)
         if (bm.canAuthenticate(authenticators) != BiometricManager.BIOMETRIC_SUCCESS) {
-            Toast.makeText(this, "⚠️ Bu cihazda parmak izi veya desen kilidi bulunamadı", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.biometric_not_available), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -151,13 +151,13 @@ class MainActivity : BaseActivity() {
                     if (errorCode != BiometricPrompt.ERROR_USER_CANCELED &&
                         errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON
                     ) {
-                        Toast.makeText(this@MainActivity, "Hata: $errString", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, getString(R.string.error_generic_with_message, errString), Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(this@MainActivity, "❌ Kimlik doğrulama başarısız, tekrar deneyin", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.auth_failed_retry), Toast.LENGTH_SHORT).show()
                 }
             })
 

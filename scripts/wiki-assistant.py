@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 """
-Wiki Asistanı — LSP-Style Token Optimizasyon için yardımcı program.
-Kimi'nin dosya keşfi/okuma yükünü alır, ona sadece "context paketi" sunar.
+Wiki Asistani — LSP-Style Token Optimizasyon icin yardimci program.
+Kimi'nin dosya kesfi/okuma yukunu alir, ona sadece "context paketi" sunar.
 
-Kullanım:
+Kullanim:
     python3 wiki-assistant.py --prepare [--project <isim>]
     python3 wiki-assistant.py --locate --file <dosya> --symbol <isim>
+    python3 wiki-assistant.py --query "<konu>"
+    python3 wiki-assistant.py --sor "<konu>"
     python3 wiki-assistant.py --apply <kiminin-karar.json>
 """
 
 import argparse
+import glob
 import json
 import os
 import re
@@ -21,14 +24,14 @@ WIKI_ROOT = os.path.join(LOCAL_ROOT, "wiki")
 WIKI_ASSISTANT_INDEX = os.path.join(WIKI_ROOT, ".assistant-index.json")
 
 # ---------------------------------------------------------------------------
-# Cache / Index Mekanizması (L2 Cache benzeri)
+# Cache / Index Mekanizmasi (L2 Cache benzeri)
 # ---------------------------------------------------------------------------
-# Wiki sayfalarının başlık yapısını (headings) cache'ler.
-# Sonraki çalıştırmalarda değişmemiş sayfalar için dosyayı baştan açmaz.
+# Wiki sayfalarinin baslik yapisini (headings) cache'ler.
+# Sonraki calistirmalarda degismemis sayfalar icin dosyayi bastan acmaz.
 # ---------------------------------------------------------------------------
 
 def load_cache():
-    """Cache dosyasını oku. Yoksa boş dict döndür."""
+    """Cache dosyasini oku. Yoksa bos dict dondur."""
     if os.path.exists(WIKI_ASSISTANT_INDEX):
         try:
             with open(WIKI_ASSISTANT_INDEX, "r", encoding="utf-8") as f:
@@ -39,18 +42,18 @@ def load_cache():
 
 
 def save_cache(cache):
-    """Cache dosyasını atomik olarak yaz."""
+    """Cache dosyasini atomik olarak yaz."""
     tmp_path = WIKI_ASSISTANT_INDEX + ".tmp"
     try:
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(cache, f, indent=2, ensure_ascii=False)
         os.replace(tmp_path, WIKI_ASSISTANT_INDEX)
     except Exception as e:
-        sys.stderr.write(f"Cache yazma hatası: {e}\n")
+        sys.stderr.write(f"Cache yazma hatasi: {e}\n")
 
 
 def get_file_mtime(path):
-    """Dosyanın değişiklik zamanını (mtime) int olarak döndür."""
+    """Dosyanin degisiklik zamanini (mtime) int olarak dondur."""
     try:
         return int(os.path.getmtime(path))
     except Exception:
@@ -58,7 +61,7 @@ def get_file_mtime(path):
 
 
 def parse_headings_from_file(full_path):
-    """Bir markdown dosyasındaki tüm başlıkları parse et."""
+    """Bir markdown dosyasindaki tum basliklari parse et."""
     headings = []
     try:
         with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
@@ -77,8 +80,8 @@ def parse_headings_from_file(full_path):
 
 def get_cached_headings(wiki_path):
     """
-    Wiki dosyasının başlık listesini getir.
-    Cache'te var ve güncelse cache'ten, yoksa dosyadan parse edip cache'e yazar.
+    Wiki dosyasinin baslik listesini getir.
+    Cache'te var ve guncelse cache'ten, yoksa dosyadan parse edip cache'e yazar.
     """
     full_path = os.path.join(LOCAL_ROOT, wiki_path)
     if not os.path.exists(full_path):
@@ -88,13 +91,13 @@ def get_cached_headings(wiki_path):
     current_mtime = get_file_mtime(full_path)
     cache_key = wiki_path
 
-    # Cache kontrolü
+    # Cache kontrolu
     if cache_key in cache:
         entry = cache[cache_key]
         if entry.get("mtime") == current_mtime and "headings" in entry:
             return entry["headings"]
 
-    # Cache miss → dosyadan parse et
+    # Cache miss -> dosyadan parse et
     headings = parse_headings_from_file(full_path)
 
     # Cache'e kaydet
@@ -106,7 +109,7 @@ def get_cached_headings(wiki_path):
     return headings
 
 
-# Proje yapılandırması
+# Proje yapilandirmasi
 PROJECTS = {
     "ops-bot": {
         "dir": "ops-bot",
@@ -158,13 +161,13 @@ PROJECTS = {
     },
 }
 
-# Dosya → Wiki hedefi eşleme kuralları (WORKFLOW.md Adım 4'ten)
+# Dosya -> Wiki hedefi esleme kurallari (WORKFLOW.md Adim 4'ten)
 FILE_TO_WIKI_RULES = [
-    # (dosya pattern, wiki sayfası, bölüm ipucu)
+    # (dosya pattern, wiki sayfasi, bolum ipucu)
     (r"^AGENTS\.md$", "wiki/concepts/agents-md.md", "AGENTS.md"),
     (r"^README\.md$", "wiki/projects/local.md", "README"),
     (r"^deploy\.sh$", None, "Deployment"),
-    (r"^infrastructure/", "wiki/projects/infrastructure.md", "Altyapı"),
+    (r"^infrastructure/", "wiki/projects/infrastructure.md", "Altyapi"),
     (r"^scripts/hooks/", "wiki/projects/local.md", "Hook"),
     (r"^scripts/", "wiki/projects/local.md", "Script"),
 ]
@@ -187,7 +190,7 @@ def get_checkpoint_sha(project):
 
 
 def git_diff_committed(project):
-    """Checkpoint'ten HEAD'e kadar commit'lenmiş değişiklikler."""
+    """Checkpoint'ten HEAD'e kadar commit'lenmis degisiklikler."""
     cfg = PROJECTS[project]
     sha = get_checkpoint_sha(project)
     if not sha:
@@ -199,7 +202,7 @@ def git_diff_committed(project):
 
 
 def git_diff_workdir(project):
-    """HEAD'ten sonraki working directory + staged değişiklikler."""
+    """HEAD'ten sonraki working directory + staged degisiklikler."""
     cfg = PROJECTS[project]
     git_root = os.path.join(LOCAL_ROOT, cfg["git_root"])
     target = cfg["dir"] if cfg["git_root"] == "." else "."
@@ -208,7 +211,7 @@ def git_diff_workdir(project):
 
 
 def parse_diff(name_status_output):
-    """git --name-status çıktısını parse et."""
+    """git --name-status ciktisini parse et."""
     files = []
     for line in name_status_output.strip().splitlines():
         if not line.strip():
@@ -227,29 +230,29 @@ def parse_diff(name_status_output):
 
 
 def map_to_wiki(project, rel_path):
-    """Bir dosya yolunu ilgili wiki sayfasına ve bölüm ipucuna eşle."""
-    # ACE playbook dosyaları → kendi wiki sayfaları
+    """Bir dosya yolunu ilgili wiki sayfasina ve bolum ipucuna esle."""
+    # ACE playbook dosyalari -> kendi wiki sayfalari
     if rel_path.startswith("wiki/ace/") and rel_path.endswith(".md"):
         return rel_path, "ACE Playbook"
 
-    # Önce genel kurallar
+    # Once genel kurallar
     for pattern, wiki_page, section_hint in FILE_TO_WIKI_RULES:
         if re.search(pattern, rel_path):
             if wiki_page is None:
-                # Projenin kendi wiki sayfasına yönlendir
+                # Projenin kendi wiki sayfasina yonlendir
                 wiki_page = PROJECTS[project]["wiki"]
             return wiki_page, section_hint
 
-    # Proje alt dizinleri → projenin wiki sayfası
+    # Proje alt dizinleri -> projenin wiki sayfasi
     if rel_path.startswith(PROJECTS[project]["dir"]):
         return PROJECTS[project]["wiki"], guess_section_from_path(rel_path)
 
-    # Bilinmeyen → local wiki
+    # Bilinmeyen -> local wiki
     return "wiki/projects/local.md", "Genel"
 
 
 def guess_section_from_path(path):
-    """Dosya yolundan wiki bölümü tahmini."""
+    """Dosya yolundan wiki bolumu tahmini."""
     lowered = path.lower()
     if ".js" in lowered:
         return "JavaScript"
@@ -276,9 +279,9 @@ def guess_section_from_path(path):
 
 def extract_snippets(rel_path, max_lines=40):
     """
-    Bir dosyadan 'snippet' çıkar.
-    Uzun dosyalarda: Tamamını değil, başlık/fonksiyon düzeyinde özet sun.
-    Eğer dosya çok kısaysa tamamını, uzunsa sadece yapısını.
+    Bir dosyadan 'snippet' cikar.
+    Uzun dosyalarda: Tamamini degil, baslik/fonksiyon duzeyinde ozet sun.
+    Eger dosya cok kisaysa tamamini, uzunsa sadece yapisini.
     """
     full_path = os.path.join(LOCAL_ROOT, rel_path)
     if not os.path.exists(full_path):
@@ -294,7 +297,7 @@ def extract_snippets(rel_path, max_lines=40):
     if total_lines == 0:
         return None
 
-    # Çok kısa dosya → tamamını sun
+    # Cok kisa dosya -> tamamini sun
     if total_lines <= max_lines:
         return {
             "type": "full",
@@ -302,51 +305,51 @@ def extract_snippets(rel_path, max_lines=40):
             "content": "".join(lines),
         }
 
-    # Uzun dosya → yapısal özet (fonksiyonlar, sınıflar, başlıklar)
+    # Uzun dosya -> yapisal ozet (fonksiyonlar, siniflar, basliklar)
     structure = []
     for i, line in enumerate(lines):
-        # Fonksiyon tanımları
+        # Fonksiyon tanimlari
         if re.match(r"^\s*(def|function|async\s+def)\s+\w+", line):
             structure.append({"type": "function", "line": i + 1, "signature": line.strip()})
-        # Sınıf tanımları
+        # Sinif tanimlari
         elif re.match(r"^\s*(class)\s+\w+", line):
             structure.append({"type": "class", "line": i + 1, "signature": line.strip()})
-        # Markdown başlıkları
+        # Markdown basliklari
         elif re.match(r"^#{1,4}\s+", line):
             structure.append({"type": "heading", "line": i + 1, "signature": line.strip()})
-        # HTML script/style blokları
+        # HTML script/style bloklari
         elif re.match(r"^\s*<(script|style|section|div)\b", line, re.I):
             structure.append({"type": "block", "line": i + 1, "signature": line.strip()[:80]})
 
-    # Ayrıca dosyanın başından biraz bağlam sun
+    # Ayrica dosyanin basindan biraz baglam sun
     header = "".join(lines[:min(15, total_lines)])
 
     return {
         "type": "structure",
         "line_count": total_lines,
         "header": header,
-        "structure": structure[:20],  # en fazla 20 yapı öğesi
+        "structure": structure[:20],  # en fazla 20 yapi ogesi
     }
 
 
 def extract_wiki_sections(wiki_path, section_hints):
     """
-    Wiki sayfasından ilgili bölümleri çıkar.
-    section_hints: aranacak bölüm anahtar kelimeleri listesi
+    Wiki sayfasindan ilgili bolumleri cikar.
+    section_hints: aranacak bolum anahtar kelimeleri listesi
 
-    OPTIMIZASYON: Önce cache'teki headings listesini kontrol eder.
-    Hiç section eşleşmezse dosyayı açmaz, sadece outline döndürür.
+    OPTIMIZASYON: Once cache'teki headings listesini kontrol eder.
+    Hic section eslesmezse dosyayi acmaz, sadece outline dondurur.
     """
     full_path = os.path.join(LOCAL_ROOT, wiki_path)
     if not os.path.exists(full_path):
         return None
 
-    # 1. Headings'i cache'ten al (dosyayı açmadan)
+    # 1. Headings'i cache'ten al (dosyayi acmadan)
     headings = get_cached_headings(wiki_path)
     if not headings:
         return None
 
-    # 2. İlgili başlıkları bul (keyword eşleme)
+    # 2. Ilgili basliklari bul (keyword esleme)
     matched_titles = []
     for hint in section_hints:
         hint_lower = hint.lower()
@@ -355,36 +358,36 @@ def extract_wiki_sections(wiki_path, section_hints):
             if hint_lower in title_lower or title_lower in hint_lower:
                 matched_titles.append(h)
 
-    # 3. Hiç eşleşme yoksa → dosyayı açmaya gerek yok, outline döndür
+    # 3. Hic eslesme yoksa -> dosyayi acmaya gerek yok, outline dondur
     if not matched_titles:
         return {
             "type": "outline",
             "headings": [{"title": h["title"], "level": h["level"], "line": h["line"]} for h in headings],
         }
 
-    # 4. Eşleşme varsa → dosyayı aç, section içeriğini çıkar
+    # 4. Eslesme varsa -> dosyayi ac, section icerigini cikar
     with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
         lines = f.readlines()
 
-    # İlgili başlıkları bul (keyword eşleme)
+    # Ilgili basliklari bul (keyword esleme)
     matched_sections = {}
     for hint in section_hints:
         hint_lower = hint.lower()
         for h in headings:
             title_lower = h["title"].lower()
             if hint_lower in title_lower or title_lower in hint_lower:
-                # Başlık ve alt bölümlerini çıkar
+                # Baslik ve alt bolumlerini cikar
                 start_idx = h["line"] - 1
                 end_idx = len(lines)
-                # Sonraki aynı seviye veya üst seviye başlığı bul
+                # Sonraki ayni seviye veya ust seviye basligini bul
                 for next_h in headings:
                     if next_h["line"] > h["line"] and next_h["level"] <= h["level"]:
                         end_idx = next_h["line"] - 1
                         break
                 section_content = "".join(lines[start_idx:end_idx])
-                # Çok uzun bölümleri kısalt (~1500 karakter)
+                # Cok uzun bolumleri kisalt (~1500 karakter)
                 if len(section_content) > 1500:
-                    section_content = section_content[:1500] + "\n\n... [bölüm devam ediyor, toplam " + str(len(section_content)) + " karakter] ..."
+                    section_content = section_content[:1500] + "\n\n... [bolum devam ediyor, toplam " + str(len(section_content)) + " karakter] ..."
                 matched_sections[h["title"]] = {
                     "level": h["level"],
                     "start_line": h["line"],
@@ -395,13 +398,62 @@ def extract_wiki_sections(wiki_path, section_hints):
     return {"type": "sections", "matched": matched_sections}
 
 
-def locate_symbol(file_path, symbol_name, pretty=False):
-    """LSP üzerinden sembol konumunu bul."""
+# ---------------------------------------------------------------------------
+# Yapilandirma / XML / JSON dosyalari icin basit sembol arama (LSP fallback)
+# ---------------------------------------------------------------------------
+
+GREP_LIKE_EXTS = {".xml", ".json", ".yaml", ".yml", ".sh", ".gradle", ".kts", ".properties", ".conf", ".toml"}
+
+
+def locate_in_file(file_path, symbol_name):
+    """
+    Bir dosyada basit metin arama yap. LSP desteklemeyen dosyalar icin fallback.
+    Satir numarasi, baglam ve snippet dondurur.
+    """
     full_path = os.path.join(LOCAL_ROOT, file_path)
     if not os.path.exists(full_path):
         full_path = file_path
     if not os.path.exists(full_path):
-        return {"error": f"Dosya bulunamadı: {file_path}"}
+        return {"error": f"Dosya bulunamadi: {file_path}"}
+
+    try:
+        with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
+            lines = f.readlines()
+    except Exception as e:
+        return {"error": str(e)}
+
+    matches = []
+    for i, line in enumerate(lines):
+        if symbol_name in line:
+            # Sembolun tam olarak bu satirda tanimlandigini kontrol et (yaklasik)
+            start = max(0, i - 2)
+            end = min(len(lines), i + 4)
+            snippet = "".join(lines[start:end])
+            matches.append({
+                "line": i,
+                "column": line.find(symbol_name),
+                "snippet": snippet,
+            })
+
+    if not matches:
+        return {"error": f"'{symbol_name}' dosyada bulunamadi", "file": full_path}
+
+    return {
+        "file": full_path,
+        "symbol": symbol_name,
+        "kind": "text_match",
+        "matches": matches,
+        "note": "LSP fallback: bu dosya turu icin LSP destegi yok, basit metin aramasi yapildi.",
+    }
+
+
+def locate_symbol(file_path, symbol_name, pretty=False):
+    """LSP uzerinden sembol konumunu bul; desteklenmeyen dosya turlerinde fallback kullan."""
+    full_path = os.path.join(LOCAL_ROOT, file_path)
+    if not os.path.exists(full_path):
+        full_path = file_path
+    if not os.path.exists(full_path):
+        return {"error": f"Dosya bulunamadi: {file_path}"}
 
     ext = os.path.splitext(full_path)[1].lower()
     lang_map = {
@@ -413,10 +465,15 @@ def locate_symbol(file_path, symbol_name, pretty=False):
         ".kt": "kotlin",
     }
     language = lang_map.get(ext)
-    if not language:
-        return {"error": f"Desteklenmeyen dosya türü: {ext}. --locate sadece Python, JS/TS ve Kotlin dosyaları için çalışır."}
 
-    # Proje kökünü tahmin et — sunucu başlatma hızı için daralt
+    # LSP desteklemeyen dosya turleri -> dogrudan fallback
+    if not language:
+        if ext in GREP_LIKE_EXTS or ext == "":
+            return locate_in_file(file_path, symbol_name)
+        return {"error": f"Desteklenmeyen dosya turu: {ext}. "
+                         f"LSP: Python, JS/TS, Kotlin. Fallback: {', '.join(sorted(GREP_LIKE_EXTS))}."}
+
+    # Proje kokunu tahmin et — sunucu baslatma hizi icin daralt
     project_root = LOCAL_ROOT
     rel = os.path.relpath(full_path, LOCAL_ROOT)
     parts = rel.split(os.sep)
@@ -438,18 +495,25 @@ def locate_symbol(file_path, symbol_name, pretty=False):
     if result.returncode != 0:
         err = result.stderr.strip() or result.stdout.strip()
         try:
-            return json.loads(err)
+            parsed = json.loads(err)
         except Exception:
-            return {"error": f"LSP client hatası: {err}"}
+            parsed = {"error": f"LSP client hatasi: {err}"}
+        # LSP sembol bulamadiysa ve dosya kucukse fallback dene
+        if "bulunamadi" in parsed.get("error", "") or "bos" in parsed.get("error", ""):
+            fb = locate_in_file(file_path, symbol_name)
+            if "error" not in fb:
+                fb["lsp_error"] = parsed.get("error")
+                return fb
+        return parsed
 
     try:
         return json.loads(result.stdout)
     except Exception as e:
-        return {"error": f"LSP çıktısı parse edilemedi: {e}", "raw": result.stdout}
+        return {"error": f"LSP ciktisi parse edilemedi: {e}", "raw": result.stdout}
 
 
 def prepare_project(project):
-    """Bir proje için context paketi hazırla."""
+    """Bir proje icin context paketi hazirla."""
     cfg = PROJECTS[project]
 
     # Committed diff + working directory diff
@@ -459,7 +523,7 @@ def prepare_project(project):
     files_committed = parse_diff(committed)
     files_workdir = parse_diff(workdir)
 
-    # Birleştir: aynı dosya varsa working directory öncelikli
+    # Birlestir: ayni dosya varsa working directory oncelikli
     all_files = {}
     for f in files_committed:
         all_files[f["path"]] = f
@@ -469,7 +533,7 @@ def prepare_project(project):
     if not all_files:
         return None
 
-    # Her dosya için detay
+    # Her dosya icin detay
     changed_files = []
     wiki_targets_map = {}  # wiki_path -> {section_hints, files}
 
@@ -493,7 +557,7 @@ def prepare_project(project):
         wiki_targets_map[wiki_page]["section_hints"].add(section_hint)
         wiki_targets_map[wiki_page]["files"].append(rel_path)
 
-    # Wiki hedeflerinden ilgili bölümleri çıkar
+    # Wiki hedeflerinden ilgili bolumleri cikar
     wiki_targets = []
     for wiki_page, data in wiki_targets_map.items():
         sections = extract_wiki_sections(wiki_page, list(data["section_hints"]))
@@ -519,26 +583,95 @@ def prepare_project(project):
     }
 
 
+# ---------------------------------------------------------------------------
+# Wiki arama (query / sor)
+# ---------------------------------------------------------------------------
+
+def search_wiki(query, max_results=5):
+    """
+    Wiki sayfalarinda baslik ve icerik aramasi yap.
+    Cache'teki headings listesini kullanir; degismemis sayfalar icin tekrar parse edilmez.
+    """
+    query_lower = query.lower()
+    query_parts = query_lower.split()
+    matches = []
+
+    # Tum wiki .md dosyalarini bul
+    wiki_files = glob.glob(os.path.join(WIKI_ROOT, "**/*.md"), recursive=True)
+    for full_path in wiki_files:
+        rel_path = os.path.relpath(full_path, LOCAL_ROOT)
+        headings = get_cached_headings(rel_path)
+        if not headings:
+            continue
+
+        score = 0
+        matched_headings = []
+        for h in headings:
+            title_lower = h["title"].lower()
+            if query_lower in title_lower:
+                score += 10  # Tam eslesme yuksek puan
+                matched_headings.append(h)
+            elif any(part in title_lower for part in query_parts):
+                score += 3   # Kismi eslesme
+                matched_headings.append(h)
+
+        if score > 0:
+            matches.append({
+                "page": rel_path,
+                "score": score,
+                "matched_headings": [
+                    {"title": h["title"], "level": h["level"], "line": h["line"]}
+                    for h in matched_headings[:5]
+                ],
+            })
+
+    # Puana gore sirala
+    matches.sort(key=lambda x: x["score"], reverse=True)
+
+    # En iyi eslesmelerin snippet'ini cikar
+    results = []
+    for m in matches[:max_results]:
+        sections = extract_wiki_sections(m["page"], [h["title"] for h in m["matched_headings"]])
+        results.append({
+            "page": m["page"],
+            "score": m["score"],
+            "sections": sections,
+        })
+
+    return results
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Wiki Asistanı")
-    parser.add_argument("--prepare", action="store_true", help="Context paketi hazırla")
-    parser.add_argument("--project", help="Belirli bir proje (tümü için boş bırak)")
+    parser = argparse.ArgumentParser(description="Wiki Asistani")
+    parser.add_argument("--prepare", action="store_true", help="Context paketi hazirla")
+    parser.add_argument("--project", help="Belirli bir proje (tumu icin bos birak)")
     parser.add_argument("--apply", help="Kimi'nin karar JSON'unu uygula (gelecek)")
-    parser.add_argument("--pretty", action="store_true", help="JSON'u formatlı yaz")
-    parser.add_argument("--locate", action="store_true", help="Kod sembolü konumlandır (LSP)")
-    parser.add_argument("--file", help="Hedef dosya yolu (--locate için)")
-    parser.add_argument("--symbol", help="Aranacak sembol adı (--locate için)")
+    parser.add_argument("--pretty", action="store_true", help="JSON'u formatli yaz")
+    parser.add_argument("--locate", action="store_true", help="Kod sembolu konumlandir (LSP)")
+    parser.add_argument("--file", help="Hedef dosya yolu (--locate icin)")
+    parser.add_argument("--symbol", help="Aranacak sembol adi (--locate icin)")
+    parser.add_argument("--query", help="Wiki'de konu ara (ingilizce)")
+    parser.add_argument("--sor", help="Wiki'de konu ara (turkce)")
     args = parser.parse_args()
+
+    if args.query or args.sor:
+        q = args.query or args.sor
+        results = search_wiki(q)
+        print(json.dumps({
+            "query": q,
+            "results": results,
+            "count": len(results),
+        }, indent=2 if args.pretty else None, ensure_ascii=False))
+        return
 
     if args.locate:
         if not args.file or not args.symbol:
-            print(json.dumps({"error": "--locate için --file ve --symbol zorunlu"}), file=sys.stderr)
+            print(json.dumps({"error": "--locate icin --file ve --symbol zorunlu"}, indent=2 if args.pretty else None, ensure_ascii=False))
             sys.exit(1)
         result = locate_symbol(args.file, args.symbol, pretty=args.pretty)
-        if "error" in result:
-            print(json.dumps(result, indent=2 if args.pretty else None, ensure_ascii=False), file=sys.stderr)
-            sys.exit(1)
         print(json.dumps(result, indent=2 if args.pretty else None, ensure_ascii=False))
+        if "error" in result and "lsp_error" not in result:
+            sys.exit(1)
     elif args.prepare:
         if args.project:
             if args.project not in PROJECTS:
@@ -549,18 +682,18 @@ def main():
                 result = {"project": args.project, "diff_summary": {}, "changed_files": [], "wiki_targets": [], "index_needs_update": False, "log_needs_update": False}
             print(json.dumps(result, indent=2 if args.pretty else None, ensure_ascii=False))
         else:
-            # Tüm projeler
+            # Tum projeler
             all_results = []
             for project in PROJECTS:
                 result = prepare_project(project)
                 if result:
                     all_results.append(result)
             if not all_results:
-                print(json.dumps({"results": [], "message": "Hiç değişiklik yok"}, indent=2 if args.pretty else None, ensure_ascii=False))
+                print(json.dumps({"results": [], "message": "Hic degisiklik yok"}, indent=2 if args.pretty else None, ensure_ascii=False))
             else:
                 print(json.dumps({"results": all_results}, indent=2 if args.pretty else None, ensure_ascii=False))
     elif args.apply:
-        print(json.dumps({"error": "apply modu henüz implemente edilmedi"}), file=sys.stderr)
+        print(json.dumps({"error": "apply modu henuz implemente edilmedi"}), file=sys.stderr)
         sys.exit(1)
     else:
         parser.print_help()

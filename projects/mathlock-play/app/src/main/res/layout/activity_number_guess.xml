@@ -79,7 +79,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Üst limit seç!"
+                    android:text="@string/guess_limit_title"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -107,7 +107,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10 — 1000 arası"
+                    android:text="@string/guess_limit_range"
                     android:textSize="12sp"
                     android:textColor="@color/on_surface_secondary"
                     android:layout_marginBottom="24dp" />
@@ -116,7 +116,7 @@
                     android:id="@+id/btnStartGame"
                     android:layout_width="200dp"
                     android:layout_height="56dp"
-                    android:text="Oyunu Başlat ▶"
+                    android:text="@string/guess_start_game"
                     android:textSize="16sp"
                     app:cornerRadius="12dp" />
 

@@ -31,7 +31,7 @@ class ParentAuthActivity : BaseActivity() {
         if (canUseBiometric()) {
             showBiometricPrompt()
         } else {
-            binding.tvAuthStatus.text = "⚠️ Bu cihazda parmak izi sensörü bulunamadı"
+            binding.tvAuthStatus.text = getString(R.string.biometric_sensor_not_found)
             binding.tvAuthStatus.setTextColor(getColor(R.color.wrong_red))
         }
     }
@@ -61,7 +61,7 @@ class ParentAuthActivity : BaseActivity() {
                     if (errorCode != BiometricPrompt.ERROR_USER_CANCELED &&
                         errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON
                     ) {
-                        binding.tvAuthStatus.text = "Hata: $errString"
+                        binding.tvAuthStatus.text = getString(R.string.error_generic_with_message, errString)
                         binding.tvAuthStatus.setTextColor(getColor(R.color.wrong_red))
                     }
                     setResult(RESULT_CANCELED)
@@ -101,7 +101,7 @@ class ParentAuthActivity : BaseActivity() {
                 val launchIntent = Intent(this, clazz)
                 startActivity(launchIntent)
             } catch (_: ClassNotFoundException) {
-                Toast.makeText(this, "Hedef ekran bulunamadı", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.target_screen_not_found), Toast.LENGTH_SHORT).show()
             }
             setResult(RESULT_OK)
             finish()
@@ -115,7 +115,7 @@ class ParentAuthActivity : BaseActivity() {
         }
 
         if (isTestMode) {
-            Toast.makeText(this, "✅ Kimlik doğrulama başarılı!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.auth_success), Toast.LENGTH_SHORT).show()
             finish()
             return
         }

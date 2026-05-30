@@ -80,7 +80,7 @@ class PatternActivity : BaseActivity() {
 
         binding.btnPatternConfirm.setOnClickListener {
             if (selectedPattern.size < 3) {
-                binding.tvPatternStatus.text = "⚠️ En az 3 nokta seçin!"
+                binding.tvPatternStatus.text = getString(R.string.pattern_min_dots)
                 binding.tvPatternStatus.setTextColor(getColor(R.color.wrong_red))
                 return@setOnClickListener
             }

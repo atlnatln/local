@@ -26,14 +26,14 @@
                 android:layout_height="48dp"
                 android:src="@android:drawable/ic_menu_revert"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Geri" />
+                android:contentDescription="@string/btn_back" />
 
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Performans Raporu"
+                android:text="@string/performance_report_title"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface"
@@ -97,7 +97,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Başarı"
+                            android:text="@string/label_accuracy"
                             android:textSize="12sp"
                             android:textColor="@color/on_surface_secondary" />
                     </LinearLayout>
@@ -121,7 +121,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Çözülen"
+                            android:text="@string/label_solved"
                             android:textSize="12sp"
                             android:textColor="@color/on_surface_secondary" />
                     </LinearLayout>
@@ -145,7 +145,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Set"
+                            android:text="@string/label_set"
                             android:textSize="12sp"
                             android:textColor="@color/on_surface_secondary" />
                     </LinearLayout>
@@ -169,7 +169,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Dakika"
+                            android:text="@string/label_minutes"
                             android:textSize="12sp"
                             android:textColor="@color/on_surface_secondary" />
                     </LinearLayout>
@@ -181,7 +181,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📊 Konu Bazlı Performans"
+            android:text="@string/performance_by_topic"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/on_surface"
@@ -214,7 +214,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="💪 Güçlü Yanlar"
+                    android:text="@string/performance_strengths"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/correct_green"
@@ -249,7 +249,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🌱 Gelişim Alanları"
+                    android:text="@string/performance_improvements"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/accent"
@@ -284,7 +284,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="💡 Öneri"
+                    android:text="@string/performance_recommendation"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/hint_blue"
@@ -306,7 +306,7 @@
             style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="📈 Detaylı İstatistikler"
+            android:text="@string/btn_detailed_stats"
             android:textSize="15sp"
             app:cornerRadius="14dp"
             android:layout_marginTop="4dp"

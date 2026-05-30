@@ -420,8 +420,8 @@ class AppLockService : Service() {
         } catch (_: Exception) { lockedPackage }
         val nm = getSystemService(NotificationManager::class.java)
         val notification = NotificationCompat.Builder(this, ALERT_CHANNEL_ID)
-            .setContentTitle("🔒 $appName kilitli")
-            .setContentText("Görevi tamamlamak için buraya dokun")
+            .setContentTitle(getString(R.string.notification_app_locked_title, appName))
+            .setContentText(getString(R.string.notification_app_locked_text))
             .setSmallIcon(android.R.drawable.ic_lock_lock)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -436,10 +436,10 @@ class AppLockService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 ALERT_CHANNEL_ID,
-                "Uygulama Kilit Uyardı",
+                getString(R.string.notification_alert_channel_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Kilitli uygulama açılmaya çalışıldığında görünür"
+                description = getString(R.string.notification_alert_channel_desc)
                 setShowBadge(true)
                 enableLights(true)
                 enableVibration(true)
@@ -544,8 +544,8 @@ class AppLockService : Service() {
             updateTimerOverlay(String.format("%02d:%02d", remainingMin, remainingSec))
 
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("⏳ $appLabel — %02d:%02d".format(remainingMin, remainingSec))
-                .setContentText("Kalan süre dolunca uygulama kilitlenecek")
+                .setContentTitle(getString(R.string.notification_timer_title, appLabel, remainingMin, remainingSec))
+                .setContentText(getString(R.string.notification_timer_text))
                 .setSmallIcon(android.R.drawable.ic_lock_lock)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
@@ -663,7 +663,7 @@ class AppLockService : Service() {
         }
 
         val title = TextView(this).apply {
-            text = "Uygulama Kilitli"
+            text = getString(R.string.overlay_locked_title)
             textSize = 24f
             setTextColor(Color.WHITE)
             setTypeface(Typeface.DEFAULT_BOLD)
@@ -672,7 +672,7 @@ class AppLockService : Service() {
         }
 
         val subtitle = TextView(this).apply {
-            text = "$appName kullanmak için görevi tamamla"
+            text = getString(R.string.overlay_locked_subtitle, appName)
             textSize = 16f
             setTextColor(Color.argb(200, 255, 255, 255))
             gravity = Gravity.CENTER
@@ -685,7 +685,7 @@ class AppLockService : Service() {
         }
 
         val challengeBtn = Button(this).apply {
-            text = "📝 Görevi Tamamla"
+            text = getString(R.string.overlay_challenge_button)
             textSize = 18f
             setTextColor(Color.WHITE)
             background = buttonBg

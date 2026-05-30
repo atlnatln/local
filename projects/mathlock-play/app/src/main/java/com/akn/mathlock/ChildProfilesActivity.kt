@@ -28,14 +28,27 @@ class ChildProfilesActivity : BaseActivity() {
         private const val API_BASE = "https://mathlock.com.tr/api/mathlock"
         private const val TIMEOUT = 8000
 
-        private val PERIOD_LABELS = linkedMapOf(
-            "okul_oncesi" to "Okul Öncesi (5-6 yaş)",
-            "sinif_1" to "1. Sınıf (6-7 yaş)",
-            "sinif_2" to "2. Sınıf (7-8 yaş)",
-            "sinif_3" to "3. Sınıf (8-9 yaş)",
-            "sinif_4" to "4. Sınıf (9-10 yaş)"
-        )
     }
+
+    private fun getPeriodLabel(period: String): String = when (period) {
+        "okul_oncesi" -> getString(R.string.period_okul_oncesi_age)
+        "sinif_1" -> getString(R.string.period_sinif_1_age)
+        "sinif_2" -> getString(R.string.period_sinif_2_age)
+        "sinif_3" -> getString(R.string.period_sinif_3_age)
+        "sinif_4" -> getString(R.string.period_sinif_4_age)
+        else -> period
+    }
+
+    private fun getPeriodKeys(): List<String> =
+        listOf("okul_oncesi", "sinif_1", "sinif_2", "sinif_3", "sinif_4")
+
+    private fun getPeriodLabels(): List<String> = listOf(
+        getString(R.string.period_okul_oncesi_age),
+        getString(R.string.period_sinif_1_age),
+        getString(R.string.period_sinif_2_age),
+        getString(R.string.period_sinif_3_age),
+        getString(R.string.period_sinif_4_age)
+    )
 
     private lateinit var prefManager: PreferenceManager
     private lateinit var accountManager: AccountManager
@@ -81,7 +94,7 @@ class ChildProfilesActivity : BaseActivity() {
                     runOnUiThread { renderProfiles(children) }
                 } else {
                     conn.disconnect()
-                    runOnUiThread { Toast.makeText(this, "Profiller yüklenemedi", Toast.LENGTH_SHORT).show() }
+                    runOnUiThread { Toast.makeText(this, getString(R.string.profiles_load_failed), Toast.LENGTH_SHORT).show() }
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Profil yükleme hatası: ${e.message}")
@@ -90,7 +103,7 @@ class ChildProfilesActivity : BaseActivity() {
                     message = "Load profiles failed: ${e.message}",
                     throwable = e
                 )
-                runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
+                runOnUiThread { Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show() }
             }
         }.start()
     }
@@ -115,7 +128,7 @@ class ChildProfilesActivity : BaseActivity() {
             val isActive = child.getBoolean("is_active")
 
             tvName.text = name
-            tvPeriod.text = "📚 ${PERIOD_LABELS[period] ?: period}"
+            tvPeriod.text = getString(R.string.period_label_with_icon, getPeriodLabel(period))
 
             if (isActive) {
                 tvBadge.visibility = View.VISIBLE
@@ -146,20 +159,20 @@ class ChildProfilesActivity : BaseActivity() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_child_edit, null)
         val etName = dialogView.findViewById<EditText>(R.id.etChildName)
         val dropdown = dialogView.findViewById<AutoCompleteTextView>(R.id.spinnerPeriod)
-        val periodKeys = PERIOD_LABELS.keys.toList()
-        val periodLabels = PERIOD_LABELS.values.toList()
+        val periodKeys = getPeriodKeys()
+        val periodLabels = getPeriodLabels()
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, periodLabels)
         dropdown.setAdapter(adapter)
         dropdown.setText(periodLabels[2], false) // sinif_2 default
 
         AlertDialog.Builder(this)
-            .setTitle("Yeni Çocuk Ekle")
+            .setTitle(getString(R.string.dialog_add_child_title))
             .setView(dialogView)
-            .setPositiveButton("Ekle") { _, _ ->
+            .setPositiveButton(getString(R.string.btn_add)) { _, _ ->
                 val name = etName.text.toString().trim()
                 if (name.isEmpty()) {
-                    Toast.makeText(this, "İsim boş olamaz", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.name_empty_error), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 val selectedIndex = periodLabels.indexOf(dropdown.text.toString()).coerceAtLeast(0)
@@ -174,8 +187,8 @@ class ChildProfilesActivity : BaseActivity() {
         val etName = dialogView.findViewById<EditText>(R.id.etChildName)
         etName.setText(currentName)
         val dropdown = dialogView.findViewById<AutoCompleteTextView>(R.id.spinnerPeriod)
-        val periodKeys = PERIOD_LABELS.keys.toList()
-        val periodLabels = PERIOD_LABELS.values.toList()
+        val periodKeys = getPeriodKeys()
+        val periodLabels = getPeriodLabels()
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, periodLabels)
         dropdown.setAdapter(adapter)
@@ -183,12 +196,12 @@ class ChildProfilesActivity : BaseActivity() {
         dropdown.setText(periodLabels[currentIndex], false)
 
         AlertDialog.Builder(this)
-            .setTitle("Profili Düzenle")
+            .setTitle(getString(R.string.dialog_edit_profile_title))
             .setView(dialogView)
-            .setPositiveButton("Kaydet") { _, _ ->
+            .setPositiveButton(getString(R.string.btn_save)) { _, _ ->
                 val name = etName.text.toString().trim()
                 if (name.isEmpty()) {
-                    Toast.makeText(this, "İsim boş olamaz", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.name_empty_error), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 val selectedIndex = periodLabels.indexOf(dropdown.text.toString()).coerceAtLeast(0)
@@ -200,13 +213,13 @@ class ChildProfilesActivity : BaseActivity() {
 
     private fun confirmDelete(childId: Int, name: String, totalCount: Int) {
         if (totalCount <= 1) {
-            Toast.makeText(this, "Son profil silinemez", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.cannot_delete_last_profile), Toast.LENGTH_SHORT).show()
             return
         }
         AlertDialog.Builder(this)
-            .setTitle("Profili Sil")
-            .setMessage("\"$name\" profilini silmek istediğinize emin misiniz?")
-            .setPositiveButton("Sil") { _, _ -> deleteChild(childId) }
+            .setTitle(getString(R.string.dialog_delete_profile_title))
+            .setMessage(getString(R.string.delete_profile_confirm, name))
+            .setPositiveButton(getString(R.string.btn_delete)) { _, _ -> deleteChild(childId) }
             .setNegativeButton("İptal", null)
             .show()
     }
@@ -246,10 +259,10 @@ class ChildProfilesActivity : BaseActivity() {
 
                 runOnUiThread {
                     if (code in 200..299) {
-                        Toast.makeText(this, "Profil eklendi", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.profile_added), Toast.LENGTH_SHORT).show()
                         loadProfiles()
                     } else {
-                        val errMsg = try { JSONObject(responseText).optString("error", "Hata") } catch (_: Exception) { "Hata" }
+                        val errMsg = try { JSONObject(responseText).optString("error", getString(R.string.error)) } catch (_: Exception) { getString(R.string.error) }
                         Toast.makeText(this, errMsg, Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -260,7 +273,7 @@ class ChildProfilesActivity : BaseActivity() {
                     message = "Create child failed: ${e.message}",
                     throwable = e
                 )
-                runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
+                runOnUiThread { Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show() }
             }
         }.start()
     }
@@ -310,7 +323,7 @@ class ChildProfilesActivity : BaseActivity() {
                     if (code in 200..299) {
                         loadProfiles()
                     } else {
-                        Toast.makeText(this, "Güncelleme başarısız", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.update_failed), Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
@@ -320,7 +333,7 @@ class ChildProfilesActivity : BaseActivity() {
                     message = "Update child failed: ${e.message}",
                     throwable = e
                 )
-                runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
+                runOnUiThread { Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show() }
             }
         }.start()
     }
@@ -346,10 +359,10 @@ class ChildProfilesActivity : BaseActivity() {
 
                 runOnUiThread {
                     if (code in 200..299) {
-                        Toast.makeText(this, "Profil silindi", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.profile_deleted), Toast.LENGTH_SHORT).show()
                         loadProfiles()
                     } else {
-                        Toast.makeText(this, "Silme başarısız", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.delete_failed), Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
@@ -359,7 +372,7 @@ class ChildProfilesActivity : BaseActivity() {
                     message = "Delete child failed: ${e.message}",
                     throwable = e
                 )
-                runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
+                runOnUiThread { Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show() }
             }
         }.start()
     }

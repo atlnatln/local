@@ -93,7 +93,7 @@ class MemoryGameActivity : BaseActivity() {
         binding.sliderPairCount.addOnChangeListener { _, value, _ ->
             val count = value.toInt()
             pairCount = count
-            binding.tvPairCountLabel.text = "$count çift (${count * 2} kart)"
+            binding.tvPairCountLabel.text = getString(R.string.memory_pair_count_label, count, count * 2)
         }
         binding.sliderPairCount.valueTo = 30f
 
@@ -112,7 +112,7 @@ class MemoryGameActivity : BaseActivity() {
         binding.tvRounds.visibility = View.VISIBLE
         updateRoundDisplay()
         binding.sliderPairCount.value = pairCount.toFloat()
-        binding.tvPairCountLabel.text = "$pairCount çift (${pairCount * 2} kart)"
+        binding.tvPairCountLabel.text = getString(R.string.memory_pair_count_label, pairCount, pairCount * 2)
     }
 
     private fun startGame() {
@@ -329,12 +329,12 @@ class MemoryGameActivity : BaseActivity() {
 
     private fun updateScore() {
         val eng = engine ?: return
-        binding.tvMoves.text = "Hamle: ${eng.moves}"
-        binding.tvMatches.text = "Eşleşme: ${eng.matches}/${eng.pairCount}"
+        binding.tvMoves.text = getString(R.string.memory_moves, eng.moves)
+        binding.tvMatches.text = getString(R.string.memory_matches, eng.matches, eng.pairCount)
     }
 
     private fun updateRoundDisplay() {
-        binding.tvRounds.text = "Set: $sessionSolvedCount/$requiredRounds"
+        binding.tvRounds.text = getString(R.string.memory_rounds, sessionSolvedCount, requiredRounds)
     }
 
     private fun onRoundComplete() {
@@ -342,22 +342,22 @@ class MemoryGameActivity : BaseActivity() {
         updateRoundDisplay()
 
         if (isTestMode) {
-            showWinDialog("Test tamamlandı!", "$pairCount çifti ${engine?.moves ?: 0} hamlede eşleştirdin.")
+            showWinDialog(getString(R.string.memory_test_complete_title), getString(R.string.memory_test_complete_message, pairCount, engine?.moves ?: 0))
             return
         }
 
         if (isPracticeMode) {
-            showWinDialog("Tebrikler!", "${engine?.moves ?: 0} hamlede bitirdin.\n⭐ Toplam: $sessionSolvedCount tur")
+            showWinDialog(getString(R.string.memory_win_title), getString(R.string.memory_practice_win_message, engine?.moves ?: 0, sessionSolvedCount))
             return
         }
 
         if (sessionSolvedCount >= requiredRounds) {
             // Kilit açma hedefine ulaşıldı
-            showWinDialog("Kilit Açılıyor!", "$sessionSolvedCount tur tamamlandı. Uygulama açılıyor...")
+            showWinDialog(getString(R.string.memory_unlock_title), getString(R.string.memory_unlock_message, sessionSolvedCount))
             handler.postDelayed({ unlockAndLaunchApp() }, 1500)
         } else {
             // Daha tur var, kısa mesaj sonra yeni oyun
-            showWinDialog("Set Tamamlandı!", "$sessionSolvedCount/$requiredRounds set bitti.\nSonraki set başlıyor...")
+            showWinDialog(getString(R.string.memory_set_complete_title), getString(R.string.memory_set_complete_message, sessionSolvedCount, requiredRounds))
             handler.postDelayed({
                 binding.winOverlay.visibility = View.GONE
                 restartGame()
@@ -374,9 +374,9 @@ class MemoryGameActivity : BaseActivity() {
     private fun unlockAndLaunchApp() {
         if (isTestMode) {
             AlertDialog.Builder(this)
-                .setTitle("Test Başarılı")
-                .setMessage("Uygulama açılacaktı.")
-                .setPositiveButton("Tamam") { _, _ -> finish() }
+                .setTitle(getString(R.string.dialog_test_success_title))
+                .setMessage(getString(R.string.dialog_app_would_open))
+                .setPositiveButton(getString(R.string.btn_ok)) { _, _ -> finish() }
                 .show()
             return
         }

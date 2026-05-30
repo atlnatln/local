@@ -57,7 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:text="Temizle"
+            android:text="@string/pattern_clear"
             style="@style/Widget.Material3.Button.OutlinedButton"
             app:cornerRadius="12dp"
             android:layout_marginEnd="8dp" />

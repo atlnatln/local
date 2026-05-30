@@ -26,13 +26,13 @@
                 android:layout_height="48dp"
                 android:src="@android:drawable/ic_menu_revert"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Geri" />
+                android:contentDescription="@string/btn_back" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Hesabım"
+                android:text="@string/account_title"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface"
@@ -71,7 +71,7 @@
                 android:id="@+id/tvAccountTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hesap bilgisi yok"
+                android:text="@string/account_no_info"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface" />
@@ -80,7 +80,7 @@
                 android:id="@+id/tvAccountSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email ile kayıt olarak hesabınızı koruyun"
+                android:text="@string/account_register_hint"
                 android:textSize="13sp"
                 android:textColor="@color/on_surface_secondary"
                 android:layout_marginTop="4dp" />
@@ -106,7 +106,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📧 Email ile Kayıt"
+                    android:text="@string/account_email_register_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -115,7 +115,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Kredi satın almak ve hesabınızı farklı cihazlarda kullanmak için email adresinizle kayıt olun."
+                    android:text="@string/account_register_desc"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface_secondary"
                     android:layout_marginBottom="12dp" />
@@ -124,7 +124,7 @@
                     android:id="@+id/tilEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email adresiniz"
+                    android:hint="@string/hint_email"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -144,7 +144,7 @@
                     android:id="@+id/btnRegister"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
-                    android:text="Kayıt Ol"
+                    android:text="@string/account_register"
                     android:textSize="15sp"
                     app:cornerRadius="12dp" />
             </LinearLayout>
@@ -169,7 +169,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📋 Hesap Bilgileri"
+                    android:text="@string/account_info_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -186,7 +186,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📧 Email"
+                        android:text="@string/account_email_label"
                         android:textSize="14sp"
                         android:textColor="@color/on_surface_secondary"
                         android:layout_marginEnd="12dp" />
@@ -219,7 +219,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🔑 Cihaz ID"
+                        android:text="@string/account_device_id_label"
                         android:textSize="14sp"
                         android:textColor="@color/on_surface_secondary"
                         android:layout_marginEnd="12dp" />
@@ -247,7 +247,7 @@
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:text="Email Değiştir"
+                    android:text="@string/account_change_email"
                     android:textSize="13sp"
                     app:cornerRadius="12dp" />
             </LinearLayout>
@@ -270,7 +270,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="💰 Kredi Bakiyesi"
+                    android:text="@string/account_credits_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -295,7 +295,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="kredi"
+                        android:text="@string/credits"
                         android:textSize="16sp"
                         android:textColor="@color/on_surface_secondary" />
                 </LinearLayout>
@@ -333,7 +333,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Her kredi ile aşağıdakilerden birini alabilirsiniz:"
+                    android:text="@string/account_credits_info"
                     android:textSize="12sp"
                     android:textColor="@color/on_surface_secondary"
                     android:layout_marginBottom="4dp" />
@@ -341,7 +341,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="  🧠  50 kişiye özel matematik sorusu\n  🔢  12 yeni sayı yolculuğu bölümü"
+                    android:text="@string/account_credits_detail"
                     android:textSize="12sp"
                     android:textColor="@color/on_surface"
                     android:lineSpacingExtra="4dp" />
@@ -366,7 +366,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🛒 Kredi Satın Al"
+                    android:text="@string/account_buy_credits_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -410,7 +410,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="1 Kredi"
+                                android:text="@string/credit_1_title"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/on_surface" />
@@ -418,7 +418,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="50 soru veya 12 bölüm"
+                                android:text="@string/credit_1_desc"
                                 android:textSize="11sp"
                                 android:textColor="@color/on_surface_secondary" />
                         </LinearLayout>
@@ -478,7 +478,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="3 Kredi"
+                                    android:text="@string/credit_3_title"
                                     android:textSize="15sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/on_surface" />
@@ -486,7 +486,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="  EN POPÜLER"
+                                    android:text="@string/credit_popular"
                                     android:textSize="9sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/primary" />
@@ -495,7 +495,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="150 soru veya 36 bölüm"
+                                android:text="@string/credit_3_desc"
                                 android:textSize="11sp"
                                 android:textColor="@color/on_surface_secondary" />
                         </LinearLayout>
@@ -563,7 +563,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="5 Kredi"
+                                android:text="@string/credit_5_title"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/on_surface" />
@@ -571,7 +571,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="250 soru veya 60 bölüm"
+                                android:text="@string/credit_5_desc"
                                 android:textSize="11sp"
                                 android:textColor="@color/on_surface_secondary" />
                         </LinearLayout>
@@ -609,7 +609,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🔒 Verileriniz şifreli bağlantı (HTTPS) ile korunur.\nEmail adresiniz yalnızca hesap yönetimi için kullanılır."
+            android:text="@string/account_security_note"
             android:textSize="12sp"
             android:textColor="@color/on_surface_secondary"
             android:gravity="center"

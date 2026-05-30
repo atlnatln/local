@@ -1,5 +1,6 @@
 package com.akn.mathlock.util
 
+import com.akn.mathlock.R
 import android.app.Activity
 import android.util.Log
 import com.akn.mathlock.util.ErrorReporter
@@ -51,7 +52,7 @@ class BillingHelper(
                         message = "Billing setup failed: ${result.responseCode}",
                         extras = mapOf("response_code" to result.responseCode.toString(), "debug_msg" to result.debugMessage)
                     )
-                    listener.onBillingUnavailable("Faturalandırma servisi başlatılamadı")
+                    listener.onBillingUnavailable(activity.getString(R.string.billing_init_failed))
                 }
             }
 
@@ -120,13 +121,13 @@ class BillingHelper(
     fun launchPurchase(productId: String) {
         val client = billingClient
         if (client == null || !client.isReady) {
-            listener.onPurchaseError("Faturalandırma servisi hazır değil")
+            listener.onPurchaseError(activity.getString(R.string.billing_not_ready))
             return
         }
 
         val productDetails = productDetailsMap[productId]
         if (productDetails == null) {
-            listener.onPurchaseError("Ürün bulunamadı: $productId")
+            listener.onPurchaseError(activity.getString(R.string.product_not_found, productId))
             return
         }
 
@@ -146,7 +147,7 @@ class BillingHelper(
                 message = "launchBillingFlow failed: ${result.responseCode}",
                 extras = mapOf("response_code" to result.responseCode.toString(), "debug_msg" to result.debugMessage)
             )
-            listener.onPurchaseError("Satın alma başlatılamadı")
+            listener.onPurchaseError(activity.getString(R.string.purchase_launch_failed))
         }
     }
 
@@ -162,7 +163,7 @@ class BillingHelper(
             BillingClient.BillingResponseCode.USER_CANCELED -> {
                 Log.d(TAG, "User canceled purchase")
                 activity.runOnUiThread {
-                    listener.onPurchaseError("Satın alma iptal edildi")
+                    listener.onPurchaseError(activity.getString(R.string.purchase_cancelled))
                 }
             }
             else -> {
@@ -173,7 +174,7 @@ class BillingHelper(
                     extras = mapOf("response_code" to result.responseCode.toString(), "debug_msg" to result.debugMessage)
                 )
                 activity.runOnUiThread {
-                    listener.onPurchaseError("Satın alma hatası: ${result.debugMessage}")
+                    listener.onPurchaseError(activity.getString(R.string.purchase_error_with_message, result.debugMessage))
                 }
             }
         }

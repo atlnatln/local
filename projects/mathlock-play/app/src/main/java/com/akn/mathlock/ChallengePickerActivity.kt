@@ -48,7 +48,7 @@ class ChallengePickerActivity : BaseActivity() {
                 val appName = packageManager.getApplicationLabel(
                     packageManager.getApplicationInfo(pkg, 0)
                 ).toString()
-                binding.tvLockedAppName.text = "($appName)"
+                binding.tvLockedAppName.text = getString(R.string.locked_app_name_format, appName)
             } catch (e: Exception) {
                 binding.tvLockedAppName.text = ""
             }
@@ -123,7 +123,7 @@ class ChallengePickerActivity : BaseActivity() {
 
         val bm = BiometricManager.from(this)
         if (bm.canAuthenticate(authenticators) != BiometricManager.BIOMETRIC_SUCCESS) {
-            Toast.makeText(this, "⚠️ Bu cihazda parmak izi veya desen kilidi bulunamadı", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.biometric_not_available), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -140,13 +140,13 @@ class ChallengePickerActivity : BaseActivity() {
                     if (errorCode != BiometricPrompt.ERROR_USER_CANCELED &&
                         errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON
                     ) {
-                        Toast.makeText(this@ChallengePickerActivity, "Hata: $errString", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ChallengePickerActivity, getString(R.string.error_generic_with_message, errString), Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(this@ChallengePickerActivity, "❌ Kimlik doğrulama başarısız, tekrar deneyin", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ChallengePickerActivity, getString(R.string.auth_failed_retry), Toast.LENGTH_SHORT).show()
                 }
             })
 

@@ -1,5 +1,5 @@
 ---
-title: "Wiki Asistanı (wiki-assistant.py)"
+title: "Wiki Asistani (wiki-assistant.py)"
 created: "2026-05-30"
 updated: "2026-05-30"
 type: concept
@@ -9,7 +9,7 @@ related: [local-wiki, wiki-growth-protocol, agents-md]
 
 # Wiki Asistani
 
-> `/home/akn/local/scripts/wiki-assistant.py` — Kimi CLI için LSP-felsefesiyle tasarlanmış wiki otomasyon aracı.
+> `/home/akn/local/scripts/wiki-assistant.py` — Kimi CLI icin LSP-felsefesiyle tasarlanmis wiki otomasyon araci.
 
 ## Amac
 
@@ -39,11 +39,11 @@ Kimi'nin `wiki topla` sirasinda dosya karistirma/okuma yukunu alir. Ona sadece "
 
 **Test sonuclari:**
 - Token tasarrufu: ~%70-90
-- ReadFile cagrisi: 15-25 → 5-8
+- ReadFile cagrisi: 15-25 -> 5-8
 - Lint: 10/10 PASS
 - Commit: `d484c84a` (main)
 
-## 2. Asama (Devam Ediyor): Kod Duzenleme
+## 2. Asama (Tamamlandi): Kod Duzenleme
 
 **Hedef:** `wiki-assistant.py`'ye `--locate` modu eklenir. Kullanici "su fonksiyona ekleme yap" dediginde:
 1. Asistan dosyayi ve fonksiyonu bulur
@@ -63,6 +63,7 @@ Kimi'nin `wiki topla` sirasinda dosya karistirma/okuma yukunu alir. Ona sadece "
 - **LSP Sunucusu:** TypeScript Server (`typescript-language-server --stdio`)
 - **Client:** Mevcut `scripts/lsp-client.py` (JS/TS destegi hazirdi)
 - **Komut:** `python3 scripts/wiki-assistant.py --locate --file <path> --symbol <name>`
+- **Cikti:** JSON (`range`, `kind`, `snippet`)
 - **Test:** `projects/webimar/webimar-nextjs/middleware.ts` uzerinde dogrulandi
 
 ### 2.3 Kotlin (Tamamlandi) / Java (Gerek Yok)
@@ -71,6 +72,36 @@ Kimi'nin `wiki topla` sirasinda dosya karistirma/okuma yukunu alir. Ona sadece "
 - **Client:** `scripts/lsp-client.py` (kotlin destegi eklendi)
 - **Test:** `projects/mathlock-play/app/src/main/java/.../MemoryGameEngine.kt` uzerinde dogrulandi
 - **Java:** Monorepo'da elle yazilmis 0 Java dosyasi var (sadece build-generated). JDTLS kurulumuna gerek yok.
+
+### 2.4 Yapilandirma / XML / JSON / Gradle Fallback (Tamamlandi — 2026-05-30)
+
+LSP sunuculari sadece kod dosyalarini (`.py`, `.js`, `.ts`, `.kt`) parse eder. `strings.xml`, `build.gradle.kts`, `.env`, `.json`, `.yaml` gibi dosyalarda sembol aramak icin `wiki-assistant.py` iceride `locate_in_file()` fallback'ini kullanir.
+
+**Calisma prensibi:**
+- Dosya uzantisi LSP desteklemiyorsa `lsp-client.py` hic cagrilmaz.
+- Dosya iceriginde sembol adi aranir, eslesen satir + baglam (+-2 satir) JSON olarak dondurulur.
+- `EXIT_CODE = 0` (basari) veya `1` (hata) — shell `||` fallback'ine neden olmaz.
+
+**Desteklenen fallback uzantilari:** `.xml`, `.json`, `.yaml`, `.yml`, `.sh`, `.gradle`, `.kts`, `.properties`, `.conf`, `.toml`
+
+**Ornek:**
+```bash
+python3 scripts/wiki-assistant.py --locate \
+  --file projects/mathlock-play/app/src/main/res/values/strings.xml \
+  --symbol app_name
+# Cikti: satir 2, "<string name="app_name">MathLock</string>"
+```
+
+### 2.5 LSP Client Iyilestirmeleri (2026-05-30)
+
+`scripts/lsp-client.py`'deki degisiklikler:
+
+| Iyilestirme | Neden |
+|-------------|-------|
+| `did_open` sonrasi bekleme `0.3s` -> `1.0s` | Pyright buyuk projelerde background indexing yaparken sembol listesi bos donebiliyordu. |
+| Bos sembol listesinde **1 retry** (2sn bekleme) | Workspace indexleme tamamlanmadan `documentSymbol` bos donerse otomatik tekrar dener. |
+| `--verbose` flag | LSP sunucu stderr loglarini gormek icin. Debug sirasinda neden bos dondugu anlasilamiyordu. |
+| Daha ayrintili hata mesajlari | `hint` alani: "Sembol bu dosyada tanimli degilse baska dosyada olabilir." |
 
 ## Dosya Yapisi
 
@@ -93,7 +124,7 @@ Kimi'nin `wiki topla` sirasinda dosya karistirma/okuma yukunu alir. Ona sadece "
 
 Asistan calismazsa (Python hatasi, bos cikti):
 1. Hata kullaniciya soylenir
-2. Klasik akisa donulur: Checkpoint → Git diff → Dosyalari oku → Wiki guncelle
+2. Klasik akisa donulur: Checkpoint -> Git diff -> Dosyalari oku -> Wiki guncelle
 3. `local-wiki` skill'i ve `AGENTS.md` fallback talimatini icerir
 
 ## Baglanti

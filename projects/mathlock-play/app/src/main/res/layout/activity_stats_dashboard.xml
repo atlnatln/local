@@ -26,14 +26,14 @@
                 android:layout_height="48dp"
                 android:src="@android:drawable/ic_menu_revert"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Geri" />
+                android:contentDescription="@string/btn_back" />
 
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="İstatistik Paneli"
+                android:text="@string/stats_dashboard_title"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface"
@@ -81,7 +81,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Gün Serisi"
+                        android:text="@string/stats_streak_label"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_secondary" />
                 </LinearLayout>
@@ -121,7 +121,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Başarı"
+                        android:text="@string/stats_accuracy_label"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_secondary" />
                 </LinearLayout>
@@ -160,7 +160,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Dakika"
+                        android:text="@string/stats_minutes_label"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_secondary" />
                 </LinearLayout>
@@ -184,7 +184,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📅 Son 14 Gün"
+                    android:text="@string/stats_last_14_days"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -214,7 +214,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📊 Konu Bazlı Başarı"
+                    android:text="@string/stats_by_topic"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"

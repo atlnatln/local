@@ -28,23 +28,25 @@ class StatsDashboardActivity : BaseActivity() {
         private const val API_BASE = "https://mathlock.com.tr/api/mathlock"
         private const val TIMEOUT = 10000
 
-        private val TYPE_LABELS = mapOf(
-            "toplama" to "Toplama",
-            "çıkarma" to "Çıkarma",
-            "çarpma" to "Çarpma",
-            "bölme" to "Bölme",
-            "sıralama" to "Sıralama",
-            "eksik_sayı" to "Eksik Sayı",
-            "karşılaştırma" to "Karşılaştırma",
-            "sayma" to "Sayma",
-            "kesir" to "Kesir",
-            "problem" to "Problem",
-            "örüntü" to "Örüntü",
-            "zaman" to "Zaman",
-            "para" to "Para",
-            "ondalik" to "Ondalık",
-            "geometri" to "Geometri"
-        )
+    }
+
+    private fun getTypeLabel(type: String): String = when (type) {
+        "toplama" -> getString(R.string.type_toplama)
+        "çıkarma" -> getString(R.string.type_cikarma)
+        "çarpma" -> getString(R.string.type_carpma)
+        "bölme" -> getString(R.string.type_bolme)
+        "sıralama" -> getString(R.string.type_siralama)
+        "eksik_sayı" -> getString(R.string.type_eksik_sayi)
+        "karşılaştırma" -> getString(R.string.type_karsilastirma)
+        "sayma" -> getString(R.string.type_sayma)
+        "kesir" -> getString(R.string.type_kesir)
+        "problem" -> getString(R.string.type_problem)
+        "örüntü" -> getString(R.string.type_oruntu)
+        "zaman" -> getString(R.string.type_zaman)
+        "para" -> getString(R.string.type_para)
+        "ondalik" -> getString(R.string.type_ondalik)
+        "geometri" -> getString(R.string.type_geometri)
+        else -> type
     }
 
     private var childName: String = "Çocuk"
@@ -53,10 +55,10 @@ class StatsDashboardActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stats_dashboard)
 
-        childName = intent.getStringExtra("child_name") ?: "Çocuk"
+        childName = intent.getStringExtra("child_name") ?: getString(R.string.default_child_name)
 
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
-        findViewById<TextView>(R.id.tvTitle).text = "$childName — İstatistik"
+        findViewById<TextView>(R.id.tvTitle).text = getString(R.string.stats_title, childName)
 
         loadStats()
     }
@@ -81,11 +83,11 @@ class StatsDashboardActivity : BaseActivity() {
                     runOnUiThread { renderStats(data) }
                 } else {
                     conn.disconnect()
-                    runOnUiThread { Toast.makeText(this, "İstatistikler yüklenemedi", Toast.LENGTH_SHORT).show() }
+                    runOnUiThread { Toast.makeText(this, getString(R.string.stats_load_failed), Toast.LENGTH_SHORT).show() }
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "İstatistik hatası: ${e.message}")
-                runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
+                runOnUiThread { Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show() }
             }
         }.start()
     }
@@ -124,7 +126,7 @@ class StatsDashboardActivity : BaseActivity() {
             cal.add(Calendar.DAY_OF_YEAR, 1)
         }
 
-        val dataSet = BarDataSet(entries, "Çözülen Soru").apply {
+        val dataSet = BarDataSet(entries, getString(R.string.chart_label_solved)).apply {
             color = Color.parseColor("#4CAF50")
             valueTextSize = 10f
             valueTextColor = Color.parseColor("#212121")
@@ -173,7 +175,7 @@ class StatsDashboardActivity : BaseActivity() {
             val tipData = byType.getJSONObject(tip)
             val accuracy = tipData.getDouble("accuracy").toFloat()
             entries.add(BarEntry(index.toFloat(), accuracy))
-            labels.add(TYPE_LABELS[tip] ?: tip)
+            labels.add(getTypeLabel(tip))
 
             val color = when {
                 accuracy >= 85 -> Color.parseColor("#4CAF50")
@@ -184,7 +186,7 @@ class StatsDashboardActivity : BaseActivity() {
             colors.add(color)
         }
 
-        val dataSet = BarDataSet(entries, "Başarı %").apply {
+        val dataSet = BarDataSet(entries, getString(R.string.chart_label_accuracy)).apply {
             this.colors = colors
             valueTextSize = 11f
             valueTextColor = Color.parseColor("#212121")

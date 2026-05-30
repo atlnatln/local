@@ -64,7 +64,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
             // Kayıtlı kullanıcı
             binding.tvAvatarEmoji.text = "✅"
             binding.tvAccountTitle.text = email
-            binding.tvAccountSubtitle.text = "Hesabınız aktif"
+            binding.tvAccountSubtitle.text = getString(R.string.account_active)
             binding.tvAccountSubtitle.setTextColor(getColor(R.color.correct_green))
 
             binding.cardRegister.visibility = View.GONE
@@ -75,8 +75,8 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         } else {
             // Kayıtsız kullanıcı
             binding.tvAvatarEmoji.text = "👤"
-            binding.tvAccountTitle.text = "Hesap Oluştur"
-            binding.tvAccountSubtitle.text = "Email ile kayıt olarak hesabınızı koruyun"
+            binding.tvAccountTitle.text = getString(R.string.account_create_title)
+            binding.tvAccountSubtitle.text = getString(R.string.account_register_hint)
             binding.tvAccountSubtitle.setTextColor(getColor(R.color.on_surface_secondary))
 
             binding.cardRegister.visibility = View.VISIBLE
@@ -85,11 +85,11 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
 
         // Kredi bilgisi
         binding.tvCredits.text = credits.toString()
-        binding.tvCreditDetail.text = "Toplam kullanılan: ${accountManager.getCachedCredits()} kredi"
+        binding.tvCreditDetail.text = getString(R.string.credit_total_used, accountManager.getCachedCredits())
         binding.tvFreeSetStatus.text = if (freeUsed) {
-            "🎁 Ücretsiz set kullanıldı"
+            getString(R.string.free_set_used)
         } else {
-            "🎁 Ücretsiz: 50 soru + sınırsız sayı oyunu + 12 sayı yolculuğu"
+            getString(R.string.free_set_available)
         }
 
         // Kredi paketleri: email yoksa gizle
@@ -110,11 +110,11 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         val email = binding.etEmail.text.toString().trim()
 
         if (email.isBlank()) {
-            binding.tilEmail.error = "Email adresi gerekli"
+            binding.tilEmail.error = getString(R.string.email_required)
             return
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.tilEmail.error = "Geçerli bir email girin"
+            binding.tilEmail.error = getString(R.string.email_invalid)
             return
         }
         binding.tilEmail.error = null
@@ -124,14 +124,14 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         imm.hideSoftInputFromWindow(binding.etEmail.windowToken, 0)
 
         binding.btnRegister.isEnabled = false
-        binding.btnRegister.text = "Kaydediliyor…"
+        binding.btnRegister.text = getString(R.string.saving)
 
         Thread {
             accountManager.getOrRegister() ?: run {
                 runOnUiThread {
                     binding.btnRegister.isEnabled = true
-                    binding.btnRegister.text = "Kayıt Ol"
-                    Snackbar.make(binding.root, "❌ Cihaz kaydı yapılamadı. İnternet bağlantınızı kontrol edin veya birkaç dakika bekleyip tekrar deneyin.", Snackbar.LENGTH_LONG)
+                    binding.btnRegister.text = getString(R.string.account_register)
+                    Snackbar.make(binding.root, getString(R.string.device_register_failed), Snackbar.LENGTH_LONG)
                         .setBackgroundTint(getColor(R.color.wrong_red))
                         .setTextColor(getColor(android.R.color.white))
                         .show()
@@ -144,15 +144,15 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
                 binding.btnRegister.text = "Kayıt Ol"
                 when (result) {
                     is AccountManager.RegisterEmailResult.Success -> {
-                        Snackbar.make(binding.root, "✅ Hesap oluşturuldu!", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, getString(R.string.account_created), Snackbar.LENGTH_LONG).show()
                         refreshUI()
                     }
                     is AccountManager.RegisterEmailResult.Recovered -> {
-                        Snackbar.make(binding.root, "✅ Hesabınız yüklendi! (${result.credits} kredi)", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, getString(R.string.account_recovered, result.credits), Snackbar.LENGTH_LONG).show()
                         refreshUI()
                     }
                     is AccountManager.RegisterEmailResult.Error -> {
-                        Snackbar.make(binding.root, "❌ ${result.message}", Snackbar.LENGTH_LONG)
+                        Snackbar.make(binding.root, getString(R.string.error_with_message, result.message), Snackbar.LENGTH_LONG)
                             .setBackgroundTint(getColor(R.color.wrong_red))
                             .setTextColor(getColor(android.R.color.white))
                             .show()
@@ -167,7 +167,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
             setPadding(64, 16, 64, 0)
         }
         val input = com.google.android.material.textfield.TextInputEditText(this).apply {
-            hint = "yeni@email.com"
+            hint = getString(R.string.hint_new_email)
             inputType = android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS or
                         android.text.InputType.TYPE_CLASS_TEXT
             accountManager.getEmail()?.let { setText(it) }
@@ -179,9 +179,9 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         ))
 
         val dialog = MaterialAlertDialogBuilder(this)
-            .setTitle("Email Değiştir")
+            .setTitle(getString(R.string.account_change_email))
             .setView(container)
-            .setPositiveButton("Kaydet", null)
+            .setPositiveButton(getString(R.string.btn_save), null)
             .setNegativeButton("İptal", null)
             .create()
 
@@ -189,11 +189,11 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
             dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val email = input.text.toString().trim()
                 if (email.isBlank()) {
-                    input.error = "Email adresi boş olamaz"
+                    input.error = getString(R.string.email_empty_error)
                     return@setOnClickListener
                 }
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    input.error = "Geçerli bir email girin"
+                    input.error = getString(R.string.email_invalid)
                     return@setOnClickListener
                 }
                 dialog.dismiss()
@@ -207,11 +207,11 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
     }
 
     private fun registerEmailInBackground(email: String) {
-        Snackbar.make(binding.root, "Kaydediliyor…", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, getString(R.string.saving), Snackbar.LENGTH_SHORT).show()
         Thread {
             accountManager.getOrRegister() ?: run {
                 runOnUiThread {
-                    Snackbar.make(binding.root, "❌ Cihaz kaydı yapılamadı. İnternet bağlantınızı kontrol edin veya birkaç dakika bekleyip tekrar deneyin.", Snackbar.LENGTH_LONG)
+                    Snackbar.make(binding.root, getString(R.string.device_register_failed), Snackbar.LENGTH_LONG)
                         .setBackgroundTint(getColor(R.color.wrong_red))
                         .setTextColor(getColor(android.R.color.white))
                         .show()
@@ -222,15 +222,15 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
             runOnUiThread {
                 when (result) {
                     is AccountManager.RegisterEmailResult.Success -> {
-                        Snackbar.make(binding.root, "✅ Email güncellendi!", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, getString(R.string.email_updated), Snackbar.LENGTH_LONG).show()
                         refreshUI()
                     }
                     is AccountManager.RegisterEmailResult.Recovered -> {
-                        Snackbar.make(binding.root, "✅ Hesabınız yüklendi! (${result.credits} kredi)", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, getString(R.string.account_recovered, result.credits), Snackbar.LENGTH_LONG).show()
                         refreshUI()
                     }
                     is AccountManager.RegisterEmailResult.Error -> {
-                        Snackbar.make(binding.root, "❌ ${result.message}", Snackbar.LENGTH_LONG)
+                        Snackbar.make(binding.root, getString(R.string.error_with_message, result.message), Snackbar.LENGTH_LONG)
                             .setBackgroundTint(getColor(R.color.wrong_red))
                             .setTextColor(getColor(android.R.color.white))
                             .show()
@@ -243,7 +243,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
     private fun onBuyCredit(amount: Int, productId: String) {
         val email = accountManager.getEmail()
         if (email.isNullOrBlank()) {
-            Snackbar.make(binding.root, "Önce email ile kayıt olun", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, getString(R.string.please_register_first), Snackbar.LENGTH_SHORT).show()
             return
         }
 
@@ -261,7 +261,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
 
         // Gerçek Google Play satın alma
         if (!billingReady) {
-            Snackbar.make(binding.root, "Faturalandırma servisi hazırlanıyor…", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, getString(R.string.billing_preparing), Snackbar.LENGTH_SHORT).show()
             billingHelper.connect()
             return
         }
@@ -275,9 +275,9 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
         }
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("🛒 $amount Kredi — $priceText")
-            .setMessage("Google Play üzerinden $priceText ödeme yaparak $amount kredi satın alacaksınız.")
-            .setPositiveButton("Satın Al") { _, _ ->
+            .setTitle(getString(R.string.buy_credit_title, amount, priceText))
+            .setMessage(getString(R.string.buy_credit_message, priceText, amount))
+            .setPositiveButton(getString(R.string.btn_purchase)) { _, _ ->
                 billingHelper.launchPurchase(productId)
             }
             .setNegativeButton("İptal", null)
@@ -326,13 +326,13 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
     }
 
     override fun onPurchaseSuccess(purchase: Purchase) {
-        Snackbar.make(binding.root, "Satın alma doğrulanıyor…", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, getString(R.string.purchase_verifying), Snackbar.LENGTH_SHORT).show()
         verifyAndConsumePurchase(purchase)
     }
 
     override fun onPurchaseError(message: String) {
-        if (message != "Satın alma iptal edildi") {
-            Snackbar.make(binding.root, "❌ $message", Snackbar.LENGTH_LONG)
+        if (message != getString(R.string.purchase_cancelled)) {
+            Snackbar.make(binding.root, getString(R.string.error_with_message, message), Snackbar.LENGTH_LONG)
                 .setBackgroundTint(getColor(R.color.wrong_red))
                 .setTextColor(getColor(android.R.color.white))
                 .show()
@@ -383,23 +383,23 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
                             val resp = org.json.JSONObject(responseText)
                             val added = resp.optInt("credits_added", 0)
                             val total = resp.optInt("total_credits", 0)
-                            Snackbar.make(binding.root, "✅ $added kredi eklendi! Toplam: $total", Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(binding.root, getString(R.string.credits_added_total, added, total), Snackbar.LENGTH_LONG).show()
                             refreshUI()
                             // Kredi bilgisini arka planda güncelle
                             Thread { accountManager.refreshCredits(); runOnUiThread { refreshUI() } }.start()
                         }
                         code == 409 && attempt < 3 -> {
                             // Pending purchase — 2 saniye bekle ve tekrar dene
-                            Snackbar.make(binding.root, "Satın alma onaylanıyor, bekleyin...", Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(binding.root, getString(R.string.purchase_approving), Snackbar.LENGTH_SHORT).show()
                             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                                 verifyAndConsumePurchase(purchase, attempt + 1)
                             }, 2000)
                         }
                         else -> {
                             val error = try {
-                                org.json.JSONObject(responseText).optString("error", "Doğrulama hatası")
+                                org.json.JSONObject(responseText).optString("error", getString(R.string.verification_error))
                             } catch (_: Exception) { "Doğrulama hatası" }
-                            Snackbar.make(binding.root, "❌ $error", Snackbar.LENGTH_LONG)
+                            Snackbar.make(binding.root, getString(R.string.error_with_message, error), Snackbar.LENGTH_LONG)
                                 .setBackgroundTint(getColor(R.color.wrong_red))
                                 .setTextColor(getColor(android.R.color.white))
                                 .show()
@@ -409,7 +409,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
             } catch (e: Exception) {
                 Log.e(TAG, "Verify purchase failed", e)
                 runOnUiThread {
-                    Snackbar.make(binding.root, "❌ Bağlantı hatası", Snackbar.LENGTH_LONG)
+                    Snackbar.make(binding.root, getString(R.string.connection_error), Snackbar.LENGTH_LONG)
                         .setBackgroundTint(getColor(R.color.wrong_red))
                         .setTextColor(getColor(android.R.color.white))
                         .show()
@@ -421,7 +421,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
     private fun purchaseDebugCredits(amount: Int, productId: String) {
         accountManager.getOrRegister() ?: return
         val deviceToken = accountManager.getDeviceToken() ?: return
-        Snackbar.make(binding.root, "Kredi ekleniyor…", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, getString(R.string.adding_credits), Snackbar.LENGTH_SHORT).show()
 
         val accessToken = accountManager.getAccessToken()
         Thread {
@@ -462,9 +462,9 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
                         refreshFromServer()
                     } else {
                         val error = try {
-                            org.json.JSONObject(responseText).optString("error", "Hata oluştu")
+                            org.json.JSONObject(responseText).optString("error", getString(R.string.error_occurred))
                         } catch (_: Exception) { "Hata oluştu" }
-                        Snackbar.make(binding.root, "❌ $error", Snackbar.LENGTH_LONG)
+                        Snackbar.make(binding.root, getString(R.string.error_with_message, error), Snackbar.LENGTH_LONG)
                             .setBackgroundTint(getColor(R.color.wrong_red))
                             .setTextColor(getColor(android.R.color.white))
                             .show()
@@ -472,7 +472,7 @@ class AccountActivity : BaseActivity(), BillingHelper.BillingListener {
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    Snackbar.make(binding.root, "❌ Bağlantı hatası", Snackbar.LENGTH_LONG)
+                    Snackbar.make(binding.root, getString(R.string.connection_error), Snackbar.LENGTH_LONG)
                         .setBackgroundTint(getColor(R.color.wrong_red))
                         .setTextColor(getColor(android.R.color.white))
                         .show()

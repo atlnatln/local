@@ -1,5 +1,6 @@
 package com.akn.mathlock.util
 
+import com.akn.mathlock.R
 import android.content.Context
 import android.util.Log
 import com.akn.mathlock.api.ApiClient
@@ -152,7 +153,7 @@ class AccountManager(
      */
     fun registerEmail(email: String): RegisterEmailResult {
         val token = getAccessToken()
-            ?: return RegisterEmailResult.Error("Önce cihaz kaydı yapılmalı")
+            ?: return RegisterEmailResult.Error(context.getString(R.string.device_register_required))
 
         return try {
             val response = apiClient.post("/auth/register-email/", JSONObject().apply {
@@ -177,9 +178,9 @@ class AccountManager(
                 else RegisterEmailResult.Success
             } else {
                 val error = try {
-                    JSONObject(responseText).optString("error", "Kayıt başarısız")
+                    JSONObject(responseText).optString("error", context.getString(R.string.registration_failed))
                 } catch (_: Exception) {
-                    "Kayıt başarısız"
+                    context.getString(R.string.registration_failed)
                 }
                 Log.w(TAG, "Email kaydı başarısız (${response.statusCode}): $error, body=${responseText.take(200)}")
                 ErrorReporter.report(
@@ -191,7 +192,7 @@ class AccountManager(
             }
         } catch (e: Exception) {
             Log.w(TAG, "Email kaydı hatası: ${e.message}")
-            RegisterEmailResult.Error("Bağlantı hatası")
+            RegisterEmailResult.Error(context.getString(R.string.connection_error_plain))
         }
     }
 

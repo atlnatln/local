@@ -9,8 +9,8 @@
     <string name="btn_toggle_service">Toggle Protection</string>
     <string name="btn_settings">⚙️ Settings</string>
     <string name="btn_select_apps">📱 Locked Apps</string>
-    <string name="btn_test_math">🧮 Math Test</string>
-    <string name="btn_test_guess">🎯 Number Guess Test</string>
+    <string name="settings_btn_test_math">🧮 Test</string>
+    <string name="settings_btn_test_guess">🎯 Test</string>
 
     <!-- Game Selection -->
     <string name="challenge_picker_title">Game Time! 🎮</string>
@@ -138,4 +138,376 @@
     <string name="disclosure_privacy_link">Read Privacy Policy</string>
     <string name="disclosure_accept">Accept and Continue</string>
     <string name="disclosure_decline">Decline</string>
+
+    <!-- activity_main.xml -->
+    <string name="main_info_message">Some apps require solving math questions to open!</string>
+    <string name="main_practice_math_title">Solve Questions</string>
+    <string name="main_practice_math_subtitle">Math Practice</string>
+    <string name="main_practice_guess_title">Number Game</string>
+    <string name="main_practice_guess_subtitle">Guess the Number</string>
+    <string name="main_practice_puzzle_title">Number Journey</string>
+    <string name="main_practice_puzzle_subtitle">Solve Puzzles</string>
+    <string name="main_practice_memory_title">Number Memory</string>
+    <string name="main_practice_memory_subtitle">Match Cards</string>
+    <string name="main_parent_access_content_desc">Parent Login</string>
+
+    <!-- activity_settings.xml -->
+    <string name="settings_title_panel">Parent Panel</string>
+    <string name="settings_general_title">⚙️ General Settings</string>
+    <string name="settings_protection_off">Protection off</string>
+    <string name="settings_locked_apps">Locked Apps</string>
+    <string name="settings_relock_short">🔒 Relock</string>
+    <string name="settings_close_short">❌ Close</string>
+    <string name="settings_game_visibility_title">🎮 Game Visibility</string>
+    <string name="settings_game_visibility_subtitle">Which games appear on lock screen</string>
+    <string name="settings_visibility_math">🧮 Math Questions</string>
+    <string name="settings_visibility_guess">🎯 Number Guessing Game</string>
+    <string name="settings_visibility_puzzle">🔢 Number Journey</string>
+    <string name="settings_visibility_memory">🧠 Number Memory</string>
+    <string name="settings_account">Account</string>
+    <string name="loading">Loading…</string>
+    <string name="settings_child_profiles">Child Profiles</string>
+    <string name="settings_performance_report">Performance Report</string>
+    <string name="settings_performance_report_desc">Statistics, success charts and AI recommendations</string>
+    <string name="settings_math_questions_title">🧮 Math Questions</string>
+    <string name="btn_test_puzzle">🔢 Test</string>
+    <string name="btn_test_memory">🧠 Test</string>
+    <string name="settings_number_journey_title">🔢 Number Journey</string>
+    <string name="settings_number_guess_title">🎯 Number Guess</string>
+    <string name="settings_memory_title">🧠 Number Memory</string>
+    <string name="btn_register_email">📧 Create Account / Register</string>
+    <string name="settings_memory_pairs">Memory Card Pairs: %1$d</string>
+    <string name="settings_memory_rounds">Memory Rounds to Unlock: %1$d</string>
+    <string name="settings_memory_preview">Card Preview Duration: %1$d sec</string>
+
+    <!-- activity_challenge_picker.xml -->
+    <string name="timer_expired_title">Time\'s up!</string>
+    <string name="timer_expired_subtitle">Pick a game or parent login</string>
+    <string name="challenge_math_title">Math Questions</string>
+    <string name="challenge_math_desc">Addition, subtraction, multiplication, division</string>
+    <string name="challenge_guess_title">Number Guessing Game</string>
+    <string name="challenge_guess_desc">Find the number I\'m thinking of!</string>
+    <string name="challenge_puzzle_title">Number Journey</string>
+    <string name="challenge_puzzle_desc">Move numbers, solve the puzzle!</string>
+    <string name="challenge_memory_title">Number Memory</string>
+    <string name="challenge_memory_desc">Flip cards, match the numbers!</string>
+    <string name="challenge_parent_title">Parent Login</string>
+    <string name="challenge_parent_desc">Fingerprint, PIN or pattern</string>
+
+    <!-- activity_math_challenge.xml -->
+    <string name="test_banner_text">👁️ Parent Preview — Answers shown, nothing recorded</string>
+
+    <!-- activity_number_guess.xml -->
+    <string name="guess_limit_title">Pick upper limit!</string>
+    <string name="guess_limit_range">Between 10 — 1000</string>
+    <string name="guess_start_game">Start Game ▶</string>
+
+    <!-- activity_memory_game.xml -->
+    <string name="memory_game_title">Number Memory</string>
+    <string name="memory_moves">Moves: %1$d</string>
+    <string name="memory_matches">Matches: %1$d/%2$d</string>
+    <string name="memory_rounds">Round: %1$d/%2$d</string>
+    <string name="memory_pair_count_title">Number of Card Pairs</string>
+    <string name="memory_pair_count_label">%1$d pairs (%2$d cards)</string>
+    <string name="memory_start">Start</string>
+    <string name="memory_restart">Play Again</string>
+    <string name="memory_win_title">Congratulations!</string>
+    <string name="memory_win_message">Finished in %1$d moves.</string>
+    <string name="memory_play_again">Play Again</string>
+
+    <!-- activity_pattern.xml -->
+    <string name="pattern_clear">Clear</string>
+
+    <!-- activity_parent_auth.xml -->
+    <string name="auth_touch_retry">Touch or try again</string>
+
+    <!-- activity_account.xml -->
+    <string name="account_title">My Account</string>
+    <string name="account_no_info">No account info</string>
+    <string name="account_register_hint">Register with email to protect your account</string>
+    <string name="account_email_register_title">📧 Register with Email</string>
+    <string name="account_register_desc">Register with your email to purchase credits and use your account on different devices.</string>
+    <string name="hint_email">Your email address</string>
+    <string name="account_register">Register</string>
+    <string name="account_info_title">📋 Account Info</string>
+    <string name="account_email_label">📧 Email</string>
+    <string name="account_device_id_label">🔑 Device ID</string>
+    <string name="account_change_email">Change Email</string>
+    <string name="account_credits_title">💰 Credit Balance</string>
+    <string name="credits">credits</string>
+    <string name="account_credits_info">With each credit you can get one of the following:</string>
+    <string name="account_credits_detail">  🧠  50 personalized math questions\n  🔢  12 new number journey sections</string>
+    <string name="account_buy_credits_title">🛒 Buy Credits</string>
+    <string name="credit_1_title">1 Credit</string>
+    <string name="credit_1_desc">50 questions or 12 sections</string>
+    <string name="credit_3_title">3 Credits</string>
+    <string name="credit_3_desc">150 questions or 36 sections</string>
+    <string name="credit_popular">MOST POPULAR</string>
+    <string name="credit_5_title">5 Credits</string>
+    <string name="credit_5_desc">250 questions or 60 sections</string>
+    <string name="account_security_note">🔒 Your data is protected with encrypted connection (HTTPS).\nYour email is used only for account management.</string>
+
+    <!-- activity_child_profiles.xml -->
+    <string name="child_profiles_title">Child Profiles</string>
+    <string name="child_add_new">➕ Add New Child</string>
+    <string name="child_profiles_info">Each child gets questions suitable for their education period. Active profile is used in questions.</string>
+
+    <!-- activity_performance_report.xml -->
+    <string name="performance_report_title">Performance Report</string>
+    <string name="label_accuracy">Accuracy</string>
+    <string name="label_solved">Solved</string>
+    <string name="label_set">Set</string>
+    <string name="label_minutes">Minutes</string>
+    <string name="performance_by_topic">📊 Performance by Topic</string>
+    <string name="performance_strengths">💪 Strengths</string>
+    <string name="performance_improvements">🌱 Improvement Areas</string>
+    <string name="performance_recommendation">💡 Recommendation</string>
+    <string name="btn_detailed_stats">📈 Detailed Statistics</string>
+
+    <!-- activity_stats_dashboard.xml -->
+    <string name="stats_dashboard_title">Statistics Dashboard</string>
+    <string name="stats_streak_label">Day Streak</string>
+    <string name="stats_accuracy_label">Accuracy</string>
+    <string name="stats_minutes_label">Minutes</string>
+    <string name="stats_last_14_days">📅 Last 14 Days</string>
+    <string name="stats_by_topic">📊 Success by Topic</string>
+
+    <!-- dialog_child_edit.xml -->
+    <string name="hint_child_name">Child\'s name</string>
+    <string name="label_education_period">Education Period</string>
+    <string name="hint_select_period">Select period</string>
+
+    <!-- item_child_profile.xml -->
+    <string name="badge_active">✅ Active</string>
+    <string name="btn_report">📊 Report</string>
+    <string name="btn_set_active">Set Active</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_delete">Delete</string>
+
+    <!-- item_app.xml -->
+    <string name="app_icon_content_desc">App icon</string>
+
+    <!-- Kotlin sources -->
+    <string name="main_locked_apps_count">%1$d apps under protection</string>
+    <string name="main_no_locked_apps">No locked apps yet</string>
+    <string name="biometric_not_available">⚠️ No fingerprint or screen lock found on this device</string>
+    <string name="error_generic_with_message">Error: %1$s</string>
+    <string name="auth_failed_retry">❌ Authentication failed, try again</string>
+    <string name="default_child_name">Child</string>
+    <string name="account_status_with_credits">📧 %1$s  •  💰 %2$d credits</string>
+    <string name="btn_my_account">My Account →</string>
+    <string name="account_not_registered">No registered account</string>
+    <string name="math_mode_info">👤 %1$s — %2$d questions (%3$d solved), %4$d set</string>
+    <string name="math_mode_classic">⚡ Classic mode — random questions</string>
+    <string name="protection_active">🟢 Protection active</string>
+    <string name="btn_disable_protection">Disable Protection</string>
+    <string name="protection_inactive">🔴 Protection off</string>
+    <string name="btn_enable_protection">Enable Protection</string>
+    <string name="locked_apps_count">%1$d apps</string>
+    <string name="active_child_info">👤 %1$s  •  📚 %2$s</string>
+    <string name="please_create_child_profile">Please create a child profile first</string>
+    <string name="protection_disabled_toast">Protection disabled</string>
+    <string name="protection_enabled_toast">🛡️ Protection enabled!</string>
+    <string name="dialog_usage_access_title">📱 Usage Access (1/2)</string>
+    <string name="dialog_usage_access_message">MathLock needs this permission to see which app is open.\n\nThis permission only reads the foreground app name — it does not access personal data.\n\n⚠️ Android will show a red warning on the next screen. This is a standard warning shown for all apps. Just check the box and tap OK.</string>
+    <string name="btn_continue">Continue</string>
+    <string name="dialog_overlay_title">🪟 Screen Overlay (2/2)</string>
+    <string name="dialog_overlay_message">This permission is required for the challenge screen to appear when a locked app is opened.\n\nOn the next screen, find MathLock and enable the permission.</string>
+    <string name="btn_go_settings">Go to Settings</string>
+    <string name="dialog_battery_title">🔋 Battery Optimization (Recommended)</string>
+    <string name="dialog_battery_message">Recommended for uninterrupted background protection.\n\nYou can skip this step — protection will still work.</string>
+    <string name="btn_allow">Allow</string>
+    <string name="btn_skip_wizard">Skip</string>
+    <string name="xiaomi_step1_title">📋 Xiaomi Setup (1/3)</string>
+    <string name="xiaomi_step1_message">Auto Start\n\nRequired for MathLock to open automatically when device restarts.\n\nOn the next screen, find MathLock and enable the permission.</string>
+    <string name="btn_next_step">Next ▸</string>
+    <string name="xiaomi_step2_title">📋 Xiaomi Setup (2/3)</string>
+    <string name="xiaomi_step2_message">Background Popup\n\nThis permission is essential for the challenge screen to appear when a locked app is opened.\n\nThis is the most critical step — on the next screen, enable "Show background popup" permission.</string>
+    <string name="xiaomi_step3_title">📋 Xiaomi Setup (3/3)</string>
+    <string name="xiaomi_step3_message">Background Running\n\nFinally, check the following in app settings:\n\n• Battery saver → No restriction\n• Other permissions → Background start → Allow\n\nAfter completing these steps, MathLock will provide full protection.</string>
+    <string name="btn_app_settings">Go to App Settings</string>
+    <string name="btn_complete">Complete</string>
+    <string name="setup_complete_toast">✅ Setup complete!</string>
+
+    <!-- AppLockService.kt -->
+    <string name="notification_alert_channel_name">App Lock Alert</string>
+    <string name="notification_alert_channel_desc">Shown when a locked app is opened</string>
+    <string name="notification_app_locked_title">🔒 %1$s locked</string>
+    <string name="notification_app_locked_text">Tap here to complete the task</string>
+    <string name="notification_timer_title">⏳ %1$s — %2$02d:%3$02d</string>
+    <string name="notification_timer_text">App will lock when time expires</string>
+    <string name="overlay_locked_title">App Locked</string>
+    <string name="overlay_locked_subtitle">Complete the task to use %1$s</string>
+    <string name="overlay_challenge_button">📝 Complete the Task</string>
+
+    <!-- MathChallengeActivity.kt -->
+    <string name="batch_label">Set %1$d</string>
+    <string name="free_set">Free Set</string>
+    <string name="math_question_single">Question %1$d</string>
+    <string name="practice_score">⭐ %1$d correct</string>
+    <string name="test_answer_preview">✅ Answer: %1$d</string>
+    <string name="hint_prefix">💡 %1$s</string>
+    <string name="btn_next_question">Next Question →</string>
+    <string name="almost_try_again">Almost! Try again 🤔</string>
+    <string name="more_hint_available">There\'s another hint! 📚</string>
+    <string name="example_label">📝 Example:</string>
+    <string name="topic_dialog_title">📚 %1$s</string>
+    <string name="btn_understood">Got it! ✨</string>
+    <string name="test_preview_complete">Preview complete — %1$d questions reviewed</string>
+    <string name="practice_set_complete">Superbrain! 🌟 Total %1$d correct!\nNew questions coming…</string>
+    <string name="set_complete_congrats">Great! You completed 50 questions! 🌟</string>
+    <string name="credit_refunded_retry">New questions could not be prepared, credit refunded. Please try again.</string>
+    <string name="dialog_credit_needed_title">Credits Required for New Questions</string>
+    <string name="dialog_credit_needed_message">You completed the 50-question set. Purchase credits for new questions.</string>
+    <string name="btn_get_credits">Get Credits</string>
+    <string name="btn_close">Close</string>
+    <string name="dialog_no_internet_title">Internet Connection Required</string>
+    <string name="dialog_no_internet_message">Questions are loaded from the server. Please check your internet connection and try again.</string>
+    <string name="test_success_toast">Test successful! App would open.</string>
+
+    <!-- MemoryGameActivity.kt -->
+    <string name="memory_test_complete_title">Test Complete!</string>
+    <string name="memory_test_complete_message">You matched %1$d pairs in %2$d moves.</string>
+    <string name="memory_practice_win_message">Finished in %1$d moves.\n⭐ Total: %2$d rounds</string>
+    <string name="memory_unlock_title">Unlocking!</string>
+    <string name="memory_unlock_message">%1$d rounds completed. Opening app…</string>
+    <string name="memory_set_complete_title">Set Complete!</string>
+    <string name="memory_set_complete_message">%1$d/%2$d set done.\nNext set starting…</string>
+    <string name="dialog_test_success_title">Test Successful</string>
+    <string name="dialog_app_would_open">App would open.</string>
+
+    <!-- NumberGuessActivity.kt -->
+    <string name="guess_round_prefix">Round %1$d/%2$d • </string>
+    <string name="guess_next_round">✅ Correct! (%1$d/%2$d) Next round…</string>
+
+    <!-- ParentAuthActivity.kt -->
+    <string name="biometric_sensor_not_found">⚠️ No fingerprint sensor found on this device</string>
+    <string name="target_screen_not_found">Target screen not found</string>
+    <string name="auth_success">✅ Authentication successful!</string>
+
+    <!-- DisclosureActivity.kt -->
+    <string name="disclosure_required_message">MathLock needs these permissions for parental control. Cannot continue without accepting.</string>
+    <string name="disclosure_please_accept">Please read and accept the data usage disclosure.</string>
+
+    <!-- PatternActivity.kt -->
+    <string name="pattern_min_dots">⚠️ Select at least 3 dots!</string>
+
+    <!-- SayiYolculuguActivity.kt -->
+    <string name="levels_load_failed">Levels could not be loaded</string>
+    <string name="test_success_short">Test successful!</string>
+    <string name="billing_service_preparing">Purchase service is preparing, please wait</string>
+    <string name="credits_added">%1$d credits added!</string>
+
+    <!-- AccountActivity.kt -->
+    <string name="account_active">Your account is active</string>
+    <string name="account_create_title">Create Account</string>
+    <string name="credit_total_used">Total used: %1$d credits</string>
+    <string name="free_set_used">🎁 Free set used</string>
+    <string name="free_set_available">🎁 Free: 50 questions + unlimited number game + 12 number journey</string>
+    <string name="email_required">Email address is required</string>
+    <string name="email_invalid">Please enter a valid email</string>
+    <string name="saving">Saving…</string>
+    <string name="device_register_failed">❌ Device registration failed. Please check your internet connection or wait a few minutes and try again.</string>
+    <string name="account_created">✅ Account created!</string>
+    <string name="account_recovered">✅ Your account loaded! (%1$d credits)</string>
+    <string name="error_with_message">❌ %1$s</string>
+    <string name="hint_new_email">new@email.com</string>
+    <string name="email_empty_error">Email address cannot be empty</string>
+    <string name="email_updated">✅ Email updated!</string>
+    <string name="please_register_first">Please register with email first</string>
+    <string name="billing_preparing">Billing service is preparing…</string>
+    <string name="buy_credit_title">🛒 %1$d Credits — %2$s</string>
+    <string name="buy_credit_message">You will purchase %2$d credits via Google Play for %1$s.</string>
+    <string name="btn_purchase">Purchase</string>
+    <string name="purchase_verifying">Verifying purchase…</string>
+    <string name="purchase_cancelled">Purchase cancelled</string>
+    <string name="credits_added_total">✅ %1$d credits added! Total: %2$d</string>
+    <string name="purchase_approving">Purchase is being approved, please wait…</string>
+    <string name="verification_error">Verification error</string>
+    <string name="connection_error">❌ Connection error</string>
+    <string name="adding_credits">Adding credits…</string>
+    <string name="error_occurred">An error occurred</string>
+
+    <!-- PerformanceReportActivity.kt -->
+    <string name="report_title">%1$s — Report</string>
+    <string name="report_load_failed">Report could not be loaded</string>
+    <string name="period_label_with_icon">📚 %1$s</string>
+    <string name="type_card_detail">%1$d/%2$d correct • %3$d%% • %4$.1fs</string>
+
+    <!-- StatsDashboardActivity.kt -->
+    <string name="stats_title">%1$s — Statistics</string>
+    <string name="stats_load_failed">Statistics could not be loaded</string>
+    <string name="chart_label_solved">Questions Solved</string>
+    <string name="chart_label_accuracy">Success %</string>
+
+    <!-- ChildProfilesActivity.kt -->
+    <string name="profiles_load_failed">Profiles could not be loaded</string>
+    <string name="dialog_add_child_title">Add New Child</string>
+    <string name="btn_add">Add</string>
+    <string name="name_empty_error">Name cannot be empty</string>
+    <string name="dialog_edit_profile_title">Edit Profile</string>
+    <string name="dialog_delete_profile_title">Delete Profile</string>
+    <string name="delete_profile_confirm">Are you sure you want to delete "%1$s" profile?</string>
+    <string name="cannot_delete_last_profile">Last profile cannot be deleted</string>
+    <string name="profile_added">Profile added</string>
+    <string name="error">Error</string>
+    <string name="update_failed">Update failed</string>
+    <string name="profile_deleted">Profile deleted</string>
+    <string name="delete_failed">Delete failed</string>
+
+    <!-- ChallengePickerActivity.kt -->
+    <string name="locked_app_name_format">(%1$s)</string>
+
+    <!-- BillingHelper.kt -->
+    <string name="billing_init_failed">Billing service could not be initialized</string>
+    <string name="billing_not_ready">Billing service is not ready</string>
+    <string name="product_not_found">Product not found: %1$s</string>
+    <string name="purchase_launch_failed">Purchase could not be started</string>
+    <string name="purchase_error_with_message">Purchase error: %1$s</string>
+
+    <!-- AccountManager.kt -->
+    <string name="device_register_required">Device registration is required first</string>
+    <string name="registration_failed">Registration failed</string>
+    <string name="connection_error_plain">Connection error</string>
+
+    <!-- SecurePrefs.kt -->
+    <string name="secure_storage_init_failed">Secure storage could not be initialized. Please check device encryption.</string>
+
+    <!-- Period Labels -->
+    <string name="period_okul_oncesi">Preschool</string>
+    <string name="period_sinif_1">1st Grade</string>
+    <string name="period_sinif_2">2nd Grade</string>
+    <string name="period_sinif_3">3rd Grade</string>
+    <string name="period_sinif_4">4th Grade</string>
+
+    <!-- Period Labels with Age -->
+    <string name="period_okul_oncesi_age">Preschool (5-6 years)</string>
+    <string name="period_sinif_1_age">1st Grade (6-7 years)</string>
+    <string name="period_sinif_2_age">2nd Grade (7-8 years)</string>
+    <string name="period_sinif_3_age">3rd Grade (8-9 years)</string>
+    <string name="period_sinif_4_age">4th Grade (9-10 years)</string>
+
+    <!-- Type Labels -->
+    <string name="type_toplama">Addition</string>
+    <string name="type_cikarma">Subtraction</string>
+    <string name="type_carpma">Multiplication</string>
+    <string name="type_bolme">Division</string>
+    <string name="type_siralama">Ordering</string>
+    <string name="type_eksik_sayi">Missing Number</string>
+    <string name="type_karsilastirma">Comparison</string>
+    <string name="type_sayma">Counting</string>
+    <string name="type_kesir">Fraction</string>
+    <string name="type_problem">Problem</string>
+    <string name="type_oruntu">Pattern</string>
+    <string name="type_zaman">Time</string>
+    <string name="type_para">Money</string>
+    <string name="type_ondalik">Decimal</string>
+    <string name="type_geometri">Geometry</string>
+
+    <!-- Category Labels -->
+    <string name="category_usta">Master</string>
+    <string name="category_guvenli">Safe</string>
+    <string name="category_gelisen">Developing</string>
+    <string name="category_zorlu">Difficult</string>
+    <string name="category_kritik">Critical</string>
 </resources>

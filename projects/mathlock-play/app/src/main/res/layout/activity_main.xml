@@ -102,7 +102,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Bazı uygulamaları açmak için matematik sorularını çözmen gerekiyor!"
+                    android:text="@string/main_info_message"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface" />
             </LinearLayout>
@@ -145,7 +145,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Soru Çöz"
+                        android:text="@string/main_practice_math_title"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/on_primary"
@@ -154,7 +154,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Matematik pratik"
+                        android:text="@string/main_practice_math_subtitle"
                         android:textSize="11sp"
                         android:textColor="@color/on_primary"
                         android:alpha="0.80"
@@ -192,7 +192,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sayı Oyunu"
+                        android:text="@string/main_practice_guess_title"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/on_primary"
@@ -201,7 +201,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sayı tahmin et"
+                        android:text="@string/main_practice_guess_subtitle"
                         android:textSize="11sp"
                         android:textColor="@color/on_primary"
                         android:alpha="0.80"
@@ -247,7 +247,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sayı Yolculuğu"
+                        android:text="@string/main_practice_puzzle_title"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/on_surface" />
@@ -255,7 +255,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bulmaca çöz"
+                        android:text="@string/main_practice_puzzle_subtitle"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_secondary"
                         android:layout_marginTop="2dp" />
@@ -307,7 +307,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sayı Hafızası"
+                        android:text="@string/main_practice_memory_title"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/on_surface" />
@@ -315,7 +315,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Kartları eşleştir"
+                        android:text="@string/main_practice_memory_subtitle"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_secondary"
                         android:layout_marginTop="2dp" />
@@ -350,7 +350,7 @@
                 android:text="🔑"
                 android:textSize="40sp"
                 android:padding="16dp"
-                android:contentDescription="Ebeveyn Girişi" />
+                android:contentDescription="@string/main_parent_access_content_desc" />
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>

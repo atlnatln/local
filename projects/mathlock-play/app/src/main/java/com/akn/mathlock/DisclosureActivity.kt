@@ -38,7 +38,7 @@ class DisclosureActivity : BaseActivity() {
         binding.btnDecline.setOnClickListener {
             Toast.makeText(
                 this,
-                "MathLock, ebeveyn denetimi için bu izinlere ihtiyaç duyar. Kabul etmeden devam edilemez.",
+                getString(R.string.disclosure_required_message),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -52,7 +52,7 @@ class DisclosureActivity : BaseActivity() {
     override fun onBackPressed() {
         // Disclosure kabul edilmeden geri basılamaz
         if (!prefManager.isDisclosureAccepted) {
-            Toast.makeText(this, "Lütfen veri kullanım bildirimini okuyup kabul edin.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.disclosure_please_accept), Toast.LENGTH_SHORT).show()
             return
         }
         super.onBackPressed()

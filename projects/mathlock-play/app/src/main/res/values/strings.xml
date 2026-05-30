@@ -141,4 +141,377 @@
     <string name="disclosure_privacy_link">Gizlilik Politikasını Oku</string>
     <string name="disclosure_accept">Kabul Et ve Devam Et</string>
     <string name="disclosure_decline">Kabul Etmiyorum</string>
+
+    <!-- activity_main.xml -->
+    <string name="main_info_message">Bazı uygulamaları açmak için matematik sorularını çözmen gerekiyor!</string>
+    <string name="main_practice_math_title">Soru Çöz</string>
+    <string name="main_practice_math_subtitle">Matematik pratik</string>
+    <string name="main_practice_guess_title">Sayı Oyunu</string>
+    <string name="main_practice_guess_subtitle">Sayı tahmin et</string>
+    <string name="main_practice_puzzle_title">Sayı Yolculuğu</string>
+    <string name="main_practice_puzzle_subtitle">Bulmaca çöz</string>
+    <string name="main_practice_memory_title">Sayı Hafızası</string>
+    <string name="main_practice_memory_subtitle">Kartları eşleştir</string>
+    <string name="main_parent_access_content_desc">Ebeveyn Girişi</string>
+
+    <!-- activity_settings.xml -->
+    <string name="settings_title_panel">Ebeveyn Paneli</string>
+    <string name="settings_general_title">⚙️ Genel Ayarlar</string>
+    <string name="settings_protection_off">Koruma kapalı</string>
+    <string name="settings_locked_apps">Kilitli Uygulamalar</string>
+    <string name="settings_relock_short">🔒 Tekrar kilitle</string>
+    <string name="settings_close_short">❌ Kapat</string>
+    <string name="settings_game_visibility_title">🎮 Oyun Görünürlüğü</string>
+    <string name="settings_game_visibility_subtitle">Kilit ekranında hangi oyunlar görünsün</string>
+    <string name="settings_visibility_math">🧮 Matematik Soruları</string>
+    <string name="settings_visibility_guess">🎯 Sayı Tahmin Oyunu</string>
+    <string name="settings_visibility_puzzle">🔢 Sayı Yolculuğu</string>
+    <string name="settings_visibility_memory">🧠 Sayı Hafızası</string>
+    <string name="settings_account">Hesap</string>
+    <string name="loading">Yükleniyor…</string>
+    <string name="settings_child_profiles">Çocuk Profilleri</string>
+    <string name="settings_performance_report">Performans Raporu</string>
+    <string name="settings_performance_report_desc">İstatistikler, başarı grafikleri ve AI önerileri</string>
+    <string name="settings_math_questions_title">🧮 Matematik Soruları</string>
+    <string name="settings_btn_test_math">🧮 Test Et</string>
+    <string name="btn_test_puzzle">🔢 Test Et</string>
+    <string name="settings_btn_test_guess">🎯 Test Et</string>
+    <string name="btn_test_memory">🧠 Test Et</string>
+    <string name="settings_number_journey_title">🔢 Sayı Yolculuğu</string>
+    <string name="settings_number_guess_title">🎯 Sayı Tahmin</string>
+    <string name="settings_memory_title">🧠 Sayı Hafızası</string>
+    <string name="btn_register_email">📧 Hesap Oluştur / Kayıt Ol</string>
+
+    <!-- activity_challenge_picker.xml -->
+    <string name="timer_expired_title">Süre bitti!</string>
+    <string name="timer_expired_subtitle">Bir oyun seç veya ebeveyn girişi yap</string>
+    <string name="challenge_math_title">Matematik Soruları</string>
+    <string name="challenge_math_desc">Toplama, çıkarma, çarpma, bölme</string>
+    <string name="challenge_guess_title">Sayı Tahmin Oyunu</string>
+    <string name="challenge_guess_desc">Tuttuğum sayıyı bul!</string>
+    <string name="challenge_puzzle_title">Sayı Yolculuğu</string>
+    <string name="challenge_puzzle_desc">Sayıları hareket ettir, bulmacayı çöz!</string>
+    <string name="challenge_memory_title">Sayı Hafızası</string>
+    <string name="challenge_memory_desc">Kartları çevir, sayıları eşleştir!</string>
+    <string name="challenge_parent_title">Ebeveyn Girişi</string>
+    <string name="challenge_parent_desc">Parmak izi, PIN veya desen</string>
+
+    <!-- activity_math_challenge.xml -->
+    <string name="test_banner_text">👁️ Ebeveyn Önizleme — Cevaplar gösteriliyor, hiçbir şey kaydedilmiyor</string>
+
+    <!-- activity_number_guess.xml -->
+    <string name="guess_limit_title">Üst limit seç!</string>
+    <string name="guess_limit_range">10 — 1000 arası</string>
+    <string name="guess_start_game">Oyunu Başlat ▶</string>
+
+    <!-- activity_memory_game.xml -->
+    <string name="memory_game_title">Sayı Hafızası</string>
+    <string name="memory_moves">Hamle: %1$d</string>
+    <string name="memory_matches">Eşleşme: %1$d/%2$d</string>
+    <string name="memory_rounds">Tur: %1$d/%2$d</string>
+    <string name="memory_pair_count_title">Kart Çifti Sayısı</string>
+    <string name="memory_pair_count_label">%1$d çift (%2$d kart)</string>
+    <string name="memory_start">Başla</string>
+    <string name="memory_restart">Yeniden Oyna</string>
+    <string name="memory_win_title">Tebrikler!</string>
+    <string name="memory_win_message">%1$d hamlede bitirdiniz.</string>
+    <string name="memory_play_again">Tekrar Oyna</string>
+
+    <!-- activity_pattern.xml -->
+    <string name="pattern_clear">Temizle</string>
+
+    <!-- activity_parent_auth.xml -->
+    <string name="auth_touch_retry">Dokunun veya tekrar deneyin</string>
+
+    <!-- activity_account.xml -->
+    <string name="account_title">Hesabım</string>
+    <string name="account_no_info">Hesap bilgisi yok</string>
+    <string name="account_register_hint">Email ile kayıt olarak hesabınızı koruyun</string>
+    <string name="account_email_register_title">📧 Email ile Kayıt</string>
+    <string name="account_register_desc">Kredi satın almak ve hesabınızı farklı cihazlarda kullanmak için email adresinizle kayıt olun.</string>
+    <string name="hint_email">Email adresiniz</string>
+    <string name="account_register">Kayıt Ol</string>
+    <string name="account_info_title">📋 Hesap Bilgileri</string>
+    <string name="account_email_label">📧 Email</string>
+    <string name="account_device_id_label">🔑 Cihaz ID</string>
+    <string name="account_change_email">Email Değiştir</string>
+    <string name="account_credits_title">💰 Kredi Bakiyesi</string>
+    <string name="credits">kredi</string>
+    <string name="account_credits_info">Her kredi ile aşağıdakilerden birini alabilirsiniz:</string>
+    <string name="account_credits_detail">  🧠  50 kişiye özel matematik sorusu\n  🔢  12 yeni sayı yolculuğu bölümü</string>
+    <string name="account_buy_credits_title">🛒 Kredi Satın Al</string>
+    <string name="credit_1_title">1 Kredi</string>
+    <string name="credit_1_desc">50 soru veya 12 bölüm</string>
+    <string name="credit_3_title">3 Kredi</string>
+    <string name="credit_3_desc">150 soru veya 36 bölüm</string>
+    <string name="credit_popular">EN POPÜLER</string>
+    <string name="credit_5_title">5 Kredi</string>
+    <string name="credit_5_desc">250 soru veya 60 bölüm</string>
+    <string name="account_security_note">🔒 Verileriniz şifreli bağlantı (HTTPS) ile korunur.\nEmail adresiniz yalnızca hesap yönetimi için kullanılır.</string>
+
+    <!-- activity_child_profiles.xml -->
+    <string name="child_profiles_title">Çocuk Profilleri</string>
+    <string name="child_add_new">➕ Yeni Çocuk Ekle</string>
+    <string name="child_profiles_info">Her çocuk kendi eğitim dönemine uygun sorular alır. Aktif profil sorularda kullanılır.</string>
+
+    <!-- activity_performance_report.xml -->
+    <string name="performance_report_title">Performans Raporu</string>
+    <string name="label_accuracy">Başarı</string>
+    <string name="label_solved">Çözülen</string>
+    <string name="label_set">Set</string>
+    <string name="label_minutes">Dakika</string>
+    <string name="performance_by_topic">📊 Konu Bazlı Performans</string>
+    <string name="performance_strengths">💪 Güçlü Yanlar</string>
+    <string name="performance_improvements">🌱 Gelişim Alanları</string>
+    <string name="performance_recommendation">💡 Öneri</string>
+    <string name="btn_detailed_stats">📈 Detaylı İstatistikler</string>
+
+    <!-- activity_stats_dashboard.xml -->
+    <string name="stats_dashboard_title">İstatistik Paneli</string>
+    <string name="stats_streak_label">Gün Serisi</string>
+    <string name="stats_accuracy_label">Başarı</string>
+    <string name="stats_minutes_label">Dakika</string>
+    <string name="stats_last_14_days">📅 Son 14 Gün</string>
+    <string name="stats_by_topic">📊 Konu Bazlı Başarı</string>
+
+    <!-- dialog_child_edit.xml -->
+    <string name="hint_child_name">Çocuğun adı</string>
+    <string name="label_education_period">Eğitim Dönemi</string>
+    <string name="hint_select_period">Dönem seçin</string>
+
+    <!-- item_child_profile.xml -->
+    <string name="badge_active">✅ Aktif</string>
+    <string name="btn_report">📊 Rapor</string>
+    <string name="btn_set_active">Aktif Yap</string>
+    <string name="btn_edit">Düzenle</string>
+    <string name="btn_delete">Sil</string>
+
+    <!-- item_app.xml -->
+    <string name="app_icon_content_desc">App icon</string>
+
+    <!-- Kotlin kaynakları -->
+    <string name="main_locked_apps_count">%1$d uygulama koruma altında</string>
+    <string name="main_no_locked_apps">Henüz kilitli uygulama yok</string>
+    <string name="biometric_not_available">⚠️ Bu cihazda parmak izi veya desen kilidi bulunamadı</string>
+    <string name="error_generic_with_message">Hata: %1$s</string>
+    <string name="auth_failed_retry">❌ Kimlik doğrulama başarısız, tekrar deneyin</string>
+
+    <!-- SettingsActivity.kt -->
+    <string name="default_child_name">Çocuk</string>
+    <string name="account_status_with_credits">📧 %1$s  •  💰 %2$d kredi</string>
+    <string name="btn_my_account">Hesabım →</string>
+    <string name="account_not_registered">Kayıtlı hesap yok</string>
+    <string name="math_mode_info">👤 %1$s — %2$d soru (%3$d çözüldü), %4$d set</string>
+    <string name="math_mode_classic">⚡ Klasik mod — rastgele sorular</string>
+    <string name="protection_active">🟢 Koruma aktif</string>
+    <string name="btn_disable_protection">Korumayı Kapat</string>
+    <string name="protection_inactive">🔴 Koruma kapalı</string>
+    <string name="btn_enable_protection">Korumayı Aç</string>
+    <string name="locked_apps_count">%1$d uygulama</string>
+    <string name="active_child_info">👤 %1$s  •  📚 %2$s</string>
+    <string name="please_create_child_profile">Önce çocuk profili oluşturun</string>
+    <string name="protection_disabled_toast">Koruma kapatıldı</string>
+    <string name="protection_enabled_toast">🛡️ Koruma etkinleştirildi!</string>
+    <string name="dialog_usage_access_title">📱 Kullanım Erişimi (1/2)</string>
+    <string name="dialog_usage_access_message">MathLock\'un hangi uygulamanın açık olduğunu görebilmesi için bu izin zorunludur.\n\nBu izin yalnızca ön plandaki uygulama adını okur — kişisel verilerinize erişmez.\n\n⚠️ Sonraki ekranda Android kırmızı bir uyarı gösterecek. Bu tüm uygulamalar için gösterilen standart bir uyarıdır. Onay kutusunu işaretleyip "Tamam" demeniz yeterli.</string>
+    <string name="btn_continue">Devam</string>
+    <string name="dialog_overlay_title">🪟 Ekran Üstü Gösterim (2/2)</string>
+    <string name="dialog_overlay_message">Kilitli uygulama açıldığında soru ekranının görünmesi için bu izin gereklidir.\n\nAçılacak sayfada MathLock\'u bulup izni etkinleştirin.</string>
+    <string name="btn_go_settings">Ayarlara Git</string>
+    <string name="dialog_battery_title">🔋 Batarya Optimizasyonu (Önerilen)</string>
+    <string name="dialog_battery_message">Korumanın arka planda kesintisiz çalışması için önerilir.\n\nBu adımı atlayabilirsiniz — koruma yine de çalışacak.</string>
+    <string name="btn_allow">İzin Ver</string>
+    <string name="btn_skip_wizard">Atla</string>
+    <string name="xiaomi_step1_title">📋 Xiaomi Kurulum (1/3)</string>
+    <string name="xiaomi_step1_message">Otomatik Başlatma\n\nMathLock\'un cihaz yeniden başlatıldığında otomatik açılması için gerekli.\n\nAçılacak sayfada MathLock\'u bulup izni açın.</string>
+    <string name="btn_next_step">Sonraki ▸</string>
+    <string name="xiaomi_step2_title">📋 Xiaomi Kurulum (2/3)</string>
+    <string name="xiaomi_step2_message">Arka Planda Açılır Pencere\n\nKilitli uygulama açıldığında soru ekranının görünmesi için bu izin şart.\n\nBu en kritik adımdır — açılacak sayfada "Arka planda açılır pencere göster" iznini etkinleştirin.</string>
+    <string name="xiaomi_step3_title">📋 Xiaomi Kurulum (3/3)</string>
+    <string name="xiaomi_step3_message">Arka Planda Çalışma\n\nSon olarak, uygulama ayarlarından şunu kontrol edin:\n\n• Batarya tasarrufu → Kısıtlama yok\n• Diğer izinler → Arka planda başlat → İzin ver\n\nBu adımları tamamladıktan sonra MathLock tam koruma sağlayacak.</string>
+    <string name="btn_app_settings">Uygulama Ayarlarına Git</string>
+    <string name="btn_complete">Tamamla</string>
+    <string name="setup_complete_toast">✅ Kurulum tamamlandı!</string>
+
+    <!-- AppLockService.kt -->
+    <string name="notification_alert_channel_name">Uygulama Kilit Uyarısı</string>
+    <string name="notification_alert_channel_desc">Kilitli uygulama açılmaya çalışıldığında görünür</string>
+    <string name="notification_app_locked_title">🔒 %1$s kilitli</string>
+    <string name="notification_app_locked_text">Görevi tamamlamak için buraya dokun</string>
+    <string name="notification_timer_title">⏳ %1$s — %2$02d:%3$02d</string>
+    <string name="notification_timer_text">Kalan süre dolunca uygulama kilitlenecek</string>
+    <string name="overlay_locked_title">Uygulama Kilitli</string>
+    <string name="overlay_locked_subtitle">%1$s kullanmak için görevi tamamla</string>
+    <string name="overlay_challenge_button">📝 Görevi Tamamla</string>
+
+    <!-- MathChallengeActivity.kt -->
+    <string name="batch_label">Set %1$d</string>
+    <string name="free_set">Ücretsiz Set</string>
+    <string name="math_question_single">Soru %1$d</string>
+    <string name="practice_score">⭐ %1$d doğru</string>
+    <string name="test_answer_preview">✅ Cevap: %1$d</string>
+    <string name="hint_prefix">💡 %1$s</string>
+    <string name="btn_next_question">Sonraki Soru →</string>
+    <string name="almost_try_again">Neredeyse! Tekrar dene 🤔</string>
+    <string name="more_hint_available">Bir ipucu daha var! 📚</string>
+    <string name="example_label">📝 Örnek:</string>
+    <string name="topic_dialog_title">📚 %1$s</string>
+    <string name="btn_understood">Anladım! ✨</string>
+    <string name="test_preview_complete">Önizleme tamamlandı — %1$d soru incelendi</string>
+    <string name="practice_set_complete">Üstbeyinsin! 🌟 Toplam %1$d doğru!\nYeni sorular geliyor…</string>
+    <string name="set_complete_congrats">Harika! 50 soruyu tamamladın! 🌟</string>
+    <string name="credit_refunded_retry">Yeni sorular hazırlanamadı, kredi iade edildi. Tekrar deneyin.</string>
+    <string name="dialog_credit_needed_title">Yeni Sorular İçin Kredi Gerekli</string>
+    <string name="dialog_credit_needed_message">50 soruluk seti tamamladın. Yeni sorular için kredi satın alabilirsin.</string>
+    <string name="btn_get_credits">Kredi Al</string>
+    <string name="btn_close">Kapat</string>
+    <string name="dialog_no_internet_title">İnternet Bağlantısı Gerekli</string>
+    <string name="dialog_no_internet_message">Sorular sunucudan yükleniyor. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.</string>
+    <string name="test_success_toast">Test başarılı! Uygulama açılacaktı.</string>
+
+    <!-- MemoryGameActivity.kt -->
+    <string name="memory_test_complete_title">Test tamamlandı!</string>
+    <string name="memory_test_complete_message">%1$d çifti %2$d hamlede eşleştirdin.</string>
+    <string name="memory_practice_win_message">%1$d hamlede bitirdin.\n⭐ Toplam: %2$d tur</string>
+    <string name="memory_unlock_title">Kilit Açılıyor!</string>
+    <string name="memory_unlock_message">%1$d tur tamamlandı. Uygulama açılıyor…</string>
+    <string name="memory_set_complete_title">Set Tamamlandı!</string>
+    <string name="memory_set_complete_message">%1$d/%2$d set bitti.\nSonraki set başlıyor…</string>
+    <string name="dialog_test_success_title">Test Başarılı</string>
+    <string name="dialog_app_would_open">Uygulama açılacaktı.</string>
+
+    <!-- NumberGuessActivity.kt -->
+    <string name="guess_round_prefix">Tur %1$d/%2$d • </string>
+    <string name="guess_next_round">✅ Doğru! (%1$d/%2$d) Sonraki tur…</string>
+
+    <!-- ParentAuthActivity.kt -->
+    <string name="biometric_sensor_not_found">⚠️ Bu cihazda parmak izi sensörü bulunamadı</string>
+    <string name="target_screen_not_found">Hedef ekran bulunamadı</string>
+    <string name="auth_success">✅ Kimlik doğrulama başarılı!</string>
+
+    <!-- DisclosureActivity.kt -->
+    <string name="disclosure_required_message">MathLock, ebeveyn denetimi için bu izinlere ihtiyaç duyar. Kabul etmeden devam edilemez.</string>
+    <string name="disclosure_please_accept">Lütfen veri kullanım bildirimini okuyup kabul edin.</string>
+
+    <!-- PatternActivity.kt -->
+    <string name="pattern_min_dots">⚠️ En az 3 nokta seçin!</string>
+
+    <!-- SayiYolculuguActivity.kt -->
+    <string name="levels_load_failed">Seviyeler yüklenemedi</string>
+    <string name="test_success_short">Test başarılı!</string>
+    <string name="billing_service_preparing">Satın alma servisi hazırlanıyor, lütfen bekleyin</string>
+    <string name="credits_added">%1$d kredi eklendi!</string>
+
+    <!-- AccountActivity.kt -->
+    <string name="account_active">Hesabınız aktif</string>
+    <string name="account_create_title">Hesap Oluştur</string>
+    <string name="credit_total_used">Toplam kullanılan: %1$d kredi</string>
+    <string name="free_set_used">🎁 Ücretsiz set kullanıldı</string>
+    <string name="free_set_available">🎁 Ücretsiz: 50 soru + sınırsız sayı oyunu + 12 sayı yolculuğu</string>
+    <string name="email_required">Email adresi gerekli</string>
+    <string name="email_invalid">Geçerli bir email girin</string>
+    <string name="saving">Kaydediliyor…</string>
+    <string name="device_register_failed">❌ Cihaz kaydı yapılamadı. İnternet bağlantınızı kontrol edin veya birkaç dakika bekleyip tekrar deneyin.</string>
+    <string name="account_created">✅ Hesap oluşturuldu!</string>
+    <string name="account_recovered">✅ Hesabınız yüklendi! (%1$d kredi)</string>
+    <string name="error_with_message">❌ %1$s</string>
+    <string name="hint_new_email">yeni@email.com</string>
+    <string name="email_empty_error">Email adresi boş olamaz</string>
+    <string name="email_updated">✅ Email güncellendi!</string>
+    <string name="please_register_first">Önce email ile kayıt olun</string>
+    <string name="billing_preparing">Faturalandırma servisi hazırlanıyor…</string>
+    <string name="buy_credit_title">🛒 %1$d Kredi — %2$s</string>
+    <string name="buy_credit_message">Google Play üzerinden %1$s ödeme yaparak %2$d kredi satın alacaksınız.</string>
+    <string name="btn_purchase">Satın Al</string>
+    <string name="purchase_verifying">Satın alma doğrulanıyor…</string>
+    <string name="purchase_cancelled">Satın alma iptal edildi</string>
+    <string name="credits_added_total">✅ %1$d kredi eklendi! Toplam: %2$d</string>
+    <string name="purchase_approving">Satın alma onaylanıyor, bekleyin…</string>
+    <string name="verification_error">Doğrulama hatası</string>
+    <string name="connection_error">❌ Bağlantı hatası</string>
+    <string name="adding_credits">Kredi ekleniyor…</string>
+    <string name="error_occurred">Hata oluştu</string>
+
+    <!-- PerformanceReportActivity.kt -->
+    <string name="report_title">%1$s — Rapor</string>
+    <string name="report_load_failed">Rapor yüklenemedi</string>
+    <string name="period_label_with_icon">📚 %1$s</string>
+    <string name="type_card_detail">%1$d/%2$d doğru • %%3$d • %4$.1fs</string>
+
+    <!-- StatsDashboardActivity.kt -->
+    <string name="stats_title">%1$s — İstatistik</string>
+    <string name="stats_load_failed">İstatistikler yüklenemedi</string>
+    <string name="chart_label_solved">Çözülen Soru</string>
+    <string name="chart_label_accuracy">Başarı %</string>
+
+    <!-- ChildProfilesActivity.kt -->
+    <string name="profiles_load_failed">Profiller yüklenemedi</string>
+    <string name="dialog_add_child_title">Yeni Çocuk Ekle</string>
+    <string name="btn_add">Ekle</string>
+    <string name="name_empty_error">İsim boş olamaz</string>
+    <string name="dialog_edit_profile_title">Profili Düzenle</string>
+    <string name="dialog_delete_profile_title">Profili Sil</string>
+    <string name="delete_profile_confirm">"%1$s" profilini silmek istediğinize emin misiniz?</string>
+    <string name="cannot_delete_last_profile">Son profil silinemez</string>
+    <string name="profile_added">Profil eklendi</string>
+    <string name="error">Hata</string>
+    <string name="update_failed">Güncelleme başarısız</string>
+    <string name="profile_deleted">Profil silindi</string>
+    <string name="delete_failed">Silme başarısız</string>
+
+    <!-- ChallengePickerActivity.kt -->
+    <string name="locked_app_name_format">(%1$s)</string>
+
+    <!-- BillingHelper.kt -->
+    <string name="billing_init_failed">Faturalandırma servisi başlatılamadı</string>
+    <string name="billing_not_ready">Faturalandırma servisi hazır değil</string>
+    <string name="product_not_found">Ürün bulunamadı: %1$s</string>
+    <string name="purchase_launch_failed">Satın alma başlatılamadı</string>
+    <string name="purchase_error_with_message">Satın alma hatası: %1$s</string>
+
+    <!-- AccountManager.kt -->
+    <string name="device_register_required">Önce cihaz kaydı yapılmalı</string>
+    <string name="registration_failed">Kayıt başarısız</string>
+    <string name="connection_error_plain">Bağlantı hatası</string>
+
+    <!-- SecurePrefs.kt -->
+    <string name="secure_storage_init_failed">Güvenli depolama başlatılamadı. Lütfen cihaz şifrelemesini kontrol edin.</string>
+
+    <!-- Period Labels -->
+    <string name="period_okul_oncesi">Okul Öncesi</string>
+    <string name="period_sinif_1">1. Sınıf</string>
+    <string name="period_sinif_2">2. Sınıf</string>
+    <string name="period_sinif_3">3. Sınıf</string>
+    <string name="period_sinif_4">4. Sınıf</string>
+
+    <!-- Period Labels with Age (ChildProfiles) -->
+    <string name="period_okul_oncesi_age">Okul Öncesi (5-6 yaş)</string>
+    <string name="period_sinif_1_age">1. Sınıf (6-7 yaş)</string>
+    <string name="period_sinif_2_age">2. Sınıf (7-8 yaş)</string>
+    <string name="period_sinif_3_age">3. Sınıf (8-9 yaş)</string>
+    <string name="period_sinif_4_age">4. Sınıf (9-10 yaş)</string>
+
+    <!-- Type Labels -->
+    <string name="type_toplama">Toplama</string>
+    <string name="type_cikarma">Çıkarma</string>
+    <string name="type_carpma">Çarpma</string>
+    <string name="type_bolme">Bölme</string>
+    <string name="type_siralama">Sıralama</string>
+    <string name="type_eksik_sayi">Eksik Sayı</string>
+    <string name="type_karsilastirma">Karşılaştırma</string>
+    <string name="type_sayma">Sayma</string>
+    <string name="type_kesir">Kesir</string>
+    <string name="type_problem">Problem</string>
+    <string name="type_oruntu">Örüntü</string>
+    <string name="type_zaman">Zaman</string>
+    <string name="type_para">Para</string>
+    <string name="type_ondalik">Ondalık</string>
+    <string name="type_geometri">Geometri</string>
+
+    <!-- Category Labels -->
+    <string name="category_usta">Usta</string>
+    <string name="category_guvenli">Güvenli</string>
+    <string name="category_gelisen">Gelişen</string>
+    <string name="category_zorlu">Zorlu</string>
+    <string name="category_kritik">Kritik</string>
 </resources>

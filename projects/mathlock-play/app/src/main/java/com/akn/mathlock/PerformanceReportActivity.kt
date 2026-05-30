@@ -23,32 +23,6 @@ class PerformanceReportActivity : BaseActivity() {
         private const val API_BASE = "https://mathlock.com.tr/api/mathlock"
         private const val TIMEOUT = 10000
 
-        private val PERIOD_LABELS = mapOf(
-            "okul_oncesi" to "Okul Öncesi",
-            "sinif_1" to "1. Sınıf",
-            "sinif_2" to "2. Sınıf",
-            "sinif_3" to "3. Sınıf",
-            "sinif_4" to "4. Sınıf"
-        )
-
-        private val TYPE_LABELS = mapOf(
-            "toplama" to "Toplama",
-            "çıkarma" to "Çıkarma",
-            "çarpma" to "Çarpma",
-            "bölme" to "Bölme",
-            "sıralama" to "Sıralama",
-            "eksik_sayı" to "Eksik Sayı",
-            "karşılaştırma" to "Karşılaştırma",
-            "sayma" to "Sayma",
-            "kesir" to "Kesir",
-            "problem" to "Problem",
-            "örüntü" to "Örüntü",
-            "zaman" to "Zaman",
-            "para" to "Para",
-            "ondalik" to "Ondalık",
-            "geometri" to "Geometri"
-        )
-
         private val CATEGORY_COLORS = mapOf(
             "USTA" to "#4CAF50",
             "GÜVENLİ" to "#8BC34A",
@@ -56,6 +30,35 @@ class PerformanceReportActivity : BaseActivity() {
             "ZORLU" to "#FF5722",
             "KRİTİK" to "#F44336"
         )
+
+    }
+
+    private fun getPeriodLabel(period: String): String = when (period) {
+        "okul_oncesi" -> getString(R.string.period_okul_oncesi)
+        "sinif_1" -> getString(R.string.period_sinif_1)
+        "sinif_2" -> getString(R.string.period_sinif_2)
+        "sinif_3" -> getString(R.string.period_sinif_3)
+        "sinif_4" -> getString(R.string.period_sinif_4)
+        else -> period
+    }
+
+    private fun getTypeLabel(type: String): String = when (type) {
+        "toplama" -> getString(R.string.type_toplama)
+        "çıkarma" -> getString(R.string.type_cikarma)
+        "çarpma" -> getString(R.string.type_carpma)
+        "bölme" -> getString(R.string.type_bolme)
+        "sıralama" -> getString(R.string.type_siralama)
+        "eksik_sayı" -> getString(R.string.type_eksik_sayi)
+        "karşılaştırma" -> getString(R.string.type_karsilastirma)
+        "sayma" -> getString(R.string.type_sayma)
+        "kesir" -> getString(R.string.type_kesir)
+        "problem" -> getString(R.string.type_problem)
+        "örüntü" -> getString(R.string.type_oruntu)
+        "zaman" -> getString(R.string.type_zaman)
+        "para" -> getString(R.string.type_para)
+        "ondalik" -> getString(R.string.type_ondalik)
+        "geometri" -> getString(R.string.type_geometri)
+        else -> type
     }
 
     private var childName: String = "Çocuk"
@@ -64,10 +67,10 @@ class PerformanceReportActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_performance_report)
 
-        childName = intent.getStringExtra("child_name") ?: "Çocuk"
+        childName = intent.getStringExtra("child_name") ?: getString(R.string.default_child_name)
 
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
-        findViewById<TextView>(R.id.tvTitle).text = "$childName — Rapor"
+        findViewById<TextView>(R.id.tvTitle).text = getString(R.string.report_title, childName)
 
         findViewById<MaterialButton>(R.id.btnDashboard).setOnClickListener {
             val intent = Intent(this, StatsDashboardActivity::class.java)
@@ -98,11 +101,11 @@ class PerformanceReportActivity : BaseActivity() {
                     runOnUiThread { renderReport(data) }
                 } else {
                     conn.disconnect()
-                    runOnUiThread { Toast.makeText(this, "Rapor yüklenemedi", Toast.LENGTH_SHORT).show() }
+                    runOnUiThread { Toast.makeText(this, getString(R.string.report_load_failed), Toast.LENGTH_SHORT).show() }
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Rapor hatası: ${e.message}")
-                runOnUiThread { Toast.makeText(this, "Bağlantı hatası", Toast.LENGTH_SHORT).show() }
+                runOnUiThread { Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show() }
             }
         }.start()
     }
@@ -113,7 +116,7 @@ class PerformanceReportActivity : BaseActivity() {
         // Çocuk bilgileri
         findViewById<TextView>(R.id.tvChildName).text = child.getString("name")
         val period = child.getString("education_period")
-        findViewById<TextView>(R.id.tvPeriod).text = "📚 ${PERIOD_LABELS[period] ?: period}"
+        findViewById<TextView>(R.id.tvPeriod).text = getString(R.string.period_label_with_icon, getPeriodLabel(period))
         findViewById<TextView>(R.id.tvAccuracy).text = "%${child.getDouble("accuracy").toInt()}"
         findViewById<TextView>(R.id.tvTotalSolved).text = "${child.getInt("total_shown")}"
         findViewById<TextView>(R.id.tvSetsCompleted).text = "${child.getInt("sets_completed")}"
@@ -188,7 +191,7 @@ class PerformanceReportActivity : BaseActivity() {
         val shown = data.getInt("shown")
         val correct = data.getInt("correct")
         val avgTime = data.getDouble("avgTime")
-        val label = TYPE_LABELS[tip] ?: tip
+        val label = getTypeLabel(tip)
 
         // Kategori badge
         val badge = TextView(this).apply {
@@ -218,7 +221,7 @@ class PerformanceReportActivity : BaseActivity() {
         }
 
         val tvDetail = TextView(this).apply {
-            text = "$correct/$shown doğru • %${accuracy.toInt()} • ${avgTime}s"
+            text = getString(R.string.type_card_detail, correct, shown, accuracy.toInt(), avgTime)
             textSize = 12f
             setTextColor(Color.parseColor("#757575"))
         }

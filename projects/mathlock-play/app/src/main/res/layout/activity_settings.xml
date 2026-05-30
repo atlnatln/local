@@ -32,7 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Ebeveyn Paneli"
+                android:text="@string/settings_title_panel"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface"
@@ -56,7 +56,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="⚙️ Genel Ayarlar"
+                    android:text="@string/settings_general_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -81,7 +81,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Koruma kapalı"
+                        android:text="@string/settings_protection_off"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -124,7 +124,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Kilitli Uygulamalar"
+                        android:text="@string/settings_locked_apps"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/on_surface" />
@@ -190,7 +190,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="🔒 Tekrar kilitle"
+                        android:text="@string/settings_relock_short"
                         android:textSize="13sp"
                         android:paddingVertical="4dp" />
 
@@ -199,7 +199,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="❌ Kapat"
+                        android:text="@string/settings_close_short"
                         android:textSize="13sp"
                         android:paddingVertical="4dp" />
                 </RadioGroup>
@@ -215,7 +215,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🎮 Oyun Görünürlüğü"
+                    android:text="@string/settings_game_visibility_title"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -224,7 +224,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kilit ekranında hangi oyunlar görünsün"
+                    android:text="@string/settings_game_visibility_subtitle"
                     android:textSize="12sp"
                     android:textColor="@color/on_surface_secondary"
                     android:layout_marginBottom="8dp" />
@@ -240,7 +240,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="🧮 Matematik Soruları"
+                        android:text="@string/settings_visibility_math"
                         android:textSize="14sp"
                         android:textColor="@color/on_surface" />
 
@@ -261,7 +261,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="🎯 Sayı Tahmin Oyunu"
+                        android:text="@string/settings_visibility_guess"
                         android:textSize="14sp"
                         android:textColor="@color/on_surface" />
 
@@ -282,7 +282,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="🔢 Sayı Yolculuğu"
+                        android:text="@string/settings_visibility_puzzle"
                         android:textSize="14sp"
                         android:textColor="@color/on_surface" />
 
@@ -302,7 +302,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="🧠 Sayı Hafızası"
+                        android:text="@string/settings_visibility_memory"
                         android:textSize="14sp"
                         android:textColor="@color/on_surface" />
 
@@ -348,7 +348,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Hesap"
+                        android:text="@string/settings_account"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/on_surface" />
@@ -375,7 +375,7 @@
                     style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:text="📧 Hesap Oluştur / Kayıt Ol"
+                    android:text="@string/btn_register_email"
                     android:textSize="14sp"
                     app:cornerRadius="12dp"
                     app:icon="@android:drawable/ic_dialog_email"
@@ -420,7 +420,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Çocuk Profilleri"
+                        android:text="@string/settings_child_profiles"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/on_surface" />
@@ -429,7 +429,7 @@
                         android:id="@+id/tvActiveChild"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Yükleniyor..."
+                        android:text="@string/loading"
                         android:textSize="13sp"
                         android:textColor="@color/on_surface_secondary"
                         android:layout_marginTop="2dp" />
@@ -481,7 +481,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Performans Raporu"
+                        android:text="@string/settings_performance_report"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/on_surface" />
@@ -489,7 +489,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="İstatistikler, başarı grafikleri ve AI önerileri"
+                        android:text="@string/settings_performance_report_desc"
                         android:textSize="13sp"
                         android:textColor="@color/on_surface_secondary"
                         android:layout_marginTop="2dp" />
@@ -522,7 +522,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🧮 Matematik Soruları"
+                    android:text="@string/settings_math_questions_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -547,7 +547,7 @@
                     android:id="@+id/btnTestMath"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:text="🧮 Test Et"
+                    android:text="@string/settings_btn_test_math"
                     android:textSize="13sp"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     app:cornerRadius="10dp" />
@@ -572,7 +572,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🔢 Sayı Yolculuğu"
+                    android:text="@string/settings_number_journey_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -597,7 +597,7 @@
                     android:id="@+id/btnTestPuzzle"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:text="🔢 Test Et"
+                    android:text="@string/btn_test_puzzle"
                     android:textSize="13sp"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     app:cornerRadius="10dp" />
@@ -622,7 +622,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🎯 Sayı Tahmin"
+                    android:text="@string/settings_number_guess_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -662,7 +662,7 @@
                     android:id="@+id/btnTestGuess"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:text="🎯 Test Et"
+                    android:text="@string/settings_btn_test_guess"
                     android:textSize="13sp"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     app:cornerRadius="10dp" />
@@ -687,7 +687,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🧠 Sayı Hafızası"
+                    android:text="@string/settings_memory_title"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
@@ -742,7 +742,7 @@
                     android:id="@+id/btnTestMemory"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:text="🧠 Test Et"
+                    android:text="@string/btn_test_memory"
                     android:textSize="13sp"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     app:cornerRadius="10dp" />
