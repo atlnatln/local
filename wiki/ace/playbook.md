@@ -171,3 +171,71 @@ python3 scripts/wiki-assistant.py --prepare --project ace --pretty
 - [[playbook]]
 
 ---
+
+## Ders 005: Wiki query'de asistan birincil kaynak
+**Confidence:** 0.80
+**Created:** 2026-05-30
+**Updated:** 2026-05-30
+**Validations:** 0
+**Source:** AGENTS.md
+**Scope:** genel
+**Type:** anti-pattern
+
+### Context
+Bu oturumda wiki'den ACRA/Telegram bilgisi ararken doğrudan Grep + ReadFile kullandım. Kullanıcı AGENTS.md'de asistanın birincil kaynak olması gerektiğini hatırlattı.
+
+### Rule
+Wiki bilgi aramasında önce python3 scripts/wiki-assistant.py --query '<konu>' kullan. Asistan çalışmazsa veya yetersiz kalırsa Grep / ReadFile fallback'e dön.
+
+### Rationale
+Asistan wiki/.assistant-index.json cache'ini kullanır, ilgili sayfaları ve bölümleri JSON olarak sunar. Doğrudan Grep körü körüne arama yapar, gereksiz dosya okumalarına ve token israfına yol açar.
+
+### Examples
+#### ✅ Do
+```python
+python3 scripts/wiki-assistant.py --query 'acra crash telegram'
+```
+
+#### ❌ Don't
+```python
+Grep -r 'acra' wiki/ && ReadFile wiki/projects/mathlock-play.md
+```
+
+### Related
+
+
+---
+
+## Ders 006: LSP static analizdir, debug runtime'tır — kategoriler karıştırılmamalı
+**Confidence:** 0.80
+**Created:** 2026-05-30
+**Updated:** 2026-05-30
+**Validations:** 0
+**Source:** AGENTS.md
+**Scope:** genel
+**Type:** pattern
+
+### Context
+Kod debug/araştırma task'lerinde LSP'nin birinci kaynak olup olmayacağı tartışıldı. ACRA crash'i logcat'te görünüyordu, LSP bunu asla göremezdi.
+
+### Rule
+Static kod yapısı (symbol, reference, tip) için LSP (--locate) birincildir. Runtime davranış (crash, log, network, DB) için adb logcat, journalctl, curl, psql birincildir.
+
+### Rationale
+LSP kodun yazılışını gösterir, çalışma zamanını görmez. Bir crash'in nedenini anlamak için logcat gerekir; LSP 'kod doğru görünüyor' dediği halde uygulama çökebilir.
+
+### Examples
+#### ✅ Do
+```python
+adb logcat -d | grep 'FATAL EXCEPTION' # Runtime önce
+```
+
+#### ❌ Don't
+```python
+scripts/wiki-assistant.py --locate --file MathLockApplication.kt --symbol initAcra # Debug'ta LSP yetersiz
+```
+
+### Related
+
+
+---
